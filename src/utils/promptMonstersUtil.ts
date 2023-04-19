@@ -1,5 +1,5 @@
 import { MonsterModel } from "@/models/MonsterModel";
-import { IPromptMonsters } from "contracts/prompt-monsters/typechain-types";
+import { IPromptMonsters } from "@/typechain/PromptMonsters";
 
 /**
  * Get monster struct
