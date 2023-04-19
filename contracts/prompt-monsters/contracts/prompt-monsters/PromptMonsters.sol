@@ -145,7 +145,7 @@ contract PromptMonsters is
             name_,
             '", "description": "',
             name_,
-            'is Generative AI Game.", "image": "data:image/svg+xml;base64,',
+            ' is Generative AI Game.", "image": "data:image/svg+xml;base64,',
             Base64Upgradeable.encode(bytes(svg)),
             '", "external_link": "',
             _externalLink,

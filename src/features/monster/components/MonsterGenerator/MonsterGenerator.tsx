@@ -39,7 +39,7 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
   const handleClick = async () => {
     if (maxLengthOver) {
       alert(
-        "Too many characters. Please limit the number of characters to 30 for single-byte characters and 15 for double-byte characters.",
+        "Too many characters.\n\nPlease limit the number of characters to 30 for single-byte characters and 15 for double-byte characters.",
       );
       return;
     }
@@ -48,6 +48,9 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
       await characterController.generate(feature, language);
       setMonsterMinted(false);
     } catch (error) {
+      if (error instanceof Error) {
+        alert("Invalid monster name.\n\nReason: " + error.message);
+      }
       alert("Invalid monster name.");
       console.error(error);
     }
