@@ -20,7 +20,7 @@ export class ServerPromptMonstersContract extends BasePromptMonstersContract {
     if (!this._instance) {
       const wallet = ServerWallet.instance(rpcURL);
       const promptMonsters = PromptMonsters__factory.connect(
-        "0x2fB0455276cB8577458a97033E9cb7245aa3CAD3", // linea
+        process.env.PROMPT_MONSTERS_CONTRACT!,
         wallet.signer,
       );
       this._instance = new ServerPromptMonstersContract(promptMonsters);
