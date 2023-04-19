@@ -1,11 +1,8 @@
 import { BasePromptMonstersContract } from "@/features/monster/api/contracts/BasePromptMonstersContract";
 import { ServerWallet } from "@/lib/wallet";
+import { PromptMonsters, PromptMonsters__factory } from "@/typechain";
+import { IPromptMonsters } from "@/typechain/PromptMonsters";
 import { UserId } from "@/types/UserId";
-import {
-  PromptMonsters,
-  PromptMonsters__factory,
-} from "types/ethers-contracts";
-import { IPromptMonsters } from "types/ethers-contracts/PromptMonsters";
 
 export class ServerPromptMonstersContract extends BasePromptMonstersContract {
   private static _instance: ServerPromptMonstersContract;

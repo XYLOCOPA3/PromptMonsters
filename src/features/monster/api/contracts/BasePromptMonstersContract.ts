@@ -1,5 +1,5 @@
 import { MonsterModel } from "@/models/MonsterModel";
-import { IPromptMonsters } from "types/ethers-contracts/PromptMonsters";
+import { IPromptMonsters } from "@/typechain/PromptMonsters";
 
 export class BasePromptMonstersContract {
   constructor() {}

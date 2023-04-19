@@ -45,4 +45,4 @@ contracts/prompt-monsters/cache
 contracts/prompt-monsters/artifacts
 
 # typechain
-types/
+src/typechain/

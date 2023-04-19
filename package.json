@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write '**/*.js' '**/*.ts' '**/*.tsx' '**/*.json' '**/*.yml' '**/*.sol' --ignore-path .gitignore && npm run lint",
-    "typechain": "typechain --target ethers-v6 artifacts/*.json",
+    "typechain": "typechain --target ethers-v6 artifacts/*.json --out-dir src/typechain",
     "premove-abi": "cd contracts/prompt-monsters && npm run compile",
     "move-abi-prompt-monsters": "rm -rf artifacts/PromptMonsters.json && cd contracts/prompt-monsters && cp -rf artifacts/contracts/prompt-monsters/PromptMonsters.sol/PromptMonsters.json ../../artifacts/PromptMonsters.json",
     "move-abi": "npm run move-abi-prompt-monsters",
