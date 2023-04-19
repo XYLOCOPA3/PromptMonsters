@@ -9,7 +9,7 @@ export class ServerWallet {
   private static _instance: ServerWallet;
 
   private constructor(
-    public readonly provider: ethers.JsonRpcProvider,
+    public readonly provider: ethers.providers.JsonRpcProvider,
     public readonly signer: ethers.Wallet,
   ) {}
 
@@ -19,7 +19,7 @@ export class ServerWallet {
    */
   public static instance(rpcURL: string): ServerWallet {
     if (!this._instance) {
-      const provider = new ethers.JsonRpcProvider(rpcURL);
+      const provider = new ethers.providers.JsonRpcProvider(rpcURL);
       const signer = new ethers.Wallet(
         process.env.PRIVATE_KEY as string,
         provider,

@@ -20,7 +20,6 @@ export const Header = () => {
         "justify-center",
         "h-[70px]",
         "bg-[#161c22]",
-        "mb-[30px]",
       )}
     >
       <div

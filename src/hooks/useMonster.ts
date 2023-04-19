@@ -1,14 +1,19 @@
-import { ClientPromptMonstersContract } from "@/features/monster/api/contracts";
+import { useUserValue } from "@/hooks/useUser";
 import { MonsterModel } from "@/models/MonsterModel";
 import { MonsterState, monsterState } from "@/stores/monsterState";
+import { PromptMonsters__factory } from "@/typechain";
 import { UserId } from "@/types/UserId";
+import { toMonsterStruct } from "@/utils/promptMonstersUtil";
+import { fetchSigner, getProvider } from "@wagmi/core";
 import axios from "axios";
+import { ethers } from "ethers";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export interface MonsterController {
   generate: (feature: string, language: string) => Promise<void>;
   mint: (monster: MonsterModel) => Promise<void>;
   set: (userId: UserId) => Promise<boolean>;
+  reset: () => void;
   fight: (monster: MonsterModel, language: string) => Promise<string>;
 }
 
@@ -18,6 +23,7 @@ export const useMonsterValue = (): MonsterState => {
 
 export const useMonsterController = (): MonsterController => {
   const setMonster = useSetRecoilState(monsterState);
+  const user = useUserValue();
 
   /**
    * Generate monster
@@ -43,9 +49,14 @@ export const useMonsterController = (): MonsterController => {
    * @param monster monster model
    */
   const mint = async (monster: MonsterModel): Promise<void> => {
-    const promptMonsters = await ClientPromptMonstersContract.instance();
-    await promptMonsters.mint(monster);
-    const id = ((await promptMonsters.getMonstersTotalSupply()) - 1).toString();
+    const promptMonsters = PromptMonsters__factory.connect(
+      process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
+      (await fetchSigner())!,
+    );
+    await promptMonsters.mint(toMonsterStruct(monster));
+    const id = (
+      Number(await promptMonsters.getMonstersTotalSupply()) - 1
+    ).toString();
     setMonster((prevState) => {
       return prevState.copyWith({ id });
     });
@@ -53,10 +64,13 @@ export const useMonsterController = (): MonsterController => {
 
   /**
    * Set monster
-   * @param monster monster model
+   * @param userId user id
    */
   const set = async (userId: UserId): Promise<boolean> => {
-    const promptMonsters = await ClientPromptMonstersContract.instance();
+    const promptMonsters = PromptMonsters__factory.connect(
+      process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
+      getProvider(),
+    );
     const tokenIds = await promptMonsters.getOwnerToTokenIds(userId);
     if (tokenIds.length === 0) return false;
     const monsters = await promptMonsters.getMonsters(tokenIds);
@@ -81,6 +95,13 @@ export const useMonsterController = (): MonsterController => {
   };
 
   /**
+   * Reset monster
+   */
+  const reset = (): void => {
+    setMonster(MonsterModel.create({}));
+  };
+
+  /**
    * Fight monster
    * @param monster monster model
    * @param language output language
@@ -89,15 +110,20 @@ export const useMonsterController = (): MonsterController => {
     monster: MonsterModel,
     language: string,
   ): Promise<string> => {
-    const promptMonsters = await ClientPromptMonstersContract.instance();
-    const totalSupply = await promptMonsters.getMonstersTotalSupply();
+    const promptMonsters = PromptMonsters__factory.connect(
+      process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
+      getProvider(),
+    );
+    const totalSupply = Number(await promptMonsters.getMonstersTotalSupply());
     if (totalSupply < 1) throw new Error("useMonster.ts: No monsters.");
     let random: number;
     while (true) {
       random = Math.floor(Math.random() * totalSupply);
       if (random !== Number(monster.id)) break;
     }
-    const enemies = await promptMonsters.getMonsters([BigInt(random)]);
+    const enemies = await promptMonsters.getMonsters([
+      ethers.BigNumber.from(random),
+    ]);
     if (enemies.length === 0) throw new Error("useMonster.ts: No enemies.");
     const enemy = MonsterModel.create({
       id: random.toString(),
@@ -127,6 +153,7 @@ export const useMonsterController = (): MonsterController => {
     generate,
     mint,
     set,
+    reset,
     fight,
   };
   return controller;

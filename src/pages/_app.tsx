@@ -2,7 +2,28 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { UserInit } from "@/features/auth";
 import "@/styles/globals.css";
+import {
+  EthereumClient,
+  w3mConnectors,
+  w3mProvider,
+} from "@web3modal/ethereum";
+import { Web3Modal } from "@web3modal/react";
 import { RecoilRoot } from "recoil";
+import { configureChains, createClient } from "wagmi";
+import { polygonMumbai } from "wagmi/chains";
+
+const projectId = process.env.NEXT_PUBLIC_PROJECT_ID!;
+
+const chains = [polygonMumbai];
+
+const { provider } = configureChains(chains, [w3mProvider({ projectId })]);
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors: w3mConnectors({ version: 1, chains, projectId }),
+  provider,
+});
+
+const ethereumClient = new EthereumClient(wagmiClient, chains);
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -250,6 +271,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </UserInit>
       </RecoilRoot>
+      <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
     </>
   );
 }
