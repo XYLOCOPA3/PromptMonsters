@@ -32,10 +32,9 @@ export const useMonsterController = (): MonsterController => {
     if (res.status !== 200) throw new Error(res.data.message);
     const content = res.data.result[0].message.content;
     const monster = JSON.parse(content);
-    if (monster.isExisting)
-      throw new Error("useMonster.ts: This monster is existing.");
-    if (!monster.isFiction)
-      throw new Error("useMonster.ts: This monster is non fiction.");
+    console.log(monster);
+    if (monster.isExisting) throw new Error("This monster is existing.");
+    if (!monster.isFiction) throw new Error("This monster is non fiction.");
     setMonster(MonsterModel.fromData(feature, monster));
   };
 

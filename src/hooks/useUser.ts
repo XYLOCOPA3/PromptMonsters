@@ -1,4 +1,4 @@
-import { CHAINID_LINEA } from "@/const/chainParams";
+import { CHAINID_MUMBAI } from "@/const/chainParams";
 import { dummyUserState } from "@/const/dummy";
 import { ClientWallet } from "@/lib/wallet";
 import { UserState, userState } from "@/stores/userState";
@@ -22,8 +22,8 @@ export const useUserController = (): UserController => {
   const login = async (): Promise<UserId> => {
     const wallet = await ClientWallet.instance();
     const chainId = (await wallet.getChainId()).toLowerCase();
-    if (chainId !== CHAINID_LINEA)
-      await wallet.switchChainIfNotExistAdd(CHAINID_LINEA);
+    if (chainId !== CHAINID_MUMBAI)
+      await wallet.switchChainIfNotExistAdd(CHAINID_MUMBAI);
     const address = (await wallet.connect())[0];
     setUser(dummyUserState.copyWith({ id: address }));
     return address;
