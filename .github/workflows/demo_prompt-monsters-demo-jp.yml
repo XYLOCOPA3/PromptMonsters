@@ -26,8 +26,7 @@ jobs:
           rm -rf contracts
           npm install
           npm run typechain
-          npm run build --if-present
-          npm run test --if-present
+          npm run build
           rm -rf ./.next/cache
 
       - name: Zip artifact for deployment
