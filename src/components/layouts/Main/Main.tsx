@@ -11,7 +11,7 @@ export type MainProps = BaseProps;
  */
 export const Main = ({ children }: MainProps) => {
   return (
-    <main className={clsx("h-[calc(100%_-_70px-_30px)]", "overflow-y-scroll")}>
+    <main className={clsx("h-[calc(100%_-_70px)]", "overflow-y-scroll")}>
       {children}
     </main>
   );

@@ -1,12 +1,10 @@
-import { CHAINID_MUMBAI } from "@/const/chainParams";
-import { dummyUserState } from "@/const/dummy";
-import { ClientWallet } from "@/lib/wallet";
+import { UserModel } from "@/models/UserModel";
 import { UserState, userState } from "@/stores/userState";
-import { UserId } from "@/types/UserId";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export interface UserController {
-  login: () => Promise<UserId>;
+  set: (address: string) => Promise<void>;
+  reset: () => void;
 }
 
 export const useUserValue = (): UserState => {
@@ -17,20 +15,23 @@ export const useUserController = (): UserController => {
   const setUser = useSetRecoilState(userState);
 
   /**
-   * Login
+   * set
+   * @param address user address
    */
-  const login = async (): Promise<UserId> => {
-    const wallet = await ClientWallet.instance();
-    const chainId = (await wallet.getChainId()).toLowerCase();
-    if (chainId !== CHAINID_MUMBAI)
-      await wallet.switchChainIfNotExistAdd(CHAINID_MUMBAI);
-    const address = (await wallet.connect())[0];
-    setUser(dummyUserState.copyWith({ id: address }));
-    return address;
+  const set = async (address: string): Promise<void> => {
+    setUser(UserModel.create({ id: address }));
+  };
+
+  /**
+   * reset
+   */
+  const reset = (): void => {
+    setUser(UserModel.create({}));
   };
 
   const controller: UserController = {
-    login,
+    set,
+    reset,
   };
   return controller;
 };

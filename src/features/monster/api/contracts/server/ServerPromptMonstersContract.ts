@@ -3,6 +3,7 @@ import { ServerWallet } from "@/lib/wallet";
 import { PromptMonsters, PromptMonsters__factory } from "@/typechain";
 import { IPromptMonsters } from "@/typechain/PromptMonsters";
 import { UserId } from "@/types/UserId";
+import { ethers } from "ethers";
 
 export class ServerPromptMonstersContract extends BasePromptMonstersContract {
   private static _instance: ServerPromptMonstersContract;
@@ -30,15 +31,10 @@ export class ServerPromptMonstersContract extends BasePromptMonstersContract {
 
   /**
    * getOwnerToTokenIds
-   * @return {Promise<UserId>} user id
+   * @return {Promise<BigNumber[]>} token ids
    */
-  getOwnerToTokenIds = async (userId: UserId): Promise<bigint[]> => {
-    const ids = await this._promptMonsters.getOwnerToTokenIds(userId);
-    const tokenIds: bigint[] = [];
-    for (let i = 0; i < ids.length; i++) {
-      tokenIds.push(ids[i]);
-    }
-    return tokenIds;
+  getOwnerToTokenIds = async (userId: UserId): Promise<ethers.BigNumber[]> => {
+    return await this._promptMonsters.getOwnerToTokenIds(userId);
   };
 
   /**

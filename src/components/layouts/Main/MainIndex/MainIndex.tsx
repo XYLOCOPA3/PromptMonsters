@@ -18,7 +18,7 @@ export const MainHome = () => {
 
   return (
     <>
-      <div className={clsx("flex", "items-center", "flex-col")}>
+      <div className={clsx("flex", "items-center", "flex-col", "mt-[30px]")}>
         <MonsterGenerator className={clsx("my-[20px]", "w-[300px]")} />
         <div
           className={clsx(

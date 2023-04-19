@@ -29,12 +29,16 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
   const handleClick = async () => {
     setLoading(true);
     try {
-      if (user.id === "") await userController.login();
+      if (user.id === "") {
+        alert("Please login");
+        setLoading(false);
+        return;
+      }
       await monsterController.mint(monster);
       setMonsterMinted(true);
     } catch (e) {
       console.error(e);
-      alert("Failed to mint.");
+      alert("Failed to mint.\n\n" + e);
     }
     setLoading(false);
   };
