@@ -1,0 +1,30 @@
+{
+  "name": "hardhat-project",
+  "scripts": {
+    "node": "npx hardhat node",
+    "clean": "npx hardhat clean",
+    "compile": "npx hardhat compile",
+    "test-prompt-monsters": "REPORT_GAS=true npx hardhat test test/prompt-monsters/PromptMonsters.ts",
+    "test": "npm run test-prompt-monsters",
+    "predeploy": "npm run clean && npm run test-$npm_config_name",
+    "deploy": "npx hardhat run scripts/$npm_config_name/deploy.ts --network $npm_config_network",
+    "predeploy-all": "npm run clean && npm run test",
+    "deploy-all": "npx hardhat run scripts/prompt-monsters/deploy.ts --network $npm_config_network",
+    "preverify": "npm run clean",
+    "verify": "npx hardhat verify $npm_config_contract --network $npm_config_network --constructor-args scripts/$npm_config_name/argument.ts",
+    "preupgrade": "npm run clean && npm run test",
+    "upgrade": "npx hardhat run scripts/$npm_config_name/upgrade.ts --network $npm_config_network",
+    "update": "npx -p npm-check-updates  -c 'ncu' && npx -p npm-check-updates  -c 'ncu -u' && npm i"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "@openzeppelin/hardhat-upgrades": "^1.22.1",
+    "hardhat": "^2.13.1"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.8.3",
+    "@openzeppelin/contracts-upgradeable": "^4.8.3",
+    "axios": "^1.3.5",
+    "dotenv": "^16.0.3"
+  }
+}
