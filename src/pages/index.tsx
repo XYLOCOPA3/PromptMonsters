@@ -2,6 +2,7 @@ import Head from "next/head";
 import { Header } from "@/components/layouts/Header";
 import { Main } from "@/components/layouts/Main";
 import { MainHome } from "@/components/layouts/Main/MainIndex";
+import { HOST_NAME } from "@/const/hostname";
 import Div100vh from "react-div-100vh";
 
 /**
@@ -13,10 +14,7 @@ export default function Home() {
     <>
       <Head>
         <title>Prompt Monsters</title>
-        <meta
-          property="og:url"
-          content={`https://${process.env.NEXT_PUBLIC_HOSTNAME}/`}
-        />
+        <meta property="og:url" content={`https://${HOST_NAME}/`} />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Prompt Monsters" />
         <meta property="og:description" content="This is Prompt Monsters." />
