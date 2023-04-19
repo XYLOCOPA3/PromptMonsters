@@ -2,13 +2,10 @@ import { PROMPT_MONSTER_ADDRESS } from "@/const/contract";
 import { BasePromptMonstersContract } from "@/features/monster/api/contracts/BasePromptMonstersContract";
 import { ClientWallet } from "@/lib/wallet";
 import { MonsterModel } from "@/models/MonsterModel";
+import { PromptMonsters, PromptMonsters__factory } from "@/typechain";
+import { IPromptMonsters } from "@/typechain/PromptMonsters";
 import { UserId } from "@/types/UserId";
 import { ethers } from "ethers";
-import {
-  PromptMonsters,
-  PromptMonsters__factory,
-} from "types/ethers-contracts";
-import { IPromptMonsters } from "types/ethers-contracts/PromptMonsters";
 
 export class ClientPromptMonstersContract extends BasePromptMonstersContract {
   private _writer?: PromptMonsters;
