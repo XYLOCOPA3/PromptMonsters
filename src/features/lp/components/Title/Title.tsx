@@ -13,7 +13,7 @@ export const Title = ({ className }: TitleProps) => {
     <div
       className={clsx(
         className,
-        "w-[500px]",
+        "w-[100%]",
         "top-[70px]",
         "text-[40px]",
         "text-center",

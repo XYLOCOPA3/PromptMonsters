@@ -13,7 +13,7 @@ export const SubTitle = ({ className }: SubTitleProps) => {
     <div
       className={clsx(
         className,
-        "w-[500px]",
+        "w-[100%]",
         "top-[120px]",
         "text-[10px]",
         "text-center",
