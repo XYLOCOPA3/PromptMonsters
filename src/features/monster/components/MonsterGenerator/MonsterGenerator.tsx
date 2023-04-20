@@ -23,7 +23,6 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
   const characterController = useMonsterController();
   const [loading, setLoading] = useState(false);
   const [maxLengthOver, setMaxLengthOver] = useState(false);
-  // const [language, setLanguage] = useState(languages[0]);
   const [language, setLanguage] = useRecoilState(languageState);
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
 

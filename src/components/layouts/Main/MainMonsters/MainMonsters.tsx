@@ -9,11 +9,11 @@ import clsx from "clsx";
 import { useRecoilValue } from "recoil";
 
 /**
- * Main: Home
+ * Main: Monsters
  * @layout
  * @keit0728
  */
-export const MainHome = () => {
+export const MainMonsters = () => {
   const monsterMinted = useRecoilValue(monsterMintedState);
 
   return (
@@ -38,14 +38,16 @@ export const MainHome = () => {
       <Image
         className={clsx(
           "rounded-full",
-          "w-[512px]",
-          "h-[512px]",
+          "w-[256px]",
+          "h-[256px]",
           "bg-[#0d1117]",
           "border-[1px]",
           "border-gray-800",
           "z-[-1]",
           "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
           "opacity-10",
+          "md:w-[512px]",
+          "md:h-[512px]",
         )}
         src="assets/images/background.svg"
         alt="userIcon"

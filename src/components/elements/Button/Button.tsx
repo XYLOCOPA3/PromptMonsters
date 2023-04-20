@@ -5,17 +5,17 @@ import clsx from "clsx";
 export type ButtonProps = {
   disabled?: boolean;
   loading?: boolean;
-  onClick: () => void;
+  onClick?: () => void;
 } & BaseProps;
 
 /**
  * Button
  * @keit0728
- * @param className 親要素から指定されるスタイル
- * @param children 子要素
- * @param disabled ボタンを無効化するかどうか
- * @param loading ローディング中かどうか
- * @param onClick クリック時の処理
+ * @param className Style from parent element
+ * @param children Children elements
+ * @param disabled Disabled or not
+ * @param loading Loading or not
+ * @param onClick Click event
  */
 export const Button = ({
   className,
