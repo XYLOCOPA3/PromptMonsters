@@ -1,12 +1,15 @@
 import Head from "next/head";
-import { LP } from "@/components/layouts/LP/LP";
+import { Header } from "@/components/layouts/Header";
+import { Main } from "@/components/layouts/Main";
+import { MainMonsters } from "@/components/layouts/Main/MainMonsters";
 import { HOST_NAME } from "@/const/hostname";
+import Div100vh from "react-div-100vh";
 
 /**
- * Home
+ * Monsters
  * @keit0728
  */
-export default function Home() {
+export default function Monsters() {
   return (
     <>
       <Head>
@@ -16,7 +19,12 @@ export default function Home() {
         <meta property="og:title" content="Prompt Monsters" />
         <meta property="og:description" content="This is Prompt Monsters." />
       </Head>
-      <LP />
+      <Div100vh>
+        <Header />
+        <Main>
+          <MainMonsters />
+        </Main>
+      </Div100vh>
     </>
   );
 }

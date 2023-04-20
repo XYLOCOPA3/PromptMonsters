@@ -11,9 +11,9 @@ export type GenerateButtonProps = {
 /**
  * GenerateButton
  * @keit0728
- * @param className 親要素から指定されるスタイル
- * @param loading ローディング中かどうか
- * @param onClick クリック時の処理
+ * @param className Style from parent element
+ * @param loading Loading or not
+ * @param onClick Click event
  */
 export const GenerateButton = ({
   className,
@@ -24,7 +24,6 @@ export const GenerateButton = ({
     <Button
       className={clsx(
         className,
-        "select-none",
         "h-[40px]",
         "flex",
         "justify-center",

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Title } from "@/components/elements/Title";
 import { LoginButton } from "@/features/auth";
 import { MyShortProfile } from "@/features/profile";
@@ -22,12 +23,13 @@ export const Header = () => {
         "bg-[#161c22]",
       )}
     >
-      <div
+      <Link
+        href="/"
         className={clsx("flex", "items-center", "justify-between", "m-[10px]")}
       >
         <Title className={clsx("ml-[10px]")} />
         {user.id === "" ? <LoginButton /> : <MyShortProfile />}
-      </div>
+      </Link>
     </header>
   );
 };
