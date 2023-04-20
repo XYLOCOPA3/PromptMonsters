@@ -16,7 +16,13 @@ export const TwitterIcon = ({ className }: TwitterIconProps) => {
       href="https://twitter.com/prompt_monsters"
       className={clsx(
         className,
-        "fixed bottom-0 right-0 m-4 w-8 h-8 cursor-pointer",
+        "fixed",
+        "bottom-0",
+        "right-0",
+        "m-4",
+        "w-8",
+        "h-8",
+        "cursor-pointer",
       )}
     >
       <Image
