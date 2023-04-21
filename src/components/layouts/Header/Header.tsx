@@ -23,13 +23,14 @@ export const Header = () => {
         "bg-[#161c22]",
       )}
     >
-      <Link
-        href="/"
+      <div
         className={clsx("flex", "items-center", "justify-between", "m-[10px]")}
       >
-        <Title className={clsx("ml-[10px]")} />
-      </Link>
-      {user.id === "" ? <LoginButton /> : <MyShortProfile />}
+        <Link href="/">
+          <Title className={clsx("ml-[10px]")} />
+        </Link>
+        {user.id === "" ? <LoginButton /> : <MyShortProfile />}
+      </div>
     </header>
   );
 };
