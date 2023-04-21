@@ -28,8 +28,8 @@ export const Header = () => {
         className={clsx("flex", "items-center", "justify-between", "m-[10px]")}
       >
         <Title className={clsx("ml-[10px]")} />
-        {user.id === "" ? <LoginButton /> : <MyShortProfile />}
       </Link>
+      {user.id === "" ? <LoginButton /> : <MyShortProfile />}
     </header>
   );
 };
