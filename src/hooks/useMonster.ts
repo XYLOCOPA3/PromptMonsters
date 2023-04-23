@@ -53,7 +53,7 @@ export const useMonsterController = (): MonsterController => {
       process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
       (await fetchSigner())!,
     );
-    await promptMonsters.mint(toMonsterStruct(monster));
+    await (await promptMonsters.mint(toMonsterStruct(monster))).wait();
     const id = (
       Number(await promptMonsters.getMonstersTotalSupply()) - 1
     ).toString();

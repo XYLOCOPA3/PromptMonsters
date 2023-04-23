@@ -11,11 +11,10 @@ import {
 import { Web3Modal } from "@web3modal/react";
 import { RecoilRoot } from "recoil";
 import { configureChains, createClient } from "wagmi";
-import { polygonMumbai } from "wagmi/chains";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID!;
 
-const chains = [polygonMumbai, oasysSand];
+const chains = [oasysSand];
 
 const { provider } = configureChains(chains, [w3mProvider({ projectId })]);
 const wagmiClient = createClient({
