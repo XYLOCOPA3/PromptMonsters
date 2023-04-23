@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ListBox } from "@/components/elements/ListBox";
 import { FeatureInput, GenerateButton } from "@/features/monster";
 import { useMonsterController } from "@/hooks/useMonster";
+import { useUserValue } from "@/hooks/useUser";
 import { languageState } from "@/stores/languageState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { BaseProps } from "@/types/BaseProps";
@@ -20,10 +21,11 @@ export type MonsterGeneratorProps = BaseProps;
  * @param className Style from parent element
  */
 export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
-  const characterController = useMonsterController();
+  const user = useUserValue();
   const [loading, setLoading] = useState(false);
   const [maxLengthOver, setMaxLengthOver] = useState(false);
   const [language, setLanguage] = useRecoilState(languageState);
+  const monsterController = useMonsterController();
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +38,10 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
   };
 
   const handleClick = async () => {
+    if (user.id === "") {
+      alert("Please connect your wallet to generate a monster.");
+      return;
+    }
     if (maxLengthOver) {
       alert(
         "Too many characters.\n\nPlease limit the number of characters to 30 for single-byte characters and 15 for double-byte characters.",
@@ -44,7 +50,7 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
     }
     setLoading(true);
     try {
-      await characterController.generate(feature, language);
+      await monsterController.generate(user.id, feature, language);
       setMonsterMinted(false);
     } catch (error) {
       if (error instanceof Error) {

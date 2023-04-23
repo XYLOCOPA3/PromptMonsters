@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 export const RPC_URL = {
   mumbai: "https://rpc-mumbai.maticvigil.com/",
   linea: "https://rpc.goerli.linea.build",
+  sandverse: "https://rpc.sandverse.oasys.games/",
 };
 
 export class ServerWallet {

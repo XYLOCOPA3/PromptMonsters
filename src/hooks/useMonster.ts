@@ -1,16 +1,18 @@
-import { useUserValue } from "@/hooks/useUser";
 import { MonsterModel } from "@/models/MonsterModel";
 import { MonsterState, monsterState } from "@/stores/monsterState";
 import { PromptMonsters__factory } from "@/typechain";
 import { UserId } from "@/types/UserId";
-import { toMonsterStruct } from "@/utils/promptMonstersUtil";
 import { fetchSigner, getProvider } from "@wagmi/core";
 import axios from "axios";
 import { ethers } from "ethers";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export interface MonsterController {
-  generate: (feature: string, language: string) => Promise<void>;
+  generate: (
+    userId: UserId,
+    feature: string,
+    language: string,
+  ) => Promise<void>;
   mint: (monster: MonsterModel) => Promise<void>;
   set: (userId: UserId) => Promise<boolean>;
   reset: () => void;
@@ -23,15 +25,20 @@ export const useMonsterValue = (): MonsterState => {
 
 export const useMonsterController = (): MonsterController => {
   const setMonster = useSetRecoilState(monsterState);
-  const user = useUserValue();
 
   /**
    * Generate monster
+   * @param userId user id
    * @param feature monster feature
    * @param language output language
    */
-  const generate = async (feature: string, language: string): Promise<void> => {
+  const generate = async (
+    userId: UserId,
+    feature: string,
+    language: string,
+  ): Promise<void> => {
     const res = await axios.post("/api/generate-monster", {
+      userId,
       feature,
       language,
     });
@@ -53,7 +60,7 @@ export const useMonsterController = (): MonsterController => {
       process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
       (await fetchSigner())!,
     );
-    await (await promptMonsters.mint(toMonsterStruct(monster))).wait();
+    await (await promptMonsters.mint()).wait();
     const id = (
       Number(await promptMonsters.getMonstersTotalSupply()) - 1
     ).toString();

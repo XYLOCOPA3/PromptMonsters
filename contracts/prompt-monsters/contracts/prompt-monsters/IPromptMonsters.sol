@@ -52,6 +52,13 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @return totalSupply token IDs
   function getMonstersTotalSupply() external view returns (uint256 totalSupply);
 
+  /// @notice Get monsters history
+  /// @return monsterHistory monster history
+  function getMonsterHistory()
+    external
+    view
+    returns (IPromptMonsters.Monster memory monsterHistory);
+
   /// @notice Get token IDs from owner address
   /// @param owner owner
   /// @return tokenIds token IDs
@@ -82,17 +89,13 @@ interface IPromptMonsters is IERC721Upgradeable {
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @notice Mint
+  /// @notice Generate monster
+  /// @param user_ user address
   /// @param monster_ monster
-  function mint(Monster memory monster_) external;
+  function generateMonster(address user_, Monster memory monster_) external;
 
-  /// @notice Mint only owner
-  /// @param to_ recipient
-  /// @param monster_ monster
-  function mintOnlyOwner(
-    address to_,
-    IPromptMonsters.Monster memory monster_
-  ) external;
+  /// @notice Mint monster
+  function mint() external;
 
   /// @notice Burn
   /// @param tokenId_ token ID

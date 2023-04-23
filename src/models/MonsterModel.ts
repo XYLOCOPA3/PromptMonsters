@@ -1,4 +1,5 @@
 import { BaseModel } from "@/models/BaseModel";
+import { IPromptMonsters } from "@/typechain/PromptMonsters";
 import { MonsterId } from "@/types/MonsterId";
 import { Status } from "@/types/Status";
 
@@ -70,4 +71,27 @@ export class MonsterModel extends BaseModel<MonsterId> {
       feature: feature,
     });
   }
+
+  /**
+   * Get monster struct
+   * @param data monster struct output
+   * @return {MonsterModel} MonsterModel
+   */
+  toMonsterStruct = (data: MonsterModel): IPromptMonsters.MonsterStruct => {
+    const monster: IPromptMonsters.MonsterStruct = {
+      name: data.name,
+      flavor: data.flavor,
+      skills: data.skills,
+      lv: data.lv,
+      hp: data.status.HP,
+      atk: data.status.ATK,
+      def: data.status.DEF,
+      inte: data.status.INT,
+      mgr: data.status.MGR,
+      agl: data.status.AGL,
+      maxSkills: data.maxSkills,
+      maxSkillsSet: data.maxSkillsSet,
+    };
+    return monster;
+  };
 }
