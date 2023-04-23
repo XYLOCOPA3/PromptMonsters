@@ -1,5 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
+import { RPC_URL } from "@/lib/wallet";
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
@@ -21,6 +23,7 @@ export default async function handler(
     return;
   }
 
+  const userId = req.body.userId || "";
   const feature = req.body.feature || "";
   const language = req.body.language || "English";
   if (feature.trim().length === 0) {
@@ -36,12 +39,20 @@ export default async function handler(
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: generatePrompt(feature, language) }],
-      temperature: 0.1,
+      temperature: 0.3,
     });
     console.log(completion.data.choices);
     console.log(completion.data.usage);
-    res.status(200).json({ result: completion.data.choices });
+
+    const promptMonsters = PromptMonstersContract.instance(RPC_URL.sandverse);
+    await promptMonsters.generateMonster(
+      userId,
+      completion.data.choices[0].message!.content,
+    );
+
+    return res.status(200).json({ result: completion.data.choices });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({ message: error });
   }
 }

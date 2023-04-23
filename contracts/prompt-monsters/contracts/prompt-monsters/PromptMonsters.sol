@@ -35,9 +35,7 @@ contract PromptMonsters is
 
   string private _externalLink;
 
-  // --------------------------------------------------------------------------------
-  // Modifier
-  // --------------------------------------------------------------------------------
+  mapping(address => IPromptMonsters.Monster) private _monsterHistory;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -49,6 +47,20 @@ contract PromptMonsters is
     _disableInitializers();
   }
 
+  /// @notice Initialize
+  /// @param externalLink_ external link
+  function initialize(string memory externalLink_) public initializer {
+    __ERC721_init("Prompt Monsters", "MON");
+    __AccessControlEnumerable_init();
+    __UUPSUpgradeable_init();
+    __ReentrancyGuard_init();
+
+    _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    _externalLink = externalLink_;
+  }
+
+  /// @notice Supports interface
+  /// @param interfaceId interface ID
   function supportsInterface(
     bytes4 interfaceId
   )
@@ -64,16 +76,6 @@ contract PromptMonsters is
     return super.supportsInterface(interfaceId);
   }
 
-  /// @notice Initialize
-  /// @param externalLink_ external link
-  function initialize(string memory externalLink_) public initializer {
-    __ERC721_init("Prompt Monsters", "MON");
-    __AccessControlEnumerable_init();
-    __UUPSUpgradeable_init();
-    __ReentrancyGuard_init();
-    _externalLink = externalLink_;
-  }
-
   // --------------------------------------------------------------------------------
   // Getter
   // --------------------------------------------------------------------------------
@@ -86,6 +88,16 @@ contract PromptMonsters is
     returns (uint256 totalSupply)
   {
     totalSupply = _monsters.length;
+  }
+
+  /// @notice Get monsters history
+  /// @return monsterHistory monster history
+  function getMonsterHistory()
+    external
+    view
+    returns (IPromptMonsters.Monster memory monsterHistory)
+  {
+    monsterHistory = _monsterHistory[msg.sender];
   }
 
   /// @notice Get token IDs from owner address
@@ -194,24 +206,23 @@ contract PromptMonsters is
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @notice Mint
+  /// @notice Generate monster
+  /// @param user_ user address
   /// @param monster_ monster
-  function mint(IPromptMonsters.Monster memory monster_) external nonReentrant {
-    uint256 newTokenId = _monsters.length;
-    _monsters.push(monster_);
-    _safeMint(msg.sender, newTokenId);
-  }
-
-  /// @notice Mint only owner
-  /// @param to_ recipient
-  /// @param monster_ monster
-  function mintOnlyOwner(
-    address to_,
+  function generateMonster(
+    address user_,
     IPromptMonsters.Monster memory monster_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) nonReentrant {
+    _monsterHistory[user_] = monster_;
+  }
+
+  /// @notice Mint monster
+  function mint() external {
+    IPromptMonsters.Monster memory monster = _monsterHistory[msg.sender];
+    require(monster.lv > 0, "PromptMonsters: monster is not generated");
     uint256 newTokenId = _monsters.length;
-    _monsters.push(monster_);
-    _safeMint(to_, newTokenId);
+    _monsters.push(monster);
+    _safeMint(msg.sender, newTokenId);
   }
 
   /// @notice Burn

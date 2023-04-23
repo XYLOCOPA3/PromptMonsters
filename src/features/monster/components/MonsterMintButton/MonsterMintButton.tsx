@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
 import { useMonsterState } from "@/hooks/useMonster";
-import { useUserState } from "@/hooks/useUser";
+import { useUserValue } from "@/hooks/useUser";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { userInitState } from "@/stores/userInitState";
 import { BaseProps } from "@/types/BaseProps";
@@ -17,7 +17,7 @@ export type MonsterMintButtonProps = BaseProps;
  * @param className Style from parent element
  */
 export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
-  const [user, userController] = useUserState();
+  const user = useUserValue();
   const [monster, monsterController] = useMonsterState();
   const userInit = useRecoilValue(userInitState);
   const [loading, setLoading] = useState(false);
