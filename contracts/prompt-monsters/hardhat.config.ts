@@ -26,6 +26,12 @@ const config: HardhatUserConfig = {
       url: `https://rpc.goerli.linea.build/`,
       accounts: [PRIVATE_KEY as string],
     },
+    sandverse: {
+      url: "https://rpc.sandverse.oasys.games/",
+      chainId: 20197,
+      accounts: [PRIVATE_KEY as string],
+      gasPrice: 0,
+    },
   },
   etherscan: {
     apiKey: POLYGONSCAN_API,

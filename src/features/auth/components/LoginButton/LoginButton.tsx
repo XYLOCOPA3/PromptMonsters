@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
+import { oasysSand } from "@/const/chainParams";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterController } from "@/hooks/useMonster";
 import { useUserController } from "@/hooks/useUser";
@@ -11,7 +12,6 @@ import { useWeb3Modal } from "@web3modal/react";
 import clsx from "clsx";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useAccount, useNetwork } from "wagmi";
-import { polygonMumbai } from "wagmi/chains";
 
 export type LoginButtonProps = BaseProps;
 
@@ -37,7 +37,7 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
   const handleClick = async () => {
     setLoading(true);
     await open();
-    setDefaultChain(polygonMumbai);
+    setDefaultChain(oasysSand);
     setLoading(false);
   };
 
@@ -47,8 +47,7 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
   const setUserInfo = async () => {
     try {
       console.log(chain);
-      if (chain!.id !== polygonMumbai.id)
-        switchNetwork({ chainId: polygonMumbai.id });
+      if (chain!.id !== oasysSand.id) switchNetwork({ chainId: oasysSand.id });
       await userController.set(address!);
       const isSet = await monsterController.set(address!);
       setMonsterMinted(isSet);
