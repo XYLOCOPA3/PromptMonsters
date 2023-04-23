@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
+import {IERC165Upgradeable} from "@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import {StringsUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import {Base64Upgradeable} from "@openzeppelin/contracts-upgradeable/utils/Base64Upgradeable.sol";
@@ -18,7 +19,7 @@ contract PromptMonsters is
   Initializable,
   IPromptMonsters,
   ERC721Upgradeable,
-  OwnableUpgradeable,
+  AccessControlEnumerableUpgradeable,
   UUPSUpgradeable,
   ReentrancyGuardUpgradeable
 {
@@ -48,11 +49,26 @@ contract PromptMonsters is
     _disableInitializers();
   }
 
+  function supportsInterface(
+    bytes4 interfaceId
+  )
+    public
+    view
+    override(
+      IERC165Upgradeable,
+      ERC721Upgradeable,
+      AccessControlEnumerableUpgradeable
+    )
+    returns (bool)
+  {
+    return super.supportsInterface(interfaceId);
+  }
+
   /// @notice Initialize
   /// @param externalLink_ external link
   function initialize(string memory externalLink_) public initializer {
     __ERC721_init("Prompt Monsters", "MON");
-    __Ownable_init();
+    __AccessControlEnumerable_init();
     __UUPSUpgradeable_init();
     __ReentrancyGuard_init();
     _externalLink = externalLink_;
@@ -166,7 +182,9 @@ contract PromptMonsters is
 
   /// @notice Set external link
   /// @param newState_ new state
-  function setExternalLink(string memory newState_) external onlyOwner {
+  function setExternalLink(
+    string memory newState_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     string memory oldState = _externalLink;
     _externalLink = newState_;
     emit SetExternalLink(_msgSender(), oldState, newState_);
@@ -190,7 +208,7 @@ contract PromptMonsters is
   function mintOnlyOwner(
     address to_,
     IPromptMonsters.Monster memory monster_
-  ) external onlyOwner nonReentrant {
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) nonReentrant {
     uint256 newTokenId = _monsters.length;
     _monsters.push(monster_);
     _safeMint(to_, newTokenId);
@@ -201,7 +219,11 @@ contract PromptMonsters is
   ///         Your NFT will be transferred to the owner of this contract if you call this function.
   /// @param tokenId_ token ID
   function burn(uint256 tokenId_) external nonReentrant {
-    safeTransferFrom(_msgSender(), owner(), tokenId_);
+    safeTransferFrom(
+      _msgSender(),
+      getRoleMember(DEFAULT_ADMIN_ROLE, 0),
+      tokenId_
+    );
   }
 
   // --------------------------------------------------------------------------------
@@ -344,5 +366,5 @@ contract PromptMonsters is
   /// @param newImplementation new implementation address
   function _authorizeUpgrade(
     address newImplementation
-  ) internal override onlyOwner {}
+  ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 }
