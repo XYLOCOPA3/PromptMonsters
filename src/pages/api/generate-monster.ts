@@ -44,7 +44,9 @@ export default async function handler(
     console.log(completion.data.choices);
     console.log(completion.data.usage);
 
-    const promptMonsters = PromptMonstersContract.instance(RPC_URL.sandverse);
+    const promptMonsters = PromptMonstersContract.instance(
+      RPC_URL.mchVerseTestnet,
+    );
     await promptMonsters.generateMonster(
       userId,
       completion.data.choices[0].message!.content,

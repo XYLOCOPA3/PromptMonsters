@@ -1,6 +1,6 @@
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { oasysSand } from "@/const/chainParams";
+import { mchVerseTestnet } from "@/const/chainParams";
 import { UserInit } from "@/features/auth";
 import "@/styles/globals.css";
 import {
@@ -14,7 +14,7 @@ import { configureChains, createClient } from "wagmi";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID!;
 
-const chains = [oasysSand];
+const chains = [mchVerseTestnet];
 
 const { provider } = configureChains(chains, [w3mProvider({ projectId })]);
 const wagmiClient = createClient({
