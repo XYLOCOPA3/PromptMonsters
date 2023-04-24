@@ -1,5 +1,5 @@
-import { PROMPT_MONSTERS_EXTERNAL_LINK } from "../const";
-import { ethers, upgrades, run } from "hardhat";
+import { PROMPT_MONSTERS_EXTERNAL_LINK, MCHC_PROXY_ADDRESS } from "../const";
+import { ethers, upgrades } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
@@ -17,7 +17,11 @@ async function main() {
   const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
   const promptMonstersProxy = await upgrades.deployProxy(
     PromptMonsters,
-    [PROMPT_MONSTERS_EXTERNAL_LINK],
+    [
+      PROMPT_MONSTERS_EXTERNAL_LINK,
+      MCHC_PROXY_ADDRESS,
+      ethers.utils.parseEther("100"),
+    ],
     {
       kind: "uups",
       initializer: "initialize",
@@ -38,23 +42,23 @@ async function main() {
   console.log("Completed deployment");
 
   // Wait 10 seconds before verification, because it fails if it is done immediately after deployment
-  console.log("Waiting for 10 seconds before verification...");
-  await new Promise((resolve) => setTimeout(resolve, 10000));
+  // console.log("Waiting for 10 seconds before verification...");
+  // await new Promise((resolve) => setTimeout(resolve, 10000));
 
-  console.log("--- Verify ----------------------------------");
+  // console.log("--- Verify ----------------------------------");
 
-  console.log("Verifying...");
+  // console.log("Verifying...");
 
-  try {
-    await run("verify:verify", {
-      address: promptMonstersProxy.address,
-      constructorArguments: [],
-    });
-  } catch (e) {
-    console.log(e);
-  }
+  // try {
+  //   await run("verify:verify", {
+  //     address: promptMonstersProxy.address,
+  //     constructorArguments: [],
+  //   });
+  // } catch (e) {
+  //   console.log(e);
+  // }
 
-  console.log("Completed verification");
+  // console.log("Completed verification");
 
   console.log("");
   console.log("---------------------------------------------");

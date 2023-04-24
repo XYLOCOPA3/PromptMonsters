@@ -8,6 +8,8 @@
     "test": "npm run test-prompt-monsters",
     "predeploy": "npm run clean && npm run test-$npm_config_name",
     "deploy": "npx hardhat run scripts/$npm_config_name/deploy.ts --network $npm_config_network",
+    "predeploy-coin": "npm run clean && npm run test-$npm_config_name",
+    "deploy-coin": "npx hardhat run scripts/$npm_config_name/deployCoin.ts --network $npm_config_network",
     "predeploy-all": "npm run clean && npm run test",
     "deploy-all": "npx hardhat run scripts/prompt-monsters/deploy.ts --network $npm_config_network",
     "preverify": "npm run clean",
