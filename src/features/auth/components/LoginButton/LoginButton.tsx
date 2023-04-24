@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
-import { oasysSand } from "@/const/chainParams";
+import { mchVerseTestnet } from "@/const/chainParams";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterController } from "@/hooks/useMonster";
 import { useUserController } from "@/hooks/useUser";
@@ -37,7 +37,7 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
   const handleClick = async () => {
     setLoading(true);
     await open();
-    setDefaultChain(oasysSand);
+    setDefaultChain(mchVerseTestnet);
     setLoading(false);
   };
 
@@ -46,8 +46,8 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
    */
   const setUserInfo = async () => {
     try {
-      console.log(chain);
-      if (chain!.id !== oasysSand.id) switchNetwork({ chainId: oasysSand.id });
+      if (chain!.id !== mchVerseTestnet.id)
+        switchNetwork({ chainId: mchVerseTestnet.id });
       await userController.set(address!);
       const isSet = await monsterController.set(address!);
       setMonsterMinted(isSet);
