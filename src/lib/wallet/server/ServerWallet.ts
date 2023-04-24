@@ -4,6 +4,7 @@ export const RPC_URL = {
   mumbai: "https://rpc-mumbai.maticvigil.com/",
   linea: "https://rpc.goerli.linea.build",
   sandverse: "https://rpc.sandverse.oasys.games/",
+  mchVerseTestnet: "https://rpc.oasys.sand.mchdfgh.xyz/",
 };
 
 export class ServerWallet {

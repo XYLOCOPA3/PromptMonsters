@@ -1,3 +1,4 @@
+import { RPC_URL } from "@/lib/wallet";
 import { MonsterModel } from "@/models/MonsterModel";
 import { MonsterState, monsterState } from "@/stores/monsterState";
 import { PromptMonsters__factory } from "@/typechain";
@@ -74,9 +75,12 @@ export const useMonsterController = (): MonsterController => {
    * @param userId user id
    */
   const set = async (userId: UserId): Promise<boolean> => {
+    const provider = new ethers.providers.JsonRpcProvider(
+      RPC_URL.mchVerseTestnet,
+    );
     const promptMonsters = PromptMonsters__factory.connect(
       process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
-      getProvider(),
+      provider,
     );
     const tokenIds = await promptMonsters.getOwnerToTokenIds(userId);
     if (tokenIds.length === 0) return false;
