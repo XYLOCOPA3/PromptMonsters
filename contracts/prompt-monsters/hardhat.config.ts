@@ -32,6 +32,18 @@ const config: HardhatUserConfig = {
       accounts: [PRIVATE_KEY as string],
       gasPrice: 0,
     },
+    mchMainnet: {
+      url: "https://rpc.oasys.mycryptoheroes.net/",
+      chainId: 29548,
+      accounts: [PRIVATE_KEY as string],
+      gasPrice: 0,
+    },
+    mchTestnet: {
+      url: "https://rpc.oasys.sand.mchdfgh.xyz/",
+      chainId: 420,
+      accounts: [PRIVATE_KEY as string],
+      gasPrice: 0,
+    },
   },
   etherscan: {
     apiKey: POLYGONSCAN_API,
