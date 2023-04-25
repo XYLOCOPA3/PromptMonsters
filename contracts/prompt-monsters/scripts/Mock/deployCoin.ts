@@ -1,4 +1,4 @@
-import { ethers, upgrades } from "hardhat";
+import { ethers } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
@@ -14,16 +14,9 @@ async function main() {
   console.log("Deploying contracts with account: ", deployer.address);
 
   const MCHCoin = await ethers.getContractFactory("MCHCoin");
-  const mchCoinProxy = await upgrades.deployProxy(MCHCoin, {
-    kind: "uups",
-    initializer: "initialize",
-  });
-  await mchCoinProxy.deployed();
-  console.log("Deployed MCHCoinProxy address: ", mchCoinProxy.address);
-  console.log(
-    "MCHCoin implementation deployed to:",
-    await upgrades.erc1967.getImplementationAddress(mchCoinProxy.address),
-  );
+  const mchCoin = await MCHCoin.deploy();
+  await mchCoin.deployed();
+  console.log("Deployed MCHCoin address: ", mchCoin.address);
 
   console.log("Completed deployment");
 

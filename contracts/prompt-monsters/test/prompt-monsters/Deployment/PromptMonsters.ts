@@ -4,13 +4,8 @@ import { ethers, upgrades } from "hardhat";
 
 export async function deployPromptMonsters() {
   const MCHCoin = await ethers.getContractFactory("MCHCoin");
-  const mchCoinProxy = await upgrades.deployProxy(MCHCoin, {
-    kind: "uups",
-    initializer: "initialize",
-  });
-  await mchCoinProxy.deployed();
-
-  const mchCoin = MCHCoin.attach(mchCoinProxy.address);
+  const mchCoin = await MCHCoin.deploy();
+  await mchCoin.deployed();
 
   const promptMonstersArgs: promptMonstersInitArgs = {
     externalLink: "https://prompt-monsters-jp.azurewebsites.net/",
@@ -35,11 +30,11 @@ export async function deployPromptMonsters() {
 
   const promptMonsters = PromptMonsters.attach(promptMonstersProxy.address);
 
-  const args: PromptMonstersArgs = {
-    contract: promptMonsters,
-    args: promptMonstersArgs,
-  };
-  return args;
+  // const args: PromptMonstersArgs = {
+  //   promptMonsters: promptMonsters,
+  //   args: promptMonstersArgs,
+  // };
+  return { promptMonsters: promptMonsters, mchCoin: mchCoin };
 }
 
 export type PromptMonstersArgs = {

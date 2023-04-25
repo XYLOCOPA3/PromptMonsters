@@ -257,7 +257,7 @@ contract PromptMonsters is
     require(monster.lv > 0, "PromptMonsters: monster is not generated");
     uint256 newTokenId = _monsters.length;
     _monsters.push(monster);
-    mchCoin.safeTransfer(address(this), mintPrice);
+    mchCoin.safeTransferFrom(msg.sender, address(this), mintPrice);
     _safeMint(msg.sender, newTokenId);
   }
 

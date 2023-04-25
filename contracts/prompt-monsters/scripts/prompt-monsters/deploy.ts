@@ -1,4 +1,4 @@
-import { PROMPT_MONSTERS_EXTERNAL_LINK, MCHC_PROXY_ADDRESS } from "../const";
+import { PROMPT_MONSTERS_EXTERNAL_LINK, MCHC_ADDRESS } from "../const";
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
@@ -19,7 +19,7 @@ async function main() {
     PromptMonsters,
     [
       PROMPT_MONSTERS_EXTERNAL_LINK,
-      MCHC_PROXY_ADDRESS,
+      MCHC_ADDRESS,
       ethers.utils.parseEther("100"),
     ],
     {
