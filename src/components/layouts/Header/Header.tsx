@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Title } from "@/components/elements/Title";
 import { LoginButton } from "@/features/auth";
@@ -7,29 +8,47 @@ import clsx from "clsx";
 
 /**
  * Header
- * @layout
  * @keit0728
  */
 export const Header = () => {
   const user = useUserValue();
 
   return (
-    <header
-      className={clsx(
-        "flex",
-        "flex-col",
-        "justify-center",
-        "h-[70px]",
-        "bg-[#161c22]",
-      )}
-    >
+    <header className={clsx("fixed", "w-[100%]", "top-0", "z-[1]")}>
       <div
-        className={clsx("flex", "items-center", "justify-between", "m-[10px]")}
+        className={clsx(
+          "flex",
+          "items-center",
+          "justify-between",
+          "m-[10px]",
+          "bg-[#292B2F]",
+          "bg-opacity-[80%]",
+          "rounded-[50px]",
+        )}
       >
-        <Link href="/">
-          <Title className={clsx("ml-[10px]")} />
+        <Link className={clsx("flex", "items-center")} href="/">
+          <Image
+            className={clsx(
+              "w-[30px]",
+              "ml-[4px]",
+              "my-[4px]",
+              "md:ml-[20px]",
+              "md:my-[10px]",
+              "md:w-[40px]",
+              "md:h-[40px]",
+            )}
+            src="/assets/images/prompt-monsters-icon.svg"
+            alt="prompt-monsters-icon"
+            width={100}
+            height={100}
+          />
+          <Title className={clsx("ml-[15px]")} />
         </Link>
-        {user.id === "" ? <LoginButton /> : <MyShortProfile />}
+        {user.id === "" ? (
+          <LoginButton className={clsx("mr-[4px]", "md:mr-[20px]")} />
+        ) : (
+          <MyShortProfile className={clsx("mr-[4px]", "md:mr-[20px]")} />
+        )}
       </div>
     </header>
   );

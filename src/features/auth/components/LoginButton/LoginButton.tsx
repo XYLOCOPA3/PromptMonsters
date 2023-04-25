@@ -65,7 +65,17 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
   return (
     <Button
       disabled={loading}
-      className={clsx("w-[100px]", "h-[40px]", "rounded-full", className)}
+      className={clsx(
+        className,
+        "w-[60px]",
+        "h-[25px]",
+        "text-[10px]",
+        "rounded-[100px]",
+        "font-bold",
+        "md:w-[100px]",
+        "md:h-[35px]",
+        "md:text-[15px]",
+      )}
       loading={loading || !userInit}
       onClick={handleClick}
     >

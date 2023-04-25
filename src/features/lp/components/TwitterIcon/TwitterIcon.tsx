@@ -23,6 +23,7 @@ export const TwitterIcon = ({ className }: TwitterIconProps) => {
         "w-8",
         "h-8",
         "cursor-pointer",
+        "z-[1]",
       )}
     >
       <Image

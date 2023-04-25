@@ -10,7 +10,16 @@ export type TitleProps = BaseProps;
  */
 export const Title = ({ className }: TitleProps) => {
   return (
-    <div className={clsx("text-2xl", "font-bold", className)}>
+    <div
+      className={clsx(
+        className,
+        "hidden",
+        "text-[22px]",
+        "font-bold",
+        "md:text-[22px]",
+        "md:inline",
+      )}
+    >
       Prompt Monsters
     </div>
   );

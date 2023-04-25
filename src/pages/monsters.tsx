@@ -3,7 +3,6 @@ import { Header } from "@/components/layouts/Header";
 import { Main } from "@/components/layouts/Main";
 import { MainMonsters } from "@/components/layouts/Main/MainMonsters";
 import { HOST_NAME } from "@/const/hostname";
-import Div100vh from "react-div-100vh";
 
 /**
  * Monsters
@@ -19,12 +18,10 @@ export default function Monsters() {
         <meta property="og:title" content="Prompt Monsters" />
         <meta property="og:description" content="This is Prompt Monsters." />
       </Head>
-      <Div100vh>
-        <Header />
-        <Main>
-          <MainMonsters />
-        </Main>
-      </Div100vh>
+      <Header />
+      <Main>
+        <MainMonsters />
+      </Main>
     </>
   );
 }
