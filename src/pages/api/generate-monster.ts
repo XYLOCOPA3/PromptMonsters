@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
 import { RPC_URL } from "@/lib/wallet";
+import { parseJson } from "@/utils/jsonParser";
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
@@ -36,9 +37,11 @@ export default async function handler(
   }
 
   try {
+    const generatePrompt = _getGeneratePrompt(feature, language);
+    console.log(generatePrompt);
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: generatePrompt(feature, language) }],
+      messages: [{ role: "user", content: generatePrompt }],
       temperature: 0.3,
     });
     console.log(completion.data.choices);
@@ -47,30 +50,65 @@ export default async function handler(
     const promptMonsters = PromptMonstersContract.instance(
       RPC_URL.mchVerseTestnet,
     );
-    await promptMonsters.generateMonster(
-      userId,
-      completion.data.choices[0].message!.content,
-    );
+    const monster = _getMonster(completion.data.choices[0].message!.content);
+    console.log(monster);
+    await promptMonsters.generateMonster(userId, monster);
 
-    return res.status(200).json({ result: completion.data.choices });
+    // return res.status(200).json({ result: completion.data.choices });
+    return res.status(200).json({ monster });
   } catch (error) {
     console.log(error);
     return res.status(400).json({ message: error });
   }
 }
 
-const generatePrompt = (feature: string, language: string): string => {
-  return `Output a fictional monster in JSON format (100 characters or less, JSON only), with the following conditions:
-- Use non-litigious words.
-- "name" should be a unique name like a monster.
-- Do not use proper nouns in the "flavor" description.
-- Do not use words used in "feature".
-- Only one JSON output.
-- Translate JSON values (including "skills" value) to ${language} (JSON key is not translated. No pre-translated text required.).
+/**
+ * Get fight prompt
+ * @param feature monster feature
+ * @param language language
+ * @return {Promise<string>} Generate monster prompt
+ */
+const _getGeneratePrompt = (feature: string, language: string): string => {
+  return `Create a JSON fictional monster:
+- Non-litigious words
+- Unique "name"
+- No proper nouns in "flavor"
+- Don't reuse "feature" words
+- Single JSON output
+- (Translate values to ${language} (keys untranslated))
 
 Example:
-feature="A yellow bear that loves honey"
+feature="A yellow bear that loves honey":
 {"name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":10,"ATK":1,"DEF":3,"INT":2,"MGR":4,"AGL":1},"skills":["Honey Attack","Hug","Healing Song"],"isFiction":true,"isExisting":true}
 
-feature="${feature}"`;
+feature="${feature}":`;
+};
+
+/**
+ * Get fight prompt
+ * @param content content
+ * @return {Promise<string>} random enemy monster id
+ */
+const _getMonster = (content: any): any => {
+  const monster = parseJson(content);
+  console.log(monster);
+  if (monster.status.HP > 43) {
+    monster.status.HP = (monster.status.HP % 43) + 1;
+  }
+  if (monster.status.ATK > 18) {
+    monster.status.ATK = (monster.status.ATK % 18) + 1;
+  }
+  if (monster.status.DEF > 14) {
+    monster.status.DEF = (monster.status.DEF % 14) + 1;
+  }
+  if (monster.status.INT > 16) {
+    monster.status.INT = (monster.status.INT % 16) + 1;
+  }
+  if (monster.status.MGR > 12) {
+    monster.status.MGR = (monster.status.MGR % 12) + 1;
+  }
+  if (monster.status.AGL > 15) {
+    monster.status.AGL = (monster.status.AGL % 15) + 1;
+  }
+  return monster;
 };

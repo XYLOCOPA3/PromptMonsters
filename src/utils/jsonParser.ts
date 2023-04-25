@@ -8,11 +8,13 @@ export const parseJson = (json: any): any => {
   while (true) {
     if (json[start] === "{") break;
     start++;
+    if (start === json.length) throw new Error("Invalid json");
   }
   let end = json.length - 1;
   while (true) {
     if (json[end] === "}") break;
     end--;
+    if (end === 0) throw new Error("Invalid json");
   }
   const newJson = json.slice(start, end + 1);
   return JSON.parse(newJson);

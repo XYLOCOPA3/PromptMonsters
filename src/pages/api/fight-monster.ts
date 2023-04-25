@@ -52,7 +52,7 @@ export default async function handler(
           content: fightPrompt,
         },
       ],
-      temperature: 0.2,
+      temperature: 0.3,
     });
     console.log(completion.data.choices);
     console.log(completion.data.usage);
@@ -69,7 +69,7 @@ export default async function handler(
  * @param enemyId enemy monster id
  * @param enemy enemy struct
  * @param language output language
- * @return {Promise<string>} random enemy monster id
+ * @return {Promise<string>} fight prompt
  */
 const _getFightPrompt = (
   monsterId: string,

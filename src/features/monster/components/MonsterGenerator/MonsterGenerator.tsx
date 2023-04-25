@@ -53,11 +53,15 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
       await monsterController.generate(user.id, feature, language);
       setMonsterMinted(false);
     } catch (error) {
+      setLoading(false);
       if (error instanceof Error) {
         alert("Invalid monster name.\n\nReason: " + error.message);
+        console.error(error);
+        return;
       }
       alert("Invalid monster name.");
       console.error(error);
+      return;
     }
     setLoading(false);
   };
