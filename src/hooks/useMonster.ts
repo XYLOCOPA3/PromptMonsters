@@ -1,11 +1,10 @@
 import { RPC_URL } from "@/lib/wallet";
 import { MonsterModel } from "@/models/MonsterModel";
 import { MonsterState, monsterState } from "@/stores/monsterState";
-import { PromptMonsters__factory } from "@/typechain";
+import { MCHCoin__factory, PromptMonsters__factory } from "@/typechain";
 import { UserId } from "@/types/UserId";
 import { fetchSigner, getProvider } from "@wagmi/core";
 import axios from "axios";
-import { MCHCoin__factory } from "contracts/prompt-monsters/typechain-types";
 import { ethers } from "ethers";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
