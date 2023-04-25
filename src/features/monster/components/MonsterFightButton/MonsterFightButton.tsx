@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
+import { useBattleController } from "@/hooks/useBattle";
 import { useMonsterState } from "@/hooks/useMonster";
-import { fightTextState } from "@/stores/fightTextState";
 import { languageState } from "@/stores/languageState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 
 export type MonsterFightButtonProps = BaseProps;
 
@@ -18,7 +18,7 @@ export type MonsterFightButtonProps = BaseProps;
 export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
   const [monster, monsterController] = useMonsterState();
   const [loading, setLoading] = useState(false);
-  const setFightText = useSetRecoilState(fightTextState);
+  const battleController = useBattleController();
   const language = useRecoilValue(languageState);
 
   /**
@@ -26,9 +26,10 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
    */
   const handleClick = async () => {
     setLoading(true);
+    battleController.reset();
     try {
-      const content = await monsterController.fight(monster, language);
-      setFightText(content);
+      const content = await monsterController.fight(monster.id, language);
+      battleController.set(content);
     } catch (e) {
       console.error(e);
       alert("Failed to fight.");

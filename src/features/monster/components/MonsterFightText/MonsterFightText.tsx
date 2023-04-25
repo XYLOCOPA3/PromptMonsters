@@ -1,7 +1,7 @@
-import { fightTextState } from "@/stores/fightTextState";
+import { useBattleValue } from "@/hooks/useBattle";
+import { useMonsterValue } from "@/hooks/useMonster";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
-import { useRecoilValue } from "recoil";
 
 export type MonsterFightTextProps = BaseProps;
 
@@ -11,9 +11,10 @@ export type MonsterFightTextProps = BaseProps;
  * @param className Style from parent element
  */
 export const MonsterFightText = ({ className }: MonsterFightTextProps) => {
-  const fightText = useRecoilValue(fightTextState);
+  const battle = useBattleValue();
+  const monster = useMonsterValue();
 
-  if (fightText === "") return <></>;
+  if (battle.winnerId === "") return <></>;
   return (
     <div
       className={clsx(
@@ -26,7 +27,11 @@ export const MonsterFightText = ({ className }: MonsterFightTextProps) => {
         "whitespace-pre-wrap",
       )}
     >
-      {`${fightText}`}
+      <div>{battle.battleDesc}</div>
+      <br />
+      <div>
+        {monster.name} {battle.winnerId === monster.id ? "win" : "lose"}.
+      </div>
     </div>
   );
 };

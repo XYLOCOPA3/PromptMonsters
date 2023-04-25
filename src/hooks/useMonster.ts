@@ -2,8 +2,10 @@ import { RPC_URL } from "@/lib/wallet";
 import { MonsterModel } from "@/models/MonsterModel";
 import { MonsterState, monsterState } from "@/stores/monsterState";
 import { MCHCoin__factory, PromptMonsters__factory } from "@/typechain";
+import { MonsterId } from "@/types/MonsterId";
 import { UserId } from "@/types/UserId";
-import { fetchSigner, getProvider } from "@wagmi/core";
+import { parseJson } from "@/utils/jsonParser";
+import { fetchSigner } from "@wagmi/core";
 import axios from "axios";
 import { ethers } from "ethers";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -17,7 +19,7 @@ export interface MonsterController {
   mint: (userId: UserId, monster: MonsterModel) => Promise<void>;
   set: (userId: UserId) => Promise<boolean>;
   reset: () => void;
-  fight: (monster: MonsterModel, language: string) => Promise<string>;
+  fight: (monsterId: MonsterId, language: string) => Promise<string>;
 }
 
 export const useMonsterValue = (): MonsterState => {
@@ -45,7 +47,7 @@ export const useMonsterController = (): MonsterController => {
     });
     if (res.status !== 200) throw new Error(res.data.message);
     const content = res.data.result[0].message.content;
-    const monster = JSON.parse(content);
+    const monster = parseJson(content);
     console.log(monster);
     if (monster.isExisting) throw new Error("This monster is existing.");
     if (!monster.isFiction) throw new Error("This monster is non fiction.");
@@ -142,46 +144,15 @@ export const useMonsterController = (): MonsterController => {
 
   /**
    * Fight monster
-   * @param monster monster model
+   * @param monsterId monster id
    * @param language output language
    */
   const fight = async (
-    monster: MonsterModel,
+    monsterId: MonsterId,
     language: string,
   ): Promise<string> => {
-    const promptMonsters = PromptMonsters__factory.connect(
-      process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
-      getProvider(),
-    );
-    const totalSupply = Number(await promptMonsters.getMonstersTotalSupply());
-    if (totalSupply < 1) throw new Error("useMonster.ts: No monsters.");
-    let random: number;
-    while (true) {
-      random = Math.floor(Math.random() * totalSupply);
-      if (random !== Number(monster.id)) break;
-    }
-    const enemies = await promptMonsters.getMonsters([
-      ethers.BigNumber.from(random),
-    ]);
-    if (enemies.length === 0) throw new Error("useMonster.ts: No enemies.");
-    const enemy = MonsterModel.create({
-      id: random.toString(),
-      name: enemies[0].name,
-      flavor: enemies[0].flavor,
-      skills: enemies[0].skills,
-      lv: Number(enemies[0].lv),
-      status: {
-        HP: Number(enemies[0].hp),
-        ATK: Number(enemies[0].atk),
-        DEF: Number(enemies[0].def),
-        INT: Number(enemies[0].inte),
-        MGR: Number(enemies[0].mgr),
-        AGL: Number(enemies[0].agl),
-      },
-    });
     const res = await axios.post("/api/fight-monster", {
-      monster,
-      enemy,
+      monsterId,
       language,
     });
     const content = res.data.result[0].message.content;

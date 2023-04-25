@@ -65,4 +65,26 @@ export class PromptMonstersContract {
     };
     return monster;
   };
+
+  /**
+   * Get monsters
+   * @param monsterId monster id
+   * @return {Promise<IPromptMonsters.MonsterStructOutput[]>} monster struct output
+   */
+  getMonsters = async (
+    monsterIds: string[],
+  ): Promise<IPromptMonsters.MonsterStructOutput[]> => {
+    const tokenIds: ethers.BigNumber[] = [];
+    for (let i = 0; i < monsterIds.length; i++) {
+      tokenIds.push(ethers.BigNumber.from(monsterIds[i]));
+    }
+    return await this._promptMonsters.getMonsters(tokenIds);
+  };
+  /**
+   * Get monsters total supply
+   * @return {Promise<number>} monsters total supply
+   */
+  getMonstersTotalSupply = async (): Promise<number> => {
+    return Number(await this._promptMonsters.getMonstersTotalSupply());
+  };
 }

@@ -1,5 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
+import { RPC_URL } from "@/lib/wallet";
+import { IPromptMonsters } from "@/typechain/PromptMonsters";
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
@@ -21,12 +24,24 @@ export default async function handler(
     return;
   }
 
-  const monster = req.body.monster;
-  const enemy = req.body.enemy;
+  const monsterId = req.body.monsterId;
   const language = req.body.language;
-  console.log(monster);
-  console.log(enemy);
-  console.log(language);
+
+  const enemyId = await _getRandomEnemyId(monsterId);
+  const promptMonsters = PromptMonstersContract.instance(
+    RPC_URL.mchVerseTestnet,
+  );
+  const monsters = await promptMonsters.getMonsters([monsterId, enemyId]);
+  const monster = monsters[0];
+  const enemy = monsters[1];
+  const fightPrompt = _getFightPrompt(
+    monsterId,
+    monster,
+    enemyId,
+    enemy,
+    language,
+  );
+  console.log(fightPrompt);
 
   try {
     const completion = await openai.createChatCompletion({
@@ -34,13 +49,7 @@ export default async function handler(
       messages: [
         {
           role: "user",
-          content: fightPrompt(
-            monster.name,
-            JSON.stringify(monster),
-            enemy.name,
-            JSON.stringify(enemy),
-            language,
-          ),
+          content: fightPrompt,
         },
       ],
       temperature: 0.2,
@@ -53,21 +62,46 @@ export default async function handler(
   }
 }
 
-const fightPrompt = (
-  monsterAName: string,
-  monsterADesc: string,
-  monsterBName: string,
-  monsterBDesc: string,
+/**
+ * Get fight prompt
+ * @param monsterId monster id
+ * @param monster monster struct
+ * @param enemyId enemy monster id
+ * @param enemy enemy struct
+ * @param language output language
+ * @return {Promise<string>} random enemy monster id
+ */
+const _getFightPrompt = (
+  monsterId: string,
+  monster: IPromptMonsters.MonsterStructOutput,
+  enemyId: string,
+  enemy: IPromptMonsters.MonsterStructOutput,
   language: string = "English",
 ): string => {
-  return `Monster: ${monsterAName}
-Description: ${monsterADesc}
+  return `m(You): id:${monsterId} name:${monster.name} flavor:${monster.flavor} status: HP:${monster.hp} ATK:${monster.atk} DEF:${monster.def} INT:${monster.inte} MGR:${monster.mgr} AGL:${monster.agl} skills:[${monster.skills}]
+m(Enemy): id:${enemyId} name:${enemy.name} flavor:${enemy.flavor} status: HP:${enemy.hp} ATK:${enemy.atk} DEF:${enemy.def} INT:${enemy.inte} MGR:${enemy.mgr} AGL:${enemy.agl} skills:[${enemy.skills}]
 
-Monster: ${monsterBName}
-Description: ${monsterBDesc}
+Generate battle results for ${monster.name} and ${enemy.name}. Use "skills", consider status difference impact, write in a novel-style (max 200 chars) & output in JSON.
+key: "language" value: "${language}"
+key: "battleDesc" value: string
+key: "winnerId" value: string`;
+};
 
-Battle begins
-- Write in a novel-style within 200 characters (${language})
-- Be sure to use "skills"
-- Declare the winner and loser at the end`;
+/**
+ * Get random enemy monster id
+ * @param monsterId monster id
+ * @return {Promise<string>} random enemy monster id
+ */
+const _getRandomEnemyId = async (monsterId: string): Promise<string> => {
+  const promptMonsters = PromptMonstersContract.instance(
+    RPC_URL.mchVerseTestnet,
+  );
+  const totalSupply = Number(await promptMonsters.getMonstersTotalSupply());
+  if (totalSupply < 1) throw new Error("server: No enemy monsters.");
+  let random: number;
+  while (true) {
+    random = Math.floor(Math.random() * totalSupply);
+    if (random !== Number(monsterId)) break;
+  }
+  return random.toString();
 };
