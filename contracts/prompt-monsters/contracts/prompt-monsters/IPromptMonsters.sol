@@ -36,13 +36,31 @@ interface IPromptMonsters is IERC721Upgradeable {
     string newValue
   );
 
+  event SetMchCoin(
+    address indexed publisher,
+    address oldValue,
+    address newValue
+  );
+
+  event SetMintPrice(
+    address indexed publisher,
+    uint256 oldValue,
+    uint256 newValue
+  );
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
 
   /// @notice Initialize
   /// @param externalLink_ external link
-  function initialize(string memory externalLink_) external;
+  /// @param mchCoinAddress MCH Coin address
+  /// @param mintPrice_ MCH Coin address
+  function initialize(
+    string memory externalLink_,
+    address mchCoinAddress,
+    uint256 mintPrice_
+  ) external;
 
   // --------------------------------------------------------------------------------
   // Getter

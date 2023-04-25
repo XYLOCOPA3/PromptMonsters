@@ -4,8 +4,12 @@ import { HardhatUserConfig } from "hardhat/config";
 
 require("dotenv").config();
 
-const { POLYGON_MUMBAI_ALCHEMY_KEY, PRIVATE_KEY, POLYGONSCAN_API } =
-  process.env;
+const {
+  POLYGON_MUMBAI_ALCHEMY_KEY,
+  PRIVATE_KEY,
+  LOCAL_PRIVATE_KEY,
+  POLYGONSCAN_API,
+} = process.env;
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -43,6 +47,11 @@ const config: HardhatUserConfig = {
       chainId: 420,
       accounts: [PRIVATE_KEY as string],
       gasPrice: 0,
+    },
+    local: {
+      url: "http://localhost:8545",
+      accounts: [LOCAL_PRIVATE_KEY as string],
+      allowUnlimitedContractSize: true,
     },
   },
   etherscan: {

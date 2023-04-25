@@ -10,6 +10,8 @@ import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/se
 import {StringsUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import {Base64Upgradeable} from "@openzeppelin/contracts-upgradeable/utils/Base64Upgradeable.sol";
 
+import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
 import {IPromptMonsters} from "./IPromptMonsters.sol";
 
 /// @title PromptMonsters
@@ -26,16 +28,19 @@ contract PromptMonsters is
   // --------------------------------------------------------------------------------
   // State
   // --------------------------------------------------------------------------------
+  using SafeERC20 for IERC20;
+  IERC20 public mchCoin;
 
-  IPromptMonsters.Monster[] private _monsters;
-
-  mapping(address => uint256[]) private _ownerToTokenIds;
+  uint256 public mintPrice;
+  string private _externalLink;
 
   mapping(address => mapping(uint256 => uint256)) private _ownerToTokenIdsIndex;
 
-  string private _externalLink;
-
   mapping(address => IPromptMonsters.Monster) private _monsterHistory;
+
+  mapping(address => uint256[]) private _ownerToTokenIds;
+
+  IPromptMonsters.Monster[] private _monsters;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -49,7 +54,13 @@ contract PromptMonsters is
 
   /// @notice Initialize
   /// @param externalLink_ external link
-  function initialize(string memory externalLink_) public initializer {
+  /// @param mchCoinAddress MCH Coin address
+  /// @param mintPrice_ MCH Coin address
+  function initialize(
+    string memory externalLink_,
+    address mchCoinAddress,
+    uint256 mintPrice_
+  ) public initializer {
     __ERC721_init("Prompt Monsters", "MON");
     __AccessControlEnumerable_init();
     __UUPSUpgradeable_init();
@@ -57,6 +68,8 @@ contract PromptMonsters is
 
     _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     _externalLink = externalLink_;
+    mchCoin = IERC20(mchCoinAddress);
+    mintPrice = mintPrice_;
   }
 
   /// @notice Supports interface
@@ -202,6 +215,24 @@ contract PromptMonsters is
     emit SetExternalLink(_msgSender(), oldState, newState_);
   }
 
+  /// @notice Set MCH Coin address
+  /// @param newState_ new state
+  function setMchCoin(address newState_) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    address oldState = address(mchCoin);
+    mchCoin = IERC20(newState_);
+    emit SetMchCoin(_msgSender(), oldState, newState_);
+  }
+
+  /// @notice Set mint price
+  /// @param newState_ new state
+  function setMintPrice(
+    uint256 newState_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    uint256 oldState = mintPrice;
+    mintPrice = newState_;
+    emit SetMintPrice(_msgSender(), oldState, newState_);
+  }
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
@@ -218,10 +249,15 @@ contract PromptMonsters is
 
   /// @notice Mint monster
   function mint() external {
+    require(
+      mchCoin.balanceOf(msg.sender) >= mintPrice,
+      "PromptMonsters: insufficient MCH Coin balance"
+    );
     IPromptMonsters.Monster memory monster = _monsterHistory[msg.sender];
     require(monster.lv > 0, "PromptMonsters: monster is not generated");
     uint256 newTokenId = _monsters.length;
     _monsters.push(monster);
+    mchCoin.safeTransferFrom(msg.sender, address(this), mintPrice);
     _safeMint(msg.sender, newTokenId);
   }
 

@@ -8,13 +8,16 @@
     "test": "npm run test-prompt-monsters",
     "predeploy": "npm run clean && npm run test-$npm_config_name",
     "deploy": "npx hardhat run scripts/$npm_config_name/deploy.ts --network $npm_config_network",
+    "predeploy-coin": "npm run clean",
+    "deploy-coin": "npx hardhat run scripts/Mock/deployCoin.ts --network $npm_config_network",
     "predeploy-all": "npm run clean && npm run test",
     "deploy-all": "npx hardhat run scripts/prompt-monsters/deploy.ts --network $npm_config_network",
     "preverify": "npm run clean",
     "verify": "npx hardhat verify $npm_config_contract --network $npm_config_network --constructor-args scripts/$npm_config_name/argument.ts",
     "preupgrade": "npm run clean && npm run test",
     "upgrade": "npx hardhat run scripts/$npm_config_name/upgrade.ts --network $npm_config_network",
-    "update": "npx -p npm-check-updates  -c 'ncu' && npx -p npm-check-updates  -c 'ncu -u' && npm i"
+    "update": "npx -p npm-check-updates  -c 'ncu' && npx -p npm-check-updates  -c 'ncu -u' && npm i",
+    "send-mcoin": "npx hardhat run scripts/Mock/$npm_config_filename --network $npm_config_network"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",

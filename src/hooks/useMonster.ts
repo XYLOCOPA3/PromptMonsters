@@ -5,6 +5,7 @@ import { PromptMonsters__factory } from "@/typechain";
 import { UserId } from "@/types/UserId";
 import { fetchSigner, getProvider } from "@wagmi/core";
 import axios from "axios";
+import { MCHCoin__factory } from "contracts/prompt-monsters/typechain-types";
 import { ethers } from "ethers";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
@@ -14,7 +15,7 @@ export interface MonsterController {
     feature: string,
     language: string,
   ) => Promise<void>;
-  mint: (monster: MonsterModel) => Promise<void>;
+  mint: (userId: UserId, monster: MonsterModel) => Promise<void>;
   set: (userId: UserId) => Promise<boolean>;
   reset: () => void;
   fight: (monster: MonsterModel, language: string) => Promise<string>;
@@ -54,9 +55,37 @@ export const useMonsterController = (): MonsterController => {
 
   /**
    * Mint monster
+   * @param userId user id
    * @param monster monster model
    */
-  const mint = async (monster: MonsterModel): Promise<void> => {
+  const mint = async (userId: UserId, monster: MonsterModel): Promise<void> => {
+    const provider = new ethers.providers.JsonRpcProvider(
+      RPC_URL.mchVerseTestnet,
+    );
+    const mchcReader = MCHCoin__factory.connect(
+      process.env.NEXT_PUBLIC_MCHCOIN_CONTRACT!,
+      provider,
+    );
+    const monsterPrice = ethers.utils.parseEther("100");
+    const balanceOfMchc = await mchcReader.balanceOf(userId);
+    if (balanceOfMchc.lt(monsterPrice))
+      throw new Error("Insufficient balance of MCHC.");
+    const allowance = await mchcReader.allowance(
+      userId,
+      process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
+    );
+    if (allowance.lt(monsterPrice)) {
+      const mchcWriter = MCHCoin__factory.connect(
+        process.env.NEXT_PUBLIC_MCHCOIN_CONTRACT!,
+        (await fetchSigner())!,
+      );
+      await (
+        await mchcWriter.approve(
+          process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
+          monsterPrice,
+        )
+      ).wait();
+    }
     const promptMonsters = PromptMonsters__factory.connect(
       process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
       (await fetchSigner())!,
