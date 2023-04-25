@@ -13,7 +13,6 @@ export type MyShortProfileProps = BaseProps;
 
 /**
  * Display user address and icon
- * @feature
  * @keit0728
  * @param className Style from parent element
  * @note Hidden when user is not logged in
@@ -59,30 +58,40 @@ export const MyShortProfile = ({ className }: MyShortProfileProps) => {
         className,
         "flex",
         "items-center",
-        "border-[1px]",
-        "border-gray-800",
         "rounded-full",
         "select-none",
         "cursor-pointer",
+        "bg-[#171718]",
       )}
       onClick={handleClick}
     >
       <Image
         className={clsx(
           "rounded-full",
-          "w-[40px]",
-          "h-[40px]",
-          "bg-[#0d1117]",
+          "w-[30px]",
+          "h-[30px]",
           "border-[1px]",
-          "border-gray-800",
+          "border-gray-700",
           "mr-[10px]",
+          "md:w-[40px]",
+          "md:h-[40px]",
         )}
         src="/assets/images/prompt-monster-icon.svg"
         alt="userIcon"
-        width={50}
-        height={50}
+        width={300}
+        height={300}
       />
-      <div className={clsx("w-[100px]", "truncate")}>{user.id}</div>
+      <div
+        className={clsx(
+          "w-[50px]",
+          "truncate",
+          "text-[8px]",
+          "md:text-[15px]",
+          "md:w-[100px]",
+        )}
+      >
+        {user.id}
+      </div>
     </div>
   );
 };

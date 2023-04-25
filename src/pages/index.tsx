@@ -1,5 +1,8 @@
 import Head from "next/head";
-import { LP } from "@/components/layouts/LP/LP";
+import { Footer } from "@/components/layouts/Footer";
+import { Header } from "@/components/layouts/Header";
+import { Main } from "@/components/layouts/Main";
+import { MainLP } from "@/components/layouts/Main/MainLP/MainLP";
 import { HOST_NAME } from "@/const/hostname";
 
 /**
@@ -16,7 +19,11 @@ export default function Home() {
         <meta property="og:title" content="Prompt Monsters" />
         <meta property="og:description" content="This is Prompt Monsters." />
       </Head>
-      <LP />
+      <Header />
+      <Main>
+        <MainLP />
+      </Main>
+      <Footer />
     </>
   );
 }

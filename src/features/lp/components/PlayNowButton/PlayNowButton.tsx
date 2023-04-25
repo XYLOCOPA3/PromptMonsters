@@ -12,23 +12,27 @@ export type PlayNowButtonProps = BaseProps;
  */
 export const PlayNowButton = ({ className }: PlayNowButtonProps) => {
   return (
-    <Link href="/monsters" className={clsx("no-underline")}>
+    <Link
+      href="/monsters"
+      className={clsx(
+        className,
+        "no-underline",
+        "w-[100%]",
+        "flex",
+        "justify-center",
+        "items-center",
+      )}
+    >
       <Button
         className={clsx(
-          className,
-          "p-[10px]",
-          "top-[200px]",
-          "text-[15px]",
+          "w-[40%]",
+          "py-[5px]",
+          "text-[10px]",
           "text-center",
           "font-bold",
-          "absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2",
-          "md:px-[30px]",
-          "md:top-[400px]",
-          "md:text-[30px]",
+          "rounded-[150px]",
+          "md:text-[20px]",
         )}
-        onClick={() => {
-          console.log("Hello");
-        }}
       >
         PLAY NOW
       </Button>

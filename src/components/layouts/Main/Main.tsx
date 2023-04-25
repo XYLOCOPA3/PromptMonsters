@@ -10,9 +10,5 @@ export type MainProps = BaseProps;
  * @param children Children elements
  */
 export const Main = ({ children }: MainProps) => {
-  return (
-    <main className={clsx("h-[calc(100%_-_70px)]", "overflow-y-scroll")}>
-      {children}
-    </main>
-  );
+  return <main className={clsx("overflow-y-scroll")}>{children}</main>;
 };

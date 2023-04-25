@@ -2,9 +2,15 @@ import { Spinner } from "@/components/elements/Spinner";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 
+const variants = {
+  primary: clsx("bg-[#EA4E1F]", "hover:bg-[#C53D14]", "hover:shadow-lg"),
+  secondary: clsx("bg-gray-700", "hover:bg-gray-800", "hover:shadow-lg"),
+};
+
 export type ButtonProps = {
   disabled?: boolean;
   loading?: boolean;
+  variant?: "primary" | "secondary";
   onClick?: () => void;
 } & BaseProps;
 
@@ -20,6 +26,7 @@ export type ButtonProps = {
 export const Button = ({
   className,
   children,
+  variant = "primary",
   disabled,
   loading,
   onClick,
@@ -28,12 +35,10 @@ export const Button = ({
     <button
       disabled={disabled || loading}
       className={clsx(
-        "bg-gray-700",
+        variants[variant],
         "text-white",
         "rounded-md",
         "shadow-md",
-        "hover:bg-gray-800",
-        "hover:shadow-lg",
         "select-none",
         className,
       )}

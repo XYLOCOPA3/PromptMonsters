@@ -18,7 +18,7 @@ export const MainMonsters = () => {
 
   return (
     <>
-      <div className={clsx("flex", "items-center", "flex-col", "mt-[30px]")}>
+      <div className={clsx("flex", "items-center", "flex-col", "mt-[100px]")}>
         <MonsterGenerator className={clsx("my-[20px]", "w-[300px]")} />
         <div
           className={clsx(
@@ -37,22 +37,31 @@ export const MainMonsters = () => {
       </div>
       <Image
         className={clsx(
-          "rounded-full",
-          "w-[256px]",
-          "h-[256px]",
-          "bg-[#0d1117]",
-          "border-[1px]",
-          "border-gray-800",
-          "z-[-1]",
-          "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
+          "object-cover",
+          "absolute",
+          "top-0",
           "opacity-10",
-          "md:w-[512px]",
-          "md:h-[512px]",
+          "h-[100%]",
+          "z-[-1]",
         )}
-        src="assets/images/background.svg"
-        alt="userIcon"
-        width={512}
-        height={512}
+        src="/assets/images/bg-arena.jpg"
+        alt="bg-arena"
+        width={4000}
+        height={2000}
+      />
+      <Image
+        className={clsx(
+          "object-cover",
+          "absolute",
+          "top-[100%]",
+          "opacity-10",
+          "h-[100%]",
+          "z-[-1]",
+        )}
+        src="/assets/images/bg-arena.jpg"
+        alt="bg-arena"
+        width={4000}
+        height={2000}
       />
     </>
   );
