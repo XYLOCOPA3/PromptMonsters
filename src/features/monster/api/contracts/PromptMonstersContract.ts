@@ -28,17 +28,17 @@ export class PromptMonstersContract {
   /**
    * generateMonster
    * @param userId user id
-   * @param monsterContent monster content
+   * @param monster monster content
    * @return {Promise<ethers.ContractReceipt>} contract receipt
    */
   generateMonster = async (
     userId: string,
-    monsterContent: string,
+    monster: any,
   ): Promise<ethers.ContractReceipt> => {
     return await (
       await this._promptMonsters.generateMonster(
         userId,
-        this.toMonsterStruct(JSON.parse(monsterContent)),
+        this.toMonsterStruct(monster),
       )
     ).wait();
   };

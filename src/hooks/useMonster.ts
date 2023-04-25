@@ -4,7 +4,7 @@ import { MonsterState, monsterState } from "@/stores/monsterState";
 import { MCHCoin__factory, PromptMonsters__factory } from "@/typechain";
 import { MonsterId } from "@/types/MonsterId";
 import { UserId } from "@/types/UserId";
-import { parseJson } from "@/utils/jsonParser";
+import { isNumOrSymbol } from "@/utils/validation";
 import { fetchSigner } from "@wagmi/core";
 import axios from "axios";
 import { ethers } from "ethers";
@@ -40,14 +40,15 @@ export const useMonsterController = (): MonsterController => {
     feature: string,
     language: string,
   ): Promise<void> => {
+    if (isNumOrSymbol(feature))
+      throw new Error("Features must not contain numbers or symbols.");
     const res = await axios.post("/api/generate-monster", {
       userId,
       feature,
       language,
     });
     if (res.status !== 200) throw new Error(res.data.message);
-    const content = res.data.result[0].message.content;
-    const monster = parseJson(content);
+    const monster = res.data.monster;
     console.log(monster);
     if (monster.isExisting) throw new Error("This monster is existing.");
     if (!monster.isFiction) throw new Error("This monster is non fiction.");
