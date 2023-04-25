@@ -34,7 +34,7 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
         setLoading(false);
         return;
       }
-      await monsterController.mint(monster);
+      await monsterController.mint(user.id, monster);
       setMonsterMinted(true);
     } catch (e) {
       console.error(e);
