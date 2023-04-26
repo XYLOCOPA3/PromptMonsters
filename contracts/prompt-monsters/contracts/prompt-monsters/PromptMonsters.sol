@@ -66,7 +66,7 @@ contract PromptMonsters is
     __UUPSUpgradeable_init();
     __ReentrancyGuard_init();
 
-    _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     _externalLink = externalLink_;
     mchCoin = IERC20(mchCoinAddress);
     mintPrice = mintPrice_;

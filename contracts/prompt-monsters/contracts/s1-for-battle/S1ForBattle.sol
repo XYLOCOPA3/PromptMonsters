@@ -1,0 +1,139 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.18;
+
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+
+import {ISeasonForBattle} from "./ISeasonForBattle.sol";
+
+/// @title S1ForBattle
+/// @notice This is a contract of S1ForBattle.
+contract S1ForBattle is
+  Initializable,
+  ISeasonForBattle,
+  AccessControlEnumerableUpgradeable,
+  UUPSUpgradeable
+{
+  // --------------------------------------------------------------------------------
+  // State
+  // --------------------------------------------------------------------------------
+
+  mapping(uint256 => uint256) public matchCount;
+  mapping(uint256 => uint256) public winCount;
+
+  mapping(uint256 => uint256[]) public battleIdList;
+
+  BattleData[] public battleData;
+
+  // --------------------------------------------------------------------------------
+  // Initialize
+  // --------------------------------------------------------------------------------
+
+  /// @notice Constructor
+  /// @custom:oz-upgrades-unsafe-allow constructor
+  constructor() {
+    _disableInitializers();
+  }
+
+  /// @notice Initialize
+  /// @param leaderBoardForBattleAddress PromptMonsters contract address
+  function initialize(address leaderBoardForBattleAddress) public initializer {
+    __AccessControlEnumerable_init();
+    __UUPSUpgradeable_init();
+
+    _grantRole(DEFAULT_ADMIN_ROLE, leaderBoardForBattleAddress);
+    _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+  }
+
+  // --------------------------------------------------------------------------------
+  // Getter
+  // --------------------------------------------------------------------------------
+
+  /// @notice Get total match count of the monster
+  /// @param monsterId ID of the monster
+  /// @return total match counts
+  function getMatchCount(uint256 monsterId) external view returns (uint256) {
+    return matchCount[monsterId];
+  }
+
+  /// @notice Get total wint count of the monster
+  /// @param monsterId ID of the monster
+  /// @return total win counts
+  function getWinCount(uint256 monsterId) external view returns (uint256) {
+    return winCount[monsterId];
+  }
+
+  /// @notice Get battle ID list
+  /// @param monsterId ID of the monster
+  /// @return battle ID list
+  function getBattleIdList(
+    uint256 monsterId
+  ) external view returns (uint256[] memory) {
+    return battleIdList[monsterId];
+  }
+
+  /// @notice Get battle data
+  /// @param monsterId ID of the monster
+  /// @return battle data
+  function getBattleData(
+    uint256 monsterId
+  ) external view returns (BattleData[] memory) {
+    uint256[] memory _battleIdList = battleIdList[monsterId];
+    uint256 _battleIdListLength = _battleIdList.length;
+    BattleData[] memory _battleData = new BattleData[](_battleIdListLength);
+
+    for (uint256 i = 0; i < _battleIdListLength; ) {
+      _battleData[i] = battleData[_battleIdList[i]];
+      unchecked {
+        ++i;
+      }
+    }
+    return _battleData;
+  }
+
+  // --------------------------------------------------------------------------------
+  // Main Logic
+  // --------------------------------------------------------------------------------
+
+  /// @notice Add battle data
+  /// @param winMonsterId ID of the monster who won the battle
+  /// @param loseMonsterId ID of the monster who lost the battle
+  /// @param battleLog Battle log
+  function addBattleData(
+    uint256 winMonsterId,
+    uint256 loseMonsterId,
+    string memory battleLog
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    ++matchCount[winMonsterId];
+    ++matchCount[loseMonsterId];
+
+    ++winCount[winMonsterId];
+
+    battleData.push(
+      BattleData({timestamp: block.timestamp, battleLog: battleLog})
+    );
+
+    uint256 battleId = battleData.length - 1;
+    battleIdList[winMonsterId].push(battleId);
+    battleIdList[loseMonsterId].push(battleId);
+
+    emit BattleDataEvent(
+      battleId,
+      block.timestamp,
+      winMonsterId,
+      loseMonsterId,
+      battleLog
+    );
+  }
+
+  // --------------------------------------------------------------------------------
+  // Internal
+  // --------------------------------------------------------------------------------
+
+  /// @notice Authorize upgrade
+  /// @param newImplementation new implementation address
+  function _authorizeUpgrade(
+    address newImplementation
+  ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
+}

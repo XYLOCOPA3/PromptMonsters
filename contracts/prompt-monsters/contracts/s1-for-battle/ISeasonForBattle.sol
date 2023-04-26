@@ -1,0 +1,81 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.18;
+
+/// @title ISeasonForBattle
+/// @notice This is an interface of SeasonforBattle.
+interface ISeasonForBattle {
+  // --------------------------------------------------------------------------------
+  // State
+  // --------------------------------------------------------------------------------
+
+  struct BattleData {
+    uint256 timestamp;
+    string battleLog;
+  }
+
+  // --------------------------------------------------------------------------------
+  // Event
+  // --------------------------------------------------------------------------------
+
+  event BattleDataEvent(
+    uint256 indexed matchId,
+    uint256 timestamp,
+    uint256 indexed winMonsterId,
+    uint256 indexed loseMonsterId,
+    string battleLog
+  );
+
+  // --------------------------------------------------------------------------------
+  // Initialize
+  // --------------------------------------------------------------------------------
+
+  /// @notice Initialize
+  /// @param leaderBoardForBattleAddress PromptMonsters contract address
+  function initialize(address leaderBoardForBattleAddress) external;
+
+  // --------------------------------------------------------------------------------
+  // Getter
+  // --------------------------------------------------------------------------------
+
+  /// @notice Get total match count of the monster
+  /// @param monsterId ID of the monster
+  /// @return total match counts
+  function getMatchCount(uint256 monsterId) external view returns (uint256);
+
+  /// @notice Get total wint count of the monster
+  /// @param monsterId ID of the monster
+  /// @return total win counts
+  function getWinCount(uint256 monsterId) external view returns (uint256);
+
+  /// @notice Get battle ID list
+  /// @param monsterId ID of the monster
+  /// @return battle ID list
+  function getBattleIdList(
+    uint256 monsterId
+  ) external view returns (uint256[] memory);
+
+  /// @notice Get battle data
+  /// @param monsterId ID of the battle
+  /// @return battle data
+  function getBattleData(
+    uint256 monsterId
+  ) external view returns (BattleData[] memory);
+
+  // --------------------------------------------------------------------------------
+  // Setter
+  // --------------------------------------------------------------------------------
+
+  // --------------------------------------------------------------------------------
+  // Main Logic
+  // --------------------------------------------------------------------------------
+
+  /// @notice Add battle data
+  /// @param winMonsterId ID of the monster who won the battle
+  /// @param loseMonsterId ID of the monster who lost the battle
+  /// @param battleLog Battle log
+  function addBattleData(
+    uint256 winMonsterId,
+    uint256 loseMonsterId,
+    string memory battleLog
+  ) external;
+}
