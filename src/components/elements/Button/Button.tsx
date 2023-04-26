@@ -5,12 +5,13 @@ import clsx from "clsx";
 const variants = {
   primary: clsx("bg-[#EA4E1F]", "hover:bg-[#C53D14]", "hover:shadow-lg"),
   secondary: clsx("bg-gray-700", "hover:bg-gray-800", "hover:shadow-lg"),
+  twitter: clsx("bg-[#F1F6F9]", "hover:bg-[#D3DCE3]", "hover:shadow-lg"),
 };
 
 export type ButtonProps = {
   disabled?: boolean;
   loading?: boolean;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "twitter";
   onClick?: () => void;
 } & BaseProps;
 

@@ -42,6 +42,7 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
     <Button
       disabled={loading}
       className={clsx("w-[100px]", "h-[40px]", "rounded-full", className)}
+      variant="secondary"
       loading={loading}
       onClick={handleClick}
     >

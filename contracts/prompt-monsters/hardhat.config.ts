@@ -1,6 +1,6 @@
 import "@nomicfoundation/hardhat-toolbox";
 import "@openzeppelin/hardhat-upgrades";
-import { HardhatUserConfig } from "hardhat/config";
+import { HardhatUserConfig, task } from "hardhat/config";
 
 require("dotenv").config();
 
@@ -60,3 +60,10 @@ const config: HardhatUserConfig = {
 };
 
 export default config;
+
+task("myTask", "Run myScript with arguments")
+  .addPositionalParam("arg1", "First argument")
+  .addPositionalParam("arg2", "Second argument")
+  .setAction(async (taskArgs, hre) => {
+    await hre.run("scripts/myScript.js", taskArgs);
+  });

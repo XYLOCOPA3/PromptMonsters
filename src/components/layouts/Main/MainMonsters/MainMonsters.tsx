@@ -1,16 +1,19 @@
 import Image from "next/image";
 import { Result } from "@/components/elements/Result";
-import { MonsterGenerator } from "@/features/monster";
-import { MonsterFightButton } from "@/features/monster/components/MonsterFightButton";
-import { MonsterFightText } from "@/features/monster/components/MonsterFightText";
-import { MonsterMintButton } from "@/features/monster/components/MonsterMintButton";
+import {
+  GenerateTweetButton,
+  MonsterFightButton,
+  MonsterFightText,
+  MonsterGenerator,
+  MonsterMintButton,
+} from "@/features/monster";
+import { BattleTweetButton } from "@/features/monster/components/BattleTweetButton";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import clsx from "clsx";
 import { useRecoilValue } from "recoil";
 
 /**
  * Main: Monsters
- * @layout
  * @keit0728
  */
 export const MainMonsters = () => {
@@ -31,8 +34,22 @@ export const MainMonsters = () => {
           )}
         >
           <Result className={clsx("w-[100%]", "mb-[30px]")} />
-          {monsterMinted ? <MonsterFightButton /> : <MonsterMintButton />}
+          <div className={clsx("flex", "w-[100%]")}>
+            <div className={clsx("w-1/3")}></div>
+            <div className={clsx("w-1/3", "flex", "justify-center")}>
+              {monsterMinted ? <MonsterFightButton /> : <MonsterMintButton />}
+            </div>
+            <div className={clsx("w-1/3", "flex", "justify-end")}>
+              <GenerateTweetButton />
+            </div>
+          </div>
           <MonsterFightText className={clsx("w-[100%]", "mt-[50px]")} />
+          <div className={clsx("flex", "w-[100%]", "mt-[30px]")}>
+            <div className={clsx("w-2/3")}></div>
+            <div className={clsx("w-1/3", "flex", "justify-end")}>
+              <BattleTweetButton />
+            </div>
+          </div>
         </div>
       </div>
       <Image
@@ -41,24 +58,10 @@ export const MainMonsters = () => {
           "absolute",
           "top-0",
           "opacity-10",
-          "h-[100%]",
+          "h-[150%]",
           "z-[-1]",
         )}
-        src="/assets/images/bg-arena.jpg"
-        alt="bg-arena"
-        width={4000}
-        height={2000}
-      />
-      <Image
-        className={clsx(
-          "object-cover",
-          "absolute",
-          "top-[100%]",
-          "opacity-10",
-          "h-[100%]",
-          "z-[-1]",
-        )}
-        src="/assets/images/bg-arena.jpg"
+        src="/assets/images/bg-arena.png"
         alt="bg-arena"
         width={4000}
         height={2000}

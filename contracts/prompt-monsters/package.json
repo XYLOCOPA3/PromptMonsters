@@ -17,7 +17,7 @@
     "preupgrade": "npm run clean && npm run test",
     "upgrade": "npx hardhat run scripts/$npm_config_name/upgrade.ts --network $npm_config_network",
     "update": "npx -p npm-check-updates  -c 'ncu' && npx -p npm-check-updates  -c 'ncu -u' && npm i",
-    "send-mcoin": "npx hardhat run scripts/Mock/$npm_config_filename --network $npm_config_network"
+    "mock-transfer": "npx hardhat run scripts/Mock/transfer.ts --network $npm_config_network"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",

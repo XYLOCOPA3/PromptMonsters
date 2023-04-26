@@ -12,44 +12,39 @@ export type NewsProps = BaseProps;
 export const News = ({ className }: NewsProps) => {
   return (
     <div className={clsx(className, "relative")}>
-      <Image
-        className={clsx("w-[150px]", "md:w-[400px]")}
-        src="/assets/images/bg-news.png"
-        alt="thumbnail"
-        width={1000}
-        height={1000}
-      />
+      <div className={clsx("flex", "justify-center", "items-center")}>
+        <Image
+          className={clsx("w-[100%]", "min-w-[200px]")}
+          src="/assets/images/bg-news.png"
+          alt="thumbnail"
+          width={1000}
+          height={1000}
+        />
+      </div>
       <div
         className={clsx(
           "absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2",
           "top-[50%]",
-          "w-[90%]",
+          "w-[70%]",
+          "h-[80%]",
+          "text-black",
         )}
       >
         <div
           className={clsx(
+            "font-bold",
+            "h-[50%]",
+            "text-[15px]",
+            "md:text-[30px]",
             "flex",
-            "flex-col",
-            "justify-center",
+            "justify-start",
             "items-center",
-            "text-[#292B2F]",
           )}
         >
-          <div
-            className={clsx(
-              "text-[10px]",
-              "w-[70%]",
-              "font-bold",
-              "mb-[20px]",
-              "md:mb-[50px]",
-              "md:text-[30px]",
-            )}
-          >
-            Coming soon...
-          </div>
-          <div className={clsx("text-[10px]", "w-[70%]", "md:text-[15px]")}>
-            Coming soon...
-          </div>
+          Coming soon...
+        </div>
+        <div className={clsx("h-[50%]", "text-[10px]", "md:text-[20px]")}>
+          Coming soon...
         </div>
       </div>
     </div>

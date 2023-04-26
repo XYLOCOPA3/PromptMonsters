@@ -84,6 +84,7 @@ m(Enemy): id:${enemyId} name:${enemy.name} flavor:${enemy.flavor} status: HP:${e
 Generate battle results for ${monster.name} and ${enemy.name}. Use "skills", consider status difference impact, write in a novel-style (max 200 chars) & output in JSON.
 key: "language" value: "${language}"
 key: "battleDesc" value: string
+key: "enemyName" value: string
 key: "winnerId" value: string`;
 };
 

@@ -15,12 +15,37 @@ export const ContactUs = ({ className }: ContactUsProps) => {
   return (
     <div className={clsx("relative", "w-[100%]")}>
       <Image
-        className={clsx(className, "object-cover", "opacity-20", "h-[200px]")}
-        src="/assets/images/bg-image-05.png"
+        className={clsx(
+          className,
+          "object-cover",
+          "opacity-20",
+          "h-[150px]",
+          "md:h-[200px]",
+        )}
+        src="/assets/images/bg-contact-us.png"
         alt="thumbnail"
         width={4000}
         height={2000}
       />
+      <div
+        className={clsx(
+          "absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2",
+          "top-0",
+          "w-[90%]",
+        )}
+      >
+        <div
+          className={clsx("flex", "flex-col", "justify-center", "items-center")}
+        >
+          <Image
+            className={clsx("w-[10px]", "md:w-[12px]")}
+            src="/assets/images/rectangle.svg"
+            alt="rectangle"
+            width={20}
+            height={20}
+          />
+        </div>
+      </div>
       <div
         className={clsx(
           "absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2",
