@@ -48,6 +48,7 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
     <Button
       disabled={loading}
       className={clsx("w-[100px]", "h-[40px]", "rounded-full", className)}
+      variant="secondary"
       loading={loading || !userInit}
       onClick={handleClick}
     >

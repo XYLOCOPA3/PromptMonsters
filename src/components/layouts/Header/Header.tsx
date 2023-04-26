@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Title } from "@/components/elements/Title";
 import { LoginButton } from "@/features/auth";
 import { MyShortProfile } from "@/features/profile";
 import { useUserValue } from "@/hooks/useUser";
@@ -42,7 +41,13 @@ export const Header = () => {
             width={100}
             height={100}
           />
-          <Title className={clsx("ml-[15px]")} />
+          {/* <Image
+            className={clsx("ml-[10px]", "w-[70px]", "md:w-[120px]")}
+            src="/assets/images/prompt-monsters-title.png"
+            alt="title"
+            width={500}
+            height={500}
+          /> */}
         </Link>
         {user.id === "" ? (
           <LoginButton className={clsx("mr-[4px]", "md:mr-[20px]")} />

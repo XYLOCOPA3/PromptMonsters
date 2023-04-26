@@ -26,7 +26,7 @@ export const MyShortProfile = ({ className }: MyShortProfileProps) => {
   const { open } = useWeb3Modal();
 
   /**
-   * Login button click event
+   * Click event
    */
   const handleClick = async () => {
     await open();
@@ -76,8 +76,8 @@ export const MyShortProfile = ({ className }: MyShortProfileProps) => {
           "md:w-[40px]",
           "md:h-[40px]",
         )}
-        src="/assets/images/prompt-monster-icon.svg"
-        alt="userIcon"
+        src="/assets/images/monster-icon.jpg"
+        alt="monster-icon"
         width={300}
         height={300}
       />
