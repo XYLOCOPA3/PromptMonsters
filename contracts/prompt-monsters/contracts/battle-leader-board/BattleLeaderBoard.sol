@@ -5,11 +5,11 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
-import {ISeasonForBattle} from "../s1-for-battle/ISeasonForBattle.sol";
+import {IBattleSeason} from "../interfaces/IBattleSeason.sol";
 
-/// @title LeaderBoardForBattle
-/// @notice This is a contract of LeaderBoardForBattle.
-contract LeaderBoardForBattle is
+/// @title BattleLeaderBoard
+/// @notice This is a contract of BattleLeaderBoard.
+contract BattleLeaderBoard is
   Initializable,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
@@ -17,7 +17,8 @@ contract LeaderBoardForBattle is
   // --------------------------------------------------------------------------------
   // State
   // --------------------------------------------------------------------------------
-  address[] public seasonsForBattleAddress;
+
+  address[] private _battleSeasonsAddress;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -41,16 +42,17 @@ contract LeaderBoardForBattle is
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @notice Get seasonForBattleAddress
+  /// @notice Get battleSeasonAddress
   /// @param seasonId ID of the season
-  /// @return address of seasonForBattle
-  function getSeasonForBattleAddress(
+  /// @return address of battleSeason
+  function getBattleSeasonAddress(
     uint256 seasonId
   ) external view returns (address) {
-    return seasonsForBattleAddress[seasonId];
+    return _battleSeasonsAddress[seasonId];
   }
 
   /// @notice Get total match count of the monster
+  /// @param seasonId ID of the season
   /// @param monsterId ID of the monster
   /// @return total match counts
   function getSeasonMatchCount(
@@ -58,12 +60,25 @@ contract LeaderBoardForBattle is
     uint256 monsterId
   ) external view returns (uint256) {
     return
-      ISeasonForBattle(seasonsForBattleAddress[seasonId]).getMatchCount(
-        monsterId
+      IBattleSeason(_battleSeasonsAddress[seasonId]).getMatchCount(monsterId);
+  }
+
+  /// @notice Get batch total match count of the monster
+  /// @param seasonId ID of the season
+  /// @param monsterIds ID of the monsters
+  /// @return total match counts
+  function getBatchSeasonMatchCount(
+    uint256 seasonId,
+    uint256[] memory monsterIds
+  ) external view returns (uint256[] memory) {
+    return
+      IBattleSeason(_battleSeasonsAddress[seasonId]).getBatchMatchCount(
+        monsterIds
       );
   }
 
   /// @notice Get total win count of the monster
+  /// @param seasonId ID of the season
   /// @param monsterId ID of the monster
   /// @return total win counts
   function getSeasonWinCount(
@@ -71,8 +86,20 @@ contract LeaderBoardForBattle is
     uint256 monsterId
   ) external view returns (uint256) {
     return
-      ISeasonForBattle(seasonsForBattleAddress[seasonId]).getWinCount(
-        monsterId
+      IBattleSeason(_battleSeasonsAddress[seasonId]).getWinCount(monsterId);
+  }
+
+  /// @notice Get total win count of the monster
+  /// @param seasonId ID of the season
+  /// @param monsterIds ID of the monsters
+  /// @return total win counts
+  function getBatchSeasonWinCount(
+    uint256 seasonId,
+    uint256[] memory monsterIds
+  ) external view returns (uint256[] memory) {
+    return
+      IBattleSeason(_battleSeasonsAddress[seasonId]).getBatchWinCount(
+        monsterIds
       );
   }
 
@@ -85,41 +112,53 @@ contract LeaderBoardForBattle is
     uint256 monsterId
   ) external view returns (uint256[] memory) {
     return
-      ISeasonForBattle(seasonsForBattleAddress[seasonId]).getBattleIdList(
-        monsterId
-      );
+      IBattleSeason(_battleSeasonsAddress[seasonId]).getBattleIdList(monsterId);
   }
 
-  /// @notice Get seasonsForBattleAddress length
-  /// @return seasonsForBattleAddressLength
-  function getSeasonsForBattleAddressLength() external view returns (uint256) {
-    return seasonsForBattleAddress.length;
+  /// @notice Get _battleSeasonsAddress length
+  /// @return battleSeasonsAddressLength
+  function getBattleSeasonsAddressLength() external view returns (uint256) {
+    return _battleSeasonsAddress.length;
   }
 
   /// @notice Get season battle data
   /// @param seasonId ID of the season
   /// @param monsterId ID of the monster
   /// @return season battle data
-  function getSeasonBattleData(
+  function getBattleSeasonData(
     uint256 seasonId,
     uint256 monsterId
-  ) external view returns (ISeasonForBattle.BattleData[] memory) {
+  ) external view returns (IBattleSeason.BattleData[] memory) {
     return
-      ISeasonForBattle(seasonsForBattleAddress[seasonId]).getBattleData(
-        monsterId
-      );
+      IBattleSeason(_battleSeasonsAddress[seasonId]).getBattleData(monsterId);
+  }
+
+  /// @notice Get _battleSeasonsAddress
+  /// @return _battleSeasonsAddress
+  function getBattleSeasonsAddress() external view returns (address[] memory) {
+    return _battleSeasonsAddress;
   }
 
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
 
-  /// @notice Set seasonForBattleAddress
-  /// @param seasonForBattleAddress address of seasonForBattle
-  function setSeasonForBattleAddress(
-    address seasonForBattleAddress
+  /// @notice Add battleSeasonAddress
+  /// @param battleSeasonAddress address of battleSeason
+  function addBattleSeasonAddress(
+    address battleSeasonAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    seasonsForBattleAddress.push(seasonForBattleAddress);
+    _battleSeasonsAddress.push(battleSeasonAddress);
+  }
+
+  /// @notice Set battleSeasonAddress
+  /// @param seasonId ID of the season
+  /// @param battleSeasonAddress address of battleSeason
+  function setBattleSeasonAddress(
+    uint256 seasonId,
+    address battleSeasonAddress
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _battleSeasonsAddress[seasonId] = battleSeasonAddress;
   }
 
   // --------------------------------------------------------------------------------
@@ -131,13 +170,13 @@ contract LeaderBoardForBattle is
   /// @param winMonsterId ID of the win monster
   /// @param loseMonsterId ID of the lose monster
   /// @param battleLog Battle log
-  function addSeasonBattleData(
+  function addBattleSeasonData(
     uint256 seasonId,
     uint256 winMonsterId,
     uint256 loseMonsterId,
     string memory battleLog
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    ISeasonForBattle(seasonsForBattleAddress[seasonId]).addBattleData(
+    IBattleSeason(_battleSeasonsAddress[seasonId]).addBattleData(
       winMonsterId,
       loseMonsterId,
       battleLog

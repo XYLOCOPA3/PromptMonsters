@@ -1,9 +1,9 @@
-import { PROMPT_MONSTERS_EXTERNAL_LINK, MCHC_ADDRESS } from "../const";
+import { BATTLE_LEADER_BOARD_PROXY_ADDRESS } from "../const";
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
-  console.log("--- Start PromptMonsters Deploy ------------");
+  console.log("--- Start BattleOffSeason Deploy ------------");
   console.log("---------------------------------------------");
   console.log("");
 
@@ -14,28 +14,24 @@ async function main() {
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
-  const promptMonstersProxy = await upgrades.deployProxy(
-    PromptMonsters,
-    [
-      PROMPT_MONSTERS_EXTERNAL_LINK,
-      MCHC_ADDRESS,
-      ethers.utils.parseEther("100"),
-    ],
+  const BattleOffSeason = await ethers.getContractFactory("BattleOffSeason");
+  const battleOffSeasonProxy = await upgrades.deployProxy(
+    BattleOffSeason,
+    [BATTLE_LEADER_BOARD_PROXY_ADDRESS],
     {
       kind: "uups",
       initializer: "initialize",
     },
   );
-  await promptMonstersProxy.deployed();
+  await battleOffSeasonProxy.deployed();
   console.log(
-    "Deployed PromptMonstersProxy address: ",
-    promptMonstersProxy.address,
+    "Deployed BattleOffSeasonProxy address: ",
+    battleOffSeasonProxy.address,
   );
   console.log(
-    "PromptMonsters implementation deployed to:",
+    "BattleOffSeason implementation deployed to:",
     await upgrades.erc1967.getImplementationAddress(
-      promptMonstersProxy.address,
+      battleOffSeasonProxy.address,
     ),
   );
 
@@ -51,7 +47,7 @@ async function main() {
 
   // try {
   //   await run("verify:verify", {
-  //     address: promptMonstersProxy.address,
+  //     address: battleOffSeasonProxy.address,
   //     constructorArguments: [],
   //   });
   // } catch (e) {
@@ -62,7 +58,27 @@ async function main() {
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End PromptMonsters Deploy --------------");
+  console.log("--- End BattleOffSeason Deploy --------------");
+  console.log("---------------------------------------------");
+
+  console.log("");
+  console.log("---------------------------------------------");
+  console.log("--- Start set to BattleLeaderBoard Deploy --------------");
+  console.log("---------------------------------------------");
+
+  const BattleLeaderBoard = await ethers.getContractFactory(
+    "BattleLeaderBoard",
+  );
+
+  const battleLeaderBoard = BattleLeaderBoard.attach(
+    BATTLE_LEADER_BOARD_PROXY_ADDRESS,
+  );
+
+  await battleLeaderBoard.addBattleSeasonAddress(battleOffSeasonProxy.address);
+
+  console.log("");
+  console.log("---------------------------------------------");
+  console.log("--- End set to BattleLeaderBoard Deploy --------------");
   console.log("---------------------------------------------");
 }
 

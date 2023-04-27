@@ -134,8 +134,11 @@ contract PromptMonsters is
       "PromptMonsters: tokenIdsLength is too large"
     );
     monsters = new IPromptMonsters.Monster[](tokenIdsLength);
-    for (uint i; i < tokenIdsLength; i++) {
+    for (uint i; i < tokenIdsLength; ) {
       monsters[i] = _monsters[tokenIds_[i]];
+      unchecked {
+        ++i;
+      }
     }
   }
 

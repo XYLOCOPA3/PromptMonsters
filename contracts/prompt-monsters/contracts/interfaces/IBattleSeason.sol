@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-/// @title ISeasonForBattle
+/// @title IBattleSeason
 /// @notice This is an interface of SeasonforBattle.
-interface ISeasonForBattle {
+interface IBattleSeason {
   // --------------------------------------------------------------------------------
   // State
   // --------------------------------------------------------------------------------
@@ -30,8 +30,8 @@ interface ISeasonForBattle {
   // --------------------------------------------------------------------------------
 
   /// @notice Initialize
-  /// @param leaderBoardForBattleAddress PromptMonsters contract address
-  function initialize(address leaderBoardForBattleAddress) external;
+  /// @param battleLeaderBoardAddress PromptMonsters contract address
+  function initialize(address battleLeaderBoardAddress) external;
 
   // --------------------------------------------------------------------------------
   // Getter
@@ -42,10 +42,24 @@ interface ISeasonForBattle {
   /// @return total match counts
   function getMatchCount(uint256 monsterId) external view returns (uint256);
 
+  /// @notice Get batch total match count of the monster
+  /// @param monsterIds IDs of the monster
+  /// @return batch total match counts
+  function getBatchMatchCount(
+    uint256[] memory monsterIds
+  ) external view returns (uint256[] memory);
+
   /// @notice Get total wint count of the monster
   /// @param monsterId ID of the monster
   /// @return total win counts
   function getWinCount(uint256 monsterId) external view returns (uint256);
+
+  /// @notice Get batch total win count of the monster
+  /// @param monsterIds IDs of the monster
+  /// @return batch total win counts
+  function getBatchWinCount(
+    uint256[] memory monsterIds
+  ) external view returns (uint256[] memory);
 
   /// @notice Get battle ID list
   /// @param monsterId ID of the monster

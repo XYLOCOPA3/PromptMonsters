@@ -1,9 +1,9 @@
-import { LEADER_BOARD_FOR_BATTLE_PROXY_ADDRESS } from "../const";
+import { BATTLE_LEADER_BOARD_PROXY_ADDRESS } from "../const";
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
-  console.log("--- Start LeaderBoardForBattle Upgrade -----------");
+  console.log("--- Start BattleLeaderBoard Upgrade ---------");
   console.log("---------------------------------------------");
   console.log("");
 
@@ -14,22 +14,22 @@ async function main() {
   const [deployer] = await ethers.getSigners();
   console.log("Upgrading contracts with account: ", deployer.address);
   console.log(
-    "Upgrade LeaderBoardForBattleProxy address: ",
-    LEADER_BOARD_FOR_BATTLE_PROXY_ADDRESS,
+    "Upgrade BattleLeaderBoardProxy address: ",
+    BATTLE_LEADER_BOARD_PROXY_ADDRESS,
   );
 
-  const LeaderBoardForBattle = await ethers.getContractFactory(
-    "LeaderBoardForBattle",
+  const BattleLeaderBoard = await ethers.getContractFactory(
+    "BattleLeaderBoard",
   );
-  const leaderBoardForBattleProxy = await upgrades.upgradeProxy(
-    LEADER_BOARD_FOR_BATTLE_PROXY_ADDRESS,
-    LeaderBoardForBattle,
+  const battleLeaderBoardProxy = await upgrades.upgradeProxy(
+    BATTLE_LEADER_BOARD_PROXY_ADDRESS,
+    BattleLeaderBoard,
   );
-  await leaderBoardForBattleProxy.deployed();
+  await battleLeaderBoardProxy.deployed();
   console.log(
-    "Upgraded LeaderBoardForBattle implementation:",
+    "Upgraded BattleLeaderBoard implementation:",
     await upgrades.erc1967.getImplementationAddress(
-      LEADER_BOARD_FOR_BATTLE_PROXY_ADDRESS,
+      BATTLE_LEADER_BOARD_PROXY_ADDRESS,
     ),
   );
 
@@ -45,7 +45,7 @@ async function main() {
 
   // try {
   //   await run("verify:verify", {
-  //     address: LEADER_BOARD_FOR_BATTLE_PROXY_ADDRESS,
+  //     address: BATTLE_LEADER_BOARD_PROXY_ADDRESS,
   //     constructorArguments: [],
   //   });
   // } catch (e) {
@@ -56,7 +56,7 @@ async function main() {
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End LeaderBoardForBattle Upgrade -------------");
+  console.log("--- End BattleLeaderBoard Upgrade -----------");
   console.log("---------------------------------------------");
 }
 

@@ -1,10 +1,10 @@
-import { MCHC_PROXY_ADDRESS } from "../const";
+import { MCHC_ADDRESS } from "../const";
 import { ethers } from "hardhat";
 
 export async function transfer() {
   const MCHCoin = await ethers.getContractFactory("MCHCoin");
 
-  const mchCoin = MCHCoin.attach(MCHC_PROXY_ADDRESS);
+  const mchCoin = MCHCoin.attach(MCHC_ADDRESS);
 
   const address: string = "0x8Bcd35185a8068BB197BC957f7dDFEE77007BF3A";
 

@@ -69,7 +69,7 @@ async function main() {
   console.log("---------------------------------------------");
 
   console.log("---------------------------------------------");
-  console.log("--- Start LeaderBoardForBattle Deploy ------------");
+  console.log("--- Start BattleLeaderBoard Deploy ----------");
   console.log("---------------------------------------------");
   console.log("");
 
@@ -79,26 +79,26 @@ async function main() {
 
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const LeaderBoardForBattle = await ethers.getContractFactory(
-    "LeaderBoardForBattle",
+  const BattleLeaderBoard = await ethers.getContractFactory(
+    "BattleLeaderBoard",
   );
-  const leaderBoardForBattleProxy = await upgrades.deployProxy(
-    LeaderBoardForBattle,
+  const battleLeaderBoardProxy = await upgrades.deployProxy(
+    BattleLeaderBoard,
     [],
     {
       kind: "uups",
       initializer: "initialize",
     },
   );
-  await leaderBoardForBattleProxy.deployed();
+  await battleLeaderBoardProxy.deployed();
   console.log(
-    "Deployed LeaderBoardForBattleProxy address: ",
-    leaderBoardForBattleProxy.address,
+    "Deployed BattleLeaderBoardProxy address: ",
+    battleLeaderBoardProxy.address,
   );
   console.log(
-    "LeaderBoardForBattle implementation deployed to:",
+    "BattleLeaderBoard implementation deployed to:",
     await upgrades.erc1967.getImplementationAddress(
-      leaderBoardForBattleProxy.address,
+      battleLeaderBoardProxy.address,
     ),
   );
 
@@ -106,10 +106,10 @@ async function main() {
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End LeaderBoardForBattle Deploy --------------");
+  console.log("--- End BattleLeaderBoard Deploy --------------");
   console.log("---------------------------------------------");
   console.log("---------------------------------------------");
-  console.log("--- Start S1ForBattle Deploy ------------");
+  console.log("--- Start BattleS1 Deploy ------------");
   console.log("---------------------------------------------");
   console.log("");
 
@@ -119,27 +119,27 @@ async function main() {
 
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const S1ForBattle = await ethers.getContractFactory("S1ForBattle");
-  const s1ForBattleProxy = await upgrades.deployProxy(
-    S1ForBattle,
-    [leaderBoardForBattleProxy.address],
+  const BattleS1 = await ethers.getContractFactory("BattleS1");
+  const battleS1Proxy = await upgrades.deployProxy(
+    BattleS1,
+    [battleLeaderBoardProxy.address],
     {
       kind: "uups",
       initializer: "initialize",
     },
   );
-  await s1ForBattleProxy.deployed();
-  console.log("Deployed S1ForBattleProxy address: ", s1ForBattleProxy.address);
+  await battleS1Proxy.deployed();
+  console.log("Deployed BattleS1Proxy address: ", battleS1Proxy.address);
   console.log(
-    "S1ForBattle implementation deployed to:",
-    await upgrades.erc1967.getImplementationAddress(s1ForBattleProxy.address),
+    "BattleS1 implementation deployed to:",
+    await upgrades.erc1967.getImplementationAddress(battleS1Proxy.address),
   );
 
   console.log("Completed deployment");
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End S1ForBattle Deploy --------------");
+  console.log("--- End BattleS1 Deploy --------------");
   console.log("---------------------------------------------");
 }
 

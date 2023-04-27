@@ -1,9 +1,8 @@
-import { LEADER_BOARD_FOR_BATTLE_PROXY_ADDRESS } from "../const";
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
-  console.log("--- Start S1ForBattle Deploy ------------");
+  console.log("--- Start BattleLeaderBoard Deploy ----------");
   console.log("---------------------------------------------");
   console.log("");
 
@@ -14,20 +13,27 @@ async function main() {
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const S1ForBattle = await ethers.getContractFactory("S1ForBattle");
-  const s1ForBattleProxy = await upgrades.deployProxy(
-    S1ForBattle,
-    [LEADER_BOARD_FOR_BATTLE_PROXY_ADDRESS],
+  const BattleLeaderBoard = await ethers.getContractFactory(
+    "BattleLeaderBoard",
+  );
+  const battleLeaderBoardProxy = await upgrades.deployProxy(
+    BattleLeaderBoard,
+    [],
     {
       kind: "uups",
       initializer: "initialize",
     },
   );
-  await s1ForBattleProxy.deployed();
-  console.log("Deployed S1ForBattleProxy address: ", s1ForBattleProxy.address);
+  await battleLeaderBoardProxy.deployed();
   console.log(
-    "S1ForBattle implementation deployed to:",
-    await upgrades.erc1967.getImplementationAddress(s1ForBattleProxy.address),
+    "Deployed BattleLeaderBoardProxy address: ",
+    battleLeaderBoardProxy.address,
+  );
+  console.log(
+    "BattleLeaderBoard implementation deployed to:",
+    await upgrades.erc1967.getImplementationAddress(
+      battleLeaderBoardProxy.address,
+    ),
   );
 
   console.log("Completed deployment");
@@ -42,7 +48,7 @@ async function main() {
 
   // try {
   //   await run("verify:verify", {
-  //     address: s1ForBattleProxy.address,
+  //     address: battleLeaderBoardProxy.address,
   //     constructorArguments: [],
   //   });
   // } catch (e) {
@@ -53,7 +59,7 @@ async function main() {
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End S1ForBattle Deploy --------------");
+  console.log("--- End BattleLeaderBoard Deploy ------------");
   console.log("---------------------------------------------");
 }
 

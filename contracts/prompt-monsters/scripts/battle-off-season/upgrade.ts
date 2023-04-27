@@ -1,44 +1,39 @@
+import { BATTLE_OFF_SEASON_PROXY_ADDRESS } from "../const";
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
-  console.log("--- Start LeaderBoardForBattle Deploy ------------");
+  console.log("--- Start BattleOffSeason Upgrade -----------");
   console.log("---------------------------------------------");
   console.log("");
 
-  console.log("--- Deploy ----------------------------------");
+  console.log("--- Upgrade ---------------------------------");
 
-  console.log("Deploying...");
+  console.log("Upgrading...");
 
   const [deployer] = await ethers.getSigners();
-  console.log("Deploying contracts with account: ", deployer.address);
+  console.log("Upgrading contracts with account: ", deployer.address);
+  console.log(
+    "Upgrade BattleOffSeasonProxy address: ",
+    BATTLE_OFF_SEASON_PROXY_ADDRESS,
+  );
 
-  const LeaderBoardForBattle = await ethers.getContractFactory(
-    "LeaderBoardForBattle",
+  const BattleOffSeason = await ethers.getContractFactory("BattleOffSeason");
+  const battleOffSeasonProxy = await upgrades.upgradeProxy(
+    BATTLE_OFF_SEASON_PROXY_ADDRESS,
+    BattleOffSeason,
   );
-  const leaderBoardForBattleProxy = await upgrades.deployProxy(
-    LeaderBoardForBattle,
-    [],
-    {
-      kind: "uups",
-      initializer: "initialize",
-    },
-  );
-  await leaderBoardForBattleProxy.deployed();
+  await battleOffSeasonProxy.deployed();
   console.log(
-    "Deployed LeaderBoardForBattleProxy address: ",
-    leaderBoardForBattleProxy.address,
-  );
-  console.log(
-    "LeaderBoardForBattle implementation deployed to:",
+    "Upgraded BattleOffSeason implementation:",
     await upgrades.erc1967.getImplementationAddress(
-      leaderBoardForBattleProxy.address,
+      BATTLE_OFF_SEASON_PROXY_ADDRESS,
     ),
   );
 
-  console.log("Completed deployment");
+  console.log("Completed upgrade");
 
-  // Wait 10 seconds before verification, because it fails if it is done immediately after deployment
+  // // Wait 10 seconds before verification, because it fails if it is done immediately after verification
   // console.log("Waiting for 10 seconds before verification...");
   // await new Promise((resolve) => setTimeout(resolve, 10000));
 
@@ -48,7 +43,7 @@ async function main() {
 
   // try {
   //   await run("verify:verify", {
-  //     address: leaderBoardForBattleProxy.address,
+  //     address: BATTLE_OFF_SEASON_PROXY_ADDRESS,
   //     constructorArguments: [],
   //   });
   // } catch (e) {
@@ -59,7 +54,7 @@ async function main() {
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End LeaderBoardForBattle Deploy --------------");
+  console.log("--- End BattleOffSeason Upgrade -------------");
   console.log("---------------------------------------------");
 }
 

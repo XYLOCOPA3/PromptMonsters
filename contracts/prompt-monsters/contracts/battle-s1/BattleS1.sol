@@ -5,13 +5,13 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
-import {ISeasonForBattle} from "./ISeasonForBattle.sol";
+import {IBattleSeason} from "../interfaces/IBattleSeason.sol";
 
-/// @title S1ForBattle
-/// @notice This is a contract of S1ForBattle.
-contract S1ForBattle is
+/// @title BattleS1
+/// @notice This is a contract of BattleS1.
+contract BattleS1 is
   Initializable,
-  ISeasonForBattle,
+  IBattleSeason,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
 {
@@ -37,12 +37,12 @@ contract S1ForBattle is
   }
 
   /// @notice Initialize
-  /// @param leaderBoardForBattleAddress PromptMonsters contract address
-  function initialize(address leaderBoardForBattleAddress) public initializer {
+  /// @param battleLeaderBoardAddress PromptMonsters contract address
+  function initialize(address battleLeaderBoardAddress) public initializer {
     __AccessControlEnumerable_init();
     __UUPSUpgradeable_init();
 
-    _grantRole(DEFAULT_ADMIN_ROLE, leaderBoardForBattleAddress);
+    _grantRole(DEFAULT_ADMIN_ROLE, battleLeaderBoardAddress);
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
   }
 
@@ -57,11 +57,47 @@ contract S1ForBattle is
     return matchCount[monsterId];
   }
 
+  /// @notice Get batch total match count of the monster
+  /// @param monsterIds IDs of the monster
+  /// @return batch total match counts
+  function getBatchMatchCount(
+    uint256[] memory monsterIds
+  ) external view returns (uint256[] memory) {
+    uint256[] memory _monsterIds = monsterIds;
+    uint256 monsterIdsLength = _monsterIds.length;
+    uint256[] memory _matchCounts = new uint256[](monsterIdsLength);
+    for (uint256 i = 0; i < monsterIdsLength; ) {
+      _matchCounts[i] = matchCount[_monsterIds[i]];
+      unchecked {
+        ++i;
+      }
+    }
+    return _matchCounts;
+  }
+
   /// @notice Get total wint count of the monster
   /// @param monsterId ID of the monster
   /// @return total win counts
   function getWinCount(uint256 monsterId) external view returns (uint256) {
     return winCount[monsterId];
+  }
+
+  /// @notice Get batch total win count of the monster
+  /// @param monsterIds IDs of the monster
+  /// @return batch total win counts
+  function getBatchWinCount(
+    uint256[] memory monsterIds
+  ) external view returns (uint256[] memory) {
+    uint256[] memory _monsterIds = monsterIds;
+    uint256 monsterIdsLength = _monsterIds.length;
+    uint256[] memory _winCounts = new uint256[](monsterIdsLength);
+    for (uint256 i = 0; i < monsterIdsLength; ) {
+      _winCounts[i] = winCount[_monsterIds[i]];
+      unchecked {
+        ++i;
+      }
+    }
+    return _winCounts;
   }
 
   /// @notice Get battle ID list

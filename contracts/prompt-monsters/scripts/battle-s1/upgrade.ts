@@ -1,9 +1,9 @@
-import { S1_FOR_BATTLE_PROXY_ADDRESS } from "../const";
+import { BATTLE_S1_PROXY_ADDRESS } from "../const";
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
-  console.log("--- Start S1ForBattle Upgrade -----------");
+  console.log("--- Start BattleS1 Upgrade -----------");
   console.log("---------------------------------------------");
   console.log("");
 
@@ -13,22 +13,17 @@ async function main() {
 
   const [deployer] = await ethers.getSigners();
   console.log("Upgrading contracts with account: ", deployer.address);
-  console.log(
-    "Upgrade S1ForBattleProxy address: ",
-    S1_FOR_BATTLE_PROXY_ADDRESS,
-  );
+  console.log("Upgrade BattleS1Proxy address: ", BATTLE_S1_PROXY_ADDRESS);
 
-  const S1ForBattle = await ethers.getContractFactory("S1ForBattle");
-  const s1ForBattleProxy = await upgrades.upgradeProxy(
-    S1_FOR_BATTLE_PROXY_ADDRESS,
-    S1ForBattle,
+  const BattleS1 = await ethers.getContractFactory("BattleS1");
+  const battleS1Proxy = await upgrades.upgradeProxy(
+    BATTLE_S1_PROXY_ADDRESS,
+    BattleS1,
   );
-  await s1ForBattleProxy.deployed();
+  await battleS1Proxy.deployed();
   console.log(
-    "Upgraded S1ForBattle implementation:",
-    await upgrades.erc1967.getImplementationAddress(
-      S1_FOR_BATTLE_PROXY_ADDRESS,
-    ),
+    "Upgraded BattleS1 implementation:",
+    await upgrades.erc1967.getImplementationAddress(BATTLE_S1_PROXY_ADDRESS),
   );
 
   console.log("Completed upgrade");
@@ -43,7 +38,7 @@ async function main() {
 
   // try {
   //   await run("verify:verify", {
-  //     address: S1_FOR_BATTLE_PROXY_ADDRESS,
+  //     address: BATTLE_S1_PROXY_ADDRESS,
   //     constructorArguments: [],
   //   });
   // } catch (e) {
@@ -54,7 +49,7 @@ async function main() {
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End S1ForBattle Upgrade -------------");
+  console.log("--- End BattleS1 Upgrade -------------");
   console.log("---------------------------------------------");
 }
 
