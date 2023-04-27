@@ -66,7 +66,7 @@ contract PromptMonsters is
     __UUPSUpgradeable_init();
     __ReentrancyGuard_init();
 
-    _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     _externalLink = externalLink_;
     mchCoin = IERC20(mchCoinAddress);
     mintPrice = mintPrice_;
@@ -134,8 +134,11 @@ contract PromptMonsters is
       "PromptMonsters: tokenIdsLength is too large"
     );
     monsters = new IPromptMonsters.Monster[](tokenIdsLength);
-    for (uint i; i < tokenIdsLength; i++) {
+    for (uint i; i < tokenIdsLength; ) {
       monsters[i] = _monsters[tokenIds_[i]];
+      unchecked {
+        ++i;
+      }
     }
   }
 

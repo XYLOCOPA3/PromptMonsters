@@ -33,23 +33,6 @@ const WaterMonsterDetails = {
   maxSkillsSet: 10,
 };
 
-async function checkMonsterDetails(monster: any, details: any) {
-  expect(monster.name).to.equal(details.name);
-  expect(monster.flavor).to.equal(details.flavor);
-  expect(monster.skills[0]).to.deep.equal(details.skills[0]);
-  expect(monster.skills[1]).to.deep.equal(details.skills[1]);
-  expect(monster.skills[2]).to.deep.equal(details.skills[2]);
-  expect(monster.lv).to.equal(details.lv);
-  expect(monster.hp).to.equal(details.hp);
-  expect(monster.atk).to.equal(details.atk);
-  expect(monster.def).to.equal(details.def);
-  expect(monster.inte).to.equal(details.inte);
-  expect(monster.mgr).to.equal(details.mgr);
-  expect(monster.agl).to.equal(details.agl);
-  expect(monster.maxSkills).to.equal(details.maxSkills);
-  expect(monster.maxSkillsSet).to.equal(details.maxSkillsSet);
-}
-
 describe("PromptMonsters", function () {
   async function init() {
     const { promptMonsters, mchCoin } = await loadFixture(deploy);

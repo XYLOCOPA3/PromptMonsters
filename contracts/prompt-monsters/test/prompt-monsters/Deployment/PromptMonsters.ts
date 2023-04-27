@@ -1,11 +1,11 @@
 import { PromptMonsters } from "../../../typechain-types";
+import { deployMchCoin } from "./MchCoin";
+import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { BigNumber } from "ethers";
 import { ethers, upgrades } from "hardhat";
 
 export async function deployPromptMonsters() {
-  const MCHCoin = await ethers.getContractFactory("MCHCoin");
-  const mchCoin = await MCHCoin.deploy();
-  await mchCoin.deployed();
+  const { mchCoin } = await loadFixture(deployMchCoin);
 
   const promptMonstersArgs: promptMonstersInitArgs = {
     externalLink: "https://prompt-monsters-jp.azurewebsites.net/",
@@ -34,7 +34,7 @@ export async function deployPromptMonsters() {
   //   promptMonsters: promptMonsters,
   //   args: promptMonstersArgs,
   // };
-  return { promptMonsters: promptMonsters, mchCoin: mchCoin };
+  return { promptMonsters, mchCoin };
 }
 
 export type PromptMonstersArgs = {

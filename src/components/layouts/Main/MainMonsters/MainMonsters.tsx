@@ -1,13 +1,13 @@
 import Image from "next/image";
 import { Result } from "@/components/elements/Result";
 import {
+  BattleTweetButton,
   GenerateTweetButton,
   MonsterFightButton,
   MonsterFightText,
   MonsterGenerator,
   MonsterMintButton,
 } from "@/features/monster";
-import { BattleTweetButton } from "@/features/monster/components/BattleTweetButton";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import clsx from "clsx";
 import { useRecoilValue } from "recoil";

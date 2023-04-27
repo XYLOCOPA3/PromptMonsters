@@ -6,6 +6,7 @@ import { useMonsterValue } from "@/hooks/useMonster";
 import { BattleModel } from "@/models/BattleModel";
 import { MonsterModel } from "@/models/MonsterModel";
 import { BaseProps } from "@/types/BaseProps";
+import { trimCharacters100 } from "@/utils/charUtils";
 import clsx from "clsx";
 
 export type BattleTweetButtonProps = BaseProps;
@@ -57,13 +58,8 @@ const _getBattleTweet = (
   battle: BattleModel,
   monster: MonsterModel,
 ): string => {
-  const battleDescs = battle.battleDesc.split("。");
-  let battleDesc = "";
-  if (battleDescs.length == 1) {
-    battleDesc = battle.battleDesc.split(".")[0];
-  } else {
-    battleDesc = battleDescs[0];
-  }
+  const battleDesc = trimCharacters100(battle.battleDesc);
+
   return `${monster.name} vs ${battle.enemyName}
 
 ${battleDesc}...
@@ -72,7 +68,7 @@ Winner is ... ${
     battle.winnerId === monster.id ? monster.name : battle.enemyName
   }!
 
-Check back here for the rest of the story!
+Check out more stories here!
 https://prompt-monsters-demo-jp.azurewebsites.net/
 
 #PromptMonsters #Alert`;

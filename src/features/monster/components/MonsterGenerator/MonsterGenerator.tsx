@@ -7,6 +7,7 @@ import { useUserValue } from "@/hooks/useUser";
 import { languageState } from "@/stores/languageState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { BaseProps } from "@/types/BaseProps";
+import { countCharacters } from "@/utils/charUtils";
 import clsx from "clsx";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
@@ -31,7 +32,7 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (_countCharacters(e.target.value) <= maxLength) {
+    if (countCharacters(e.target.value) <= maxLength) {
       feature = e.target.value;
       if (maxLengthOver) setMaxLengthOver(false);
       return;
@@ -98,12 +99,4 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
       </div>
     </div>
   );
-};
-
-const _countCharacters = (str: string): number => {
-  let count = 0;
-  for (let i = 0; i < str.length; i++) {
-    count += str.charCodeAt(i) <= 255 ? 1 : 2;
-  }
-  return count;
 };
