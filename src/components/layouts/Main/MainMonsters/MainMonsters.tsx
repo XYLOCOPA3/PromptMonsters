@@ -7,8 +7,10 @@ import {
   MonsterFightText,
   MonsterGenerator,
   MonsterMintButton,
+  MonsterSelector,
 } from "@/features/monster";
 import { PlayNote } from "@/features/note";
+import { useOwnedMonstersValue } from "@/hooks/useOwnedMonsters";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import clsx from "clsx";
 import { useRecoilValue } from "recoil";
@@ -19,6 +21,7 @@ import { useRecoilValue } from "recoil";
  */
 export const MainMonsters = () => {
   const monsterMinted = useRecoilValue(monsterMintedState);
+  const ownedMonsters = useOwnedMonstersValue();
 
   return (
     <>
@@ -46,6 +49,15 @@ export const MainMonsters = () => {
             "items-center",
           )}
         >
+          {ownedMonsters.length === 0 ? (
+            <></>
+          ) : (
+            <div
+              className={clsx("w-[100%]", "mb-[10px]", "flex", "justify-end")}
+            >
+              <MonsterSelector className={clsx("w-[50%]")} />
+            </div>
+          )}
           <Result className={clsx("w-[100%]", "mb-[30px]")} />
           <div className={clsx("flex", "w-[100%]")}>
             <div className={clsx("w-1/3")}></div>
