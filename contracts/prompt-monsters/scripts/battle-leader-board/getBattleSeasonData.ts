@@ -1,7 +1,7 @@
 import { BATTLE_LEADER_BOARD_PROXY_ADDRESS } from "../const";
 import { ethers } from "hardhat";
 
-export async function getBattleSeasonData() {
+export async function getBattleSeasonDataByMonsterId() {
   const BattleLeaderBoard = await ethers.getContractFactory(
     "BattleLeaderBoard",
   );
@@ -11,15 +11,17 @@ export async function getBattleSeasonData() {
   );
 
   const monsterId = 10;
-  console.log("getBattleSeasonData ------------------");
-  console.log(await battleLeaderBoard.getBattleSeasonData(0, monsterId));
+  console.log("getBattleSeasonDataByMonsterId ------------------");
+  console.log(
+    await battleLeaderBoard.getBattleSeasonDataByMonsterId(0, monsterId),
+  );
   console.log("getSeasonWinCount ------------------");
   console.log(await battleLeaderBoard.getSeasonWinCount(0, monsterId));
   console.log("getSeasonMatchCount ------------------");
   console.log(await battleLeaderBoard.getSeasonMatchCount(0, monsterId));
 }
 
-getBattleSeasonData().catch((error) => {
+getBattleSeasonDataByMonsterId().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });

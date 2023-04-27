@@ -31,7 +31,10 @@ contract PromptMonsters is
   using SafeERC20 for IERC20;
   IERC20 public mchCoin;
 
+  address public promptMonstersWallet;
+
   uint256 public mintPrice;
+
   string private _externalLink;
 
   mapping(address => mapping(uint256 => uint256)) private _ownerToTokenIdsIndex;
@@ -54,12 +57,14 @@ contract PromptMonsters is
 
   /// @notice Initialize
   /// @param externalLink_ external link
-  /// @param mchCoinAddress MCH Coin address
+  /// @param mchCoinAddress_ MCH Coin address
   /// @param mintPrice_ MCH Coin address
+  /// @param promptMonstersWallet_ prompt monsters wallet
   function initialize(
     string memory externalLink_,
-    address mchCoinAddress,
-    uint256 mintPrice_
+    address mchCoinAddress_,
+    uint256 mintPrice_,
+    address promptMonstersWallet_
   ) public initializer {
     __ERC721_init("Prompt Monsters", "MON");
     __AccessControlEnumerable_init();
@@ -68,8 +73,9 @@ contract PromptMonsters is
 
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     _externalLink = externalLink_;
-    mchCoin = IERC20(mchCoinAddress);
+    mchCoin = IERC20(mchCoinAddress_);
     mintPrice = mintPrice_;
+    promptMonstersWallet = promptMonstersWallet_;
   }
 
   /// @notice Supports interface
@@ -236,6 +242,16 @@ contract PromptMonsters is
     emit SetMintPrice(_msgSender(), oldState, newState_);
   }
 
+  /// @notice Set prompt monsters wallet
+  /// @param newState_ new state
+  function setPromptMonstersWallet(
+    address newState_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    address oldState = promptMonstersWallet;
+    promptMonstersWallet = newState_;
+    emit SetPromptMonstersWallet(_msgSender(), oldState, newState_);
+  }
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
@@ -260,7 +276,7 @@ contract PromptMonsters is
     require(monster.lv > 0, "PromptMonsters: monster is not generated");
     uint256 newTokenId = _monsters.length;
     _monsters.push(monster);
-    mchCoin.safeTransferFrom(msg.sender, address(this), mintPrice);
+    mchCoin.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
     _safeMint(msg.sender, newTokenId);
   }
 

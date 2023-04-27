@@ -48,18 +48,26 @@ interface IPromptMonsters is IERC721Upgradeable {
     uint256 newValue
   );
 
+  event SetPromptMonstersWallet(
+    address indexed publisher,
+    address oldValue,
+    address newValue
+  );
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
 
   /// @notice Initialize
   /// @param externalLink_ external link
-  /// @param mchCoinAddress MCH Coin address
+  /// @param mchCoinAddress_ MCH Coin address
   /// @param mintPrice_ MCH Coin address
+  /// @param promptMonstersWallet_ prompt monsters wallet
   function initialize(
     string memory externalLink_,
-    address mchCoinAddress,
-    uint256 mintPrice_
+    address mchCoinAddress_,
+    uint256 mintPrice_,
+    address promptMonstersWallet_
   ) external;
 
   // --------------------------------------------------------------------------------

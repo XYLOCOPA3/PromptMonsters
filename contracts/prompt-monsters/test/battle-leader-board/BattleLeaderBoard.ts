@@ -52,10 +52,10 @@ describe("BattleLeaderBoard", function () {
       expect(await s1forBattle.getWinCount(0)).to.equal(0);
     });
 
-    // it("BattleS1: getBattleData", async function () {
+    // it("BattleS1: getBattleDataByMonsterId", async function () {
     //   const { battleLeaderBoard, s1forBattle } = await loadFixture(init);
 
-    //   expect(await s1forBattle.getBattleData(0));
+    //   expect(await s1forBattle.getBattleDataByMonsterId(0));
     // });
 
     it("BattleS1: getBattleIdList", async function () {
@@ -106,12 +106,16 @@ describe("BattleLeaderBoard", function () {
         [0],
       );
 
-      let battleSeasonData = await battleLeaderBoard.getBattleSeasonData(0, 0);
+      let battleSeasonData =
+        await battleLeaderBoard.getBattleSeasonDataByMonsterId(0, 0);
 
       expect(battleSeasonData[0].timestamp).not.to.equal(0);
       expect(battleSeasonData[0].battleLog).to.equal(battleLog);
 
-      battleSeasonData = await battleLeaderBoard.getBattleSeasonData(0, 1);
+      battleSeasonData = await battleLeaderBoard.getBattleSeasonDataByMonsterId(
+        0,
+        1,
+      );
 
       expect(battleSeasonData[0].timestamp).not.to.equal(0);
       expect(battleSeasonData[0].battleLog).to.equal(battleLog);

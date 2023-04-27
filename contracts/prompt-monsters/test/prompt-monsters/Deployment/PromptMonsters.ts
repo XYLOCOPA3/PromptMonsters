@@ -7,10 +7,13 @@ import { ethers, upgrades } from "hardhat";
 export async function deployPromptMonsters() {
   const { mchCoin } = await loadFixture(deployMchCoin);
 
+  const [deployer, user1, promptMonstersWallet] = await ethers.getSigners();
+
   const promptMonstersArgs: promptMonstersInitArgs = {
     externalLink: "https://prompt-monsters-jp.azurewebsites.net/",
     mchCoinAddress: mchCoin.address,
     mintPrice: ethers.utils.parseEther("100"),
+    promptMonstersWallet: promptMonstersWallet.address,
   };
 
   const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
@@ -20,6 +23,7 @@ export async function deployPromptMonsters() {
       promptMonstersArgs.externalLink,
       promptMonstersArgs.mchCoinAddress,
       promptMonstersArgs.mintPrice,
+      promptMonstersArgs.promptMonstersWallet,
     ],
     {
       kind: "uups",
@@ -46,4 +50,5 @@ export type promptMonstersInitArgs = {
   externalLink: string;
   mchCoinAddress: string;
   mintPrice: BigNumber;
+  promptMonstersWallet: string;
 };

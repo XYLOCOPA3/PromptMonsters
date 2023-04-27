@@ -37,13 +37,14 @@ describe("PromptMonsters", function () {
   async function init() {
     const { promptMonsters, mchCoin } = await loadFixture(deploy);
 
-    const [deployer, user1] = await ethers.getSigners();
+    const [deployer, user1, promptMonstersWallet] = await ethers.getSigners();
 
     return {
       promptMonsters,
       mchCoin,
       deployer,
       user1,
+      promptMonstersWallet,
     };
   }
 
@@ -203,9 +204,8 @@ describe("PromptMonsters", function () {
 
   describe("Mint", function () {
     it("mint", async function () {
-      const { promptMonsters, mchCoin, deployer, user1 } = await loadFixture(
-        init,
-      );
+      const { promptMonsters, mchCoin, deployer, user1, promptMonstersWallet } =
+        await loadFixture(init);
 
       expect(
         await mchCoin
@@ -261,7 +261,7 @@ describe("PromptMonsters", function () {
 
       expect(await promptMonsters.balanceOf(user1.address)).to.equal(0);
 
-      expect(await mchCoin.balanceOf(promptMonsters.address)).to.equal(
+      expect(await mchCoin.balanceOf(promptMonstersWallet.address)).to.equal(
         ethers.utils.parseEther("0"),
       );
 
@@ -293,7 +293,7 @@ describe("PromptMonsters", function () {
 
       expect(await promptMonsters.balanceOf(user1.address)).to.equal(1);
 
-      expect(await mchCoin.balanceOf(promptMonsters.address)).to.equal(
+      expect(await mchCoin.balanceOf(promptMonstersWallet.address)).to.equal(
         await promptMonsters.mintPrice(),
       );
 

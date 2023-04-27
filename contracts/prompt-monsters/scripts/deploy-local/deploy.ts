@@ -1,4 +1,7 @@
-import { PROMPT_MONSTERS_EXTERNAL_LINK } from "../const";
+import {
+  PROMPT_MONSTERS_EXTERNAL_LINK,
+  PROMPT_MONSTERS_WALLET,
+} from "../const";
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
@@ -43,6 +46,7 @@ async function main() {
       PROMPT_MONSTERS_EXTERNAL_LINK,
       mchCoin.address,
       ethers.utils.parseEther("100"),
+      PROMPT_MONSTERS_WALLET,
     ],
     {
       kind: "uups",
