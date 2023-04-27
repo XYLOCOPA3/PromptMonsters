@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
+import { useMintPriceValue } from "@/hooks/useMintPrice";
 import { useMonsterState } from "@/hooks/useMonster";
 import { useUserValue } from "@/hooks/useUser";
 import { monsterMintedState } from "@/stores/monsterMintedState";
@@ -12,14 +13,14 @@ export type MonsterMintButtonProps = BaseProps;
 
 /**
  * Monster mint button
- * @feature
  * @keit0728
  * @param className Style from parent element
  */
 export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
   const user = useUserValue();
-  const [monster, monsterController] = useMonsterState();
+  const mintPrice = useMintPriceValue();
   const userInit = useRecoilValue(userInitState);
+  const [monster, monsterController] = useMonsterState();
   const [loading, setLoading] = useState(false);
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
 
@@ -47,12 +48,18 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
   return (
     <Button
       disabled={loading}
-      className={clsx("w-[100px]", "h-[40px]", "rounded-full", className)}
+      className={clsx(
+        className,
+        "w-[160px]",
+        "h-[40px]",
+        "text-[12px]",
+        "md:text-[16px]",
+      )}
       variant="secondary"
       loading={loading || !userInit}
       onClick={handleClick}
     >
-      MINT
+      MINT: {mintPrice} MCHC
     </Button>
   );
 };

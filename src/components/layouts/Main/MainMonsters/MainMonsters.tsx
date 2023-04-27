@@ -8,6 +8,7 @@ import {
   MonsterGenerator,
   MonsterMintButton,
 } from "@/features/monster";
+import { PlayNote } from "@/features/note";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import clsx from "clsx";
 import { useRecoilValue } from "recoil";
@@ -22,6 +23,18 @@ export const MainMonsters = () => {
   return (
     <>
       <div className={clsx("flex", "items-center", "flex-col", "mt-[100px]")}>
+        <div
+          className={clsx(
+            "w-[90%]",
+            "my-[30px]",
+            "max-w-[700px]",
+            "flex",
+            "flex-col",
+            "items-center",
+          )}
+        >
+          <PlayNote className={clsx("w-[100%]")} />
+        </div>
         <MonsterGenerator className={clsx("my-[20px]", "w-[300px]")} />
         <div
           className={clsx(
@@ -58,8 +71,9 @@ export const MainMonsters = () => {
           "absolute",
           "top-0",
           "opacity-10",
-          "h-[150%]",
+          "h-[250%]",
           "z-[-1]",
+          "md:h-[150%]",
         )}
         src="/assets/images/bg-arena.png"
         alt="bg-arena"
