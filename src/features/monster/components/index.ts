@@ -6,3 +6,4 @@ export * from "./MonsterFightText";
 export * from "./MonsterGenerator";
 export * from "./MonsterMintButton";
 export * from "./GenerateTweetButton";
+export * from "./MonsterMintPriceInit";
