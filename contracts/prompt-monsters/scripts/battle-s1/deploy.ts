@@ -3,7 +3,7 @@ import { ethers, upgrades } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
-  console.log("--- Start BattleS1 Deploy ------------");
+  console.log("--- Start BattleS1 Deploy -------------------");
   console.log("---------------------------------------------");
   console.log("");
 
@@ -53,12 +53,12 @@ async function main() {
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End BattleS1 Deploy --------------");
+  console.log("--- End BattleS1 Deploy ---------------------");
   console.log("---------------------------------------------");
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- Start set to BattleLeaderBoard Deploy --------------");
+  console.log("--- Start set to BattleLeaderBoard Deploy ---");
   console.log("---------------------------------------------");
 
   const BattleLeaderBoard = await ethers.getContractFactory(
@@ -69,11 +69,13 @@ async function main() {
     BATTLE_LEADER_BOARD_PROXY_ADDRESS,
   );
 
-  await battleLeaderBoard.addBattleSeasonAddress(battleS1Proxy.address);
+  await (
+    await battleLeaderBoard.addBattleSeasonAddress(battleS1Proxy.address)
+  ).wait();
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End set to BattleLeaderBoard Deploy --------------");
+  console.log("--- End set to BattleLeaderBoard Deploy -----");
   console.log("---------------------------------------------");
 }
 

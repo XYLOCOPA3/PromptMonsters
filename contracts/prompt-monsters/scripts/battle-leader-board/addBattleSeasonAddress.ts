@@ -14,7 +14,7 @@ export async function addBattleSeasonAddress() {
 
   console.log("address: ", address);
 
-  (await battleLeaderBoard.addBattleSeasonAddress(address)).wait();
+  await (await battleLeaderBoard.addBattleSeasonAddress(address)).wait();
 }
 
 addBattleSeasonAddress().catch((error) => {

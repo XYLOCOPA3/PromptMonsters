@@ -4,6 +4,7 @@ import { Button } from "@/components/elements/Button";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { MonsterModel } from "@/models/MonsterModel";
 import { BaseProps } from "@/types/BaseProps";
+import { countCharacters, trimCharacters100 } from "@/utils/charUtils";
 import clsx from "clsx";
 
 export type GenerateTweetButtonProps = BaseProps;
@@ -52,22 +53,17 @@ export const GenerateTweetButton = ({
  * @return {string} Generated tweet
  */
 const _getGeneratedTweet = (monster: MonsterModel): string => {
-  const flavors = monster.flavor.split("。");
-  let flavor = "";
-  if (flavors.length == 1) {
-    flavor = monster.flavor.split(".")[0];
-  } else {
-    flavor = flavors[0];
-  }
+  const flavor = trimCharacters100(monster.flavor);
   const skills = monster.skills.join("\n- ");
+
   return `Generated a monster
 
-Name: ${monster.name}
-Flavor: ${flavor}
+${monster.name}
+${flavor}${countCharacters(flavor) > 100 ? "..." : ""}
 Skills:
 - ${skills}
 
-Check Monster's Status here!
+Check Monster here!
 https://prompt-monsters-demo-jp.azurewebsites.net/
 
 #PromptMonsters #Alert`;

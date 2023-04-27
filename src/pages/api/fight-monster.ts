@@ -1,8 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { BattleLeaderBoardContract } from "@/features/battle/api/contracts/BattleLeaderBoardContract";
 import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
 import { RPC_URL } from "@/lib/wallet";
 import { IPromptMonsters } from "@/typechain/PromptMonsters";
+import { parseJson } from "@/utils/jsonParser";
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
@@ -56,6 +58,16 @@ export default async function handler(
     });
     console.log(completion.data.choices);
     console.log(completion.data.usage);
+    const battle = parseJson(completion.data.choices[0].message!.content);
+    const battleLeaderBoard = BattleLeaderBoardContract.instance(
+      RPC_URL.mchVerseTestnet,
+    );
+    await battleLeaderBoard.addBattleSeasonData(
+      0,
+      battle.winnerId,
+      battle.winnerId === monsterId ? enemyId : monsterId,
+      battle.battleDesc,
+    );
     res.status(200).json({ result: completion.data.choices });
   } catch (error) {
     return res.status(400).json({ message: error });

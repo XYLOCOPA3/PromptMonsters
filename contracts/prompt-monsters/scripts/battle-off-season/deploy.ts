@@ -74,7 +74,9 @@ async function main() {
     BATTLE_LEADER_BOARD_PROXY_ADDRESS,
   );
 
-  await battleLeaderBoard.addBattleSeasonAddress(battleOffSeasonProxy.address);
+  await (
+    await battleLeaderBoard.addBattleSeasonAddress(battleOffSeasonProxy.address)
+  ).wait();
 
   console.log("");
   console.log("---------------------------------------------");

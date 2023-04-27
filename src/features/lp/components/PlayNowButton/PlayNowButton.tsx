@@ -26,11 +26,14 @@ export const PlayNowButton = ({ className }: PlayNowButtonProps) => {
       <Button
         className={clsx(
           "w-[40%]",
+          "h-[35px]",
           "py-[5px]",
-          "text-[10px]",
+          "text-[14px]",
           "text-center",
           "font-bold",
           "rounded-[150px]",
+          "md:w-[40%]",
+          "md:h-[40px]",
           "md:text-[20px]",
         )}
       >
