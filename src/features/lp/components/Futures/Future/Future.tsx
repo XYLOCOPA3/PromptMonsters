@@ -18,46 +18,33 @@ export type FutureProps = {
  */
 export const Future = ({ className, title, desc, src }: FutureProps) => {
   return (
-    <div
-      className={clsx(
-        className,
-        "flex",
-        "flex-col",
-        "items-center",
-        "w-[120px]",
-        "md:w-[250px]",
-      )}
-    >
+    <div className={clsx(className, "flex", "flex-col", "items-center")}>
       <Image
-        className={clsx(
-          "w-[100px]",
-          "mb-[10px]",
-          "rounded-2xl",
-          "md:w-[250px]",
-        )}
+        className={clsx("mb-[10px]", "rounded-2xl", "w-[200px]", "md:w-[80%]")}
         src={src}
-        alt="thumbnail"
+        alt="bg-future"
         width={500}
         height={500}
       />
       <div
         className={clsx(
-          "text-[5px]",
-          "w-[100%]",
+          "text-[20px]",
+          "w-[200px]",
           "text-[#EA4E1F]",
           "mb-[5px]",
           "font-bold",
-          "md:text-[15px]",
+          "md:w-[80%]",
+          "md:text-[25px]",
         )}
       >
         {title}
       </div>
       <div
         className={clsx(
-          "text-[3px]",
-          "w-[100%]",
-          "text-justify",
-          "md:text-[10px]",
+          "text-[12px]",
+          "w-[200px]",
+          "md:w-[80%]",
+          "md:text-[15px]",
         )}
       >
         {desc}

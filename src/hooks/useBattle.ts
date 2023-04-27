@@ -27,6 +27,7 @@ export const useBattleController = (): BattleController => {
       BattleModel.create({
         language: battleResult.language,
         battleDesc: battleResult.battleDesc,
+        enemyName: battleResult.enemyName,
         winnerId: battleResult.winnerId,
       }),
     );

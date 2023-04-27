@@ -29,6 +29,7 @@ export const GenerateButton = ({
         "justify-center",
         "items-center",
       )}
+      variant="secondary"
       loading={loading}
       onClick={onClick}
     >

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ListBox } from "@/components/elements/ListBox";
 import { FeatureInput, GenerateButton } from "@/features/monster";
+import { useBattleController } from "@/hooks/useBattle";
 import { useMonsterController } from "@/hooks/useMonster";
 import { useUserValue } from "@/hooks/useUser";
 import { languageState } from "@/stores/languageState";
@@ -26,6 +27,7 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
   const [maxLengthOver, setMaxLengthOver] = useState(false);
   const [language, setLanguage] = useRecoilState(languageState);
   const monsterController = useMonsterController();
+  const battleController = useBattleController();
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,6 +40,7 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
   };
 
   const handleClick = async () => {
+    battleController.reset();
     if (user.id === "") {
       alert("Please connect your wallet to generate a monster.");
       return;
