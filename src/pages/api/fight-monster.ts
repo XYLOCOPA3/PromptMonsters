@@ -93,7 +93,7 @@ const _getFightPrompt = (
   return `m(You): id:${monsterId} name:${monster.name} flavor:${monster.flavor} status: HP:${monster.hp} ATK:${monster.atk} DEF:${monster.def} INT:${monster.inte} MGR:${monster.mgr} AGL:${monster.agl} skills:[${monster.skills}]
 m(Enemy): id:${enemyId} name:${enemy.name} flavor:${enemy.flavor} status: HP:${enemy.hp} ATK:${enemy.atk} DEF:${enemy.def} INT:${enemy.inte} MGR:${enemy.mgr} AGL:${enemy.agl} skills:[${enemy.skills}]
 
-Generate battle results for ${monster.name} and ${enemy.name}. Use "skills", consider status difference impact, write in a novel-style (max 200 chars) & output in JSON.
+Generate battle results for ${monster.name} and ${enemy.name}. Use absolutely "skills", it is impossible to beat a monster with a huge difference in status, write in a novel-style (max 200 chars) & output in JSON.
 key: "language" value: "${language}"
 key: "battleDesc" value: string
 key: "enemyName" value: string

@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Button } from "@/components/elements/Button";
 import { useMintPriceValue } from "@/hooks/useMintPrice";
 import { useMonsterState } from "@/hooks/useMonster";
+import { useOwnedMonstersController } from "@/hooks/useOwnedMonsters";
 import { useUserValue } from "@/hooks/useUser";
 import { monsterMintedState } from "@/stores/monsterMintedState";
+import { selectedMonsterNameState } from "@/stores/selectedMonsterNameState";
 import { userInitState } from "@/stores/userInitState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
@@ -23,6 +25,8 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
   const [monster, monsterController] = useMonsterState();
   const [loading, setLoading] = useState(false);
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
+  const ownedMonstersController = useOwnedMonstersController();
+  const setSelectedMonsterName = useSetRecoilState(selectedMonsterNameState);
 
   /**
    * Click event
@@ -35,7 +39,9 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
         setLoading(false);
         return;
       }
-      await monsterController.mint(user.id, monster);
+      const newMonster = await monsterController.mint(user.id, monster);
+      ownedMonstersController.updateAfterMinted(newMonster);
+      setSelectedMonsterName(newMonster.name);
       setMonsterMinted(true);
     } catch (e) {
       console.error(e);

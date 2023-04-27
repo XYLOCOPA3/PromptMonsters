@@ -3,9 +3,11 @@ import { ListBox } from "@/components/elements/ListBox";
 import { FeatureInput, GenerateButton } from "@/features/monster";
 import { useBattleController } from "@/hooks/useBattle";
 import { useMonsterController } from "@/hooks/useMonster";
+import { useOwnedMonstersController } from "@/hooks/useOwnedMonsters";
 import { useUserValue } from "@/hooks/useUser";
 import { languageState } from "@/stores/languageState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
+import { selectedMonsterNameState } from "@/stores/selectedMonsterNameState";
 import { BaseProps } from "@/types/BaseProps";
 import { countCharacters } from "@/utils/charUtils";
 import clsx from "clsx";
@@ -30,6 +32,8 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
   const monsterController = useMonsterController();
   const battleController = useBattleController();
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
+  const ownedMonstersController = useOwnedMonstersController();
+  const setSelectedMonsterName = useSetRecoilState(selectedMonsterNameState);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (countCharacters(e.target.value) <= maxLength) {
@@ -54,7 +58,13 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
     }
     setLoading(true);
     try {
-      await monsterController.generate(user.id, feature, language);
+      const newMonster = await monsterController.generate(
+        user.id,
+        feature,
+        language,
+      );
+      ownedMonstersController.add(newMonster);
+      setSelectedMonsterName(newMonster.name);
       setMonsterMinted(false);
     } catch (error) {
       setLoading(false);

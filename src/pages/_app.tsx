@@ -2,7 +2,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { mchVerseTestnet } from "@/const/chainParams";
 import { UserInit } from "@/features/auth";
-import { MonsterMintPriceInit } from "@/features/monster";
+import { MonsterMintPriceInit, OwnedMonstersInit } from "@/features/monster";
 import "@/styles/globals.css";
 import {
   EthereumClient,
@@ -270,7 +270,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <RecoilRoot>
         <UserInit>
           <MonsterMintPriceInit>
-            <Component {...pageProps} />
+            <OwnedMonstersInit>
+              <Component {...pageProps} />
+            </OwnedMonstersInit>
           </MonsterMintPriceInit>
         </UserInit>
       </RecoilRoot>
