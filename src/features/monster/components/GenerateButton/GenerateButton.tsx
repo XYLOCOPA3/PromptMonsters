@@ -1,7 +1,9 @@
 import Image from "next/image";
 import { Button } from "@/components/elements/Button";
+import { disableState } from "@/stores/disableState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
+import { useRecoilValue } from "recoil";
 
 export type GenerateButtonProps = {
   loading?: boolean;
@@ -20,6 +22,8 @@ export const GenerateButton = ({
   loading,
   onClick,
 }: GenerateButtonProps) => {
+  const disable = useRecoilValue(disableState);
+
   return (
     <Button
       className={clsx(
@@ -29,6 +33,7 @@ export const GenerateButton = ({
         "justify-center",
         "items-center",
       )}
+      disabled={disable}
       variant="secondary"
       loading={loading}
       onClick={onClick}

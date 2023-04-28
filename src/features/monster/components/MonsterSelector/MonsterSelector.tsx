@@ -4,7 +4,7 @@ import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterController, useMonsterValue } from "@/hooks/useMonster";
 import { useOwnedMonstersValue } from "@/hooks/useOwnedMonsters";
 import { monsterMintedState } from "@/stores/monsterMintedState";
-import { selectedMonsterNameState } from "@/stores/selectedMonsterNameState";
+import { selectedMonsterIdNameState } from "@/stores/selectedMonsterIdNameState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -19,21 +19,23 @@ export type MonsterSelectorProps = BaseProps;
 export const MonsterSelector = ({ className }: MonsterSelectorProps) => {
   const monster = useMonsterValue();
   const ownedMonsters = useOwnedMonstersValue();
-  const [selectedMonsterName, setSelectedMonsterName] = useRecoilState(
-    selectedMonsterNameState,
+  const [selectedMonsterIdName, setSelectedMonsterIdName] = useRecoilState(
+    selectedMonsterIdNameState,
   );
   const monsterController = useMonsterController();
   const battleController = useBattleController();
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
 
   useLayoutEffectOfSSR(() => {
-    setSelectedMonsterName(ownedMonsters[0].name);
+    setSelectedMonsterIdName(
+      `${ownedMonsters[0].name} | ${ownedMonsters[0].id}`,
+    );
   }, []);
 
   useLayoutEffectOfSSR(() => {
-    if (selectedMonsterName === "") return;
+    if (selectedMonsterIdName === "") return;
     const selectedMonster = ownedMonsters.filter(
-      (monster) => monster.name === selectedMonsterName,
+      (monster) => `${monster.name} | ${monster.id}` === selectedMonsterIdName,
     )[0];
     monsterController.set(selectedMonster);
     battleController.reset();
@@ -42,7 +44,7 @@ export const MonsterSelector = ({ className }: MonsterSelectorProps) => {
       return;
     }
     setMonsterMinted(true);
-  }, [selectedMonsterName]);
+  }, [selectedMonsterIdName]);
 
   useLayoutEffectOfSSR(() => {
     if (monster.id === "") {
@@ -56,9 +58,9 @@ export const MonsterSelector = ({ className }: MonsterSelectorProps) => {
   return (
     <ListBox
       className={clsx(className)}
-      selected={selectedMonsterName}
-      setSelected={setSelectedMonsterName}
-      list={ownedMonsters.map((monster) => monster.name)}
+      selected={selectedMonsterIdName}
+      setSelected={setSelectedMonsterIdName}
+      list={ownedMonsters.map((monster) => `${monster.name} | ${monster.id}`)}
     />
   );
 };

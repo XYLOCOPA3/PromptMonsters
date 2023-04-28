@@ -3,11 +3,12 @@ import { ListBox } from "@/components/elements/ListBox";
 import { FeatureInput, GenerateButton } from "@/features/monster";
 import { useBattleController } from "@/hooks/useBattle";
 import { useMonsterController } from "@/hooks/useMonster";
-import { useOwnedMonstersController } from "@/hooks/useOwnedMonsters";
+import { useOwnedMonstersState } from "@/hooks/useOwnedMonsters";
 import { useUserValue } from "@/hooks/useUser";
+import { disableState } from "@/stores/disableState";
 import { languageState } from "@/stores/languageState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
-import { selectedMonsterNameState } from "@/stores/selectedMonsterNameState";
+import { selectedMonsterIdNameState } from "@/stores/selectedMonsterIdNameState";
 import { BaseProps } from "@/types/BaseProps";
 import { countCharacters } from "@/utils/charUtils";
 import clsx from "clsx";
@@ -32,8 +33,11 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
   const monsterController = useMonsterController();
   const battleController = useBattleController();
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
-  const ownedMonstersController = useOwnedMonstersController();
-  const setSelectedMonsterName = useSetRecoilState(selectedMonsterNameState);
+  const [ownedMonsters, ownedMonstersController] = useOwnedMonstersState();
+  const setDisable = useSetRecoilState(disableState);
+  const setSelectedMonsterIdName = useSetRecoilState(
+    selectedMonsterIdNameState,
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (countCharacters(e.target.value) <= maxLength) {
@@ -56,6 +60,7 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
       );
       return;
     }
+    setDisable(true);
     setLoading(true);
     try {
       const newMonster = await monsterController.generate(
@@ -63,11 +68,21 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
         feature,
         language,
       );
-      ownedMonstersController.add(newMonster);
-      setSelectedMonsterName(newMonster.name);
+      const lastMonsterIndex = ownedMonsters.length - 1;
+      if (lastMonsterIndex === -1) {
+        ownedMonstersController.add(newMonster);
+      } else {
+        if (ownedMonsters[lastMonsterIndex].id !== "") {
+          ownedMonstersController.add(newMonster);
+        } else {
+          ownedMonstersController.update(lastMonsterIndex, newMonster);
+        }
+      }
+      setSelectedMonsterIdName(`${newMonster.name} | ${newMonster.id}`);
       setMonsterMinted(false);
     } catch (error) {
       setLoading(false);
+      setDisable(false);
       if (error instanceof Error) {
         alert("Invalid monster name.\n\nReason: " + error.message);
         console.error(error);
@@ -78,6 +93,7 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
       return;
     }
     setLoading(false);
+    setDisable(false);
   };
 
   return (

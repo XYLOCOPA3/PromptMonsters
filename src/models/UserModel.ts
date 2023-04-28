@@ -13,15 +13,8 @@ export class UserModel extends BaseModel<UserId> {
    * ```
    * export const dummyUser = UserModel.create({ id: "dummyId" });
    * ```
-   * @param name user name
-   * @param email email
-   * @param icon icon
    */
-  private constructor(
-    public readonly name: string = "",
-    public readonly email: string = "",
-    public readonly icon: string = "",
-  ) {
+  private constructor() {
     super("");
   }
 

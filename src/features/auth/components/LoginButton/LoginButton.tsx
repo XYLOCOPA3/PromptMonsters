@@ -5,24 +5,21 @@ import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterController } from "@/hooks/useMonster";
 import { useUserController } from "@/hooks/useUser";
 import { monsterMintedState } from "@/stores/monsterMintedState";
-import { userInitState } from "@/stores/userInitState";
 import { BaseProps } from "@/types/BaseProps";
 import { switchNetwork } from "@wagmi/core";
 import { useWeb3Modal } from "@web3modal/react";
 import clsx from "clsx";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { useAccount, useNetwork } from "wagmi";
 
 export type LoginButtonProps = BaseProps;
 
 /**
  * Login button
- * @feature
  * @keit0728
  * @param className Style from parent element
  */
 export const LoginButton = ({ className }: LoginButtonProps) => {
-  const userInit = useRecoilValue(userInitState);
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
   const [loading, setLoading] = useState(false);
   const { address, isConnected } = useAccount();
@@ -46,9 +43,11 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
    */
   const setUserInfo = async () => {
     try {
+      console.log("now: ", chain!.id);
+      console.log("mch: ", mchVerseTestnet.id);
       if (chain!.id !== mchVerseTestnet.id)
         switchNetwork({ chainId: mchVerseTestnet.id });
-      await userController.set(address!);
+      userController.set(address!);
       const isSet = await monsterController.init(address!);
       setMonsterMinted(isSet);
     } catch (e) {
@@ -76,7 +75,7 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
         "md:h-[35px]",
         "md:text-[15px]",
       )}
-      loading={loading || !userInit}
+      loading={loading}
       onClick={handleClick}
     >
       LOGIN

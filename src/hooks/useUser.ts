@@ -3,7 +3,7 @@ import { UserState, userState } from "@/stores/userState";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export interface UserController {
-  set: (address: string) => Promise<void>;
+  set: (address: string) => void;
   reset: () => void;
 }
 
@@ -18,7 +18,7 @@ export const useUserController = (): UserController => {
    * set
    * @param address user address
    */
-  const set = async (address: string): Promise<void> => {
+  const set = (address: string): void => {
     setUser(UserModel.create({ id: address }));
   };
 
