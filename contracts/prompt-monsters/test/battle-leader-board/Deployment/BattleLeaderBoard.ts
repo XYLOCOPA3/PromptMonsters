@@ -19,7 +19,7 @@ export async function deployBattleLeaderBoard() {
   );
 
   const BattleS1 = await ethers.getContractFactory("BattleS1");
-  const s1forBattleProxy = await upgrades.deployProxy(
+  const battleS1Proxy = await upgrades.deployProxy(
     BattleS1,
     [battleLeaderBoard.address],
     {
@@ -27,12 +27,12 @@ export async function deployBattleLeaderBoard() {
       initializer: "initialize",
     },
   );
-  await s1forBattleProxy.deployed();
+  await battleS1Proxy.deployed();
 
-  const s1forBattle = BattleS1.attach(s1forBattleProxy.address);
+  const battleS1 = BattleS1.attach(battleS1Proxy.address);
 
   return {
     battleLeaderBoard,
-    s1forBattle,
+    battleS1,
   };
 }

@@ -10,6 +10,8 @@ interface IBattleSeason {
 
   struct BattleData {
     uint256 timestamp;
+    uint256 winMonsterId;
+    uint256 loseMonsterId;
     string battleLog;
   }
 
@@ -30,7 +32,7 @@ interface IBattleSeason {
   // --------------------------------------------------------------------------------
 
   /// @notice Initialize
-  /// @param battleLeaderBoardAddress PromptMonsters contract address
+  /// @param battleLeaderBoardAddress BattleLeaderBoard contract address
   function initialize(address battleLeaderBoardAddress) external;
 
   // --------------------------------------------------------------------------------

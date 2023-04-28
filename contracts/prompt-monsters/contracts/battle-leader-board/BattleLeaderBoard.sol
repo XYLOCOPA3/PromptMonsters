@@ -124,7 +124,7 @@ contract BattleLeaderBoard is
   /// @notice Get season battle data
   /// @param seasonId ID of the season
   /// @return season battle data
-  function getBattleSeasonData(
+  function getSeasonBattleData(
     uint256 seasonId
   ) external view returns (IBattleSeason.BattleData[] memory) {
     return IBattleSeason(_battleSeasonsAddress[seasonId]).getBattleData();
@@ -134,7 +134,7 @@ contract BattleLeaderBoard is
   /// @param seasonId ID of the season
   /// @param monsterId ID of the monster
   /// @return season battle data
-  function getBattleSeasonDataByMonsterId(
+  function getSeasonBattleDataByMonsterId(
     uint256 seasonId,
     uint256 monsterId
   ) external view returns (IBattleSeason.BattleData[] memory) {
@@ -181,7 +181,7 @@ contract BattleLeaderBoard is
   /// @param winMonsterId ID of the win monster
   /// @param loseMonsterId ID of the lose monster
   /// @param battleLog Battle log
-  function addBattleSeasonData(
+  function addSeasonBattleData(
     uint256 seasonId,
     uint256 winMonsterId,
     uint256 loseMonsterId,

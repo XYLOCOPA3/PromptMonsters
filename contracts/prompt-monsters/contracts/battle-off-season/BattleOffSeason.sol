@@ -38,7 +38,7 @@ contract BattleOffSeason is
   }
 
   /// @notice Initialize
-  /// @param battleLeaderBoardAddress PromptMonsters contract address
+  /// @param battleLeaderBoardAddress BattleLeaderBoard contract address
   function initialize(address battleLeaderBoardAddress) public initializer {
     __AccessControlEnumerable_init();
     __UUPSUpgradeable_init();
@@ -154,7 +154,12 @@ contract BattleOffSeason is
     ++winCount[winMonsterId];
 
     battleData.push(
-      BattleData({timestamp: block.timestamp, battleLog: battleLog})
+      BattleData({
+        timestamp: block.timestamp,
+        winMonsterId: winMonsterId,
+        loseMonsterId: loseMonsterId,
+        battleLog: battleLog
+      })
     );
 
     uint256 battleId = battleData.length - 1;

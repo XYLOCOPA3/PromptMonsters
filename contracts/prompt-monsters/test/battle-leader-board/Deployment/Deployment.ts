@@ -2,12 +2,12 @@ import { deployBattleLeaderBoard } from "./BattleLeaderBoard";
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 
 export async function deploy() {
-  const { battleLeaderBoard, s1forBattle } = await loadFixture(
+  const { battleLeaderBoard, battleS1 } = await loadFixture(
     deployBattleLeaderBoard,
   );
 
   return {
     battleLeaderBoard,
-    s1forBattle,
+    battleS1,
   };
 }
