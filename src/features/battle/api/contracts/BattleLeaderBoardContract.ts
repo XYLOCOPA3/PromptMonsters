@@ -25,21 +25,21 @@ export class BattleLeaderBoardContract {
   }
 
   /**
-   * addBattleSeasonData
+   * addSeasonBattleData
    * @param seasonId season id
    * @param winMonsterId win monster id
    * @param loseMonsterId lose monster ids
    * @param battleLog battle log
    * @return {Promise<ethers.ContractReceipt>} contract receipt
    */
-  addBattleSeasonData = async (
+  addSeasonBattleData = async (
     seasonId: number,
     winMonsterId: string,
     loseMonsterId: string,
     battleLog: string,
   ): Promise<ethers.ContractReceipt> => {
     return await (
-      await this._battleLeaderBoard.addBattleSeasonData(
+      await this._battleLeaderBoard.addSeasonBattleData(
         seasonId,
         Number(winMonsterId),
         Number(loseMonsterId),

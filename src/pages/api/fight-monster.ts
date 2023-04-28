@@ -62,7 +62,7 @@ export default async function handler(
     const battleLeaderBoard = BattleLeaderBoardContract.instance(
       RPC_URL.mchVerseTestnet,
     );
-    await battleLeaderBoard.addBattleSeasonData(
+    await battleLeaderBoard.addSeasonBattleData(
       0,
       battle.winnerId,
       battle.winnerId === monsterId ? enemyId : monsterId,
