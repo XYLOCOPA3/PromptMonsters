@@ -6,7 +6,7 @@
     "predev": "npm run format && npm run move-abi",
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node_modules/next/dist/bin/next start",
     "lint": "next lint",
     "format": "prettier --write '**/*.js' '**/*.ts' '**/*.tsx' '**/*.json' '**/*.yml' '**/*.sol' --ignore-path .gitignore && npm run lint",
     "typechain": "typechain --target ethers-v5 artifacts/*.json --out-dir src/typechain",
