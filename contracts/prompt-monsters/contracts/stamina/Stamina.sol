@@ -20,11 +20,15 @@ contract Stamina is
   // State
   // --------------------------------------------------------------------------------
 
+  bytes32 public GAME_ROLE;
+
   IPromptMonsters public promptMonsters;
 
-  mapping(uint256 => uint256) public timeStd;
+  uint256 public staminaLimit;
 
-  // mapping(uint256 => uint256) public staminaLimit;
+  uint256 public staminaRecoveryTime;
+
+  mapping(uint256 => uint256) public timeStd;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -42,8 +46,15 @@ contract Stamina is
     __AccessControlEnumerable_init();
     __UUPSUpgradeable_init();
 
-    _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     promptMonsters = IPromptMonsters(promptMonstersAddress);
+
+    staminaLimit = 100;
+    staminaRecoveryTime = 300;
+
+    GAME_ROLE = keccak256("GAME_ROLE");
+
+    _grantRole(GAME_ROLE, msg.sender);
+    _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
   }
 
   // --------------------------------------------------------------------------------
@@ -82,7 +93,24 @@ contract Stamina is
     uint256 monsterId,
     uint256 _timeStd
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    promptMonsters.checkMonsterId(monsterId);
     timeStd[monsterId] = _timeStd;
+  }
+
+  /// @notice Set stamina limit
+  /// @param _staminaLimit stamina limit
+  function setStaminaLimit(
+    uint256 _staminaLimit
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    staminaLimit = _staminaLimit;
+  }
+
+  /// @notice Set stamina recovery time
+  /// @param _staminaRecoveryTime stamina recovery time
+  function setStaminaRecoveryTime(
+    uint256 _staminaRecoveryTime
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    staminaRecoveryTime = _staminaRecoveryTime;
   }
 
   // --------------------------------------------------------------------------------
@@ -95,12 +123,13 @@ contract Stamina is
   function calculateStamina(uint256 monsterId) public view returns (uint256) {
     uint256 timeStdOfMonster = timeStd[monsterId];
     uint256 stamina;
+    uint256 _staminaLimit = staminaLimit;
 
     if (timeStdOfMonster != 0) {
-      stamina = (block.timestamp - timeStdOfMonster) / 300;
+      stamina = (block.timestamp - timeStdOfMonster) / staminaRecoveryTime;
 
-      if (stamina > 100) {
-        stamina = 100;
+      if (stamina > _staminaLimit) {
+        stamina = _staminaLimit;
       }
     } else {
       stamina = 1;
@@ -115,18 +144,32 @@ contract Stamina is
   function consumeStamina(
     uint256 monsterId,
     uint256 consumedStamina
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  ) external onlyRole(GAME_ROLE) {
+    promptMonsters.checkMonsterId(monsterId);
+
     uint256 stamina = calculateStamina(monsterId);
     require(stamina > 0, "Stamina: stamina is 0");
 
-    uint256 newTimeStd = 0;
-    if (stamina >= 100) {
-      newTimeStd = block.timestamp - ((100 - consumedStamina) * 300);
-    } else {
-      newTimeStd = timeStd[monsterId] + (300 * consumedStamina);
-    }
+    uint256 _staminaLimit = staminaLimit;
+    uint256 _staminaRecoveryTime = staminaRecoveryTime;
 
-    timeStd[monsterId] = newTimeStd;
+    if (timeStd[monsterId] != 0) {
+      uint256 newTimeStd;
+
+      if (stamina >= _staminaLimit) {
+        newTimeStd =
+          block.timestamp -
+          ((_staminaLimit - consumedStamina) * 300);
+      } else {
+        newTimeStd =
+          timeStd[monsterId] +
+          (_staminaRecoveryTime * consumedStamina);
+      }
+
+      timeStd[monsterId] = newTimeStd;
+    } else {
+      timeStd[monsterId] = block.timestamp;
+    }
   }
 
   // --------------------------------------------------------------------------------

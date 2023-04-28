@@ -1,4 +1,4 @@
-import { BATTLE_LEADER_BOARD_PROXY_ADDRESS } from "../const";
+import { BATTLE_PROXY_ADDRESS, PROMPT_MONSTERS_PROXY_ADDRESS } from "../const";
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
@@ -17,7 +17,7 @@ async function main() {
   const BattleOffSeason = await ethers.getContractFactory("BattleOffSeason");
   const battleOffSeasonProxy = await upgrades.deployProxy(
     BattleOffSeason,
-    [BATTLE_LEADER_BOARD_PROXY_ADDRESS],
+    [PROMPT_MONSTERS_PROXY_ADDRESS, BATTLE_PROXY_ADDRESS],
     {
       kind: "uups",
       initializer: "initialize",
@@ -63,24 +63,20 @@ async function main() {
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- Start set to BattleLeaderBoard Deploy --------------");
+  console.log("--- Start set to Battle --------------");
   console.log("---------------------------------------------");
 
-  const BattleLeaderBoard = await ethers.getContractFactory(
-    "BattleLeaderBoard",
-  );
+  const Battle = await ethers.getContractFactory("Battle");
 
-  const battleLeaderBoard = BattleLeaderBoard.attach(
-    BATTLE_LEADER_BOARD_PROXY_ADDRESS,
-  );
+  const battle = Battle.attach(BATTLE_PROXY_ADDRESS);
 
   await (
-    await battleLeaderBoard.addBattleSeasonAddress(battleOffSeasonProxy.address)
+    await battle.addBattleSeasonAddress(battleOffSeasonProxy.address)
   ).wait();
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End set to BattleLeaderBoard Deploy --------------");
+  console.log("--- End set to Battle --------------");
   console.log("---------------------------------------------");
 }
 

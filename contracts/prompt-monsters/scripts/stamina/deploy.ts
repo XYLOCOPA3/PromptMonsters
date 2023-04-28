@@ -1,8 +1,9 @@
+import { PROMPT_MONSTERS_PROXY_ADDRESS } from "../const";
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
-  console.log("--- Start BattleLeaderBoard Deploy ----------");
+  console.log("--- Start Stamina Deploy ------------");
   console.log("---------------------------------------------");
   console.log("");
 
@@ -13,27 +14,20 @@ async function main() {
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const BattleLeaderBoard = await ethers.getContractFactory(
-    "BattleLeaderBoard",
-  );
-  const battleLeaderBoardProxy = await upgrades.deployProxy(
-    BattleLeaderBoard,
-    [],
+  const Stamina = await ethers.getContractFactory("Stamina");
+  const staminaProxy = await upgrades.deployProxy(
+    Stamina,
+    [PROMPT_MONSTERS_PROXY_ADDRESS],
     {
       kind: "uups",
       initializer: "initialize",
     },
   );
-  await battleLeaderBoardProxy.deployed();
+  await staminaProxy.deployed();
+  console.log("Deployed StaminaProxy address: ", staminaProxy.address);
   console.log(
-    "Deployed BattleLeaderBoardProxy address: ",
-    battleLeaderBoardProxy.address,
-  );
-  console.log(
-    "BattleLeaderBoard implementation deployed to:",
-    await upgrades.erc1967.getImplementationAddress(
-      battleLeaderBoardProxy.address,
-    ),
+    "Stamina implementation deployed to:",
+    await upgrades.erc1967.getImplementationAddress(staminaProxy.address),
   );
 
   console.log("Completed deployment");
@@ -48,7 +42,7 @@ async function main() {
 
   // try {
   //   await run("verify:verify", {
-  //     address: battleLeaderBoardProxy.address,
+  //     address: staminaProxy.address,
   //     constructorArguments: [],
   //   });
   // } catch (e) {
@@ -59,7 +53,7 @@ async function main() {
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End BattleLeaderBoard Deploy ------------");
+  console.log("--- End Stamina Deploy --------------");
   console.log("---------------------------------------------");
 }
 

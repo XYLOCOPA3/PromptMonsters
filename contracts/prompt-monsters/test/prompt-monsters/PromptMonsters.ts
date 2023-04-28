@@ -35,13 +35,13 @@ const WaterMonsterDetails = {
 
 describe("PromptMonsters", function () {
   async function init() {
-    const { promptMonsters, mchCoin } = await loadFixture(deploy);
+    const { promptMonsters, erc20 } = await loadFixture(deploy);
 
     const [deployer, user1, promptMonstersWallet] = await ethers.getSigners();
 
     return {
       promptMonsters,
-      mchCoin,
+      erc20,
       deployer,
       user1,
       promptMonstersWallet,
@@ -50,7 +50,7 @@ describe("PromptMonsters", function () {
 
   describe("Deployment", function () {
     it("deploy", async function () {
-      const { promptMonsters, mchCoin, deployer, user1 } = await loadFixture(
+      const { promptMonsters, erc20, deployer, user1 } = await loadFixture(
         init,
       );
 
@@ -58,16 +58,16 @@ describe("PromptMonsters", function () {
         ethers.constants.AddressZero,
         "zero address",
       );
-      expect(mchCoin.address).to.not.equal(
+      expect(erc20.address).to.not.equal(
         ethers.constants.AddressZero,
         "zero address",
       );
     });
 
-    it("mchCoin Address", async function () {
-      const { promptMonsters, mchCoin } = await loadFixture(init);
+    it("erc20 Address", async function () {
+      const { promptMonsters, erc20 } = await loadFixture(init);
 
-      expect(await promptMonsters.mchCoin()).to.equal(mchCoin.address);
+      expect(await promptMonsters.erc20()).to.equal(erc20.address);
     });
 
     it("mintPrice", async function () {
@@ -81,7 +81,7 @@ describe("PromptMonsters", function () {
 
   describe("Setter", function () {
     it("setExternalLink", async function () {
-      const { promptMonsters, mchCoin, deployer, user1 } = await loadFixture(
+      const { promptMonsters, erc20, deployer, user1 } = await loadFixture(
         init,
       );
 
@@ -90,20 +90,20 @@ describe("PromptMonsters", function () {
       ).not.to.be.reverted;
     });
 
-    it("setMchCoin", async function () {
-      const { promptMonsters, mchCoin, deployer, user1 } = await loadFixture(
+    it("setErc20", async function () {
+      const { promptMonsters, erc20, deployer, user1 } = await loadFixture(
         init,
       );
 
-      expect(await promptMonsters.mchCoin()).not.to.equal(user1.address);
+      expect(await promptMonsters.erc20()).not.to.equal(user1.address);
 
-      await expect(promptMonsters.setMchCoin(user1.address)).not.to.be.reverted;
+      await expect(promptMonsters.setErc20(user1.address)).not.to.be.reverted;
 
-      expect(await promptMonsters.mchCoin()).to.equal(user1.address);
+      expect(await promptMonsters.erc20()).to.equal(user1.address);
     });
 
     it("setMintPrice", async function () {
-      const { promptMonsters, mchCoin, deployer, user1 } = await loadFixture(
+      const { promptMonsters, erc20, deployer, user1 } = await loadFixture(
         init,
       );
 
@@ -122,7 +122,7 @@ describe("PromptMonsters", function () {
 
   describe("Main Logic", function () {
     it("generateMonster 1st", async function () {
-      const { promptMonsters, mchCoin, deployer, user1 } = await loadFixture(
+      const { promptMonsters, erc20, deployer, user1 } = await loadFixture(
         init,
       );
 
@@ -153,7 +153,7 @@ describe("PromptMonsters", function () {
     });
 
     it("generateMonster 2nd", async function () {
-      const { promptMonsters, mchCoin, deployer, user1 } = await loadFixture(
+      const { promptMonsters, erc20, deployer, user1 } = await loadFixture(
         init,
       );
 
@@ -190,7 +190,7 @@ describe("PromptMonsters", function () {
     });
 
     it("Should revert with non admin", async function () {
-      const { promptMonsters, mchCoin, deployer, user1 } = await loadFixture(
+      const { promptMonsters, erc20, deployer, user1 } = await loadFixture(
         init,
       );
 
@@ -204,17 +204,17 @@ describe("PromptMonsters", function () {
 
   describe("Mint", function () {
     it("mint", async function () {
-      const { promptMonsters, mchCoin, deployer, user1, promptMonstersWallet } =
+      const { promptMonsters, erc20, deployer, user1, promptMonstersWallet } =
         await loadFixture(init);
 
       expect(
-        await mchCoin
+        await erc20
           .connect(deployer)
           .transfer(user1.address, ethers.utils.parseEther("10000")),
       ).not.to.be.reverted;
 
       expect(
-        (await mchCoin.balanceOf(user1.address)).gt(
+        (await erc20.balanceOf(user1.address)).gt(
           await promptMonsters.mintPrice(),
         ),
       ).to.be.true;
@@ -226,7 +226,7 @@ describe("PromptMonsters", function () {
       ).not.to.be.reverted;
 
       await expect(
-        mchCoin
+        erc20
           .connect(user1)
           .increaseAllowance(
             promptMonsters.address,
@@ -261,7 +261,7 @@ describe("PromptMonsters", function () {
 
       expect(await promptMonsters.balanceOf(user1.address)).to.equal(0);
 
-      expect(await mchCoin.balanceOf(promptMonstersWallet.address)).to.equal(
+      expect(await erc20.balanceOf(promptMonstersWallet.address)).to.equal(
         ethers.utils.parseEther("0"),
       );
 
@@ -293,7 +293,7 @@ describe("PromptMonsters", function () {
 
       expect(await promptMonsters.balanceOf(user1.address)).to.equal(1);
 
-      expect(await mchCoin.balanceOf(promptMonstersWallet.address)).to.equal(
+      expect(await erc20.balanceOf(promptMonstersWallet.address)).to.equal(
         await promptMonsters.mintPrice(),
       );
 
@@ -319,12 +319,12 @@ describe("PromptMonsters", function () {
     });
 
     it("should revert not enough tokens", async function () {
-      const { promptMonsters, mchCoin, deployer, user1 } = await loadFixture(
+      const { promptMonsters, erc20, deployer, user1 } = await loadFixture(
         init,
       );
 
       expect(
-        (await mchCoin.balanceOf(user1.address)).lt(
+        (await erc20.balanceOf(user1.address)).lt(
           await promptMonsters.mintPrice(),
         ),
       ).to.be.true;

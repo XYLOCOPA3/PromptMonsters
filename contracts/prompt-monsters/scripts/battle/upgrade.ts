@@ -1,9 +1,9 @@
-import { BATTLE_LEADER_BOARD_PROXY_ADDRESS } from "../const";
+import { BATTLE_PROXY_ADDRESS } from "../const";
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
-  console.log("--- Start BattleLeaderBoard Upgrade ---------");
+  console.log("--- Start Battle Upgrade ---------");
   console.log("---------------------------------------------");
   console.log("");
 
@@ -13,24 +13,14 @@ async function main() {
 
   const [deployer] = await ethers.getSigners();
   console.log("Upgrading contracts with account: ", deployer.address);
-  console.log(
-    "Upgrade BattleLeaderBoardProxy address: ",
-    BATTLE_LEADER_BOARD_PROXY_ADDRESS,
-  );
+  console.log("Upgrade BattleProxy address: ", BATTLE_PROXY_ADDRESS);
 
-  const BattleLeaderBoard = await ethers.getContractFactory(
-    "BattleLeaderBoard",
-  );
-  const battleLeaderBoardProxy = await upgrades.upgradeProxy(
-    BATTLE_LEADER_BOARD_PROXY_ADDRESS,
-    BattleLeaderBoard,
-  );
-  await battleLeaderBoardProxy.deployed();
+  const Battle = await ethers.getContractFactory("Battle");
+  const battleProxy = await upgrades.upgradeProxy(BATTLE_PROXY_ADDRESS, Battle);
+  await battleProxy.deployed();
   console.log(
-    "Upgraded BattleLeaderBoard implementation:",
-    await upgrades.erc1967.getImplementationAddress(
-      BATTLE_LEADER_BOARD_PROXY_ADDRESS,
-    ),
+    "Upgraded Battle implementation:",
+    await upgrades.erc1967.getImplementationAddress(BATTLE_PROXY_ADDRESS),
   );
 
   console.log("Completed upgrade");
@@ -45,7 +35,7 @@ async function main() {
 
   // try {
   //   await run("verify:verify", {
-  //     address: BATTLE_LEADER_BOARD_PROXY_ADDRESS,
+  //     address: BATTLE_PROXY_ADDRESS,
   //     constructorArguments: [],
   //   });
   // } catch (e) {
@@ -56,7 +46,7 @@ async function main() {
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End BattleLeaderBoard Upgrade -----------");
+  console.log("--- End Battle Upgrade -----------");
   console.log("---------------------------------------------");
 }
 

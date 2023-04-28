@@ -29,7 +29,7 @@ contract PromptMonsters is
   // State
   // --------------------------------------------------------------------------------
   using SafeERC20 for IERC20;
-  IERC20 public mchCoin;
+  IERC20 public erc20;
 
   address public promptMonstersWallet;
 
@@ -57,12 +57,12 @@ contract PromptMonsters is
 
   /// @notice Initialize
   /// @param externalLink_ external link
-  /// @param mchCoinAddress_ MCH Coin address
+  /// @param erc20Address_ MCH Coin address
   /// @param mintPrice_ MCH Coin address
   /// @param promptMonstersWallet_ prompt monsters wallet
   function initialize(
     string memory externalLink_,
-    address mchCoinAddress_,
+    address erc20Address_,
     uint256 mintPrice_,
     address promptMonstersWallet_
   ) public initializer {
@@ -73,7 +73,7 @@ contract PromptMonsters is
 
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     _externalLink = externalLink_;
-    mchCoin = IERC20(mchCoinAddress_);
+    erc20 = IERC20(erc20Address_);
     mintPrice = mintPrice_;
     promptMonstersWallet = promptMonstersWallet_;
   }
@@ -226,10 +226,10 @@ contract PromptMonsters is
 
   /// @notice Set MCH Coin address
   /// @param newState_ new state
-  function setMchCoin(address newState_) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    address oldState = address(mchCoin);
-    mchCoin = IERC20(newState_);
-    emit SetMchCoin(_msgSender(), oldState, newState_);
+  function setErc20(address newState_) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    address oldState = address(erc20);
+    erc20 = IERC20(newState_);
+    emit SetErc20(_msgSender(), oldState, newState_);
   }
 
   /// @notice Set mint price
@@ -269,14 +269,14 @@ contract PromptMonsters is
   /// @notice Mint monster
   function mint() external {
     require(
-      mchCoin.balanceOf(msg.sender) >= mintPrice,
+      erc20.balanceOf(msg.sender) >= mintPrice,
       "PromptMonsters: insufficient MCH Coin balance"
     );
     IPromptMonsters.Monster memory monster = _monsterHistory[msg.sender];
     require(monster.lv > 0, "PromptMonsters: monster is not generated");
     uint256 newTokenId = _monsters.length;
     _monsters.push(monster);
-    mchCoin.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
+    erc20.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
     _safeMint(msg.sender, newTokenId);
   }
 
@@ -290,6 +290,12 @@ contract PromptMonsters is
       getRoleMember(DEFAULT_ADMIN_ROLE, 0),
       tokenId_
     );
+  }
+
+  /// @notice Check monster ID
+  /// @param monsterId monster ID
+  function checkMonsterId(uint256 monsterId) external view {
+    require(_exists(monsterId), "PromptMonsters: monster does not exist");
   }
 
   // --------------------------------------------------------------------------------

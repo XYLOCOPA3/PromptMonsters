@@ -11,9 +11,9 @@
     "format": "prettier --write '**/*.js' '**/*.ts' '**/*.tsx' '**/*.json' '**/*.yml' '**/*.sol' --ignore-path .gitignore && npm run lint",
     "typechain": "typechain --target ethers-v5 artifacts/*.json --out-dir src/typechain",
     "premove-abi": "cd contracts/prompt-monsters && npm run compile",
-    "move-abi-battle-leader-board": "rm -rf artifacts/BattleLeaderBoard.json && cd contracts/prompt-monsters && cp -rf artifacts/contracts/battle-leader-board/BattleLeaderBoard.sol/BattleLeaderBoard.json ../../artifacts/BattleLeaderBoard.json",
+    "move-abi-battle": "rm -rf artifacts/Battle.json && cd contracts/prompt-monsters && cp -rf artifacts/contracts/battle/Battle.sol/Battle.json ../../artifacts/Battle.json",
     "move-abi-prompt-monsters": "rm -rf artifacts/PromptMonsters.json && cd contracts/prompt-monsters && cp -rf artifacts/contracts/prompt-monsters/PromptMonsters.sol/PromptMonsters.json ../../artifacts/PromptMonsters.json",
-    "move-abi": "npm run move-abi-prompt-monsters && npm run move-abi-battle-leader-board",
+    "move-abi": "npm run move-abi-prompt-monsters && npm run move-abi-battle",
     "postmove-abi": "npm run typechain"
   },
   "dependencies": {

@@ -36,11 +36,7 @@ interface IPromptMonsters is IERC721Upgradeable {
     string newValue
   );
 
-  event SetMchCoin(
-    address indexed publisher,
-    address oldValue,
-    address newValue
-  );
+  event SetErc20(address indexed publisher, address oldValue, address newValue);
 
   event SetMintPrice(
     address indexed publisher,
@@ -60,12 +56,12 @@ interface IPromptMonsters is IERC721Upgradeable {
 
   /// @notice Initialize
   /// @param externalLink_ external link
-  /// @param mchCoinAddress_ MCH Coin address
+  /// @param erc20Address_ MCH Coin address
   /// @param mintPrice_ MCH Coin address
   /// @param promptMonstersWallet_ prompt monsters wallet
   function initialize(
     string memory externalLink_,
-    address mchCoinAddress_,
+    address erc20Address_,
     uint256 mintPrice_,
     address promptMonstersWallet_
   ) external;
@@ -126,4 +122,8 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @notice Burn
   /// @param tokenId_ token ID
   function burn(uint256 tokenId_) external;
+
+  /// @notice Check monster ID
+  /// @param monsterId monster ID
+  function checkMonsterId(uint256 monsterId) external view;
 }

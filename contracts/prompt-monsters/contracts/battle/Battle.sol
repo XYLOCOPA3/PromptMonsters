@@ -6,10 +6,12 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
 import {IBattleSeason} from "../interfaces/IBattleSeason.sol";
+import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
+import {IStamina} from "../stamina/IStamina.sol";
 
-/// @title BattleLeaderBoard
-/// @notice This is a contract of BattleLeaderBoard.
-contract BattleLeaderBoard is
+/// @title Battle
+/// @notice This is a contract of Battle.
+contract Battle is
   Initializable,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
@@ -17,6 +19,9 @@ contract BattleLeaderBoard is
   // --------------------------------------------------------------------------------
   // State
   // --------------------------------------------------------------------------------
+
+  IPromptMonsters public promptMonsters;
+  IStamina public stamina;
 
   address[] private _battleSeasonsAddress;
 
@@ -31,9 +36,17 @@ contract BattleLeaderBoard is
   }
 
   /// @notice Initializeaddress
-  function initialize() public initializer {
+  /// @param promptMonstersAddress PromptMonsters contract address
+  /// @param staminaAddress Stamina contract address
+  function initialize(
+    address promptMonstersAddress,
+    address staminaAddress
+  ) public initializer {
     __AccessControlEnumerable_init();
     __UUPSUpgradeable_init();
+
+    promptMonsters = IPromptMonsters(promptMonstersAddress);
+    stamina = IStamina(staminaAddress);
 
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
   }
@@ -172,6 +185,14 @@ contract BattleLeaderBoard is
     _battleSeasonsAddress[seasonId] = battleSeasonAddress;
   }
 
+  /// @notice Set promptMonstersAddress
+  /// @param promptMonstersAddress address of promptMonsters
+  function setPromptMonstersAddress(
+    address promptMonstersAddress
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    promptMonsters = IPromptMonsters(promptMonstersAddress);
+  }
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
@@ -187,11 +208,33 @@ contract BattleLeaderBoard is
     uint256 loseMonsterId,
     string memory battleLog
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    promptMonsters.checkMonsterId(winMonsterId);
+    promptMonsters.checkMonsterId(loseMonsterId);
+
     IBattleSeason(_battleSeasonsAddress[seasonId]).addBattleData(
       winMonsterId,
       loseMonsterId,
       battleLog
     );
+  }
+
+  /// @notice Calculate stamina of battle
+  /// @param monsterId ID of the monster
+  /// @return stamina
+  function calculateStamina(uint256 monsterId) external view returns (uint256) {
+    return stamina.calculateStamina(monsterId);
+  }
+
+  /// @notice Consume stamina
+  /// @param monsterId ID of the monster
+  /// @param consumedStamina stamina to consume
+  function consumeStamina(
+    uint256 monsterId,
+    uint256 consumedStamina
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    promptMonsters.checkMonsterId(monsterId);
+
+    stamina.consumeStamina(monsterId, consumedStamina);
   }
 
   // --------------------------------------------------------------------------------

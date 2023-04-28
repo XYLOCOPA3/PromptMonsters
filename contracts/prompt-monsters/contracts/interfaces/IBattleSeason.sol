@@ -32,8 +32,12 @@ interface IBattleSeason {
   // --------------------------------------------------------------------------------
 
   /// @notice Initialize
-  /// @param battleLeaderBoardAddress BattleLeaderBoard contract address
-  function initialize(address battleLeaderBoardAddress) external;
+  /// @param promptMonstersAddress PromptMonsters contract address
+  /// @param battleAddress Battle contract address
+  function initialize(
+    address promptMonstersAddress,
+    address battleAddress
+  ) external;
 
   // --------------------------------------------------------------------------------
   // Getter

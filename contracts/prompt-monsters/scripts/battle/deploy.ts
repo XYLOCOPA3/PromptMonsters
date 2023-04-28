@@ -1,9 +1,13 @@
-import { BATTLE_PROXY_ADDRESS, PROMPT_MONSTERS_PROXY_ADDRESS } from "../const";
+import {
+  BATTLE_PROXY_ADDRESS,
+  PROMPT_MONSTERS_PROXY_ADDRESS,
+  STAMINA_PROXY_ADDRESS,
+} from "../const";
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
-  console.log("--- Start BattleS1 Deploy -------------------");
+  console.log("--- Start Battle Deploy ---------------------");
   console.log("---------------------------------------------");
   console.log("");
 
@@ -14,20 +18,20 @@ async function main() {
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const BattleS1 = await ethers.getContractFactory("BattleS1");
-  const battleS1Proxy = await upgrades.deployProxy(
-    BattleS1,
-    [PROMPT_MONSTERS_PROXY_ADDRESS, BATTLE_PROXY_ADDRESS],
+  const Battle = await ethers.getContractFactory("Battle");
+  const battleProxy = await upgrades.deployProxy(
+    Battle,
+    [PROMPT_MONSTERS_PROXY_ADDRESS, STAMINA_PROXY_ADDRESS],
     {
       kind: "uups",
       initializer: "initialize",
     },
   );
-  await battleS1Proxy.deployed();
-  console.log("Deployed BattleS1Proxy address: ", battleS1Proxy.address);
+  await battleProxy.deployed();
+  console.log("Deployed BattleProxy address: ", battleProxy.address);
   console.log(
-    "BattleS1 implementation deployed to:",
-    await upgrades.erc1967.getImplementationAddress(battleS1Proxy.address),
+    "Battle implementation deployed to:",
+    await upgrades.erc1967.getImplementationAddress(battleProxy.address),
   );
 
   console.log("Completed deployment");
@@ -42,7 +46,7 @@ async function main() {
 
   // try {
   //   await run("verify:verify", {
-  //     address: battleS1Proxy.address,
+  //     address: battleProxy.address,
   //     constructorArguments: [],
   //   });
   // } catch (e) {
@@ -53,23 +57,25 @@ async function main() {
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End BattleS1 Deploy ---------------------");
+  console.log("--- End Battle Deploy -----------------------");
   console.log("---------------------------------------------");
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- Start set to Battle Deploy ---");
+  console.log("--- Start set to Stamina --------------------");
   console.log("---------------------------------------------");
 
-  const Battle = await ethers.getContractFactory("Battle");
+  const Stamina = await ethers.getContractFactory("Stamina");
 
-  const battle = Battle.attach(BATTLE_PROXY_ADDRESS);
+  const stamina = Stamina.attach(BATTLE_PROXY_ADDRESS);
 
-  await (await battle.addBattleSeasonAddress(battleS1Proxy.address)).wait();
+  await (
+    await stamina.grantRole(ethers.utils.id("GAME_ROLE"), battleProxy.address)
+  ).wait();
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End set to Battle Deploy -----");
+  console.log("--- End set to Stamina ----------------------");
   console.log("---------------------------------------------");
 }
 

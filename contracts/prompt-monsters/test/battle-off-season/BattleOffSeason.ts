@@ -5,12 +5,12 @@ import { ethers } from "hardhat";
 
 describe("BattleOffSeason", function () {
   async function init() {
-    const { battleOffSeason, battleLeaderBoard } = await loadFixture(deploy);
+    const { battleOffSeason, battle } = await loadFixture(deploy);
 
     const [deployer, user1] = await ethers.getSigners();
 
     return {
-      battleLeaderBoard,
+      battle,
       battleOffSeason,
       deployer,
       user1,
@@ -19,9 +19,9 @@ describe("BattleOffSeason", function () {
 
   describe("Deployment", function () {
     it("deploy", async function () {
-      const { battleLeaderBoard, battleOffSeason } = await loadFixture(init);
+      const { battle, battleOffSeason } = await loadFixture(init);
 
-      expect(battleLeaderBoard.address).to.not.equal(
+      expect(battle.address).to.not.equal(
         ethers.constants.AddressZero,
         "zero address",
       );
@@ -31,12 +31,12 @@ describe("BattleOffSeason", function () {
       );
     });
 
-    it("BattleOffSeason: BattleLeaderBoard Address", async function () {
-      const { battleLeaderBoard, battleOffSeason } = await loadFixture(init);
+    it("BattleOffSeason: Battle Address", async function () {
+      const { battle, battleOffSeason } = await loadFixture(init);
 
       expect(
-        await battleOffSeason.getRoleMember(ethers.constants.HashZero, 0),
-      ).to.equal(battleLeaderBoard.address);
+        await battleOffSeason.getRoleMember(ethers.utils.id("GAME_ROLE"), 0),
+      ).to.equal(battle.address);
     });
 
     it("BattleOffSeason: getMatchCount", async function () {

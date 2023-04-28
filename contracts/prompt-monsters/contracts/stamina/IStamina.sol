@@ -46,6 +46,14 @@ interface IStamina {
   /// @param _timeStd last fight time
   function setTimeStd(uint256 monsterId, uint256 _timeStd) external;
 
+  /// @notice Set stamina limit
+  /// @param _staminaLimit stamina limit
+  function setStaminaLimit(uint256 _staminaLimit) external;
+
+  /// @notice Set stamina recovery time
+  /// @param _staminaRecoveryTime stamina recovery time
+  function setStaminaRecoveryTime(uint256 _staminaRecoveryTime) external;
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
