@@ -1,7 +1,7 @@
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { mchVerseTestnet } from "@/const/chainParams";
-import { UserInit } from "@/features/auth";
+import { AutoLogin } from "@/features/auth";
 import { MonsterMintPriceInit, OwnedMonstersInit } from "@/features/monster";
 import "@/styles/globals.css";
 import {
@@ -268,13 +268,13 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel="manifest" href="/assets/favicons/manifest.json" />{" "}
       </Head>
       <RecoilRoot>
-        <UserInit>
+        <AutoLogin>
           <MonsterMintPriceInit>
             <OwnedMonstersInit>
               <Component {...pageProps} />
             </OwnedMonstersInit>
           </MonsterMintPriceInit>
-        </UserInit>
+        </AutoLogin>
       </RecoilRoot>
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
     </>

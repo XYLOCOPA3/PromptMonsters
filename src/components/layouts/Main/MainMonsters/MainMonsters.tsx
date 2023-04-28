@@ -60,7 +60,7 @@ export const MainMonsters = () => {
           )}
           <Result className={clsx("w-[100%]", "mb-[30px]")} />
           <div className={clsx("flex", "w-[100%]")}>
-            <div className={clsx("w-1/3")}></div>
+            <div className={clsx("w-1/3", "select-none")}></div>
             <div className={clsx("w-1/3", "flex", "justify-center")}>
               {monsterMinted ? <MonsterFightButton /> : <MonsterMintButton />}
             </div>

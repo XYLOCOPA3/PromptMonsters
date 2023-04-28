@@ -1,2 +1,2 @@
 export * from "./LoginButton";
-export * from "./UserInit";
+export * from "./AutoLogin";

@@ -1,8 +1,10 @@
 import { Dispatch, Fragment, SetStateAction } from "react";
+import { disableState } from "@/stores/disableState";
 import { BaseProps } from "@/types/BaseProps";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
+import { useRecoilValue } from "recoil";
 
 export type ListBoxProps = {
   selected: string;
@@ -16,9 +18,11 @@ export const ListBox = ({
   setSelected,
   list,
 }: ListBoxProps) => {
+  const disable = useRecoilValue(disableState);
+
   return (
     <div className={clsx(className)}>
-      <Listbox value={selected} onChange={setSelected}>
+      <Listbox value={selected} onChange={disable ? () => {} : setSelected}>
         <div className="relative">
           <Listbox.Button className="relative w-full cursor-default rounded-lg bg-gray-800 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
             <span className="block truncate">{selected}</span>

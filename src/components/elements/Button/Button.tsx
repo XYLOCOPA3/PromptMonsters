@@ -51,6 +51,8 @@ export const Button = ({
         shapes[shape],
         "shadow-md",
         "select-none",
+        "disabled:cursor-default",
+        "disabled:opacity-50",
       )}
       onClick={onClick}
     >

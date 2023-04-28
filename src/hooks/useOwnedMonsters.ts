@@ -14,6 +14,7 @@ export interface OwnedMonsterIdsController {
   reset: () => void;
   add: (newMonster: MonsterModel) => void;
   updateAfterMinted: (newMonster: MonsterModel) => void;
+  update: (index: number, newMonster: MonsterModel) => void;
 }
 
 export const useOwnedMonstersValue = (): OwnedMonstersState => {
@@ -79,11 +80,28 @@ export const useOwnedMonstersController = (): OwnedMonsterIdsController => {
     });
   };
 
+  /**
+   * Update ownedMonsters after minted
+   * @param index index
+   * @param newMonster new monster
+   */
+  const update = (index: number, newMonster: MonsterModel): void => {
+    setOwnedMonsters((prevState) => {
+      return prevState.map((monster, i) => {
+        if (index === i) {
+          return newMonster;
+        }
+        return monster;
+      });
+    });
+  };
+
   const controller: OwnedMonsterIdsController = {
     init,
     reset,
     add,
     updateAfterMinted,
+    update,
   };
   return controller;
 };
