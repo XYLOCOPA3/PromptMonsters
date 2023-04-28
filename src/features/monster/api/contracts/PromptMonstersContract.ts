@@ -80,11 +80,20 @@ export class PromptMonstersContract {
     }
     return await this._promptMonsters.getMonsters(tokenIds);
   };
+
   /**
    * Get monsters total supply
    * @return {Promise<number>} monsters total supply
    */
   getMonstersTotalSupply = async (): Promise<number> => {
     return Number(await this._promptMonsters.getMonstersTotalSupply());
+  };
+
+  /**
+   * Get monster mint price
+   * @return {Promise<number>} monster mint price
+   */
+  getMintPrice = async (): Promise<number> => {
+    return Number(await this._promptMonsters.mintPrice());
   };
 }

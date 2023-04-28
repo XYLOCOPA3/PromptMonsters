@@ -8,10 +8,16 @@ const variants = {
   twitter: clsx("bg-[#F1F6F9]", "hover:bg-[#D3DCE3]", "hover:shadow-lg"),
 };
 
+const shapes = {
+  rounded: clsx("rounded-md"),
+  circle: clsx("rounded-full"),
+};
+
 export type ButtonProps = {
   disabled?: boolean;
   loading?: boolean;
   variant?: "primary" | "secondary" | "twitter";
+  shape?: "rounded" | "circle";
   onClick?: () => void;
 } & BaseProps;
 
@@ -22,12 +28,15 @@ export type ButtonProps = {
  * @param children Children elements
  * @param disabled Disabled or not
  * @param loading Loading or not
+ * @param variant Button variant
+ * @param shape Button shape
  * @param onClick Click event
  */
 export const Button = ({
   className,
   children,
   variant = "primary",
+  shape = "rounded",
   disabled,
   loading,
   onClick,
@@ -36,12 +45,12 @@ export const Button = ({
     <button
       disabled={disabled || loading}
       className={clsx(
+        className,
         variants[variant],
         "text-white",
-        "rounded-md",
+        shapes[shape],
         "shadow-md",
         "select-none",
-        className,
       )}
       onClick={onClick}
     >

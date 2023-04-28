@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
+import { useMintPriceValue } from "@/hooks/useMintPrice";
 import { useMonsterState } from "@/hooks/useMonster";
+import { useOwnedMonstersController } from "@/hooks/useOwnedMonsters";
 import { useUserValue } from "@/hooks/useUser";
 import { monsterMintedState } from "@/stores/monsterMintedState";
+import { selectedMonsterNameState } from "@/stores/selectedMonsterNameState";
 import { userInitState } from "@/stores/userInitState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
@@ -12,16 +15,18 @@ export type MonsterMintButtonProps = BaseProps;
 
 /**
  * Monster mint button
- * @feature
  * @keit0728
  * @param className Style from parent element
  */
 export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
   const user = useUserValue();
-  const [monster, monsterController] = useMonsterState();
+  const mintPrice = useMintPriceValue();
   const userInit = useRecoilValue(userInitState);
+  const [monster, monsterController] = useMonsterState();
   const [loading, setLoading] = useState(false);
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
+  const ownedMonstersController = useOwnedMonstersController();
+  const setSelectedMonsterName = useSetRecoilState(selectedMonsterNameState);
 
   /**
    * Click event
@@ -34,7 +39,9 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
         setLoading(false);
         return;
       }
-      await monsterController.mint(user.id, monster);
+      const newMonster = await monsterController.mint(user.id, monster);
+      ownedMonstersController.updateAfterMinted(newMonster);
+      setSelectedMonsterName(newMonster.name);
       setMonsterMinted(true);
     } catch (e) {
       console.error(e);
@@ -47,12 +54,18 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
   return (
     <Button
       disabled={loading}
-      className={clsx("w-[100px]", "h-[40px]", "rounded-full", className)}
+      className={clsx(
+        className,
+        "w-[160px]",
+        "h-[40px]",
+        "text-[12px]",
+        "md:text-[16px]",
+      )}
       variant="secondary"
       loading={loading || !userInit}
       onClick={handleClick}
     >
-      MINT
+      MINT: {mintPrice} MCHC
     </Button>
   );
 };

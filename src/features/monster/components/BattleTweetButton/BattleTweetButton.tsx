@@ -30,8 +30,9 @@ export const BattleTweetButton = ({ className }: BattleTweetButtonProps) => {
       target="_blank"
     >
       <Button
-        className={clsx("w-[100px]", "h-[40px]", "rounded-[200px]")}
+        className={clsx("w-[40px]", "h-[40px]", "md:w-[100px]")}
         variant="twitter"
+        shape="circle"
       >
         <div className={clsx("flex", "justify-center", "items-center")}>
           <Image
@@ -41,7 +42,11 @@ export const BattleTweetButton = ({ className }: BattleTweetButtonProps) => {
             width={100}
             height={100}
           />
-          <div className={clsx("ml-[10px]", "text-black")}>Tweet</div>
+          <div
+            className={clsx("ml-[10px]", "text-black", "hidden", "md:inline")}
+          >
+            Tweet
+          </div>
         </div>
       </Button>
     </Link>

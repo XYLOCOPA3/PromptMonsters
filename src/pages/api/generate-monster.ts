@@ -75,12 +75,13 @@ const _getGeneratePrompt = (feature: string, language: string): string => {
 - Unique "name"
 - No proper nouns in "flavor"
 - Don't reuse "feature" words
+- Apply status that matches the monster's features
 - Single JSON output
 - (Translate values to ${language} (keys untranslated))
 
 Example:
 feature="A yellow bear that loves honey":
-{"name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":20,"ATK":2,"DEF":4,"INT":10,"MGR":6,"AGL":4},"skills":["Honey Attack","Hug","Healing Song"],"isFiction":true,"isExisting":true}
+{"name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":10,"ATK":2,"DEF":4,"INT":6,"MGR":4,"AGL":4},"skills":["Honey Attack","Hug","Healing Song"],"isFiction":true,"isExisting":true}
 
 feature="${feature}":`;
 };

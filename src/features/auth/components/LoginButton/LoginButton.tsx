@@ -49,7 +49,7 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
       if (chain!.id !== mchVerseTestnet.id)
         switchNetwork({ chainId: mchVerseTestnet.id });
       await userController.set(address!);
-      const isSet = await monsterController.set(address!);
+      const isSet = await monsterController.init(address!);
       setMonsterMinted(isSet);
     } catch (e) {
       console.error(e);
