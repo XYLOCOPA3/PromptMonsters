@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Button } from "@/components/elements/Button";
 import { useBattleController } from "@/hooks/useBattle";
 import { useMonsterState } from "@/hooks/useMonster";
+import { disableState } from "@/stores/disableState";
 import { languageState } from "@/stores/languageState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 export type MonsterFightButtonProps = BaseProps;
 
@@ -16,15 +17,17 @@ export type MonsterFightButtonProps = BaseProps;
  * @param className Style from parent element
  */
 export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
+  const language = useRecoilValue(languageState);
   const [monster, monsterController] = useMonsterState();
   const [loading, setLoading] = useState(false);
+  const [disable, setDisable] = useRecoilState(disableState);
   const battleController = useBattleController();
-  const language = useRecoilValue(languageState);
 
   /**
    * Click event
    */
   const handleClick = async () => {
+    setDisable(true);
     setLoading(true);
     battleController.reset();
     try {
@@ -34,13 +37,14 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
       console.error(e);
       alert("Failed to fight.");
     }
+    setDisable(false);
     setLoading(false);
   };
 
   if (monster.name === "") return <></>;
   return (
     <Button
-      disabled={loading}
+      disabled={disable}
       className={clsx("w-[100px]", "h-[40px]", "rounded-full", className)}
       variant="secondary"
       loading={loading}
