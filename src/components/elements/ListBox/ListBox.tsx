@@ -36,7 +36,7 @@ export const ListBox = ({
             leaveTo="opacity-0"
           >
             <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-gray-800 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {list.map((language, index) => (
+              {list.map((value, index) => (
                 <Listbox.Option
                   key={index}
                   className={({ active }) =>
@@ -44,7 +44,7 @@ export const ListBox = ({
                       active ? "bg-gray-500" : ""
                     }`
                   }
-                  value={language}
+                  value={value}
                 >
                   {({ selected }) => (
                     <>
@@ -53,7 +53,7 @@ export const ListBox = ({
                           selected ? "font-medium" : "font-normal"
                         }`}
                       >
-                        {language}
+                        {value}
                       </span>
                       {selected ? (
                         <span className="absolute inset-y-0 left-0 flex items-center pl-3">

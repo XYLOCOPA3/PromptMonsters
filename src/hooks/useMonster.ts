@@ -15,9 +15,10 @@ export interface MonsterController {
     userId: UserId,
     feature: string,
     language: string,
-  ) => Promise<void>;
-  mint: (userId: UserId, monster: MonsterModel) => Promise<void>;
-  set: (userId: UserId) => Promise<boolean>;
+  ) => Promise<MonsterModel>;
+  mint: (userId: UserId, monster: MonsterModel) => Promise<MonsterModel>;
+  init: (userId: UserId) => Promise<boolean>;
+  set: (monster: MonsterModel) => void;
   reset: () => void;
   fight: (monsterId: MonsterId, language: string) => Promise<string>;
 }
@@ -34,12 +35,13 @@ export const useMonsterController = (): MonsterController => {
    * @param userId user id
    * @param feature monster feature
    * @param language output language
+   * @return {MonsterModel} MonsterModel
    */
   const generate = async (
     userId: UserId,
     feature: string,
     language: string,
-  ): Promise<void> => {
+  ): Promise<MonsterModel> => {
     if (isNumOrSymbol(feature))
       throw new Error("Features must not contain numbers or symbols.");
     const res = await axios.post("/api/generate-monster", {
@@ -48,11 +50,13 @@ export const useMonsterController = (): MonsterController => {
       language,
     });
     if (res.status !== 200) throw new Error(res.data.message);
-    const monster = res.data.monster;
-    console.log(monster);
-    if (monster.isExisting) throw new Error("This monster is existing.");
-    if (!monster.isFiction) throw new Error("This monster is non fiction.");
-    setMonster(MonsterModel.fromData(feature, monster));
+    const monsterJson = res.data.monster;
+    console.log(monsterJson);
+    if (monsterJson.isExisting) throw new Error("This monster is existing.");
+    if (!monsterJson.isFiction) throw new Error("This monster is non fiction.");
+    const monster = MonsterModel.fromData(monsterJson);
+    setMonster(monster);
+    return monster;
   };
 
   /**
@@ -60,7 +64,10 @@ export const useMonsterController = (): MonsterController => {
    * @param userId user id
    * @param monster monster model
    */
-  const mint = async (userId: UserId, monster: MonsterModel): Promise<void> => {
+  const mint = async (
+    userId: UserId,
+    monster: MonsterModel,
+  ): Promise<MonsterModel> => {
     const provider = new ethers.providers.JsonRpcProvider(
       RPC_URL.mchVerseTestnet,
     );
@@ -93,19 +100,20 @@ export const useMonsterController = (): MonsterController => {
       (await fetchSigner())!,
     );
     await (await promptMonsters.mint()).wait();
-    const id = (
-      Number(await promptMonsters.getMonstersTotalSupply()) - 1
-    ).toString();
+    const monsterIds = await promptMonsters.getOwnerToTokenIds(userId);
+    const monsterId = monsterIds[monsterIds.length - 1].toString();
     setMonster((prevState) => {
-      return prevState.copyWith({ id });
+      return prevState.copyWith({ id: monsterId });
     });
+    const monsterContract = (await promptMonsters.getMonsters([monsterId]))[0];
+    return MonsterModel.fromContract(monsterId, monsterContract);
   };
 
   /**
-   * Set monster
+   * Init monster
    * @param userId user id
    */
-  const set = async (userId: UserId): Promise<boolean> => {
+  const init = async (userId: UserId): Promise<boolean> => {
     const provider = new ethers.providers.JsonRpcProvider(
       RPC_URL.mchVerseTestnet,
     );
@@ -116,24 +124,15 @@ export const useMonsterController = (): MonsterController => {
     const tokenIds = await promptMonsters.getOwnerToTokenIds(userId);
     if (tokenIds.length === 0) return false;
     const monsters = await promptMonsters.getMonsters(tokenIds);
-    setMonster(
-      MonsterModel.create({
-        id: tokenIds[0].toString(),
-        name: monsters[0].name,
-        flavor: monsters[0].flavor,
-        skills: monsters[0].skills,
-        lv: Number(monsters[0].lv),
-        status: {
-          HP: Number(monsters[0].hp),
-          ATK: Number(monsters[0].atk),
-          DEF: Number(monsters[0].def),
-          INT: Number(monsters[0].inte),
-          MGR: Number(monsters[0].mgr),
-          AGL: Number(monsters[0].agl),
-        },
-      }),
-    );
+    setMonster(MonsterModel.fromContract(tokenIds[0].toString(), monsters[0]));
     return true;
+  };
+
+  /**
+   * Set monster
+   */
+  const set = (monster: MonsterModel): void => {
+    setMonster(monster);
   };
 
   /**
@@ -163,6 +162,7 @@ export const useMonsterController = (): MonsterController => {
   const controller: MonsterController = {
     generate,
     mint,
+    init,
     set,
     reset,
     fight,
