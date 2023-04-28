@@ -51,10 +51,10 @@ describe("BattleS1", function () {
       expect(await battleS1.getWinCount(0)).to.equal(0);
     });
 
-    // it("BattleS1: getBattleData", async function () {
+    // it("BattleS1: getBattleDataByMonsterId", async function () {
     //   const { battleS1 } = await loadFixture(init);
 
-    //   expect(await battleS1.getBattleData(0));
+    //   expect(await battleS1.getBattleDataByMonsterId(0));
     // });
 
     it("BattleS1: getBattleIdList", async function () {

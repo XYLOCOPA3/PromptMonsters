@@ -110,9 +110,15 @@ contract BattleS1 is
   }
 
   /// @notice Get battle data
+  /// @return battle data
+  function getBattleData() external view returns (BattleData[] memory) {
+    return battleData;
+  }
+
+  /// @notice Get battle data by monster ID
   /// @param monsterId ID of the monster
   /// @return battle data
-  function getBattleData(
+  function getBattleDataByMonsterId(
     uint256 monsterId
   ) external view returns (BattleData[] memory) {
     uint256[] memory _battleIdList = battleIdList[monsterId];

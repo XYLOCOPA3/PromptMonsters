@@ -18,7 +18,7 @@ interface IBattleSeason {
   // --------------------------------------------------------------------------------
 
   event BattleDataEvent(
-    uint256 indexed matchId,
+    uint256 indexed battleId,
     uint256 timestamp,
     uint256 indexed winMonsterId,
     uint256 indexed loseMonsterId,
@@ -69,9 +69,13 @@ interface IBattleSeason {
   ) external view returns (uint256[] memory);
 
   /// @notice Get battle data
+  /// @return battle data
+  function getBattleData() external view returns (BattleData[] memory);
+
+  /// @notice Get battle data by monster ID
   /// @param monsterId ID of the battle
   /// @return battle data
-  function getBattleData(
+  function getBattleDataByMonsterId(
     uint256 monsterId
   ) external view returns (BattleData[] memory);
 

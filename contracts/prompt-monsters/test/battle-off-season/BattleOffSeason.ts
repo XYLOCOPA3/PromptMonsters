@@ -51,10 +51,10 @@ describe("BattleOffSeason", function () {
       expect(await battleOffSeason.getWinCount(0)).to.equal(0);
     });
 
-    // it("BattleOffSeason: getBattleData", async function () {
+    // it("BattleOffSeason: getBattleDataByMonsterId", async function () {
     //   const { battleOffSeason } = await loadFixture(init);
 
-    //   expect(await battleOffSeason.getBattleData(0));
+    //   expect(await battleOffSeason.getBattleDataByMonsterId(0));
     // });
 
     it("BattleOffSeason: getBattleIdList", async function () {
