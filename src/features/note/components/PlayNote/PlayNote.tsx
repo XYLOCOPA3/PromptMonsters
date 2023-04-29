@@ -24,13 +24,13 @@ export const PlayNote = ({ className }: PlayNoteProps) => {
         "text-justify",
       )}
     >
-      <div className={clsx("font-bold")}>How to Play:</div>
+      <div className={clsx("font-bold", "text-[24px]")}># How to Play</div>
       <ol className={clsx("list-decimal", "list-outside", "pl-6")}>
         <li className={clsx("mb-2")}>
           First, enter the desired features of the monster you want.
         </li>
         <li className={clsx("mb-2")}>
-          Press this button to generate monster information based on the entered
+          Press this button to generate monster status based on the entered
           features.
           <GenerateButton
             className={clsx("w-[60px]", "my-[10px]")}

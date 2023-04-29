@@ -44,13 +44,22 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
   if (monster.name === "") return <></>;
   return (
     <Button
-      disabled={disable}
-      className={clsx("w-[100px]", "h-[40px]", "rounded-full", className)}
+      disabled={disable || monster.stamina <= 0}
+      className={clsx(
+        className,
+        "px-[20px]",
+        "w-[100%]",
+        "h-[62px]",
+        "max-w-[200px]",
+      )}
       variant="secondary"
       loading={loading}
       onClick={handleClick}
     >
       FIGHT
+      <div className={clsx("text-[12px]", "md:text-[16px]")}>
+        Stamina: {monster.stamina} / 3
+      </div>
     </Button>
   );
 };

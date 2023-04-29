@@ -16,7 +16,7 @@ import {IPromptMonsters} from "./IPromptMonsters.sol";
 
 /// @title PromptMonsters
 /// @author keit (@keitEngineer)
-/// @notice This is a contract of PromptMonsters.
+/// @dev This is a contract of PromptMonsters.
 contract PromptMonsters is
   Initializable,
   IPromptMonsters,
@@ -29,7 +29,7 @@ contract PromptMonsters is
   // State
   // --------------------------------------------------------------------------------
   using SafeERC20 for IERC20;
-  IERC20 public mchCoin;
+  IERC20 public erc20;
 
   address public promptMonstersWallet;
 
@@ -49,20 +49,20 @@ contract PromptMonsters is
   // Initialize
   // --------------------------------------------------------------------------------
 
-  /// @notice Constructor
+  /// @dev Constructor
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
     _disableInitializers();
   }
 
-  /// @notice Initialize
+  /// @dev Initialize
   /// @param externalLink_ external link
-  /// @param mchCoinAddress_ MCH Coin address
+  /// @param erc20Address_ MCH Coin address
   /// @param mintPrice_ MCH Coin address
   /// @param promptMonstersWallet_ prompt monsters wallet
   function initialize(
     string memory externalLink_,
-    address mchCoinAddress_,
+    address erc20Address_,
     uint256 mintPrice_,
     address promptMonstersWallet_
   ) public initializer {
@@ -73,12 +73,12 @@ contract PromptMonsters is
 
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     _externalLink = externalLink_;
-    mchCoin = IERC20(mchCoinAddress_);
+    erc20 = IERC20(erc20Address_);
     mintPrice = mintPrice_;
     promptMonstersWallet = promptMonstersWallet_;
   }
 
-  /// @notice Supports interface
+  /// @dev Supports interface
   /// @param interfaceId interface ID
   function supportsInterface(
     bytes4 interfaceId
@@ -99,7 +99,7 @@ contract PromptMonsters is
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @notice Get monsters total supply
+  /// @dev Get monsters total supply
   /// @return totalSupply token IDs
   function getMonstersTotalSupply()
     external
@@ -109,7 +109,7 @@ contract PromptMonsters is
     totalSupply = _monsters.length;
   }
 
-  /// @notice Get monsters history
+  /// @dev Get monsters history
   /// @return monsterHistory monster history
   function getMonsterHistory()
     external
@@ -119,7 +119,7 @@ contract PromptMonsters is
     monsterHistory = _monsterHistory[msg.sender];
   }
 
-  /// @notice Get token IDs from owner address
+  /// @dev Get token IDs from owner address
   /// @param owner owner
   /// @return tokenIds token IDs
   function getOwnerToTokenIds(
@@ -128,7 +128,7 @@ contract PromptMonsters is
     tokenIds = _ownerToTokenIds[owner];
   }
 
-  /// @notice Get monsters
+  /// @dev Get monsters
   /// @param tokenIds_ token IDs
   /// @return monsters monsters
   function getMonsters(
@@ -148,7 +148,7 @@ contract PromptMonsters is
     }
   }
 
-  /// @notice Get token URI
+  /// @dev Get token URI
   /// @param tokenId_ token ID
   /// @return uri token URI
   function tokenURI(
@@ -178,7 +178,7 @@ contract PromptMonsters is
     uri = finalTokenUri;
   }
 
-  /// @notice Get contract URI
+  /// @dev Get contract URI
   /// @return uri contract URI
   function contractURI() external view returns (string memory uri) {
     string memory name_ = name();
@@ -214,7 +214,7 @@ contract PromptMonsters is
   // Setter
   // --------------------------------------------------------------------------------
 
-  /// @notice Set external link
+  /// @dev Set external link
   /// @param newState_ new state
   function setExternalLink(
     string memory newState_
@@ -224,15 +224,15 @@ contract PromptMonsters is
     emit SetExternalLink(_msgSender(), oldState, newState_);
   }
 
-  /// @notice Set MCH Coin address
+  /// @dev Set MCH Coin address
   /// @param newState_ new state
-  function setMchCoin(address newState_) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    address oldState = address(mchCoin);
-    mchCoin = IERC20(newState_);
-    emit SetMchCoin(_msgSender(), oldState, newState_);
+  function setErc20(address newState_) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    address oldState = address(erc20);
+    erc20 = IERC20(newState_);
+    emit SetErc20(_msgSender(), oldState, newState_);
   }
 
-  /// @notice Set mint price
+  /// @dev Set mint price
   /// @param newState_ new state
   function setMintPrice(
     uint256 newState_
@@ -242,7 +242,7 @@ contract PromptMonsters is
     emit SetMintPrice(_msgSender(), oldState, newState_);
   }
 
-  /// @notice Set prompt monsters wallet
+  /// @dev Set prompt monsters wallet
   /// @param newState_ new state
   function setPromptMonstersWallet(
     address newState_
@@ -256,7 +256,7 @@ contract PromptMonsters is
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @notice Generate monster
+  /// @dev Generate monster
   /// @param user_ user address
   /// @param monster_ monster
   function generateMonster(
@@ -266,21 +266,21 @@ contract PromptMonsters is
     _monsterHistory[user_] = monster_;
   }
 
-  /// @notice Mint monster
+  /// @dev Mint monster
   function mint() external {
     require(
-      mchCoin.balanceOf(msg.sender) >= mintPrice,
+      erc20.balanceOf(msg.sender) >= mintPrice,
       "PromptMonsters: insufficient MCH Coin balance"
     );
     IPromptMonsters.Monster memory monster = _monsterHistory[msg.sender];
     require(monster.lv > 0, "PromptMonsters: monster is not generated");
     uint256 newTokenId = _monsters.length;
     _monsters.push(monster);
-    mchCoin.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
+    erc20.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
     _safeMint(msg.sender, newTokenId);
   }
 
-  /// @notice Burn
+  /// @dev Burn
   ///         This function is not a standard burn function.
   ///         Your NFT will be transferred to the owner of this contract if you call this function.
   /// @param tokenId_ token ID
@@ -292,11 +292,17 @@ contract PromptMonsters is
     );
   }
 
+  /// @dev Check monster ID
+  /// @param monsterId monster ID
+  function checkMonsterId(uint256 monsterId) external view {
+    require(_exists(monsterId), "PromptMonsters: monster does not exist");
+  }
+
   // --------------------------------------------------------------------------------
   // Internal
   // --------------------------------------------------------------------------------
 
-  /// @notice Get SVG
+  /// @dev Get SVG
   /// @param tokenId_ token ID
   /// @return svg SVG
   function _getSvg(uint256 tokenId_) internal view returns (string memory svg) {
@@ -361,7 +367,7 @@ contract PromptMonsters is
     svg = string.concat(svg, "</svg>");
   }
 
-  /// @notice Get SVG text
+  /// @dev Get SVG text
   /// @param x_ x position
   /// @param y_ y position
   /// @param text_ text
@@ -382,7 +388,7 @@ contract PromptMonsters is
     );
   }
 
-  /// @notice Add owner to token IDs
+  /// @dev Add owner to token IDs
   /// @param to_ recipient
   /// @param tokenId_ token ID
   function _addOwnerToTokenIds(address to_, uint256 tokenId_) private {
@@ -390,7 +396,7 @@ contract PromptMonsters is
     _ownerToTokenIds[to_].push(tokenId_);
   }
 
-  /// @notice Remove owner to token IDs
+  /// @dev Remove owner to token IDs
   /// @param from_ sender
   /// @param tokenId_ token ID
   function _removeOwnerToTokenIds(address from_, uint256 tokenId_) private {
@@ -405,7 +411,7 @@ contract PromptMonsters is
     delete _ownerToTokenIdsIndex[from_][tokenId_];
   }
 
-  /// @notice Before token transfer
+  /// @dev Before token transfer
   /// @param from sender
   /// @param to recipient
   /// @param tokenId token ID
@@ -428,7 +434,7 @@ contract PromptMonsters is
     super._beforeTokenTransfer(from, to, tokenId, batchSize);
   }
 
-  /// @notice Authorize upgrade
+  /// @dev Authorize upgrade
   /// @param newImplementation new implementation address
   function _authorizeUpgrade(
     address newImplementation

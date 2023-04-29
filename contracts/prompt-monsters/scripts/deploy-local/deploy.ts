@@ -17,16 +17,16 @@ async function main() {
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const MCHCoin = await ethers.getContractFactory("MCHCoin");
-  const mchCoin = await MCHCoin.deploy();
-  await mchCoin.deployed();
-  console.log("Deployed MCHCoin address: ", mchCoin.address);
+  const Erc20 = await ethers.getContractFactory("Erc20");
+  const erc20 = await Erc20.deploy();
+  await erc20.deployed();
+  console.log("Deployed Erc20 address: ", erc20.address);
 
   console.log("Completed deployment");
 
   console.log("---------------------------------------------");
   ("---------------------------------------------");
-  console.log("--- End mchCoin Deploy --------------");
+  console.log("--- End erc20 Deploy --------------");
   console.log("---------------------------------------------");
   console.log("---------------------------------------------");
   console.log("--- Start PromptMonsters Deploy ------------");
@@ -44,7 +44,7 @@ async function main() {
     PromptMonsters,
     [
       PROMPT_MONSTERS_EXTERNAL_LINK,
-      mchCoin.address,
+      erc20.address,
       ethers.utils.parseEther("100"),
       PROMPT_MONSTERS_WALLET,
     ],
@@ -73,7 +73,7 @@ async function main() {
   console.log("---------------------------------------------");
 
   console.log("---------------------------------------------");
-  console.log("--- Start BattleLeaderBoard Deploy ----------");
+  console.log("--- Start Battle Deploy ----------");
   console.log("---------------------------------------------");
   console.log("");
 
@@ -83,34 +83,23 @@ async function main() {
 
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const BattleLeaderBoard = await ethers.getContractFactory(
-    "BattleLeaderBoard",
-  );
-  const battleLeaderBoardProxy = await upgrades.deployProxy(
-    BattleLeaderBoard,
-    [],
-    {
-      kind: "uups",
-      initializer: "initialize",
-    },
-  );
-  await battleLeaderBoardProxy.deployed();
+  const Battle = await ethers.getContractFactory("Battle");
+  const battleProxy = await upgrades.deployProxy(Battle, [], {
+    kind: "uups",
+    initializer: "initialize",
+  });
+  await battleProxy.deployed();
+  console.log("Deployed BattleProxy address: ", battleProxy.address);
   console.log(
-    "Deployed BattleLeaderBoardProxy address: ",
-    battleLeaderBoardProxy.address,
-  );
-  console.log(
-    "BattleLeaderBoard implementation deployed to:",
-    await upgrades.erc1967.getImplementationAddress(
-      battleLeaderBoardProxy.address,
-    ),
+    "Battle implementation deployed to:",
+    await upgrades.erc1967.getImplementationAddress(battleProxy.address),
   );
 
   console.log("Completed deployment");
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End BattleLeaderBoard Deploy --------------");
+  console.log("--- End Battle Deploy --------------");
   console.log("---------------------------------------------");
   console.log("---------------------------------------------");
   console.log("--- Start BattleS1 Deploy ------------");
@@ -126,7 +115,7 @@ async function main() {
   const BattleS1 = await ethers.getContractFactory("BattleS1");
   const battleS1Proxy = await upgrades.deployProxy(
     BattleS1,
-    [battleLeaderBoardProxy.address],
+    [battleProxy.address],
     {
       kind: "uups",
       initializer: "initialize",

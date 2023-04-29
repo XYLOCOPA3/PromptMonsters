@@ -2414,12 +2414,12 @@ contract ERC20Upgradeable is
   uint256[45] private __gap;
 }
 
-// File contracts/Mock/MCHCoin.sol
+// File contracts/Mock/Erc20.sol
 
 //  MIT
 pragma solidity ^0.8.18;
 
-contract MCHCoin is
+contract Erc20 is
   Initializable,
   ERC20Upgradeable,
   AccessControlUpgradeable,

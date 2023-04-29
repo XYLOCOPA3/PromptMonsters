@@ -2,9 +2,9 @@ import { MCHC_ADDRESS } from "../const";
 import { ethers } from "hardhat";
 
 export async function transfer() {
-  const MCHCoin = await ethers.getContractFactory("MCHCoin");
+  const Erc20 = await ethers.getContractFactory("Erc20");
 
-  const mchCoin = MCHCoin.attach(MCHC_ADDRESS);
+  const erc20 = Erc20.attach(MCHC_ADDRESS);
 
   const address: string = "0x8Bcd35185a8068BB197BC957f7dDFEE77007BF3A";
 
@@ -12,11 +12,11 @@ export async function transfer() {
   // const address: string = "0x1Ae3d1C13A255deF3Eafc3fEa7c26bf6D37EfDe6";
 
   console.log(address);
-  console.log(await mchCoin.balanceOf(address));
+  console.log(await erc20.balanceOf(address));
 
-  (await mchCoin.transfer(address, ethers.utils.parseEther("2000"))).wait();
+  (await erc20.transfer(address, ethers.utils.parseEther("2000"))).wait();
 
-  console.log(await mchCoin.balanceOf(address));
+  console.log(await erc20.balanceOf(address));
   // console.log(process.argv);
   // const args = process.argv.slice(2);
   // console.log(args);

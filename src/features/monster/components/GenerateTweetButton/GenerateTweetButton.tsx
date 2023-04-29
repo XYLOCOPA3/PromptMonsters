@@ -4,7 +4,10 @@ import { Button } from "@/components/elements/Button";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { MonsterModel } from "@/models/MonsterModel";
 import { BaseProps } from "@/types/BaseProps";
-import { countCharacters, trimCharacters100 } from "@/utils/charUtils";
+import {
+  countCharactersForTwitter,
+  trimCharacters100,
+} from "@/utils/charUtils";
 import clsx from "clsx";
 
 export type GenerateTweetButtonProps = BaseProps;
@@ -64,7 +67,7 @@ const _getGeneratedTweet = (monster: MonsterModel): string => {
   return `Generated a monster
 
 ${monster.name}
-${flavor}${countCharacters(flavor) > 100 ? "..." : ""}
+${flavor}${countCharactersForTwitter(flavor) > 100 ? "..." : ""}
 Skills:
 - ${skills}
 

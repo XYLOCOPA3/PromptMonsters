@@ -4,13 +4,13 @@ import { ethers } from "hardhat";
 export async function balanceOf() {
   const [deployer] = await ethers.getSigners();
   console.log("account: ", deployer.address);
-  const MCHCoin = await ethers.getContractFactory("MCHCoin");
+  const Erc20 = await ethers.getContractFactory("Erc20");
 
   const address: string = "0x159EeF981fDc77927a77A4e5769Ee7E6C03Fb6fC";
 
-  const mchCoin = MCHCoin.attach(MCHC_ADDRESS);
+  const erc20 = Erc20.attach(MCHC_ADDRESS);
 
-  const balanceOf = await mchCoin.balanceOf(address);
+  const balanceOf = await erc20.balanceOf(address);
   console.log(balanceOf);
 }
 
