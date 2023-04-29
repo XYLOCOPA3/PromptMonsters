@@ -2,7 +2,7 @@
 pragma solidity ^0.8.18;
 
 /// @title IBattleSeason
-/// @notice This is an interface of SeasonforBattle.
+/// @dev This is an interface of SeasonforBattle.
 interface IBattleSeason {
   // --------------------------------------------------------------------------------
   // State
@@ -31,54 +31,50 @@ interface IBattleSeason {
   // Initialize
   // --------------------------------------------------------------------------------
 
-  /// @notice Initialize
+  /// @dev Initialize
   /// @param promptMonstersAddress PromptMonsters contract address
-  /// @param battleAddress Battle contract address
-  function initialize(
-    address promptMonstersAddress,
-    address battleAddress
-  ) external;
+  function initialize(address promptMonstersAddress) external;
 
   // --------------------------------------------------------------------------------
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @notice Get total match count of the monster
+  /// @dev Get total match count of the monster
   /// @param monsterId ID of the monster
   /// @return total match counts
   function getMatchCount(uint256 monsterId) external view returns (uint256);
 
-  /// @notice Get batch total match count of the monster
+  /// @dev Get batch total match count of the monster
   /// @param monsterIds IDs of the monster
   /// @return batch total match counts
   function getBatchMatchCount(
     uint256[] memory monsterIds
   ) external view returns (uint256[] memory);
 
-  /// @notice Get total wint count of the monster
+  /// @dev Get total wint count of the monster
   /// @param monsterId ID of the monster
   /// @return total win counts
   function getWinCount(uint256 monsterId) external view returns (uint256);
 
-  /// @notice Get batch total win count of the monster
+  /// @dev Get batch total win count of the monster
   /// @param monsterIds IDs of the monster
   /// @return batch total win counts
   function getBatchWinCount(
     uint256[] memory monsterIds
   ) external view returns (uint256[] memory);
 
-  /// @notice Get battle ID list
+  /// @dev Get battle ID list
   /// @param monsterId ID of the monster
   /// @return battle ID list
   function getBattleIdList(
     uint256 monsterId
   ) external view returns (uint256[] memory);
 
-  /// @notice Get battle data
+  /// @dev Get battle data
   /// @return battle data
   function getBattleData() external view returns (BattleData[] memory);
 
-  /// @notice Get battle data by monster ID
+  /// @dev Get battle data by monster ID
   /// @param monsterId ID of the battle
   /// @return battle data
   function getBattleDataByMonsterId(
@@ -93,7 +89,7 @@ interface IBattleSeason {
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @notice Add battle data
+  /// @dev Add battle data
   /// @param winMonsterId ID of the monster who won the battle
   /// @param loseMonsterId ID of the monster who lost the battle
   /// @param battleLog Battle log

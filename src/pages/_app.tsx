@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { mchVerseTestnet } from "@/const/chainParams";
@@ -11,7 +12,7 @@ import {
 } from "@web3modal/ethereum";
 import { Web3Modal } from "@web3modal/react";
 import { RecoilRoot } from "recoil";
-import { configureChains, createClient } from "wagmi";
+import { WagmiConfig, configureChains, createClient } from "wagmi";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID!;
 
@@ -27,6 +28,12 @@ const wagmiClient = createClient({
 const ethereumClient = new EthereumClient(wagmiClient, chains);
 
 export default function App({ Component, pageProps }: AppProps) {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setReady(true);
+  }, []);
+
   return (
     <>
       <Head>
@@ -267,15 +274,19 @@ export default function App({ Component, pageProps }: AppProps) {
         />
         <link rel="manifest" href="/assets/favicons/manifest.json" />{" "}
       </Head>
-      <RecoilRoot>
-        <AutoLogin>
-          <MonsterMintPriceInit>
-            <OwnedMonstersInit>
-              <Component {...pageProps} />
-            </OwnedMonstersInit>
-          </MonsterMintPriceInit>
-        </AutoLogin>
-      </RecoilRoot>
+      {ready ? (
+        <WagmiConfig client={wagmiClient}>
+          <RecoilRoot>
+            <AutoLogin>
+              <MonsterMintPriceInit>
+                <OwnedMonstersInit>
+                  <Component {...pageProps} />
+                </OwnedMonstersInit>
+              </MonsterMintPriceInit>
+            </AutoLogin>
+          </RecoilRoot>
+        </WagmiConfig>
+      ) : null}
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
     </>
   );

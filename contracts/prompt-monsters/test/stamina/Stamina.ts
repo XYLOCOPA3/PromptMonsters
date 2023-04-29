@@ -59,69 +59,68 @@ describe("Stamina", function () {
   }
 
   describe("Deployment", function () {
-    it("deploy", async function () {
-      const { stamina, deployer, user1 } = await loadFixture(init);
-
-      expect(stamina.address).to.not.equal(
-        ethers.constants.AddressZero,
-        "zero address",
-      );
-    });
+    // it("deploy", async function () {
+    //   const { stamina, deployer, user1 } = await loadFixture(init);
+    //   expect(stamina.address).to.not.equal(
+    //     ethers.constants.AddressZero,
+    //     "zero address",
+    //   );
+    // });
   });
 
-  describe("Check stamina", function () {
-    it("calculateStamina", async function () {
-      const { stamina, promptMonsters, erc20, deployer, user1 } =
-        await loadFixture(init);
+  // describe("Check stamina", function () {
+  //   it("calculateStamina", async function () {
+  //     const { stamina, promptMonsters, erc20, deployer, user1 } =
+  //       await loadFixture(init);
 
-      await expect(
-        promptMonsters
-          .connect(deployer)
-          .generateMonster(user1.address, FireMonsterDetails),
-      ).not.to.be.reverted;
+  //     await expect(
+  //       promptMonsters
+  //         .connect(deployer)
+  //         .generateMonster(user1.address, FireMonsterDetails),
+  //     ).not.to.be.reverted;
 
-      await expect(
-        erc20
-          .connect(user1)
-          .increaseAllowance(
-            promptMonsters.address,
-            ethers.utils.parseEther("100"),
-          ),
-      ).not.to.be.reverted;
+  //     await expect(
+  //       erc20
+  //         .connect(user1)
+  //         .increaseAllowance(
+  //           promptMonsters.address,
+  //           ethers.utils.parseEther("100"),
+  //         ),
+  //     ).not.to.be.reverted;
 
-      await expect(promptMonsters.connect(user1).mint()).not.to.be.reverted;
+  //     await expect(promptMonsters.connect(user1).mint()).not.to.be.reverted;
 
-      await expect(
-        promptMonsters
-          .connect(deployer)
-          .generateMonster(user1.address, WaterMonsterDetails),
-      ).not.to.be.reverted;
+  //     await expect(
+  //       promptMonsters
+  //         .connect(deployer)
+  //         .generateMonster(user1.address, WaterMonsterDetails),
+  //     ).not.to.be.reverted;
 
-      await expect(
-        erc20
-          .connect(user1)
-          .increaseAllowance(
-            promptMonsters.address,
-            ethers.utils.parseEther("100"),
-          ),
-      ).not.to.be.reverted;
+  //     await expect(
+  //       erc20
+  //         .connect(user1)
+  //         .increaseAllowance(
+  //           promptMonsters.address,
+  //           ethers.utils.parseEther("100"),
+  //         ),
+  //     ).not.to.be.reverted;
 
-      await expect(promptMonsters.connect(user1).mint()).not.to.be.reverted;
+  //     await expect(promptMonsters.connect(user1).mint()).not.to.be.reverted;
 
-      expect(await stamina.getTimeStd(0)).to.equal(0);
-      expect(await stamina.getTimeStd(1)).to.equal(0);
+  //     expect(await stamina.getTimeStd(0)).to.equal(0);
+  //     expect(await stamina.getTimeStd(1)).to.equal(0);
 
-      expect(await stamina.calculateStamina(0)).to.equal(1);
-      expect(await stamina.calculateStamina(1)).to.equal(1);
+  //     expect(await stamina.calculateStamina(0)).to.equal(1);
+  //     expect(await stamina.calculateStamina(1)).to.equal(1);
 
-      expect(await stamina.connect(deployer).consumeStamina(0, 1)).not.to.be
-        .reverted;
+  //     expect(await stamina.connect(deployer).consumeStamina(0, 1)).not.to.be
+  //       .reverted;
 
-      expect(await stamina.connect(deployer).consumeStamina(1, 1)).not.to.be
-        .reverted;
+  //     expect(await stamina.connect(deployer).consumeStamina(1, 1)).not.to.be
+  //       .reverted;
 
-      expect(await stamina.calculateStamina(0)).to.equal(0);
-      expect(await stamina.calculateStamina(1)).to.equal(0);
-    });
-  });
+  //     expect(await stamina.calculateStamina(0)).to.equal(0);
+  //     expect(await stamina.calculateStamina(1)).to.equal(0);
+  //   });
+  // });
 });

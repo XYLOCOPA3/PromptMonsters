@@ -1,7 +1,12 @@
+import { calcStaminaFromMonsterId } from "@/features/stamina/utils/calcStamina";
 import { RPC_URL } from "@/lib/wallet";
 import { MonsterModel } from "@/models/MonsterModel";
 import { MonsterState, monsterState } from "@/stores/monsterState";
-import { MCHCoin__factory, PromptMonsters__factory } from "@/typechain";
+import {
+  MCHCoin__factory,
+  PromptMonsters__factory,
+  Stamina__factory,
+} from "@/typechain";
 import { MonsterId } from "@/types/MonsterId";
 import { UserId } from "@/types/UserId";
 import { isNumOrSymbol } from "@/utils/validation";
@@ -16,7 +21,7 @@ export interface MonsterController {
     feature: string,
     language: string,
   ) => Promise<MonsterModel>;
-  mint: (userId: UserId, monster: MonsterModel) => Promise<MonsterModel>;
+  mint: (userId: UserId) => Promise<MonsterModel>;
   init: (userId: UserId) => Promise<boolean>;
   set: (monster: MonsterModel) => void;
   reset: () => void;
@@ -54,7 +59,17 @@ export const useMonsterController = (): MonsterController => {
     console.log(monsterJson);
     if (monsterJson.isExisting) throw new Error("This monster is existing.");
     if (!monsterJson.isFiction) throw new Error("This monster is non fiction.");
-    const monster = MonsterModel.fromData(monsterJson);
+    const provider = new ethers.providers.JsonRpcProvider(
+      RPC_URL.mchVerseTestnet,
+    );
+    const stamina = Stamina__factory.connect(
+      process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
+      provider,
+    );
+    const monster = MonsterModel.fromData(
+      monsterJson,
+      Number(await stamina.staminaLimit()),
+    );
     setMonster(monster);
     return monster;
   };
@@ -62,12 +77,8 @@ export const useMonsterController = (): MonsterController => {
   /**
    * Mint monster
    * @param userId user id
-   * @param monster monster model
    */
-  const mint = async (
-    userId: UserId,
-    monster: MonsterModel,
-  ): Promise<MonsterModel> => {
+  const mint = async (userId: UserId): Promise<MonsterModel> => {
     const provider = new ethers.providers.JsonRpcProvider(
       RPC_URL.mchVerseTestnet,
     );
@@ -106,7 +117,15 @@ export const useMonsterController = (): MonsterController => {
       return prevState.copyWith({ id: monsterId });
     });
     const monsterContract = (await promptMonsters.getMonsters([monsterId]))[0];
-    return MonsterModel.fromContract(monsterId, monsterContract);
+    const stamina = Stamina__factory.connect(
+      process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
+      provider,
+    );
+    return MonsterModel.fromContract(
+      monsterId,
+      monsterContract,
+      Number(await stamina.staminaLimit()),
+    );
   };
 
   /**
@@ -123,8 +142,14 @@ export const useMonsterController = (): MonsterController => {
     );
     const tokenIds = await promptMonsters.getOwnerToTokenIds(userId);
     if (tokenIds.length === 0) return false;
-    const monsters = await promptMonsters.getMonsters(tokenIds);
-    setMonster(MonsterModel.fromContract(tokenIds[0].toString(), monsters[0]));
+    const monster = (await promptMonsters.getMonsters(tokenIds))[0];
+    setMonster(
+      MonsterModel.fromContract(
+        tokenIds[0].toString(),
+        monster,
+        await calcStaminaFromMonsterId(tokenIds[0].toString()),
+      ),
+    );
     return true;
   };
 
@@ -156,6 +181,9 @@ export const useMonsterController = (): MonsterController => {
       language,
     });
     const content = res.data.result[0].message.content;
+    setMonster((prevState) => {
+      return prevState.copyWith({ stamina: prevState.stamina - 1 });
+    });
     return content;
   };
 

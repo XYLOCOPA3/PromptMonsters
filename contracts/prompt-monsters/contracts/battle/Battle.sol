@@ -10,7 +10,7 @@ import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
 import {IStamina} from "../stamina/IStamina.sol";
 
 /// @title Battle
-/// @notice This is a contract of Battle.
+/// @dev This is a contract of Battle.
 contract Battle is
   Initializable,
   AccessControlEnumerableUpgradeable,
@@ -21,21 +21,24 @@ contract Battle is
   // --------------------------------------------------------------------------------
 
   IPromptMonsters public promptMonsters;
+
   IStamina public stamina;
 
   address[] private _battleSeasonsAddress;
+
+  uint256 public battleStamina;
 
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
 
-  /// @notice Constructor
+  /// @dev Constructor
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
     _disableInitializers();
   }
 
-  /// @notice Initializeaddress
+  /// @dev Initializeaddress
   /// @param promptMonstersAddress PromptMonsters contract address
   /// @param staminaAddress Stamina contract address
   function initialize(
@@ -47,7 +50,9 @@ contract Battle is
 
     promptMonsters = IPromptMonsters(promptMonstersAddress);
     stamina = IStamina(staminaAddress);
+    battleStamina = 1;
 
+    _grantRole(DEFAULT_ADMIN_ROLE, address(this));
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
   }
 
@@ -55,7 +60,7 @@ contract Battle is
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @notice Get battleSeasonAddress
+  /// @dev Get battleSeasonAddress
   /// @param seasonId ID of the season
   /// @return address of battleSeason
   function getBattleSeasonAddress(
@@ -64,7 +69,7 @@ contract Battle is
     return _battleSeasonsAddress[seasonId];
   }
 
-  /// @notice Get total match count of the monster
+  /// @dev Get total match count of the monster
   /// @param seasonId ID of the season
   /// @param monsterId ID of the monster
   /// @return total match counts
@@ -76,7 +81,7 @@ contract Battle is
       IBattleSeason(_battleSeasonsAddress[seasonId]).getMatchCount(monsterId);
   }
 
-  /// @notice Get batch total match count of the monster
+  /// @dev Get batch total match count of the monster
   /// @param seasonId ID of the season
   /// @param monsterIds ID of the monsters
   /// @return total match counts
@@ -90,7 +95,7 @@ contract Battle is
       );
   }
 
-  /// @notice Get total win count of the monster
+  /// @dev Get total win count of the monster
   /// @param seasonId ID of the season
   /// @param monsterId ID of the monster
   /// @return total win counts
@@ -102,7 +107,7 @@ contract Battle is
       IBattleSeason(_battleSeasonsAddress[seasonId]).getWinCount(monsterId);
   }
 
-  /// @notice Get total win count of the monster
+  /// @dev Get total win count of the monster
   /// @param seasonId ID of the season
   /// @param monsterIds ID of the monsters
   /// @return total win counts
@@ -116,7 +121,7 @@ contract Battle is
       );
   }
 
-  /// @notice Get season battleIdList
+  /// @dev Get season battleIdList
   /// @param seasonId ID of the season
   /// @param monsterId ID of the monster
   /// @return battleIdList
@@ -128,13 +133,13 @@ contract Battle is
       IBattleSeason(_battleSeasonsAddress[seasonId]).getBattleIdList(monsterId);
   }
 
-  /// @notice Get _battleSeasonsAddress length
+  /// @dev Get _battleSeasonsAddress length
   /// @return battleSeasonsAddressLength
   function getBattleSeasonsAddressLength() external view returns (uint256) {
     return _battleSeasonsAddress.length;
   }
 
-  /// @notice Get season battle data
+  /// @dev Get season battle data
   /// @param seasonId ID of the season
   /// @return season battle data
   function getSeasonBattleData(
@@ -143,7 +148,7 @@ contract Battle is
     return IBattleSeason(_battleSeasonsAddress[seasonId]).getBattleData();
   }
 
-  /// @notice Get season battle data by monster ID
+  /// @dev Get season battle data by monster ID
   /// @param seasonId ID of the season
   /// @param monsterId ID of the monster
   /// @return season battle data
@@ -157,7 +162,7 @@ contract Battle is
       );
   }
 
-  /// @notice Get _battleSeasonsAddress
+  /// @dev Get _battleSeasonsAddress
   /// @return _battleSeasonsAddress
   function getBattleSeasonsAddress() external view returns (address[] memory) {
     return _battleSeasonsAddress;
@@ -167,7 +172,7 @@ contract Battle is
   // Setter
   // --------------------------------------------------------------------------------
 
-  /// @notice Add battleSeasonAddress
+  /// @dev Add battleSeasonAddress
   /// @param battleSeasonAddress address of battleSeason
   function addBattleSeasonAddress(
     address battleSeasonAddress
@@ -175,7 +180,7 @@ contract Battle is
     _battleSeasonsAddress.push(battleSeasonAddress);
   }
 
-  /// @notice Set battleSeasonAddress
+  /// @dev Set battleSeasonAddress
   /// @param seasonId ID of the season
   /// @param battleSeasonAddress address of battleSeason
   function setBattleSeasonAddress(
@@ -185,7 +190,7 @@ contract Battle is
     _battleSeasonsAddress[seasonId] = battleSeasonAddress;
   }
 
-  /// @notice Set promptMonstersAddress
+  /// @dev Set promptMonstersAddress
   /// @param promptMonstersAddress address of promptMonsters
   function setPromptMonstersAddress(
     address promptMonstersAddress
@@ -193,55 +198,54 @@ contract Battle is
     promptMonsters = IPromptMonsters(promptMonstersAddress);
   }
 
+  /// @dev Set staminaAddress
+  /// @param staminaAddress address of stamina
+  function setStaminaAddress(
+    address staminaAddress
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    stamina = IStamina(staminaAddress);
+  }
+
+  /// @dev Set battle stamina
+  /// @param battleStamina_ battle stamina
+  function setBattleStamina(
+    uint256 battleStamina_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    battleStamina = battleStamina_;
+  }
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @notice Add season battle data
+  /// @dev Add season battle data
   /// @param seasonId ID of the season
+  /// @param monsterId ID of the monster
   /// @param winMonsterId ID of the win monster
   /// @param loseMonsterId ID of the lose monster
   /// @param battleLog Battle log
   function addSeasonBattleData(
     uint256 seasonId,
+    uint256 monsterId,
     uint256 winMonsterId,
     uint256 loseMonsterId,
     string memory battleLog
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     promptMonsters.checkMonsterId(winMonsterId);
     promptMonsters.checkMonsterId(loseMonsterId);
-
     IBattleSeason(_battleSeasonsAddress[seasonId]).addBattleData(
       winMonsterId,
       loseMonsterId,
       battleLog
     );
-  }
-
-  /// @notice Calculate stamina of battle
-  /// @param monsterId ID of the monster
-  /// @return stamina
-  function calculateStamina(uint256 monsterId) external view returns (uint256) {
-    return stamina.calculateStamina(monsterId);
-  }
-
-  /// @notice Consume stamina
-  /// @param monsterId ID of the monster
-  /// @param consumedStamina stamina to consume
-  function consumeStamina(
-    uint256 monsterId,
-    uint256 consumedStamina
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    promptMonsters.checkMonsterId(monsterId);
-
-    stamina.consumeStamina(monsterId, consumedStamina);
+    stamina.consumeStamina(monsterId, battleStamina);
   }
 
   // --------------------------------------------------------------------------------
   // Internal
   // --------------------------------------------------------------------------------
 
-  /// @notice Authorize upgrade
+  /// @dev Authorize upgrade
   /// @param newImplementation new implementation address
   function _authorizeUpgrade(
     address newImplementation

@@ -10,7 +10,7 @@ export async function deployPromptMonsters() {
   const [deployer, user1, promptMonstersWallet] = await ethers.getSigners();
 
   const promptMonstersArgs: promptMonstersInitArgs = {
-    externalLink: "https://prompt-monsters-jp.azurewebsites.net/",
+    externalLink: "https://prompt-monsters.com/",
     erc20Address: erc20.address,
     mintPrice: ethers.utils.parseEther("100"),
     promptMonstersWallet: promptMonstersWallet.address,

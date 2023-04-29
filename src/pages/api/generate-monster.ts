@@ -42,7 +42,7 @@ export default async function handler(
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: generatePrompt }],
-      temperature: 0.3,
+      temperature: 1.0,
     });
     console.log(completion.data.choices);
     console.log(completion.data.usage);
@@ -77,13 +77,27 @@ const _getGeneratePrompt = (feature: string, language: string): string => {
 - Don't reuse "feature" words
 - Apply status that matches the monster's features
 - Single JSON output
-- (Translate values to ${language} (keys untranslated))
+- Translate values to ${language} (keys untranslated)
 
 Example:
 feature="A yellow bear that loves honey":
-{"name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":10,"ATK":2,"DEF":4,"INT":6,"MGR":4,"AGL":4},"skills":["Honey Attack","Hug","Healing Song"],"isFiction":true,"isExisting":true}
+{"language":"English","name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":10,"ATK":2,"DEF":4,"INT":6,"MGR":4,"AGL":4},"skills":["Honey Attack","Hug","Healing Song"],"isFiction":true,"isExisting":true}
 
 feature="${feature}":`;
+  //   return `Create a JSON fictional monster:
+  // - Non-litigious words
+  // - Unique "name"
+  // - No proper nouns in "flavor"
+  // - Don't reuse "feature" words
+  // - Apply status that matches the monster's features
+  // - Single JSON output
+  // - Translate values to ${language} (keys untranslated)
+
+  // Example:
+  // feature="A yellow bear that loves honey":
+  // {"name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":10,"ATK":2,"DEF":4,"INT":6,"MGR":4,"AGL":4},"skills":["Honey Attack","Hug","Healing Song"],"isFiction":true,"isExisting":true}
+
+  // feature="${feature}":`;
 };
 
 /**
@@ -96,14 +110,16 @@ const _getMonster = (content: any, language: string): any => {
   let newContent = _replaceLanguage(content, language);
   const monster = parseJson(newContent);
   if (!_isOverStatus(monster)) return monster;
+  console.log("over status!!!");
   console.log(monster);
   const mean =
-    (monster.status.ATK +
-      monster.status.DEF +
-      monster.status.INT +
-      monster.status.MGR +
-      monster.status.AGL) /
-    5;
+    Math.floor(
+      monster.status.ATK +
+        monster.status.DEF +
+        monster.status.INT +
+        monster.status.MGR +
+        monster.status.AGL,
+    ) / 5;
   const stds = [
     monster.status.ATK - mean,
     monster.status.DEF - mean,
@@ -116,13 +132,7 @@ const _getMonster = (content: any, language: string): any => {
   monster.status.INT = 10 + stds[2];
   monster.status.MGR = 10 + stds[3];
   monster.status.AGL = 10 + stds[4];
-
-  const randomNum = Math.floor(Math.random() * 5);
-  if (randomNum === 0) monster.status.HP = monster.status.ATK * 2;
-  if (randomNum === 1) monster.status.HP = monster.status.DEF * 2;
-  if (randomNum === 2) monster.status.HP = monster.status.INT * 2;
-  if (randomNum === 3) monster.status.HP = monster.status.MGR * 2;
-  if (randomNum === 4) monster.status.HP = monster.status.AGL * 2;
+  monster.status.HP = _fixHP(monster.status);
   return _fixStatus(monster);
 };
 
@@ -202,7 +212,7 @@ const _isOverStatus = (monster: any): boolean => {
  * @param monster monster
  * @return {any} monster
  */
-const _fixStatus = (monster: any): boolean => {
+const _fixStatus = (monster: any): any => {
   const newMonster = monster;
   if (monster.status.HP > 100) newMonster.status.HP = 100;
   if (monster.status.ATK > 20) newMonster.status.ATK = 20;
@@ -217,4 +227,34 @@ const _fixStatus = (monster: any): boolean => {
   if (monster.status.MGR < 1) newMonster.status.MGR = 1;
   if (monster.status.AGL < 1) newMonster.status.AGL = 1;
   return newMonster;
+};
+
+/**
+ * Fix HP
+ * @param status status
+ * @return {number} HP
+ */
+const _fixHP = (status: any): number => {
+  let hp = 0;
+  hp += status.ATK * 0.5;
+  hp += status.DEF * 0.6;
+  hp += status.INT * 0.3;
+  hp += status.MGR * 0.5;
+  hp += status.AGL * 0.1;
+  return Math.floor(hp);
+
+  // const newMonster = monster;
+  // if (monster.status.HP > 100) newMonster.status.HP = 100;
+  // if (monster.status.ATK > 20) newMonster.status.ATK = 20;
+  // if (monster.status.DEF > 20) newMonster.status.DEF = 20;
+  // if (monster.status.INT > 20) newMonster.status.INT = 20;
+  // if (monster.status.MGR > 20) newMonster.status.MGR = 20;
+  // if (monster.status.AGL > 20) newMonster.status.AGL = 20;
+  // if (monster.status.HP < 1) newMonster.status.HP = 1;
+  // if (monster.status.ATK < 1) newMonster.status.ATK = 1;
+  // if (monster.status.DEF < 1) newMonster.status.DEF = 1;
+  // if (monster.status.INT < 1) newMonster.status.INT = 1;
+  // if (monster.status.MGR < 1) newMonster.status.MGR = 1;
+  // if (monster.status.AGL < 1) newMonster.status.AGL = 1;
+  // return newMonster;
 };

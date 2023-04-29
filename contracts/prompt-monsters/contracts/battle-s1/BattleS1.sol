@@ -9,7 +9,7 @@ import {IBattleSeason} from "../interfaces/IBattleSeason.sol";
 import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
 
 /// @title BattleS1
-/// @notice This is a contract of BattleS1.
+/// @dev This is a contract of BattleS1.
 contract BattleS1 is
   Initializable,
   IBattleSeason,
@@ -35,19 +35,15 @@ contract BattleS1 is
   // Initialize
   // --------------------------------------------------------------------------------
 
-  /// @notice Constructor
+  /// @dev Constructor
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
     _disableInitializers();
   }
 
-  /// @notice Initialize
+  /// @dev Initialize
   /// @param promptMonstersAddress PromptMonsters contract address
-  /// @param battleAddress Battle contract address
-  function initialize(
-    address promptMonstersAddress,
-    address battleAddress
-  ) public initializer {
+  function initialize(address promptMonstersAddress) public initializer {
     __AccessControlEnumerable_init();
     __UUPSUpgradeable_init();
 
@@ -55,7 +51,6 @@ contract BattleS1 is
 
     promptMonsters = IPromptMonsters(promptMonstersAddress);
 
-    _grantRole(GAME_ROLE, battleAddress);
     _grantRole(GAME_ROLE, msg.sender);
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
   }
@@ -64,14 +59,14 @@ contract BattleS1 is
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @notice Get total match count of the monster
+  /// @dev Get total match count of the monster
   /// @param monsterId ID of the monster
   /// @return total match counts
   function getMatchCount(uint256 monsterId) external view returns (uint256) {
     return matchCount[monsterId];
   }
 
-  /// @notice Get batch total match count of the monster
+  /// @dev Get batch total match count of the monster
   /// @param monsterIds IDs of the monster
   /// @return batch total match counts
   function getBatchMatchCount(
@@ -89,14 +84,14 @@ contract BattleS1 is
     return _matchCounts;
   }
 
-  /// @notice Get total wint count of the monster
+  /// @dev Get total wint count of the monster
   /// @param monsterId ID of the monster
   /// @return total win counts
   function getWinCount(uint256 monsterId) external view returns (uint256) {
     return winCount[monsterId];
   }
 
-  /// @notice Get batch total win count of the monster
+  /// @dev Get batch total win count of the monster
   /// @param monsterIds IDs of the monster
   /// @return batch total win counts
   function getBatchWinCount(
@@ -114,7 +109,7 @@ contract BattleS1 is
     return _winCounts;
   }
 
-  /// @notice Get battle ID list
+  /// @dev Get battle ID list
   /// @param monsterId ID of the monster
   /// @return battle ID list
   function getBattleIdList(
@@ -123,13 +118,13 @@ contract BattleS1 is
     return battleIdList[monsterId];
   }
 
-  /// @notice Get battle data
+  /// @dev Get battle data
   /// @return battle data
   function getBattleData() external view returns (BattleData[] memory) {
     return battleData;
   }
 
-  /// @notice Get battle data by monster ID
+  /// @dev Get battle data by monster ID
   /// @param monsterId ID of the monster
   /// @return battle data
   function getBattleDataByMonsterId(
@@ -152,7 +147,7 @@ contract BattleS1 is
   // Setter
   // --------------------------------------------------------------------------------
 
-  /// @notice Set PromptMonsters contract address
+  /// @dev Set PromptMonsters contract address
   /// @param promptMonstersAddress PromptMonsters contract address
   function setPromptMonstersAddress(
     address promptMonstersAddress
@@ -164,7 +159,7 @@ contract BattleS1 is
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @notice Add battle data
+  /// @dev Add battle data
   /// @param winMonsterId ID of the monster who won the battle
   /// @param loseMonsterId ID of the monster who lost the battle
   /// @param battleLog Battle log
@@ -207,7 +202,7 @@ contract BattleS1 is
   // Internal
   // --------------------------------------------------------------------------------
 
-  /// @notice Authorize upgrade
+  /// @dev Authorize upgrade
   /// @param newImplementation new implementation address
   function _authorizeUpgrade(
     address newImplementation

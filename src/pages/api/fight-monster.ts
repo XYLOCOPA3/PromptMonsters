@@ -1,7 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { BattleLeaderBoardContract } from "@/features/battle/api/contracts/BattleLeaderBoardContract";
+import { BattleContract } from "@/features/battle/api/contracts/BattleContract";
 import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
+import { calcStaminaFromMonsterId } from "@/features/stamina/utils/calcStamina";
 import { RPC_URL } from "@/lib/wallet";
 import { IPromptMonsters } from "@/typechain/PromptMonsters";
 import { parseJson } from "@/utils/jsonParser";
@@ -46,6 +47,13 @@ export default async function handler(
   console.log(fightPrompt);
 
   try {
+    const stamina = await calcStaminaFromMonsterId(monsterId);
+    console.log(stamina);
+    if (stamina < 1) {
+      const message = "Stamina is not enough";
+      console.log(message);
+      return res.status(400).json({ message });
+    }
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [
@@ -54,22 +62,21 @@ export default async function handler(
           content: fightPrompt,
         },
       ],
-      temperature: 0.3,
+      temperature: 1.0,
     });
     console.log(completion.data.choices);
     console.log(completion.data.usage);
-    const battle = parseJson(completion.data.choices[0].message!.content);
-    const battleLeaderBoard = BattleLeaderBoardContract.instance(
-      RPC_URL.mchVerseTestnet,
-    );
-    await battleLeaderBoard.addSeasonBattleData(
-      0,
-      battle.winnerId,
-      battle.winnerId === monsterId ? enemyId : monsterId,
-      battle.battleDesc,
+    const battleResult = parseJson(completion.data.choices[0].message!.content);
+    const battle = BattleContract.instance(RPC_URL.mchVerseTestnet);
+    await battle.addSeasonBattleData(
+      monsterId,
+      battleResult.winnerId,
+      battleResult.winnerId === monsterId ? enemyId : monsterId,
+      battleResult.battleDesc,
     );
     res.status(200).json({ result: completion.data.choices });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({ message: error });
   }
 }

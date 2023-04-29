@@ -5,7 +5,7 @@ import {IERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC7
 
 /// @title IPromptMonsters
 /// @author keit (@keitEngineer)
-/// @notice This is an interface of PromptMonsters.
+/// @dev This is an interface of PromptMonsters.
 interface IPromptMonsters is IERC721Upgradeable {
   // --------------------------------------------------------------------------------
   // State
@@ -54,7 +54,7 @@ interface IPromptMonsters is IERC721Upgradeable {
   // Initialize
   // --------------------------------------------------------------------------------
 
-  /// @notice Initialize
+  /// @dev Initialize
   /// @param externalLink_ external link
   /// @param erc20Address_ MCH Coin address
   /// @param mintPrice_ MCH Coin address
@@ -70,32 +70,32 @@ interface IPromptMonsters is IERC721Upgradeable {
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @notice Get monsters total supply
+  /// @dev Get monsters total supply
   /// @return totalSupply token IDs
   function getMonstersTotalSupply() external view returns (uint256 totalSupply);
 
-  /// @notice Get monsters history
+  /// @dev Get monsters history
   /// @return monsterHistory monster history
   function getMonsterHistory()
     external
     view
     returns (IPromptMonsters.Monster memory monsterHistory);
 
-  /// @notice Get token IDs from owner address
+  /// @dev Get token IDs from owner address
   /// @param owner owner
   /// @return tokenIds token IDs
   function getOwnerToTokenIds(
     address owner
   ) external view returns (uint256[] memory tokenIds);
 
-  /// @notice Get monsters
+  /// @dev Get monsters
   /// @param tokenIds_ token IDs
   /// @return monsters monsters
   function getMonsters(
     uint256[] memory tokenIds_
   ) external view returns (Monster[] memory monsters);
 
-  /// @notice Get contract URI
+  /// @dev Get contract URI
   /// @return uri contract URI
   function contractURI() external view returns (string memory uri);
 
@@ -103,7 +103,7 @@ interface IPromptMonsters is IERC721Upgradeable {
   // Setter
   // --------------------------------------------------------------------------------
 
-  /// @notice Set external link
+  /// @dev Set external link
   /// @param newState_ new state
   function setExternalLink(string memory newState_) external;
 
@@ -111,19 +111,19 @@ interface IPromptMonsters is IERC721Upgradeable {
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @notice Generate monster
+  /// @dev Generate monster
   /// @param user_ user address
   /// @param monster_ monster
   function generateMonster(address user_, Monster memory monster_) external;
 
-  /// @notice Mint monster
+  /// @dev Mint monster
   function mint() external;
 
-  /// @notice Burn
+  /// @dev Burn
   /// @param tokenId_ token ID
   function burn(uint256 tokenId_) external;
 
-  /// @notice Check monster ID
+  /// @dev Check monster ID
   /// @param monsterId monster ID
   function checkMonsterId(uint256 monsterId) external view;
 }
