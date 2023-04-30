@@ -20,7 +20,7 @@ export async function deployBattleS1() {
   const BattleS1 = await ethers.getContractFactory("BattleS1");
   const battleS1Proxy = await upgrades.deployProxy(
     BattleS1,
-    [PROMPT_MONSTERS_PROXY_ADDRESS, battle.address],
+    [PROMPT_MONSTERS_PROXY_ADDRESS],
     {
       kind: "uups",
       initializer: "initialize",

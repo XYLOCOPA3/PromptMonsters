@@ -30,7 +30,7 @@ export const MonsterFightText = ({ className }: MonsterFightTextProps) => {
       <div>{battle.battleDesc}</div>
       <br />
       <div>
-        {monster.name} {battle.winnerId === monster.id ? "win" : "lose"}.
+        {monster.name} {battle.winnerName === monster.name ? "win" : "lose"}.
       </div>
     </div>
   );

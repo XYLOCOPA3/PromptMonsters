@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Result } from "@/components/elements/Result";
+import { TwitterIcon } from "@/features/lp";
 import {
   BattleTweetButton,
   GenerateTweetButton,
@@ -8,6 +9,7 @@ import {
   MonsterGenerator,
   MonsterMintButton,
   MonsterSelector,
+  ResurrectionPrompt,
 } from "@/features/monster";
 import { PlayNote } from "@/features/note";
 import { StaminaTimer } from "@/features/stamina";
@@ -26,19 +28,20 @@ export const MainMonsters = () => {
 
   return (
     <>
+      <TwitterIcon />
       <div
         className={clsx(
           "flex",
           "items-center",
           "flex-col",
           "mt-[100px]",
-          ownedMonsters.length === 0 ? "h-screen" : "",
+          ownedMonsters.length === 0 ? "h-[150%]" : "",
         )}
       >
         <div
           className={clsx(
             "w-[90%]",
-            "my-[30px]",
+            "mb-[30px]",
             "max-w-[700px]",
             "flex",
             "flex-col",
@@ -48,6 +51,8 @@ export const MainMonsters = () => {
           <PlayNote className={clsx("w-[100%]")} />
         </div>
         <MonsterGenerator className={clsx("my-[20px]", "w-[300px]")} />
+        <div>or</div>
+        <ResurrectionPrompt className={clsx("my-[20px]", "w-[300px]")} />
         <div
           className={clsx(
             "w-[90%]",
@@ -67,23 +72,29 @@ export const MainMonsters = () => {
               <MonsterSelector className={clsx("w-[50%]")} />
             </div>
           )}
-          <Result className={clsx("w-[100%]", "mb-[30px]")} />
+          <Result className={clsx("w-[100%]", "mb-[10px]")} />
+          <div className={clsx("w-[100%]", "mb-[20px]", "flex", "justify-end")}>
+            <GenerateTweetButton />
+          </div>
           <div className={clsx("flex", "w-[100%]")}>
-            <div className={clsx("w-1/3", "flex", "justify-start")}>
-              <GenerateTweetButton />
+            <div className={clsx("w-[50%]", "flex", "items-start", "flex-col")}>
+              {monsterMinted ? <></> : <MonsterMintButton />}
             </div>
-            {/* <div className={clsx("w-1/3", "select-none")}></div> */}
-            <div className={clsx("w-2/3", "flex", "items-end", "flex-col")}>
-              {monsterMinted ? <MonsterFightButton /> : <MonsterMintButton />}
-              <StaminaTimer className={clsx("mt-[5px]")} />
+            <div className={clsx("w-[50%]", "flex", "items-end", "flex-col")}>
+              <MonsterFightButton />
+              {monsterMinted ? (
+                <StaminaTimer className={clsx("mt-[5px]")} />
+              ) : (
+                <></>
+              )}
             </div>
           </div>
-          <MonsterFightText className={clsx("w-[100%]", "mt-[50px]")} />
-          <div className={clsx("flex", "w-[100%]", "mt-[30px]")}>
-            <div className={clsx("w-1/3", "flex", "justify-start")}>
+          <MonsterFightText className={clsx("w-[100%]", "mt-[40px]")} />
+          <div className={clsx("flex", "w-[100%]", "mt-[10px]")}>
+            <div className={clsx("w-2/3", "select-none")}></div>
+            <div className={clsx("w-1/3", "flex", "justify-end")}>
               <BattleTweetButton />
             </div>
-            <div className={clsx("w-2/3", "select-none")}></div>
           </div>
         </div>
       </div>
@@ -95,7 +106,7 @@ export const MainMonsters = () => {
           "opacity-10",
           "h-[300%]",
           "z-[-1]",
-          "md:h-[150%]",
+          "md:h-[200%]",
         )}
         src="/assets/images/bg-arena.png"
         alt="bg-arena"

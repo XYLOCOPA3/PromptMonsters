@@ -19,6 +19,10 @@ interface IBattleSeason {
   // Event
   // --------------------------------------------------------------------------------
 
+  event MatchCount(uint256 indexed monsterId, uint256 matchCount);
+
+  event WinCount(uint256 indexed monsterId, uint256 winCount);
+
   event BattleDataEvent(
     uint256 indexed battleId,
     uint256 timestamp,
@@ -84,6 +88,10 @@ interface IBattleSeason {
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
+
+  /// @dev Set PromptMonsters contract address
+  /// @param promptMonstersAddress PromptMonsters contract address
+  function setPromptMonstersAddress(address promptMonstersAddress) external;
 
   // --------------------------------------------------------------------------------
   // Main Logic

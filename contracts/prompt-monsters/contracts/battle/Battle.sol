@@ -5,6 +5,7 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
+import {IBattle} from "./IBattle.sol";
 import {IBattleSeason} from "../interfaces/IBattleSeason.sol";
 import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
 import {IStamina} from "../stamina/IStamina.sol";
@@ -13,6 +14,7 @@ import {IStamina} from "../stamina/IStamina.sol";
 /// @dev This is a contract of Battle.
 contract Battle is
   Initializable,
+  IBattle,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
 {
@@ -178,6 +180,8 @@ contract Battle is
     address battleSeasonAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     _battleSeasonsAddress.push(battleSeasonAddress);
+
+    emit AddBattleSeasonAddress(msg.sender, battleSeasonAddress);
   }
 
   /// @dev Set battleSeasonAddress
@@ -188,6 +192,8 @@ contract Battle is
     address battleSeasonAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     _battleSeasonsAddress[seasonId] = battleSeasonAddress;
+
+    emit SetBattleSeasonAddress(msg.sender, seasonId, battleSeasonAddress);
   }
 
   /// @dev Set promptMonstersAddress
@@ -196,6 +202,8 @@ contract Battle is
     address promptMonstersAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     promptMonsters = IPromptMonsters(promptMonstersAddress);
+
+    emit SetPromptMonstersAddress(msg.sender, promptMonstersAddress);
   }
 
   /// @dev Set staminaAddress
@@ -204,6 +212,8 @@ contract Battle is
     address staminaAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     stamina = IStamina(staminaAddress);
+
+    emit SetStaminaAddress(msg.sender, staminaAddress);
   }
 
   /// @dev Set battle stamina
@@ -212,6 +222,8 @@ contract Battle is
     uint256 battleStamina_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     battleStamina = battleStamina_;
+
+    emit SetBattleStamina(msg.sender, battleStamina_);
   }
 
   // --------------------------------------------------------------------------------

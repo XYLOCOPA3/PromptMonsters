@@ -34,16 +34,17 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
    * Click event
    */
   const handleClick = async () => {
+    if (user.id === "") {
+      alert("Please log in if you would like to mint a monster.");
+      return;
+    }
     setDisable(true);
     setLoading(true);
     try {
-      if (user.id === "") {
-        alert("Please login");
-        setDisable(false);
-        setLoading(false);
-        return;
-      }
-      const newMonster = await monsterController.mint(user.id);
+      const newMonster = await monsterController.mint(
+        user.id,
+        monster.resurrectionPrompt,
+      );
       ownedMonstersController.updateAfterMinted(newMonster);
       setSelectedMonsterIdName(`${newMonster.name} | id: ${newMonster.id}`);
       setMonsterMinted(true);
@@ -62,9 +63,9 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
       className={clsx(
         className,
         "px-[20px]",
-        "py-[10px]",
         "w-[100%]",
-        "max-w-[200px]",
+        "h-[40px]",
+        "max-w-[170px]",
       )}
       variant="secondary"
       loading={loading}

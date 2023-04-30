@@ -97,6 +97,8 @@ contract Stamina is
     address promptMonstersAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     promptMonsters = IPromptMonsters(promptMonstersAddress);
+
+    emit SetPromptMonstersAddress(msg.sender, promptMonstersAddress);
   }
 
   /// @dev Set last fight time of the monster
@@ -108,6 +110,8 @@ contract Stamina is
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     promptMonsters.checkMonsterId(monsterId);
     timeStd[monsterId] = _timeStd;
+
+    emit SetTimeStd(msg.sender, monsterId, _timeStd);
   }
 
   /// @dev Set stamina limit
@@ -116,6 +120,8 @@ contract Stamina is
     uint256 _staminaLimit
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     staminaLimit = _staminaLimit;
+
+    emit SetStaminaLimit(msg.sender, _staminaLimit);
   }
 
   /// @dev Set stamina recovery time
@@ -124,6 +130,8 @@ contract Stamina is
     uint256 _staminaRecoveryTime
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     staminaRecoveryTime = _staminaRecoveryTime;
+
+    emit SetStaminaRecoveryTime(msg.sender, _staminaRecoveryTime);
   }
 
   // --------------------------------------------------------------------------------
@@ -150,6 +158,7 @@ contract Stamina is
     uint256 monsterId,
     uint256 consumedStamina
   ) external onlyRole(GAME_ROLE) {
+    if (monsterId == type(uint256).max) return;
     promptMonsters.checkMonsterId(monsterId);
     uint256 _timeStd = timeStd[monsterId];
     uint256 _staminaLimit = staminaLimit;
@@ -162,6 +171,8 @@ contract Stamina is
       return;
     }
     timeStd[monsterId] = _timeStd + (_staminaRecoveryTime * consumedStamina);
+
+    emit ConsumeStamina(monsterId, consumedStamina, timeStd[monsterId]);
   }
 
   // --------------------------------------------------------------------------------

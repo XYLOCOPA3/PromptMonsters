@@ -1,6 +1,7 @@
 import { ServerWallet } from "@/lib/wallet";
 import { PromptMonsters, PromptMonsters__factory } from "@/typechain";
 import { IPromptMonsters } from "@/typechain/PromptMonsters";
+import { UserId } from "@/types/UserId";
 import { ethers } from "ethers";
 
 export class PromptMonstersContract {
@@ -29,16 +30,18 @@ export class PromptMonstersContract {
    * generateMonster
    * @param userId user id
    * @param monster monster content
+   * @param feature feature
    * @return {Promise<ethers.ContractReceipt>} contract receipt
    */
   generateMonster = async (
     userId: string,
     monster: any,
+    feature: string,
   ): Promise<ethers.ContractReceipt> => {
     return await (
       await this._promptMonsters.generateMonster(
         userId,
-        this.toMonsterStruct(monster),
+        this.toMonsterStruct(monster, feature),
       )
     ).wait();
   };
@@ -46,10 +49,15 @@ export class PromptMonstersContract {
   /**
    * Get monster struct
    * @param monsterJson monster json
+   * @param feature feature
    * @return {MonsterModel} MonsterModel
    */
-  toMonsterStruct = (monsterJson: any): IPromptMonsters.MonsterStruct => {
+  toMonsterStruct = (
+    monsterJson: any,
+    feature: string,
+  ): IPromptMonsters.MonsterStruct => {
     const monster: IPromptMonsters.MonsterStruct = {
+      feature: feature,
       name: monsterJson.name,
       flavor: monsterJson.flavor,
       skills: monsterJson.skills,
@@ -60,8 +68,6 @@ export class PromptMonstersContract {
       inte: ethers.BigNumber.from(monsterJson.status.INT),
       mgr: ethers.BigNumber.from(monsterJson.status.MGR),
       agl: ethers.BigNumber.from(monsterJson.status.AGL),
-      maxSkills: ethers.BigNumber.from(10),
-      maxSkillsSet: ethers.BigNumber.from(4),
     };
     return monster;
   };
@@ -79,6 +85,17 @@ export class PromptMonstersContract {
       tokenIds.push(ethers.BigNumber.from(monsterIds[i]));
     }
     return await this._promptMonsters.getMonsters(tokenIds);
+  };
+
+  /**
+   * Get monster history
+   * @param userId user id
+   * @return {Promise<IPromptMonsters.MonsterStructOutput>} monster struct output
+   */
+  getMonsterHistory = async (
+    userId: UserId,
+  ): Promise<IPromptMonsters.MonsterStructOutput> => {
+    return await this._promptMonsters.getMonsterHistory(userId);
   };
 
   /**

@@ -19,7 +19,7 @@ export const AutoLogin = ({ children }: AutoLoginProps) => {
    */
   const init = () => {
     if (address === undefined) return;
-    userController.set(address!);
+    userController.set(address!, false);
   };
 
   useLayoutEffectOfSSR(() => {

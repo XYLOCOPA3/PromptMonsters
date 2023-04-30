@@ -24,8 +24,10 @@ export const PlayNote = ({ className }: PlayNoteProps) => {
         "text-justify",
       )}
     >
-      <div className={clsx("font-bold", "text-[24px]")}># How to Play</div>
-      <ol className={clsx("list-decimal", "list-outside", "pl-6")}>
+      <div className={clsx("font-bold", "text-[24px]", "mb-[20px]")}>
+        # How to Play
+      </div>
+      <ol className={clsx("list-decimal", "list-outside", "pl-6", "mb-[30px]")}>
         <li className={clsx("mb-2")}>
           First, enter the desired features of the monster you want.
         </li>
@@ -38,13 +40,21 @@ export const PlayNote = ({ className }: PlayNoteProps) => {
           />
         </li>
         <li className={clsx("mb-2")}>
-          You can mint the generated monster as an NFT by paying{" "}
-          {mintPrice === 0 ? "" : mintPrice} MCHC.
-        </li>
-        <li className={clsx("mb-2")}>
-          You can battle against other NFT-converted monsters.
+          You can have this monster battle against other monsters.
         </li>
       </ol>
+      <div className={clsx("mb-2")}>
+        Additionally, you can convert the monster into an NFT by paying{" "}
+        {mintPrice === 0 ? "" : mintPrice} MCHC.
+      </div>
+      <div className={clsx("mb-2")}>
+        Converting to an NFT allows you to save the monster{"'"}s battle record
+        and participate in campaigns.
+      </div>
+      <div className={clsx("mb-2")}>
+        In the future, we plan to make NFT-converted monsters usable in other
+        BCGs, so please mint your monster and enjoy!{" "}
+      </div>
     </div>
   );
 };

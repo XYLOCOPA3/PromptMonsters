@@ -2431,7 +2431,7 @@ contract Erc20 is
   }
 
   function initialize() public initializer {
-    __ERC20_init("MCH Coin", "MCHC");
+    __ERC20_init("Mock Erc20", "MOCK");
     __AccessControl_init();
     __UUPSUpgradeable_init();
 

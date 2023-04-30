@@ -12,6 +12,30 @@ interface IStamina {
   // Event
   // --------------------------------------------------------------------------------
 
+  event SetPromptMonstersAddress(
+    address indexed publisher,
+    address indexed newValue
+  );
+
+  event SetTimeStd(
+    address indexed publisher,
+    uint256 indexed monsterId,
+    uint256 indexed newValue
+  );
+
+  event SetStaminaLimit(address indexed publisher, uint256 indexed newValue);
+
+  event SetStaminaRecoveryTime(
+    address indexed publisher,
+    uint256 indexed newValue
+  );
+
+  event ConsumeStamina(
+    uint256 indexed monsterId,
+    uint256 indexed consumedStamina,
+    uint256 indexed newTimeStd
+  );
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------

@@ -1,9 +1,9 @@
 import { PROMPT_MONSTERS_PROXY_ADDRESS } from "../const";
-import { ethers, upgrades, run } from "hardhat";
+import { ethers, upgrades } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
-  console.log("--- Start PromptMonsters Upgrade -----------");
+  console.log("--- Start PromptMonsters Upgrade ------------");
   console.log("---------------------------------------------");
   console.log("");
 
@@ -33,28 +33,9 @@ async function main() {
 
   console.log("Completed upgrade");
 
-  // Wait 10 seconds before verification, because it fails if it is done immediately after verification
-  console.log("Waiting for 10 seconds before verification...");
-  await new Promise((resolve) => setTimeout(resolve, 10000));
-
-  console.log("--- Verify ----------------------------------");
-
-  console.log("Verifying...");
-
-  try {
-    await run("verify:verify", {
-      address: PROMPT_MONSTERS_PROXY_ADDRESS,
-      constructorArguments: [],
-    });
-  } catch (e) {
-    console.log(e);
-  }
-
-  console.log("Completed verification");
-
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End PromptMonsters Upgrade -------------");
+  console.log("--- End PromptMonsters Upgrade --------------");
   console.log("---------------------------------------------");
 }
 
