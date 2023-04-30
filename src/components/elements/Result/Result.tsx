@@ -17,12 +17,12 @@ export const Result = ({ className }: ResultProps) => {
   return (
     <div
       className={clsx(
+        className,
         "border-white",
         "border-[1px]",
         "rounded-md",
         "p-[10px]",
         "text-justify",
-        className,
       )}
     >
       {_buildIDOrResurrectionPrompt(monster)}

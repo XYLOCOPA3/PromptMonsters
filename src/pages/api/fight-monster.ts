@@ -30,7 +30,7 @@ export default async function handler(
 
   const monsterId = req.body.monsterId;
   const language = req.body.language;
-  const userId = req.body.userId;
+  const resurrectionPrompt = req.body.resurrectionPrompt;
 
   const enemyId = await _getRandomEnemyId(monsterId);
   const promptMonsters = PromptMonstersContract.instance(
@@ -40,7 +40,7 @@ export default async function handler(
   console.log(monsterId);
   if (monsterId === "") {
     const results = await Promise.all([
-      promptMonsters.getMonsterHistory(userId),
+      promptMonsters.getMonsterHistory(resurrectionPrompt),
       promptMonsters.getMonsters([enemyId]),
     ]);
     monsters.push(results[0]);

@@ -38,7 +38,7 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
       const content = await monsterController.fight(
         monster.id,
         language,
-        user.id,
+        monster.resurrectionPrompt,
       );
       battleController.set(content);
     } catch (e) {

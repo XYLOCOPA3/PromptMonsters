@@ -10,17 +10,17 @@ export class MonsterModel extends BaseModel<MonsterId> {
    * ```
    * export const dummyMonster = MonsterModel.create({ id: "dummyId" });
    * ```
+   * @param feature feature
    * @param name name
    * @param flavor flavor text
    * @param skills skills
    * @param lv level
    * @param status status
-   * @param maxSkills max skills
-   * @param maxSkillsSet max skills set
    * @param stamina stamina
    * @param resurrectionPrompt resurrection prompt
    */
   private constructor(
+    public readonly feature: string = "",
     public readonly name: string = "",
     public readonly flavor: string = "",
     public readonly skills: string[] = [],
@@ -33,8 +33,6 @@ export class MonsterModel extends BaseModel<MonsterId> {
       MGR: 0,
       AGL: 0,
     },
-    public readonly maxSkills: number = 100,
-    public readonly maxSkillsSet: number = 100,
     public readonly stamina: number = 0,
     public readonly resurrectionPrompt: string = "",
   ) {
@@ -66,6 +64,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
   ): MonsterModel {
     return MonsterModel.create({
       id: monsterId,
+      feature: monsterStruct.feature,
       name: monsterStruct.name,
       flavor: monsterStruct.flavor,
       skills: monsterStruct.skills,
@@ -91,11 +90,13 @@ export class MonsterModel extends BaseModel<MonsterId> {
    */
   public static fromData(
     json: any,
+    feature: string,
     resurrectionPrompt: string,
     stamina: number = 0,
     lv: number = 1,
   ): MonsterModel {
     return MonsterModel.create({
+      feature: feature,
       name: json.name,
       flavor: json.flavor,
       skills: json.skills,
@@ -105,27 +106,4 @@ export class MonsterModel extends BaseModel<MonsterId> {
       resurrectionPrompt: resurrectionPrompt,
     });
   }
-
-  /**
-   * Get monster struct
-   * @param data monster struct output
-   * @return {MonsterModel} MonsterModel
-   */
-  toMonsterStruct = (data: MonsterModel): IPromptMonsters.MonsterStruct => {
-    const monster: IPromptMonsters.MonsterStruct = {
-      name: data.name,
-      flavor: data.flavor,
-      skills: data.skills,
-      lv: data.lv,
-      hp: data.status.HP,
-      atk: data.status.ATK,
-      def: data.status.DEF,
-      inte: data.status.INT,
-      mgr: data.status.MGR,
-      agl: data.status.AGL,
-      maxSkills: data.maxSkills,
-      maxSkillsSet: data.maxSkillsSet,
-    };
-    return monster;
-  };
 }

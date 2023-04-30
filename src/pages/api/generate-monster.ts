@@ -58,7 +58,7 @@ export default async function handler(
       language,
     );
     console.log(monster);
-    await promptMonsters.generateMonster(resurrectionPrompt, monster);
+    await promptMonsters.generateMonster(resurrectionPrompt, monster, feature);
     return res.status(200).json({ monster, resurrectionPrompt });
   } catch (error) {
     console.log(error);
@@ -87,20 +87,6 @@ feature="A yellow bear that loves honey":
 {"language":"English","name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":10,"ATK":2,"DEF":4,"INT":6,"MGR":4,"AGL":4},"skills":["Honey Attack","Hug","Healing Song"],"isFiction":true,"isExisting":true}
 
 feature="${feature}":`;
-  //   return `Create a JSON fictional monster:
-  // - Non-litigious words
-  // - Unique "name"
-  // - No proper nouns in "flavor"
-  // - Don't reuse "feature" words
-  // - Apply status that matches the monster's features
-  // - Single JSON output
-  // - Translate values to ${language} (keys untranslated)
-
-  // Example:
-  // feature="A yellow bear that loves honey":
-  // {"name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":10,"ATK":2,"DEF":4,"INT":6,"MGR":4,"AGL":4},"skills":["Honey Attack","Hug","Healing Song"],"isFiction":true,"isExisting":true}
-
-  // feature="${feature}":`;
 };
 
 /**

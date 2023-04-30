@@ -24,7 +24,7 @@ export interface MonsterController {
   fight: (
     monsterId: MonsterId,
     language: string,
-    userId: UserId,
+    resurrectionPrompt: string,
   ) => Promise<string>;
   resurrect: (resurrectionPrompt: string) => Promise<MonsterModel>;
 }
@@ -68,6 +68,7 @@ export const useMonsterController = (): MonsterController => {
     );
     const monster = MonsterModel.fromData(
       monsterJson,
+      feature,
       resurrectionPrompt,
       Number(await stamina.staminaLimit()),
     );
@@ -185,12 +186,12 @@ export const useMonsterController = (): MonsterController => {
   const fight = async (
     monsterId: MonsterId,
     language: string,
-    userId: UserId,
+    resurrectionPrompt: string,
   ): Promise<string> => {
     const res = await axios.post("/api/fight-monster", {
       monsterId,
       language,
-      userId,
+      resurrectionPrompt,
     });
     const content = res.data.result[0].message.content;
     if (monsterId === "") return content;
