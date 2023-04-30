@@ -172,10 +172,10 @@ contract BattleS1 is
     promptMonsters.checkMonsterId(winMonsterId);
     promptMonsters.checkMonsterId(loseMonsterId);
 
-    ++matchCount[winMonsterId];
-    ++matchCount[loseMonsterId];
+    uint256 winMonsterMatchCount = ++matchCount[winMonsterId];
+    uint256 loseMonsterMatchCount = ++matchCount[loseMonsterId];
 
-    ++winCount[winMonsterId];
+    uint256 winMonsterWinCount = ++winCount[winMonsterId];
 
     battleData.push(
       BattleData({
@@ -189,6 +189,10 @@ contract BattleS1 is
     uint256 battleId = battleData.length - 1;
     battleIdList[winMonsterId].push(battleId);
     battleIdList[loseMonsterId].push(battleId);
+
+    emit MatchCount(winMonsterId, winMonsterMatchCount);
+    emit MatchCount(loseMonsterId, loseMonsterMatchCount);
+    emit WinCount(winMonsterId, winMonsterWinCount);
 
     emit BattleDataEvent(
       battleId,

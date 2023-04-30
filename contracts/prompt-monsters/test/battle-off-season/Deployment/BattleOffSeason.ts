@@ -20,7 +20,7 @@ export async function deployBattleOffSeason() {
   const BattleOffSeason = await ethers.getContractFactory("BattleOffSeason");
   const battleOffSeasonProxy = await upgrades.deployProxy(
     BattleOffSeason,
-    [PROMPT_MONSTERS_PROXY_ADDRESS, battle.address],
+    [PROMPT_MONSTERS_PROXY_ADDRESS],
     {
       kind: "uups",
       initializer: "initialize",
