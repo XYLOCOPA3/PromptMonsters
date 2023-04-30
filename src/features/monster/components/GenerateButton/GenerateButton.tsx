@@ -41,7 +41,7 @@ export const GenerateButton = ({
       <Image
         className={clsx("w-[30px]", "h-[30px]")}
         src="/assets/images/smart_toy_white_24dp.svg"
-        alt="communityIcon"
+        alt="generate-icon"
         width={50}
         height={50}
       />

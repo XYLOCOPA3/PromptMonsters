@@ -41,7 +41,10 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
     setDisable(true);
     setLoading(true);
     try {
-      const newMonster = await monsterController.mint(user.id);
+      const newMonster = await monsterController.mint(
+        user.id,
+        monster.resurrectionPrompt,
+      );
       ownedMonstersController.updateAfterMinted(newMonster);
       setSelectedMonsterIdName(`${newMonster.name} | id: ${newMonster.id}`);
       setMonsterMinted(true);

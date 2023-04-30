@@ -22,7 +22,6 @@ export const useUserController = (): UserController => {
    * @param freePlay free play
    */
   const set = (address: string, freePlay: boolean): void => {
-    console.log("setUser");
     setUser(UserModel.create({ id: address, freePlay: freePlay }));
   };
 
@@ -30,7 +29,6 @@ export const useUserController = (): UserController => {
    * reset
    */
   const reset = (): void => {
-    console.log("resetUser");
     setUser(UserModel.create({}));
   };
 
@@ -38,7 +36,6 @@ export const useUserController = (): UserController => {
    * create
    */
   const create = (): string => {
-    console.log("createUser");
     const wallet = ethers.Wallet.createRandom();
     console.log("Create Wallet: ", wallet.address);
     setUser((prevState) => {

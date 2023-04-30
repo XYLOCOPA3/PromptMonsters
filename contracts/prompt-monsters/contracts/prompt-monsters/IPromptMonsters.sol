@@ -112,9 +112,12 @@ interface IPromptMonsters is IERC721Upgradeable {
   // --------------------------------------------------------------------------------
 
   /// @dev Generate monster
-  /// @param user_ user address
+  /// @param resurrectionPrompt_ resurrection prompt
   /// @param monster_ monster
-  function generateMonster(address user_, Monster memory monster_) external;
+  function generateMonster(
+    address resurrectionPrompt_,
+    Monster memory monster_
+  ) external;
 
   /// @dev Mint monster by admin
   /// @param monsterAddress monster address

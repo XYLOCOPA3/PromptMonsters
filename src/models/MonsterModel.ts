@@ -62,6 +62,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
     monsterId: string,
     monsterStruct: IPromptMonsters.MonsterStructOutput,
     stamina: number,
+    resurrectionPrompt: string = "",
   ): MonsterModel {
     return MonsterModel.create({
       id: monsterId,
@@ -78,6 +79,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
         AGL: Number(monsterStruct.agl),
       },
       stamina: stamina,
+      resurrectionPrompt: resurrectionPrompt,
     });
   }
 
@@ -89,6 +91,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
    */
   public static fromData(
     json: any,
+    resurrectionPrompt: string,
     stamina: number = 0,
     lv: number = 1,
   ): MonsterModel {
@@ -99,6 +102,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
       lv: lv,
       status: json.status,
       stamina: stamina,
+      resurrectionPrompt: resurrectionPrompt,
     });
   }
 
