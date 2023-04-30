@@ -35,7 +35,7 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
    */
   const handleClick = async () => {
     if (user.id === "") {
-      alert("Please login");
+      alert("Please log in if you would like to mint a monster.");
       return;
     }
     setDisable(true);
@@ -65,7 +65,7 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
         "px-[20px]",
         "w-[100%]",
         "h-[40px]",
-        "max-w-[200px]",
+        "max-w-[170px]",
       )}
       variant="secondary"
       loading={loading}

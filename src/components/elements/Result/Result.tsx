@@ -66,7 +66,9 @@ export const _buildIDOrResurrectionPrompt = (monster: MonsterModel) => {
         <div className={clsx("text-sm", "text-gray-400")}>
           # Resurrection Prompt
         </div>
-        <div>{monster.resurrectionPrompt}</div>
+        <div className={clsx("text-[12px]", "md:text-base")}>
+          {monster.resurrectionPrompt}
+        </div>
         <br />
       </>
     );

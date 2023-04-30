@@ -35,13 +35,13 @@ export const MainMonsters = () => {
           "items-center",
           "flex-col",
           "mt-[100px]",
-          ownedMonsters.length === 0 ? "h-screen" : "",
+          ownedMonsters.length === 0 ? "h-[150%]" : "",
         )}
       >
         <div
           className={clsx(
             "w-[90%]",
-            "my-[30px]",
+            "mb-[30px]",
             "max-w-[700px]",
             "flex",
             "flex-col",
