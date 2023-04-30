@@ -1,10 +1,11 @@
+import { calcStamina } from "@/features/stamina/utils/calcStamina";
 import { RPC_URL } from "@/lib/wallet";
 import { MonsterModel } from "@/models/MonsterModel";
 import {
   OwnedMonstersState,
   ownedMonstersState,
 } from "@/stores/ownedMonstersState";
-import { PromptMonsters__factory } from "@/typechain";
+import { PromptMonsters__factory, Stamina__factory } from "@/typechain";
 import { UserId } from "@/types/UserId";
 import { ethers } from "ethers";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -36,14 +37,32 @@ export const useOwnedMonstersController = (): OwnedMonsterIdsController => {
       process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
       provider,
     );
+    const stamina = Stamina__factory.connect(
+      process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
+      provider,
+    );
     const monsterIdsNum = await promptMonsters.getOwnerToTokenIds(userId);
-    const monsterStructs = await promptMonsters.getMonsters(monsterIdsNum);
+    if (monsterIdsNum.length === 0) return;
+    const results = await Promise.all([
+      promptMonsters.getMonsters(monsterIdsNum),
+      stamina.getTimeStds(monsterIdsNum),
+      stamina.staminaLimit(),
+      stamina.staminaRecoveryTime(),
+    ]);
+    const monsterStructs = results[0];
+    const timeStds = results[1];
+    const staminaLimit = results[2];
+    const staminaRecoveryTime = results[3];
+    const monsterStaminas = timeStds.map((timeStd) => {
+      return calcStamina(timeStd, staminaLimit, staminaRecoveryTime);
+    });
     const monsters: OwnedMonstersState = [];
     for (let i = 0; i < monsterStructs.length; i++) {
       monsters.push(
         MonsterModel.fromContract(
           monsterIdsNum[i].toString(),
           monsterStructs[i],
+          monsterStaminas[i],
         ),
       );
     }

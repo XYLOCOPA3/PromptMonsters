@@ -2,8 +2,9 @@
 
 Fully decentralized generative blockchain game using AI as the game engine.
 
-- [demo](https://prompt-monsters-jp.azurewebsites.net/)
+- [demo](https://prompt-monsters-demo-jp.azurewebsites.net/)
 - [Showcase](https://ethglobal.com/showcase/prompt-monsters-7f13y)
+- [production](https://prompt-monsters.com/)
 
 ## About
 

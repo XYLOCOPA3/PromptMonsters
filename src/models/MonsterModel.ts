@@ -17,7 +17,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
    * @param status status
    * @param maxSkills max skills
    * @param maxSkillsSet max skills set
-   * @param feature monster feature
+   * @param stamina stamina
    */
   private constructor(
     public readonly name: string = "",
@@ -34,6 +34,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
     },
     public readonly maxSkills: number = 100,
     public readonly maxSkillsSet: number = 100,
+    public readonly stamina: number = 0,
   ) {
     super("");
   }
@@ -58,6 +59,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
   public static fromContract(
     monsterId: string,
     monsterStruct: IPromptMonsters.MonsterStructOutput,
+    stamina: number,
   ): MonsterModel {
     return MonsterModel.create({
       id: monsterId,
@@ -73,6 +75,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
         MGR: Number(monsterStruct.mgr),
         AGL: Number(monsterStruct.agl),
       },
+      stamina: stamina,
     });
   }
 
@@ -82,13 +85,18 @@ export class MonsterModel extends BaseModel<MonsterId> {
    * @param lv level
    * @return {MonsterModel} MonsterModel
    */
-  public static fromData(json: any, lv: number = 1): MonsterModel {
+  public static fromData(
+    json: any,
+    stamina: number = 0,
+    lv: number = 1,
+  ): MonsterModel {
     return MonsterModel.create({
       name: json.name,
       flavor: json.flavor,
       skills: json.skills,
       lv: lv,
       status: json.status,
+      stamina: stamina,
     });
   }
 

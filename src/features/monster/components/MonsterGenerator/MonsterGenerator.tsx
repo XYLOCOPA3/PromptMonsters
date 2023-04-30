@@ -10,13 +10,13 @@ import { languageState } from "@/stores/languageState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { selectedMonsterIdNameState } from "@/stores/selectedMonsterIdNameState";
 import { BaseProps } from "@/types/BaseProps";
-import { countCharacters } from "@/utils/charUtils";
+import { countCharactersForGenerator } from "@/utils/charUtils";
 import clsx from "clsx";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
 let feature = "";
 const languages = ["English", "Japanese", "Korean", "Chinese"];
-const maxLength = 30;
+const maxLength = 45;
 
 export type MonsterGeneratorProps = BaseProps;
 
@@ -40,7 +40,7 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (countCharacters(e.target.value) <= maxLength) {
+    if (countCharactersForGenerator(e.target.value) <= maxLength) {
       feature = e.target.value;
       if (maxLengthOver) setMaxLengthOver(false);
       return;
@@ -56,7 +56,9 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
     }
     if (maxLengthOver) {
       alert(
-        "Too many characters.\n\nPlease limit the number of characters to 30 for single-byte characters and 15 for double-byte characters.",
+        `Too many characters.\n\nPlease limit the number of characters to ${maxLength} for single-byte characters and ${
+          maxLength / 3
+        } for double-byte characters.`,
       );
       return;
     }
@@ -78,7 +80,7 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
           ownedMonstersController.update(lastMonsterIndex, newMonster);
         }
       }
-      setSelectedMonsterIdName(`${newMonster.name} | ${newMonster.id}`);
+      setSelectedMonsterIdName(`${newMonster.name} | id: ${newMonster.id}`);
       setMonsterMinted(false);
     } catch (error) {
       setLoading(false);
@@ -112,7 +114,7 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
         )}
       >
         <ListBox
-          className={clsx("w-[80%]")}
+          className={clsx("w-[80%]", "z-[1]")}
           selected={language}
           setSelected={setLanguage}
           list={languages}

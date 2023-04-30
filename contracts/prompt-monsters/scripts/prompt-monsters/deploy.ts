@@ -2,12 +2,13 @@ import {
   PROMPT_MONSTERS_EXTERNAL_LINK,
   MCHC_ADDRESS,
   PROMPT_MONSTERS_WALLET,
+  MINT_PRICE,
 } from "../const";
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
-  console.log("--- Start PromptMonsters Deploy ------------");
+  console.log("--- Start PromptMonsters Deploy -------------");
   console.log("---------------------------------------------");
   console.log("");
 
@@ -24,7 +25,7 @@ async function main() {
     [
       PROMPT_MONSTERS_EXTERNAL_LINK,
       MCHC_ADDRESS,
-      ethers.utils.parseEther("100"),
+      MINT_PRICE,
       PROMPT_MONSTERS_WALLET,
     ],
     {
@@ -46,28 +47,9 @@ async function main() {
 
   console.log("Completed deployment");
 
-  // Wait 10 seconds before verification, because it fails if it is done immediately after deployment
-  // console.log("Waiting for 10 seconds before verification...");
-  // await new Promise((resolve) => setTimeout(resolve, 10000));
-
-  // console.log("--- Verify ----------------------------------");
-
-  // console.log("Verifying...");
-
-  // try {
-  //   await run("verify:verify", {
-  //     address: promptMonstersProxy.address,
-  //     constructorArguments: [],
-  //   });
-  // } catch (e) {
-  //   console.log(e);
-  // }
-
-  // console.log("Completed verification");
-
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End PromptMonsters Deploy --------------");
+  console.log("--- End PromptMonsters Deploy ---------------");
   console.log("---------------------------------------------");
 }
 

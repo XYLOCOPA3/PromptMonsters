@@ -28,14 +28,15 @@ export const MonsterSelector = ({ className }: MonsterSelectorProps) => {
 
   useLayoutEffectOfSSR(() => {
     setSelectedMonsterIdName(
-      `${ownedMonsters[0].name} | ${ownedMonsters[0].id}`,
+      `${ownedMonsters[0].name} | id: ${ownedMonsters[0].id}`,
     );
   }, []);
 
   useLayoutEffectOfSSR(() => {
     if (selectedMonsterIdName === "") return;
     const selectedMonster = ownedMonsters.filter(
-      (monster) => `${monster.name} | ${monster.id}` === selectedMonsterIdName,
+      (monster) =>
+        `${monster.name} | id: ${monster.id}` === selectedMonsterIdName,
     )[0];
     monsterController.set(selectedMonster);
     battleController.reset();
@@ -60,7 +61,9 @@ export const MonsterSelector = ({ className }: MonsterSelectorProps) => {
       className={clsx(className)}
       selected={selectedMonsterIdName}
       setSelected={setSelectedMonsterIdName}
-      list={ownedMonsters.map((monster) => `${monster.name} | ${monster.id}`)}
+      list={ownedMonsters.map(
+        (monster) => `${monster.name} | id: ${monster.id}`,
+      )}
     />
   );
 };

@@ -6,9 +6,10 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
 import {IBattleSeason} from "../interfaces/IBattleSeason.sol";
+import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
 
 /// @title BattleOffSeason
-/// @notice This is a contract of BattleOffSeason.
+/// @dev This is a contract of BattleOffSeason.
 contract BattleOffSeason is
   Initializable,
   IBattleSeason,
@@ -18,6 +19,10 @@ contract BattleOffSeason is
   // --------------------------------------------------------------------------------
   // State
   // --------------------------------------------------------------------------------
+
+  IPromptMonsters public promptMonsters;
+
+  bytes32 public GAME_ROLE;
 
   mapping(uint256 => uint256) public matchCount;
 
@@ -31,19 +36,23 @@ contract BattleOffSeason is
   // Initialize
   // --------------------------------------------------------------------------------
 
-  /// @notice Constructor
+  /// @dev Constructor
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
     _disableInitializers();
   }
 
-  /// @notice Initialize
-  /// @param battleLeaderBoardAddress PromptMonsters contract address
-  function initialize(address battleLeaderBoardAddress) public initializer {
+  /// @dev Initialize
+  /// @param promptMonstersAddress PromptMonsters contract address
+  function initialize(address promptMonstersAddress) public initializer {
     __AccessControlEnumerable_init();
     __UUPSUpgradeable_init();
 
-    _grantRole(DEFAULT_ADMIN_ROLE, battleLeaderBoardAddress);
+    GAME_ROLE = keccak256("GAME_ROLE");
+
+    promptMonsters = IPromptMonsters(promptMonstersAddress);
+
+    _grantRole(GAME_ROLE, msg.sender);
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
   }
 
@@ -51,14 +60,14 @@ contract BattleOffSeason is
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @notice Get total match count of the monster
+  /// @dev Get total match count of the monster
   /// @param monsterId ID of the monster
   /// @return total match counts
   function getMatchCount(uint256 monsterId) external view returns (uint256) {
     return matchCount[monsterId];
   }
 
-  /// @notice Get batch total match count of the monster
+  /// @dev Get batch total match count of the monster
   /// @param monsterIds IDs of the monster
   /// @return batch total match counts
   function getBatchMatchCount(
@@ -76,14 +85,14 @@ contract BattleOffSeason is
     return _matchCounts;
   }
 
-  /// @notice Get total wint count of the monster
+  /// @dev Get total wint count of the monster
   /// @param monsterId ID of the monster
   /// @return total win counts
   function getWinCount(uint256 monsterId) external view returns (uint256) {
     return winCount[monsterId];
   }
 
-  /// @notice Get batch total win count of the monster
+  /// @dev Get batch total win count of the monster
   /// @param monsterIds IDs of the monster
   /// @return batch total win counts
   function getBatchWinCount(
@@ -101,7 +110,7 @@ contract BattleOffSeason is
     return _winCounts;
   }
 
-  /// @notice Get battle ID list
+  /// @dev Get battle ID list
   /// @param monsterId ID of the monster
   /// @return battle ID list
   function getBattleIdList(
@@ -110,13 +119,13 @@ contract BattleOffSeason is
     return battleIdList[monsterId];
   }
 
-  /// @notice Get battle data
+  /// @dev Get battle data
   /// @return battle data
   function getBattleData() external view returns (BattleData[] memory) {
     return battleData;
   }
 
-  /// @notice Get battle data by monster ID
+  /// @dev Get battle data by monster ID
   /// @param monsterId ID of the monster
   /// @return battle data
   function getBattleDataByMonsterId(
@@ -136,10 +145,22 @@ contract BattleOffSeason is
   }
 
   // --------------------------------------------------------------------------------
+  // Setter
+  // --------------------------------------------------------------------------------
+
+  /// @dev Set PromptMonsters contract address
+  /// @param promptMonstersAddress PromptMonsters contract address
+  function setPromptMonstersAddress(
+    address promptMonstersAddress
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    promptMonsters = IPromptMonsters(promptMonstersAddress);
+  }
+
+  // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @notice Add battle data
+  /// @dev Add battle data
   /// @param winMonsterId ID of the monster who won the battle
   /// @param loseMonsterId ID of the monster who lost the battle
   /// @param battleLog Battle log
@@ -147,20 +168,23 @@ contract BattleOffSeason is
     uint256 winMonsterId,
     uint256 loseMonsterId,
     string memory battleLog
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  ) external onlyRole(GAME_ROLE) {
+    promptMonsters.checkMonsterId(winMonsterId);
+    promptMonsters.checkMonsterId(loseMonsterId);
     ++matchCount[winMonsterId];
     ++matchCount[loseMonsterId];
-
     ++winCount[winMonsterId];
-
     battleData.push(
-      BattleData({timestamp: block.timestamp, battleLog: battleLog})
+      BattleData({
+        timestamp: block.timestamp,
+        winMonsterId: winMonsterId,
+        loseMonsterId: loseMonsterId,
+        battleLog: battleLog
+      })
     );
-
     uint256 battleId = battleData.length - 1;
     battleIdList[winMonsterId].push(battleId);
     battleIdList[loseMonsterId].push(battleId);
-
     emit BattleDataEvent(
       battleId,
       block.timestamp,
@@ -174,7 +198,7 @@ contract BattleOffSeason is
   // Internal
   // --------------------------------------------------------------------------------
 
-  /// @notice Authorize upgrade
+  /// @dev Authorize upgrade
   /// @param newImplementation new implementation address
   function _authorizeUpgrade(
     address newImplementation

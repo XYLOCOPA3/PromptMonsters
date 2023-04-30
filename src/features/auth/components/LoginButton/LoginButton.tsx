@@ -6,7 +6,6 @@ import { useMonsterController } from "@/hooks/useMonster";
 import { useUserController } from "@/hooks/useUser";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { BaseProps } from "@/types/BaseProps";
-import { switchNetwork } from "@wagmi/core";
 import { useWeb3Modal } from "@web3modal/react";
 import clsx from "clsx";
 import { useSetRecoilState } from "recoil";
@@ -34,7 +33,7 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
   const handleClick = async () => {
     setLoading(true);
     await open();
-    setDefaultChain(mchVerseTestnet);
+    console.log("Hi");
     setLoading(false);
   };
 
@@ -43,10 +42,9 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
    */
   const setUserInfo = async () => {
     try {
-      console.log("now: ", chain!.id);
-      console.log("mch: ", mchVerseTestnet.id);
+      setDefaultChain(mchVerseTestnet);
       if (chain!.id !== mchVerseTestnet.id)
-        switchNetwork({ chainId: mchVerseTestnet.id });
+        alert("Please change the network to MCHVerse Testnet.");
       userController.set(address!);
       const isSet = await monsterController.init(address!);
       setMonsterMinted(isSet);

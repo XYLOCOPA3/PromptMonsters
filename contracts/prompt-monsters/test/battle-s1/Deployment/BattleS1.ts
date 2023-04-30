@@ -1,26 +1,26 @@
+import {
+  PROMPT_MONSTERS_PROXY_ADDRESS,
+  STAMINA_PROXY_ADDRESS,
+} from "../../../scripts/const";
 import { ethers, upgrades } from "hardhat";
 
 export async function deployBattleS1() {
-  const BattleLeaderBoard = await ethers.getContractFactory(
-    "BattleLeaderBoard",
-  );
-  const battleLeaderBoardProxy = await upgrades.deployProxy(
-    BattleLeaderBoard,
-    [],
+  const Battle = await ethers.getContractFactory("Battle");
+  const battleProxy = await upgrades.deployProxy(
+    Battle,
+    [PROMPT_MONSTERS_PROXY_ADDRESS, STAMINA_PROXY_ADDRESS],
     {
       kind: "uups",
       initializer: "initialize",
     },
   );
-  await battleLeaderBoardProxy.deployed();
+  await battleProxy.deployed();
 
-  const battleLeaderBoard = BattleLeaderBoard.attach(
-    battleLeaderBoardProxy.address,
-  );
+  const battle = Battle.attach(battleProxy.address);
   const BattleS1 = await ethers.getContractFactory("BattleS1");
   const battleS1Proxy = await upgrades.deployProxy(
     BattleS1,
-    [battleLeaderBoard.address],
+    [PROMPT_MONSTERS_PROXY_ADDRESS, battle.address],
     {
       kind: "uups",
       initializer: "initialize",
@@ -32,6 +32,6 @@ export async function deployBattleS1() {
 
   return {
     battleS1,
-    battleLeaderBoard,
+    battle,
   };
 }

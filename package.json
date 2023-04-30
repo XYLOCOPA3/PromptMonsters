@@ -11,10 +11,11 @@
     "format": "prettier --write '**/*.js' '**/*.ts' '**/*.tsx' '**/*.json' '**/*.yml' '**/*.sol' --ignore-path .gitignore && npm run lint",
     "typechain": "typechain --target ethers-v5 artifacts/*.json --out-dir src/typechain",
     "premove-abi": "cd contracts/prompt-monsters && npm run compile",
-    "move-abi-battle-leader-board": "rm -rf artifacts/BattleLeaderBoard.json && cd contracts/prompt-monsters && cp -rf artifacts/contracts/battle-leader-board/BattleLeaderBoard.sol/BattleLeaderBoard.json ../../artifacts/BattleLeaderBoard.json",
-    "move-abi-prompt-monsters": "rm -rf artifacts/PromptMonsters.json && cd contracts/prompt-monsters && cp -rf artifacts/contracts/prompt-monsters/PromptMonsters.sol/PromptMonsters.json ../../artifacts/PromptMonsters.json",
-    "move-abi": "npm run move-abi-prompt-monsters && npm run move-abi-battle-leader-board",
-    "postmove-abi": "npm run typechain"
+    "move-abi-stamina": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/stamina/Stamina.sol/Stamina.json ../../artifacts/Stamina.json",
+    "move-abi-battle": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/battle/Battle.sol/Battle.json ../../artifacts/Battle.json",
+    "move-abi-prompt-monsters": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/prompt-monsters/PromptMonsters.sol/PromptMonsters.json ../../artifacts/PromptMonsters.json",
+    "move-abi": "cd artifacts/ && ls | grep -v -E 'MCHCoin.json' | xargs rm -rf && cd .. && npm run move-abi-prompt-monsters && npm run move-abi-battle && npm run move-abi-stamina",
+    "postmove-abi": "rm -rf src/typechain  && npm run typechain"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.14",

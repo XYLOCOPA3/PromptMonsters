@@ -43,9 +43,9 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
         setLoading(false);
         return;
       }
-      const newMonster = await monsterController.mint(user.id, monster);
+      const newMonster = await monsterController.mint(user.id);
       ownedMonstersController.updateAfterMinted(newMonster);
-      setSelectedMonsterIdName(`${newMonster.name} | ${newMonster.id}`);
+      setSelectedMonsterIdName(`${newMonster.name} | id: ${newMonster.id}`);
       setMonsterMinted(true);
     } catch (e) {
       console.error(e);
@@ -61,10 +61,10 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
       disabled={disable}
       className={clsx(
         className,
-        "w-[160px]",
-        "h-[40px]",
-        "text-[12px]",
-        "md:text-[16px]",
+        "px-[20px]",
+        "py-[10px]",
+        "w-[100%]",
+        "max-w-[200px]",
       )}
       variant="secondary"
       loading={loading}
