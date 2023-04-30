@@ -49,8 +49,8 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
   };
 
   const handleClick = async () => {
-    let userId = user.id;
-    if (userId === "") userId = userController.create();
+    // let userId = user.id;
+    // if (userId === "") userId = userController.create();
     if (maxLengthOver) {
       alert(
         `Too many characters.\n\nPlease limit the number of characters to ${maxLength} for single-byte characters and ${
@@ -78,7 +78,7 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
     setLoading(true);
     try {
       const newMonster = await monsterController.generate(
-        userId,
+        user.id,
         feature,
         language,
       );

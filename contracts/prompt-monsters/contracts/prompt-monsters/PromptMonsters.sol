@@ -265,27 +265,29 @@ contract PromptMonsters is
     _monsterHistory[user_] = monster_;
   }
 
-  /// @dev Mint monster
-  function mint() external {
+  /// @dev Mint monster by admin
+  /// @param monsterAddress monster address
+  function mint(address monsterAddress) external {
     require(
       erc20.balanceOf(msg.sender) >= mintPrice,
       "PromptMonsters: insufficient MCH Coin balance"
     );
-    IPromptMonsters.Monster memory monster = _monsterHistory[msg.sender];
-    require(monster.lv > 0, "PromptMonsters: monster is not generated");
+    IPromptMonsters.Monster memory monster = _monsterHistory[monsterAddress];
+    require(monster.lv != 0, "PromptMonsters: monster is not generated");
     uint256 newTokenId = _monsters.length;
     require(
       newTokenId != type(uint256).max,
       "PromptMonsters: token ID is too large"
     );
     _monsters.push(monster);
+    delete _monsterHistory[monsterAddress];
     erc20.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
     _safeMint(msg.sender, newTokenId);
   }
 
   /// @dev Burn
-  ///         This function is not a standard burn function.
-  ///         Your NFT will be transferred to the owner of this contract if you call this function.
+  /// This function is not a standard burn function.
+  /// Your NFT will be transferred to the owner of this contract if you call this function.
   /// @param tokenId_ token ID
   function burn(uint256 tokenId_) external nonReentrant {
     safeTransferFrom(

@@ -34,15 +34,13 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
    * Click event
    */
   const handleClick = async () => {
+    if (user.id === "") {
+      alert("Please login");
+      return;
+    }
     setDisable(true);
     setLoading(true);
     try {
-      if (user.id === "") {
-        alert("Please login");
-        setDisable(false);
-        setLoading(false);
-        return;
-      }
       const newMonster = await monsterController.mint(user.id);
       ownedMonstersController.updateAfterMinted(newMonster);
       setSelectedMonsterIdName(`${newMonster.name} | id: ${newMonster.id}`);

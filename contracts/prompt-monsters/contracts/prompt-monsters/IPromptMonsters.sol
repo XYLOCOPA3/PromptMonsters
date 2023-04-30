@@ -116,8 +116,9 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @param monster_ monster
   function generateMonster(address user_, Monster memory monster_) external;
 
-  /// @dev Mint monster
-  function mint() external;
+  /// @dev Mint monster by admin
+  /// @param monsterAddress monster address
+  function mint(address monsterAddress) external;
 
   /// @dev Burn
   /// @param tokenId_ token ID
