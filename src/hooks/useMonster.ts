@@ -25,7 +25,11 @@ export interface MonsterController {
   init: (userId: UserId) => Promise<boolean>;
   set: (monster: MonsterModel) => void;
   reset: () => void;
-  fight: (monsterId: MonsterId, language: string) => Promise<string>;
+  fight: (
+    monsterId: MonsterId,
+    language: string,
+    userId: UserId,
+  ) => Promise<string>;
 }
 
 export const useMonsterValue = (): MonsterState => {
@@ -171,16 +175,21 @@ export const useMonsterController = (): MonsterController => {
    * Fight monster
    * @param monsterId monster id
    * @param language output language
+   * @param freePlay free play
+   * @param userId user id
    */
   const fight = async (
     monsterId: MonsterId,
     language: string,
+    userId: UserId,
   ): Promise<string> => {
     const res = await axios.post("/api/fight-monster", {
       monsterId,
       language,
+      userId,
     });
     const content = res.data.result[0].message.content;
+    if (monsterId === "") return content;
     setMonster((prevState) => {
       return prevState.copyWith({ stamina: prevState.stamina - 1 });
     });

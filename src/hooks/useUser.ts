@@ -1,10 +1,12 @@
 import { UserModel } from "@/models/UserModel";
 import { UserState, userState } from "@/stores/userState";
+import { ethers } from "ethers";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export interface UserController {
-  set: (address: string) => void;
+  set: (address: string, freePlay: boolean) => void;
   reset: () => void;
+  create: () => string;
 }
 
 export const useUserValue = (): UserState => {
@@ -17,21 +19,41 @@ export const useUserController = (): UserController => {
   /**
    * set
    * @param address user address
+   * @param freePlay free play
    */
-  const set = (address: string): void => {
-    setUser(UserModel.create({ id: address }));
+  const set = (address: string, freePlay: boolean): void => {
+    console.log("setUser");
+    setUser(UserModel.create({ id: address, freePlay: freePlay }));
   };
 
   /**
    * reset
    */
   const reset = (): void => {
+    console.log("resetUser");
     setUser(UserModel.create({}));
+  };
+
+  /**
+   * create
+   */
+  const create = (): string => {
+    console.log("createUser");
+    const wallet = ethers.Wallet.createRandom();
+    console.log("Create Wallet: ", wallet.address);
+    setUser((prevState) => {
+      return prevState.copyWith({
+        id: wallet.address,
+        privateKey: wallet.privateKey,
+      });
+    });
+    return wallet.address;
   };
 
   const controller: UserController = {
     set,
     reset,
+    create,
   };
   return controller;
 };

@@ -110,13 +110,12 @@ contract PromptMonsters is
   }
 
   /// @dev Get monsters history
+  /// @param user user
   /// @return monsterHistory monster history
-  function getMonsterHistory()
-    external
-    view
-    returns (IPromptMonsters.Monster memory monsterHistory)
-  {
-    monsterHistory = _monsterHistory[msg.sender];
+  function getMonsterHistory(
+    address user
+  ) external view returns (IPromptMonsters.Monster memory monsterHistory) {
+    monsterHistory = _monsterHistory[user];
   }
 
   /// @dev Get token IDs from owner address
@@ -275,6 +274,10 @@ contract PromptMonsters is
     IPromptMonsters.Monster memory monster = _monsterHistory[msg.sender];
     require(monster.lv > 0, "PromptMonsters: monster is not generated");
     uint256 newTokenId = _monsters.length;
+    require(
+      newTokenId != type(uint256).max,
+      "PromptMonsters: token ID is too large"
+    );
     _monsters.push(monster);
     erc20.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
     _safeMint(msg.sender, newTokenId);
@@ -295,7 +298,10 @@ contract PromptMonsters is
   /// @dev Check monster ID
   /// @param monsterId monster ID
   function checkMonsterId(uint256 monsterId) external view {
-    require(_exists(monsterId), "PromptMonsters: monster does not exist");
+    require(
+      _exists(monsterId) || monsterId == type(uint256).max,
+      "PromptMonsters: monster does not exist"
+    );
   }
 
   // --------------------------------------------------------------------------------

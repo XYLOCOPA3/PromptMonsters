@@ -4,7 +4,7 @@ import { FeatureInput, GenerateButton } from "@/features/monster";
 import { useBattleController } from "@/hooks/useBattle";
 import { useMonsterController } from "@/hooks/useMonster";
 import { useOwnedMonstersState } from "@/hooks/useOwnedMonsters";
-import { useUserValue } from "@/hooks/useUser";
+import { useUserState } from "@/hooks/useUser";
 import { disableState } from "@/stores/disableState";
 import { languageState } from "@/stores/languageState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
@@ -26,14 +26,14 @@ export type MonsterGeneratorProps = BaseProps;
  * @param className Style from parent element
  */
 export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
-  const user = useUserValue();
+  const [user, userController] = useUserState();
   const [loading, setLoading] = useState(false);
   const [maxLengthOver, setMaxLengthOver] = useState(false);
   const [language, setLanguage] = useRecoilState(languageState);
+  const [ownedMonsters, ownedMonstersController] = useOwnedMonstersState();
   const monsterController = useMonsterController();
   const battleController = useBattleController();
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
-  const [ownedMonsters, ownedMonstersController] = useOwnedMonstersState();
   const setDisable = useSetRecoilState(disableState);
   const setSelectedMonsterIdName = useSetRecoilState(
     selectedMonsterIdNameState,
@@ -49,11 +49,8 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
   };
 
   const handleClick = async () => {
-    battleController.reset();
-    if (user.id === "") {
-      alert("Please connect your wallet to generate a monster.");
-      return;
-    }
+    let userId = user.id;
+    if (userId === "") userId = userController.create();
     if (maxLengthOver) {
       alert(
         `Too many characters.\n\nPlease limit the number of characters to ${maxLength} for single-byte characters and ${
@@ -62,11 +59,26 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
       );
       return;
     }
+    let hasNotMintedMonster = false;
+    for (let i = 0; i < ownedMonsters.length; i++) {
+      if (ownedMonsters[i].id !== "") continue;
+      hasNotMintedMonster = true;
+      break;
+    }
+    if (hasNotMintedMonster) {
+      if (
+        !confirm(
+          "You own a monster that hasn't been minted yet. If you proceed, the unminted monster will be lost. Are you okay with this?",
+        )
+      )
+        return;
+    }
+    battleController.reset();
     setDisable(true);
     setLoading(true);
     try {
       const newMonster = await monsterController.generate(
-        user.id,
+        userId,
         feature,
         language,
       );

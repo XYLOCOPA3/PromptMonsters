@@ -150,6 +150,7 @@ contract Stamina is
     uint256 monsterId,
     uint256 consumedStamina
   ) external onlyRole(GAME_ROLE) {
+    if (monsterId == type(uint256).max) return;
     promptMonsters.checkMonsterId(monsterId);
     uint256 _timeStd = timeStd[monsterId];
     uint256 _staminaLimit = staminaLimit;

@@ -14,7 +14,10 @@ export class UserModel extends BaseModel<UserId> {
    * export const dummyUser = UserModel.create({ id: "dummyId" });
    * ```
    */
-  private constructor() {
+  private constructor(
+    public readonly privateKey: string = "",
+    public readonly freePlay: boolean = true,
+  ) {
     super("");
   }
 

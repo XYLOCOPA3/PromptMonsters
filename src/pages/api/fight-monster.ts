@@ -6,6 +6,7 @@ import { calcStaminaFromMonsterId } from "@/features/stamina/utils/calcStamina";
 import { RPC_URL } from "@/lib/wallet";
 import { IPromptMonsters } from "@/typechain/PromptMonsters";
 import { parseJson } from "@/utils/jsonParser";
+import console from "console";
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
@@ -29,12 +30,23 @@ export default async function handler(
 
   const monsterId = req.body.monsterId;
   const language = req.body.language;
+  const userId = req.body.userId;
 
   const enemyId = await _getRandomEnemyId(monsterId);
   const promptMonsters = PromptMonstersContract.instance(
     RPC_URL.mchVerseTestnet,
   );
-  const monsters = await promptMonsters.getMonsters([monsterId, enemyId]);
+  let monsters: IPromptMonsters.MonsterStructOutput[] = [];
+  if (monsterId === "") {
+    const results = await Promise.all([
+      promptMonsters.getMonsterHistory(userId),
+      promptMonsters.getMonsters([enemyId]),
+    ]);
+    monsters.push(results[0]);
+    monsters.push(results[1][0]);
+  } else {
+    monsters = await promptMonsters.getMonsters([monsterId, enemyId]);
+  }
   const monster = monsters[0];
   const enemy = monsters[1];
   const fightPrompt = _getFightPrompt(
@@ -48,7 +60,7 @@ export default async function handler(
 
   try {
     const stamina = await calcStaminaFromMonsterId(monsterId);
-    console.log(stamina);
+    console.log(`Remaining stamina: ${stamina}`);
     if (stamina < 1) {
       const message = "Stamina is not enough";
       console.log(message);
@@ -70,8 +82,8 @@ export default async function handler(
     const battle = BattleContract.instance(RPC_URL.mchVerseTestnet);
     await battle.addSeasonBattleData(
       monsterId,
-      battleResult.winnerId,
-      battleResult.winnerId === monsterId ? enemyId : monsterId,
+      battleResult.winnerId === enemyId ? enemyId : monsterId,
+      battleResult.winnerId === enemyId ? monsterId : enemyId,
       battleResult.battleDesc,
     );
     res.status(200).json({ result: completion.data.choices });
@@ -104,7 +116,8 @@ Generate battle results for ${monster.name} and ${enemy.name}. Use absolutely "s
 key: "language" value: "${language}"
 key: "battleDesc" value: string
 key: "enemyName" value: string
-key: "winnerId" value: string`;
+key: "winnerId" value: string
+key: "winnerName" value: string`;
 };
 
 /**
@@ -121,6 +134,7 @@ const _getRandomEnemyId = async (monsterId: string): Promise<string> => {
   let random: number;
   while (true) {
     random = Math.floor(Math.random() * totalSupply);
+    if (monsterId === "") break;
     if (random !== Number(monsterId)) break;
   }
   return random.toString();

@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Button } from "@/components/elements/Button";
 import { useBattleController } from "@/hooks/useBattle";
 import { useMonsterState } from "@/hooks/useMonster";
+import { useUserValue } from "@/hooks/useUser";
 import { disableState } from "@/stores/disableState";
 import { languageState } from "@/stores/languageState";
+import { monsterMintedState } from "@/stores/monsterMintedState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -18,6 +20,8 @@ export type MonsterFightButtonProps = BaseProps;
  */
 export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
   const language = useRecoilValue(languageState);
+  const monsterMinted = useRecoilValue(monsterMintedState);
+  const user = useUserValue();
   const [monster, monsterController] = useMonsterState();
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
@@ -31,7 +35,11 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
     setLoading(true);
     battleController.reset();
     try {
-      const content = await monsterController.fight(monster.id, language);
+      const content = await monsterController.fight(
+        monster.id,
+        language,
+        user.id,
+      );
       battleController.set(content);
     } catch (e) {
       console.error(e);
@@ -49,7 +57,7 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
         className,
         "px-[20px]",
         "w-[100%]",
-        "h-[62px]",
+        monsterMinted ? "h-[62px]" : "h-[40px]",
         "max-w-[200px]",
       )}
       variant="secondary"
@@ -57,9 +65,13 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
       onClick={handleClick}
     >
       FIGHT
-      <div className={clsx("text-[12px]", "md:text-[16px]")}>
-        Stamina: {monster.stamina} / 3
-      </div>
+      {monsterMinted ? (
+        <div className={clsx("text-[12px]", "md:text-[16px]")}>
+          Stamina: {monster.stamina} / 3
+        </div>
+      ) : (
+        <></>
+      )}
     </Button>
   );
 };

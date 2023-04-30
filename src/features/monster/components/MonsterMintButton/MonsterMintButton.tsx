@@ -62,8 +62,8 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
       className={clsx(
         className,
         "px-[20px]",
-        "py-[10px]",
         "w-[100%]",
+        "h-[40px]",
         "max-w-[200px]",
       )}
       variant="secondary"

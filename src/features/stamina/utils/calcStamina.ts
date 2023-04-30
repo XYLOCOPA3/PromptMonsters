@@ -33,6 +33,7 @@ export const calcStamina = (
 export const calcStaminaFromMonsterId = async (
   monsterId: MonsterId,
 ): Promise<number> => {
+  if (monsterId === "") return 100;
   const provider = new ethers.providers.JsonRpcProvider(
     RPC_URL.mchVerseTestnet,
   );

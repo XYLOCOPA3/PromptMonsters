@@ -108,7 +108,8 @@ feature="${feature}":`;
  */
 const _getMonster = (content: any, language: string): any => {
   let newContent = _replaceLanguage(content, language);
-  const monster = parseJson(newContent);
+  let monster = parseJson(newContent);
+  monster = _floorStatus(monster);
   if (!_isOverStatus(monster)) return monster;
   console.log("over status!!!");
   console.log(monster);
@@ -214,7 +215,7 @@ const _isOverStatus = (monster: any): boolean => {
  */
 const _fixStatus = (monster: any): any => {
   const newMonster = monster;
-  if (monster.status.HP > 100) newMonster.status.HP = 100;
+  if (monster.status.HP > 40) newMonster.status.HP = 40;
   if (monster.status.ATK > 20) newMonster.status.ATK = 20;
   if (monster.status.DEF > 20) newMonster.status.DEF = 20;
   if (monster.status.INT > 20) newMonster.status.INT = 20;
@@ -226,6 +227,22 @@ const _fixStatus = (monster: any): any => {
   if (monster.status.INT < 1) newMonster.status.INT = 1;
   if (monster.status.MGR < 1) newMonster.status.MGR = 1;
   if (monster.status.AGL < 1) newMonster.status.AGL = 1;
+  return newMonster;
+};
+
+/**
+ * Floor status
+ * @param monster monster
+ * @return {any} monster
+ */
+const _floorStatus = (monster: any): any => {
+  const newMonster = monster;
+  newMonster.status.HP = Math.floor(newMonster.status.HP);
+  newMonster.status.ATK = Math.floor(newMonster.status.ATK);
+  newMonster.status.DEF = Math.floor(newMonster.status.DEF);
+  newMonster.status.INT = Math.floor(newMonster.status.INT);
+  newMonster.status.MGR = Math.floor(newMonster.status.MGR);
+  newMonster.status.AGL = Math.floor(newMonster.status.AGL);
   return newMonster;
 };
 

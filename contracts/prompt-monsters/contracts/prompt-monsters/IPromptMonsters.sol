@@ -75,11 +75,11 @@ interface IPromptMonsters is IERC721Upgradeable {
   function getMonstersTotalSupply() external view returns (uint256 totalSupply);
 
   /// @dev Get monsters history
+  /// @param user user
   /// @return monsterHistory monster history
-  function getMonsterHistory()
-    external
-    view
-    returns (IPromptMonsters.Monster memory monsterHistory);
+  function getMonsterHistory(
+    address user
+  ) external view returns (Monster memory monsterHistory);
 
   /// @dev Get token IDs from owner address
   /// @param owner owner

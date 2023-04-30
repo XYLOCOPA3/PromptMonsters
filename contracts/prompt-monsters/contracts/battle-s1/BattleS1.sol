@@ -25,6 +25,7 @@ contract BattleS1 is
   bytes32 public GAME_ROLE;
 
   mapping(uint256 => uint256) public matchCount;
+
   mapping(uint256 => uint256) public winCount;
 
   mapping(uint256 => uint256[]) public battleIdList;

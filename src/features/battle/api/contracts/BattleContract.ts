@@ -39,13 +39,18 @@ export class BattleContract {
     battleLog: string,
   ): Promise<ethers.ContractReceipt> => {
     const battleSeasonId = Number(process.env.BATTLE_SEASON_ID);
-    console.log(battleSeasonId);
+    console.log(`battleSeasonId: ${battleSeasonId}`);
+    const freeMonsterId = ethers.constants.MaxUint256;
     return await (
       await this._battle.addSeasonBattleData(
         ethers.BigNumber.from(battleSeasonId),
-        ethers.BigNumber.from(monsterId),
-        ethers.BigNumber.from(winMonsterId),
-        ethers.BigNumber.from(loseMonsterId),
+        monsterId === "" ? freeMonsterId : ethers.BigNumber.from(monsterId),
+        winMonsterId === ""
+          ? freeMonsterId
+          : ethers.BigNumber.from(winMonsterId),
+        loseMonsterId === ""
+          ? freeMonsterId
+          : ethers.BigNumber.from(loseMonsterId),
         battleLog,
       )
     ).wait();

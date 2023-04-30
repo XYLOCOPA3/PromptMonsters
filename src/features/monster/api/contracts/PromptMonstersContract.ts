@@ -1,6 +1,7 @@
 import { ServerWallet } from "@/lib/wallet";
 import { PromptMonsters, PromptMonsters__factory } from "@/typechain";
 import { IPromptMonsters } from "@/typechain/PromptMonsters";
+import { UserId } from "@/types/UserId";
 import { ethers } from "ethers";
 
 export class PromptMonstersContract {
@@ -79,6 +80,17 @@ export class PromptMonstersContract {
       tokenIds.push(ethers.BigNumber.from(monsterIds[i]));
     }
     return await this._promptMonsters.getMonsters(tokenIds);
+  };
+
+  /**
+   * Get monster history
+   * @param userId user id
+   * @return {Promise<IPromptMonsters.MonsterStructOutput>} monster struct output
+   */
+  getMonsterHistory = async (
+    userId: UserId,
+  ): Promise<IPromptMonsters.MonsterStructOutput> => {
+    return await this._promptMonsters.getMonsterHistory(userId);
   };
 
   /**

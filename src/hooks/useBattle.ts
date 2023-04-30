@@ -29,6 +29,7 @@ export const useBattleController = (): BattleController => {
         battleDesc: battleResult.battleDesc,
         enemyName: battleResult.enemyName,
         winnerId: battleResult.winnerId,
+        winnerName: battleResult.winnerName,
       }),
     );
   };

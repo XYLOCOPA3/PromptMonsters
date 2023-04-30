@@ -33,7 +33,6 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
   const handleClick = async () => {
     setLoading(true);
     await open();
-    console.log("Hi");
     setLoading(false);
   };
 
@@ -41,11 +40,12 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
    * Set user info
    */
   const setUserInfo = async () => {
+    if (!isConnected) return;
     try {
       setDefaultChain(mchVerseTestnet);
       if (chain!.id !== mchVerseTestnet.id)
         alert("Please change the network to MCHVerse Testnet.");
-      userController.set(address!);
+      userController.set(address!, false);
       const isSet = await monsterController.init(address!);
       setMonsterMinted(isSet);
     } catch (e) {
@@ -55,7 +55,6 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
   };
 
   useLayoutEffectOfSSR(() => {
-    if (!isConnected) return;
     setUserInfo();
   }, [address]);
 
