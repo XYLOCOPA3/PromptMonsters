@@ -150,6 +150,7 @@ describe("PromptMonsters", function () {
       expect(monster.maxSkills).to.equal(FireMonsterDetails.maxSkills);
       expect(monster.maxSkillsSet).to.equal(FireMonsterDetails.maxSkillsSet);
     });
+
     it("generateMonster 2nd", async function () {
       const {
         promptMonsters,

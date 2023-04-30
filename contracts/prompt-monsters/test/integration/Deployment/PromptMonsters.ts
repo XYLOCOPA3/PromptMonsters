@@ -1,3 +1,4 @@
+import { ERC20 } from "../../../typechain-types";
 import { initialMintPrice } from "../../helpers/test_constants";
 import { externalLink } from "../../helpers/test_constants";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
@@ -5,7 +6,7 @@ import { ethers, upgrades } from "hardhat";
 
 export const deployPromptMonsters = async (
   deployer: SignerWithAddress,
-  erc20Address: string,
+  erc20: ERC20,
   promptMonstersWallet: SignerWithAddress,
 ) => {
   const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
@@ -13,7 +14,7 @@ export const deployPromptMonsters = async (
     PromptMonsters,
     [
       externalLink,
-      erc20Address,
+      erc20.address,
       initialMintPrice,
       promptMonstersWallet.address,
     ],

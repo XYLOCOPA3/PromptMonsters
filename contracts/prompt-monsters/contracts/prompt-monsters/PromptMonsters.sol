@@ -57,8 +57,8 @@ contract PromptMonsters is
 
   /// @dev Initialize
   /// @param externalLink_ external link
-  /// @param erc20Address_ MCH Coin address
-  /// @param mintPrice_ MCH Coin address
+  /// @param erc20Address_ ERC20 address
+  /// @param mintPrice_ mint price
   /// @param promptMonstersWallet_ prompt monsters wallet
   function initialize(
     string memory externalLink_,
@@ -223,7 +223,7 @@ contract PromptMonsters is
     emit SetExternalLink(_msgSender(), oldState, newState_);
   }
 
-  /// @dev Set MCH Coin address
+  /// @dev Set ERC20 address
   /// @param newState_ new state
   function setErc20(address newState_) external onlyRole(DEFAULT_ADMIN_ROLE) {
     address oldState = address(erc20);
@@ -270,7 +270,7 @@ contract PromptMonsters is
   function mint(address monsterAddress) external {
     require(
       erc20.balanceOf(msg.sender) >= mintPrice,
-      "PromptMonsters: insufficient MCH Coin balance"
+      "PromptMonsters: insufficient ERC20 balance"
     );
     IPromptMonsters.Monster memory monster = _monsterHistory[monsterAddress];
     require(monster.lv != 0, "PromptMonsters: monster is not generated");

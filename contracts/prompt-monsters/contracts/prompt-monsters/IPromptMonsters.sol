@@ -56,8 +56,8 @@ interface IPromptMonsters is IERC721Upgradeable {
 
   /// @dev Initialize
   /// @param externalLink_ external link
-  /// @param erc20Address_ MCH Coin address
-  /// @param mintPrice_ MCH Coin address
+  /// @param erc20Address_ ERC20 address
+  /// @param mintPrice_ mint price
   /// @param promptMonstersWallet_ prompt monsters wallet
   function initialize(
     string memory externalLink_,

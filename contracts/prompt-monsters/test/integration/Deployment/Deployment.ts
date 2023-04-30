@@ -15,7 +15,7 @@ export const deploy = async (
 
   const { promptMonsters } = await deployPromptMonsters(
     deployer,
-    erc20.address,
+    erc20,
     promptMonstersWallet,
   );
 
@@ -38,9 +38,13 @@ export const deploy = async (
 
   await battleOffSeason.grantRole(ethers.utils.id("GAME_ROLE"), battle.address);
 
+  await battle.addBattleSeasonAddress(battleOffSeason.address);
+
   const { battleS1 } = await deployBattleS1(deployer, promptMonsters.address);
 
   await battleS1.grantRole(ethers.utils.id("GAME_ROLE"), battle.address);
+
+  await battle.addBattleSeasonAddress(battleS1.address);
 
   return {
     promptMonsters,

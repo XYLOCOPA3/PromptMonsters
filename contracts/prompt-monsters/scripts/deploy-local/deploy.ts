@@ -6,7 +6,7 @@ import { ethers, upgrades } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
-  console.log("--- Start Mock MCH Coin Deploy ------------");
+  console.log("--- Start Mock ERC20 Deploy ------------");
   console.log("---------------------------------------------");
   console.log("");
 
@@ -26,7 +26,7 @@ async function main() {
 
   console.log("---------------------------------------------");
   ("---------------------------------------------");
-  console.log("--- End erc20 Deploy --------------");
+  console.log("--- End ERC20 Deploy --------------");
   console.log("---------------------------------------------");
   console.log("---------------------------------------------");
   console.log("--- Start PromptMonsters Deploy ------------");
