@@ -11,7 +11,7 @@ import { ethers } from "ethers";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export interface OwnedMonsterIdsController {
-  init: (userId: UserId) => Promise<void>;
+  init: (userId: UserId, monster: MonsterModel) => Promise<void>;
   reset: () => void;
   add: (newMonster: MonsterModel) => void;
   updateAfterMinted: (newMonster: MonsterModel) => void;
@@ -28,8 +28,9 @@ export const useOwnedMonstersController = (): OwnedMonsterIdsController => {
   /**
    * Initialize ownedMonsters
    * @param userId user id
+   * @param monster monster
    */
-  const init = async (userId: UserId): Promise<void> => {
+  const init = async (userId: UserId, monster: MonsterModel): Promise<void> => {
     const provider = new ethers.providers.JsonRpcProvider(
       RPC_URL.mchVerseTestnet,
     );
@@ -66,6 +67,7 @@ export const useOwnedMonstersController = (): OwnedMonsterIdsController => {
         ),
       );
     }
+    if (monster.id === "" && monster.name !== "") monsters.push(monster);
     setOwnedMonsters(monsters);
   };
 

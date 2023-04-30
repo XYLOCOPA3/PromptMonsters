@@ -256,13 +256,13 @@ contract PromptMonsters is
   // --------------------------------------------------------------------------------
 
   /// @dev Generate monster
-  /// @param user_ user address
+  /// @param resurrectionPrompt_ resurrection prompt
   /// @param monster_ monster
   function generateMonster(
-    address user_,
+    address resurrectionPrompt_,
     IPromptMonsters.Monster memory monster_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) nonReentrant {
-    _monsterHistory[user_] = monster_;
+    _monsterHistory[resurrectionPrompt_] = monster_;
   }
 
   /// @dev Mint monster by admin
@@ -357,7 +357,7 @@ contract PromptMonsters is
 
     uint256 y = 240;
     for (uint i; i < monster.skills.length; i++) {
-      if (i + 1 > monster.maxSkillsSet) break;
+      if (i + 1 > 4) break;
       svg = string.concat(
         svg,
         _getSvgText(

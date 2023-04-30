@@ -39,7 +39,6 @@ export const MyShortProfile = ({ className }: MyShortProfileProps) => {
    */
   const resetUserInfo = async () => {
     if (isConnected) return;
-    if (user.freePlay) return;
     try {
       userController.reset();
       monsterController.reset();

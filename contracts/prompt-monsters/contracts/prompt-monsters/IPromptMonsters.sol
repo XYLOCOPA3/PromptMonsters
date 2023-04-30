@@ -12,6 +12,7 @@ interface IPromptMonsters is IERC721Upgradeable {
   // --------------------------------------------------------------------------------
 
   struct Monster {
+    string feature;
     string name;
     string flavor;
     string[] skills;
@@ -22,8 +23,6 @@ interface IPromptMonsters is IERC721Upgradeable {
     uint32 inte; // INT
     uint32 mgr;
     uint32 agl;
-    uint16 maxSkills;
-    uint16 maxSkillsSet;
   }
 
   // --------------------------------------------------------------------------------
@@ -112,9 +111,12 @@ interface IPromptMonsters is IERC721Upgradeable {
   // --------------------------------------------------------------------------------
 
   /// @dev Generate monster
-  /// @param user_ user address
+  /// @param resurrectionPrompt_ resurrection prompt
   /// @param monster_ monster
-  function generateMonster(address user_, Monster memory monster_) external;
+  function generateMonster(
+    address resurrectionPrompt_,
+    Monster memory monster_
+  ) external;
 
   /// @dev Mint monster by admin
   /// @param monsterAddress monster address

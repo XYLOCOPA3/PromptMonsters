@@ -9,6 +9,7 @@ import {
   MonsterGenerator,
   MonsterMintButton,
   MonsterSelector,
+  ResurrectionPrompt,
 } from "@/features/monster";
 import { PlayNote } from "@/features/note";
 import { StaminaTimer } from "@/features/stamina";
@@ -50,6 +51,8 @@ export const MainMonsters = () => {
           <PlayNote className={clsx("w-[100%]")} />
         </div>
         <MonsterGenerator className={clsx("my-[20px]", "w-[300px]")} />
+        <div>or</div>
+        <ResurrectionPrompt className={clsx("my-[20px]", "w-[300px]")} />
         <div
           className={clsx(
             "w-[90%]",

@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 
 export type MonsterDetails = {
+  feature: string;
   name: string;
   flavor: string;
   skills: string[];
@@ -11,12 +12,11 @@ export type MonsterDetails = {
   inte: number;
   mgr: number;
   agl: number;
-  maxSkills: number;
-  maxSkillsSet: number;
 };
 
 export const transformMonsterDetails = (monsterDetails: MonsterDetails) => {
   return {
+    feature: monsterDetails.feature,
     name: monsterDetails.name,
     flavor: monsterDetails.flavor,
     skills: monsterDetails.skills,
@@ -27,12 +27,11 @@ export const transformMonsterDetails = (monsterDetails: MonsterDetails) => {
     inte: monsterDetails.inte,
     mgr: monsterDetails.mgr,
     agl: monsterDetails.agl,
-    maxSkills: monsterDetails.maxSkills,
-    maxSkillsSet: monsterDetails.maxSkillsSet,
   };
 };
 
 export const emptyDetails = {
+  feature: "",
   name: "",
   flavor: "",
   skills: [],
@@ -43,11 +42,10 @@ export const emptyDetails = {
   inte: 0,
   mgr: 0,
   agl: 0,
-  maxSkills: 0,
-  maxSkillsSet: 0,
 };
 
 export const FireMonsterDetails = {
+  feature: "Fire, Monster, Attack",
   name: "FireMonster",
   flavor: "Fire",
   skills: ["FireBall1", "FireBall2", "FireBall3"],
@@ -58,11 +56,10 @@ export const FireMonsterDetails = {
   inte: 10,
   mgr: 10,
   agl: 10,
-  maxSkills: 10,
-  maxSkillsSet: 10,
 };
 
 export const WaterMonsterDetails = {
+  feature: "Water, Monster, Defense",
   name: "WaterMonster",
   flavor: "Water",
   skills: ["WaterBlade1", "WaterBlade2", "WaterBlade3"],
@@ -73,8 +70,6 @@ export const WaterMonsterDetails = {
   inte: 10,
   mgr: 20,
   agl: 10,
-  maxSkills: 10,
-  maxSkillsSet: 10,
 };
 
 export const initialStamina = 3;

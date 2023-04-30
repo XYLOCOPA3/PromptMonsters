@@ -1,37 +1,11 @@
+import {
+  FireMonsterDetails,
+  WaterMonsterDetails,
+} from "../helpers/test_constants";
 import { deploy } from "./Deployment/Deployment";
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-
-const FireMonsterDetails = {
-  name: "FireMonster",
-  flavor: "Fire",
-  skills: ["FireBall1", "FireBall2", "FireBall3"],
-  lv: 10,
-  hp: 100,
-  atk: 10,
-  def: 10,
-  inte: 10,
-  mgr: 10,
-  agl: 10,
-  maxSkills: 10,
-  maxSkillsSet: 10,
-};
-
-const WaterMonsterDetails = {
-  name: "WaterMonster",
-  flavor: "Water",
-  skills: ["WaterBlade1", "WaterBlade2", "WaterBlade3"],
-  lv: 20,
-  hp: 50,
-  atk: 5,
-  def: 20,
-  inte: 10,
-  mgr: 20,
-  agl: 10,
-  maxSkills: 10,
-  maxSkillsSet: 10,
-};
 
 describe("PromptMonsters", function () {
   async function init() {

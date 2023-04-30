@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { ListBox } from "@/components/elements/ListBox";
-import { FeatureInput, GenerateButton } from "@/features/monster";
+import Image from "next/image";
+import { Button } from "@/components/elements/Button";
 import { useBattleController } from "@/hooks/useBattle";
 import { useMonsterController } from "@/hooks/useMonster";
 import { useOwnedMonstersState } from "@/hooks/useOwnedMonsters";
@@ -10,22 +10,19 @@ import { languageState } from "@/stores/languageState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { selectedMonsterIdNameState } from "@/stores/selectedMonsterIdNameState";
 import { BaseProps } from "@/types/BaseProps";
-import { countCharactersForGenerator } from "@/utils/charUtils";
 import clsx from "clsx";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
-let feature = "";
-const languages = ["English", "Japanese", "Korean", "Chinese"];
-const maxLength = 45;
+let resurrectionPrompt = "";
 
-export type MonsterGeneratorProps = BaseProps;
+export type ResurrectionPromptProps = BaseProps;
 
 /**
  * Monster generator
  * @keit0728
  * @param className Style from parent element
  */
-export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
+export const ResurrectionPrompt = ({ className }: ResurrectionPromptProps) => {
   const [user, userController] = useUserState();
   const [loading, setLoading] = useState(false);
   const [maxLengthOver, setMaxLengthOver] = useState(false);
@@ -34,29 +31,16 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
   const monsterController = useMonsterController();
   const battleController = useBattleController();
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
-  const setDisable = useSetRecoilState(disableState);
+  const [disable, setDisable] = useRecoilState(disableState);
   const setSelectedMonsterIdName = useSetRecoilState(
     selectedMonsterIdNameState,
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (countCharactersForGenerator(e.target.value) <= maxLength) {
-      feature = e.target.value;
-      if (maxLengthOver) setMaxLengthOver(false);
-      return;
-    }
-    setMaxLengthOver(true);
+    resurrectionPrompt = e.target.value;
   };
 
   const handleClick = async () => {
-    if (maxLengthOver) {
-      alert(
-        `Too many characters.\n\nPlease limit the number of characters to ${maxLength} for single-byte characters and ${
-          maxLength / 3
-        } for double-byte characters.`,
-      );
-      return;
-    }
     let hasNotMintedMonster = false;
     for (let i = 0; i < ownedMonsters.length; i++) {
       if (ownedMonsters[i].id !== "") continue;
@@ -82,7 +66,7 @@ Do you want to proceed with "Monster Generation"?`,
     setDisable(true);
     setLoading(true);
     try {
-      const newMonster = await monsterController.generate(feature, language);
+      const newMonster = await monsterController.resurrect(resurrectionPrompt);
       const lastMonsterIndex = ownedMonsters.length - 1;
       if (lastMonsterIndex === -1) {
         ownedMonstersController.add(newMonster);
@@ -99,11 +83,11 @@ Do you want to proceed with "Monster Generation"?`,
       setLoading(false);
       setDisable(false);
       if (error instanceof Error) {
-        alert("Invalid monster name.\n\nReason: " + error.message);
+        alert("Invalid Resurrection Prompt.\n\nReason: " + error.message);
         console.error(error);
         return;
       }
-      alert("Invalid monster name.");
+      alert("Invalid Resurrection Prompt.");
       console.error(error);
       return;
     }
@@ -112,32 +96,43 @@ Do you want to proceed with "Monster Generation"?`,
   };
 
   return (
-    <div className={clsx(className, "flex", "flex-col", "items-center")}>
-      <FeatureInput
-        className={clsx("w-[100%]", "h-[40px]", "mb-[20px]")}
+    <div className={clsx(className, "flex", "justify-center")}>
+      <input
+        className={clsx(
+          "w-[80%]",
+          "h-[40px]",
+          "mb-[20px]",
+          "bg-gray-700",
+          "px-2",
+          "rounded-lg",
+        )}
+        type="text"
+        name="name"
+        placeholder="Resurrection Prompt"
         onChange={handleChange}
       />
-      <div
+      <Button
         className={clsx(
-          "flex",
+          "ml-[10px]",
+          "w-[20%]",
+          "h-[40px]",
           "flex",
           "justify-center",
           "items-center",
-          "w-[100%]",
         )}
+        disabled={disable}
+        variant="secondary"
+        loading={loading}
+        onClick={handleClick}
       >
-        <ListBox
-          className={clsx("w-[80%]", "z-[1]")}
-          selected={language}
-          setSelected={setLanguage}
-          list={languages}
+        <Image
+          className={clsx("w-[30px]", "h-[30px]")}
+          src="/assets/images/savings_white_24dp.svg"
+          alt="resurrection-prompt-icon"
+          width={50}
+          height={50}
         />
-        <GenerateButton
-          className={clsx("ml-[10px]", "w-[20%]")}
-          onClick={handleClick}
-          loading={loading}
-        />
-      </div>
+      </Button>
     </div>
   );
 };

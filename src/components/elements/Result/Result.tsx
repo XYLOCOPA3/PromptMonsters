@@ -1,4 +1,5 @@
 import { useMonsterValue } from "@/hooks/useMonster";
+import { MonsterModel } from "@/models/MonsterModel";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 
@@ -24,15 +25,7 @@ export const Result = ({ className }: ResultProps) => {
         className,
       )}
     >
-      {monster.id === "" ? (
-        <></>
-      ) : (
-        <>
-          <div className={clsx("text-sm", "text-gray-400")}># Id</div>
-          <div>{monster.id}</div>
-          <br />
-        </>
-      )}
+      {_buildIDOrResurrectionPrompt(monster)}
       <div className={clsx("text-sm", "text-gray-400")}># Name</div>
       <div>{monster.name}</div>
       <br />
@@ -52,4 +45,30 @@ export const Result = ({ className }: ResultProps) => {
       ))}
     </div>
   );
+};
+
+/**
+ * Build ID or Resurrection Prompt
+ * @param monster MonsterModel
+ */
+export const _buildIDOrResurrectionPrompt = (monster: MonsterModel) => {
+  if (monster.id !== "")
+    return (
+      <>
+        <div className={clsx("text-sm", "text-gray-400")}># Id</div>
+        <div>{monster.id}</div>
+        <br />
+      </>
+    );
+  if (monster.resurrectionPrompt !== "")
+    return (
+      <>
+        <div className={clsx("text-sm", "text-gray-400")}>
+          # Resurrection Prompt
+        </div>
+        <div>{monster.resurrectionPrompt}</div>
+        <br />
+      </>
+    );
+  return <></>;
 };

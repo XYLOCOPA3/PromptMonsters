@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/elements/Button";
 import { mchVerseTestnet } from "@/const/chainParams";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
-import { useMonsterController } from "@/hooks/useMonster";
+import { useMonsterState } from "@/hooks/useMonster";
 import { useUserController } from "@/hooks/useUser";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { BaseProps } from "@/types/BaseProps";
@@ -19,13 +19,13 @@ export type LoginButtonProps = BaseProps;
  * @param className Style from parent element
  */
 export const LoginButton = ({ className }: LoginButtonProps) => {
-  const setMonsterMinted = useSetRecoilState(monsterMintedState);
-  const [loading, setLoading] = useState(false);
+  const { chain } = useNetwork();
   const { address, isConnected } = useAccount();
   const { open, setDefaultChain } = useWeb3Modal();
-  const { chain } = useNetwork();
+  const [monster, monsterController] = useMonsterState();
+  const [loading, setLoading] = useState(false);
+  const setMonsterMinted = useSetRecoilState(monsterMintedState);
   const userController = useUserController();
-  const monsterController = useMonsterController();
 
   /**
    * Login button click event
@@ -44,9 +44,9 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
     try {
       setDefaultChain(mchVerseTestnet);
       if (chain!.id !== mchVerseTestnet.id)
-        alert("Please change the network to MCHVerse Testnet.");
+        alert("Please change the network to MCH Verse.");
       userController.set(address!, false);
-      const isSet = await monsterController.init(address!);
+      const isSet = await monsterController.init(address!, monster);
       setMonsterMinted(isSet);
     } catch (e) {
       console.error(e);

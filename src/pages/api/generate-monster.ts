@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
 import { RPC_URL } from "@/lib/wallet";
 import { parseJson } from "@/utils/jsonParser";
+import { ethers } from "ethers";
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
@@ -24,7 +25,6 @@ export default async function handler(
     return;
   }
 
-  const userId = req.body.userId || "";
   const feature = req.body.feature || "";
   const language = req.body.language || "English";
   if (feature.trim().length === 0) {
@@ -35,6 +35,9 @@ export default async function handler(
     });
     return;
   }
+
+  const resurrectionPrompt = ethers.Wallet.createRandom().address;
+  console.log("Create Monster Resurrection Prompt: ", resurrectionPrompt);
 
   try {
     const generatePrompt = _getGeneratePrompt(feature, language);
@@ -55,8 +58,8 @@ export default async function handler(
       language,
     );
     console.log(monster);
-    await promptMonsters.generateMonster(userId, monster);
-    return res.status(200).json({ monster });
+    await promptMonsters.generateMonster(resurrectionPrompt, monster);
+    return res.status(200).json({ monster, resurrectionPrompt });
   } catch (error) {
     console.log(error);
     return res.status(400).json({ message: error });
@@ -199,7 +202,7 @@ const _replaceLanguage = (content: any, language: string): string => {
  * @return {boolean} is over status
  */
 const _isOverStatus = (monster: any): boolean => {
-  if (monster.status.HP > 100) return true;
+  if (monster.status.HP > 40) return true;
   if (monster.status.ATK > 20) return true;
   if (monster.status.DEF > 20) return true;
   if (monster.status.INT > 20) return true;
