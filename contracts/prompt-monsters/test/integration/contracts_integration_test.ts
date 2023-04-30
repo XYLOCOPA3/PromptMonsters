@@ -30,8 +30,8 @@ describe("Integration Test", function () {
   let promptMonstersWallet: SignerWithAddress;
   let user1: SignerWithAddress;
   let user2: SignerWithAddress;
-  let monsterAddress1: SignerWithAddress;
-  let monsterAddress2: SignerWithAddress;
+  let resurrectionPrompt1: SignerWithAddress;
+  let resurrectionPrompt2: SignerWithAddress;
 
   before(async () => {
     [
@@ -39,8 +39,8 @@ describe("Integration Test", function () {
       promptMonstersWallet,
       user1,
       user2,
-      monsterAddress1,
-      monsterAddress2,
+      resurrectionPrompt1,
+      resurrectionPrompt2,
     ] = await ethers.getSigners();
 
     const deploymentResult = await deploy(deployer, promptMonstersWallet);
@@ -68,25 +68,25 @@ describe("Integration Test", function () {
 
   describe("PromptMonsters", function () {
     describe("Main logic", function () {
-      it("Deployer generate monsterAddress1", async function () {
+      it("Deployer generate resurrectionPrompt1", async function () {
         let generatedMonster1 = await promptMonsters.getMonsterHistory(
-          monsterAddress1.address,
+          resurrectionPrompt1.address,
         );
         expect(transformMonsterDetails(generatedMonster1)).to.deep.equal(
           emptyDetails,
         );
         await promptMonsters
           .connect(deployer)
-          .generateMonster(monsterAddress1.address, FireMonsterDetails);
+          .generateMonster(resurrectionPrompt1.address, FireMonsterDetails);
         generatedMonster1 = await promptMonsters.getMonsterHistory(
-          monsterAddress1.address,
+          resurrectionPrompt1.address,
         );
         expect(transformMonsterDetails(generatedMonster1)).to.deep.equal(
           FireMonsterDetails,
         );
       });
 
-      it("User1 mint monsterAddress1", async function () {
+      it("User1 mint resurrectionPrompt1", async function () {
         const mintPrice = await promptMonsters.mintPrice();
         await expect(
           erc20
@@ -94,10 +94,10 @@ describe("Integration Test", function () {
             .increaseAllowance(promptMonsters.address, mintPrice),
         ).not.to.be.reverted;
 
-        await promptMonsters.connect(user1).mint(monsterAddress1.address);
+        await promptMonsters.connect(user1).mint(resurrectionPrompt1.address);
 
         const generatedMonster1 = await promptMonsters.getMonsterHistory(
-          monsterAddress1.address,
+          resurrectionPrompt1.address,
         );
         expect(transformMonsterDetails(generatedMonster1)).to.deep.equal(
           emptyDetails,
@@ -107,10 +107,10 @@ describe("Integration Test", function () {
   });
 
   describe("User flow", function () {
-    it("Deployer generate monsterAddress1", async function () {
+    it("Deployer generate resurrectionPrompt1", async function () {
       await promptMonsters
         .connect(deployer)
-        .generateMonster(monsterAddress1.address, FireMonsterDetails);
+        .generateMonster(resurrectionPrompt1.address, FireMonsterDetails);
     });
 
     it("User1 increaseAllowance erc20 to promptMonsters address", async function () {
@@ -122,14 +122,14 @@ describe("Integration Test", function () {
       ).not.to.be.reverted;
     });
 
-    it("User1 mint monsterAddress1", async function () {
-      await promptMonsters.connect(user1).mint(monsterAddress1.address);
+    it("User1 mint resurrectionPrompt1", async function () {
+      await promptMonsters.connect(user1).mint(resurrectionPrompt1.address);
     });
 
-    it("Deployer generate monsterAddress2", async function () {
+    it("Deployer generate resurrectionPrompt2", async function () {
       await promptMonsters
         .connect(deployer)
-        .generateMonster(monsterAddress2.address, WaterMonsterDetails);
+        .generateMonster(resurrectionPrompt2.address, WaterMonsterDetails);
     });
 
     it("User2 increaseAllowance erc20 to promptMonsters address", async function () {
@@ -141,8 +141,8 @@ describe("Integration Test", function () {
       ).not.to.be.reverted;
     });
 
-    it("User2 mint monsterAddress2", async function () {
-      await promptMonsters.connect(user2).mint(monsterAddress2.address);
+    it("User2 mint resurrectionPrompt2", async function () {
+      await promptMonsters.connect(user2).mint(resurrectionPrompt2.address);
     });
 
     it("1st Fight and deployer addSeasonBattleData", async function () {

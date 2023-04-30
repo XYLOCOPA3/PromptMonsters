@@ -5,21 +5,21 @@ import { ethers } from "ethers";
 // --------------------------------------------------
 
 export const BATTLE_PROXY_ADDRESS =
-  "0x115d0D7D314c76ff706b107Cb7fA0174E5a26e1e"; // mchTestnet
+  "0x2dbD40185E9b629Ee9373999B7E737fb84C4B86c"; // mchTestnet
 
 // --------------------------------------------------
 // BattleOffSeason
 // --------------------------------------------------
 
 export const BATTLE_OFF_SEASON_PROXY_ADDRESS =
-  "0xc3862107BC964E5F6396f5AF6016aBc201D2f15f"; // mchTestnet
+  "0x534d55E50aEbC362C46396F653AC41A8f17b2A32"; // mchTestnet
 
 // --------------------------------------------------
 // BattleS1
 // --------------------------------------------------
 
 export const BATTLE_S1_PROXY_ADDRESS =
-  "0x836638edC2393718d437b70C1772E4F3469dAe67"; // mchTestnet
+  "0xc79BB7EA1c8523779091C4c233665137461a3047"; // mchTestnet
 
 // --------------------------------------------------
 // PromptMonsters
@@ -28,7 +28,7 @@ export const BATTLE_S1_PROXY_ADDRESS =
 export const PROMPT_MONSTERS_EXTERNAL_LINK = "https://prompt-monsters.com/";
 
 export const PROMPT_MONSTERS_PROXY_ADDRESS =
-  "0x1106b72376A45c30D8D4e8B4F82AEC00048A1F3b"; // mchTestnet
+  "0x0ed094ac867F77e56777524B59C640157BEedF84"; // mchTestnet
 // "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853"; // local node
 // "0xe6B107017D265F6cD61509C0C578abac44832f2c"; // sandverse
 // "0xB6982232e0464A6201dFC2635E05Ff1CB0FAA9A2"; // mumbai
@@ -44,7 +44,7 @@ export const MINT_PRICE = ethers.utils.parseEther("50");
 // --------------------------------------------------
 
 export const STAMINA_PROXY_ADDRESS =
-  "0xE23d6CdAbAd6805251791a0C31F53D451698FA1B";
+  "0x76C321d318a379F8F439Cae9a2a0eD267b0eA89A";
 
 // --------------------------------------------------
 // Mock

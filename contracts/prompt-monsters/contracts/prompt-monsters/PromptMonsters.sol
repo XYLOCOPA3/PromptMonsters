@@ -110,12 +110,12 @@ contract PromptMonsters is
   }
 
   /// @dev Get monsters history
-  /// @param user user
+  /// @param resurrectionPrompt resurrection prompt
   /// @return monsterHistory monster history
   function getMonsterHistory(
-    address user
+    address resurrectionPrompt
   ) external view returns (IPromptMonsters.Monster memory monsterHistory) {
-    monsterHistory = _monsterHistory[user];
+    monsterHistory = _monsterHistory[resurrectionPrompt];
   }
 
   /// @dev Get token IDs from owner address
@@ -266,13 +266,15 @@ contract PromptMonsters is
   }
 
   /// @dev Mint monster by admin
-  /// @param monsterAddress monster address
-  function mint(address monsterAddress) external {
+  /// @param resurrectionPrompt resurrection prompt
+  function mint(address resurrectionPrompt) external {
     require(
       erc20.balanceOf(msg.sender) >= mintPrice,
       "PromptMonsters: insufficient ERC20 balance"
     );
-    IPromptMonsters.Monster memory monster = _monsterHistory[monsterAddress];
+    IPromptMonsters.Monster memory monster = _monsterHistory[
+      resurrectionPrompt
+    ];
     require(monster.lv != 0, "PromptMonsters: monster is not generated");
     uint256 newTokenId = _monsters.length;
     require(
@@ -280,7 +282,7 @@ contract PromptMonsters is
       "PromptMonsters: token ID is too large"
     );
     _monsters.push(monster);
-    delete _monsterHistory[monsterAddress];
+    delete _monsterHistory[resurrectionPrompt];
     erc20.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
     _safeMint(msg.sender, newTokenId);
   }

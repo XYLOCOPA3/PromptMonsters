@@ -74,10 +74,10 @@ interface IPromptMonsters is IERC721Upgradeable {
   function getMonstersTotalSupply() external view returns (uint256 totalSupply);
 
   /// @dev Get monsters history
-  /// @param user user
+  /// @param resurrectionPrompt resurrection prompt
   /// @return monsterHistory monster history
   function getMonsterHistory(
-    address user
+    address resurrectionPrompt
   ) external view returns (Monster memory monsterHistory);
 
   /// @dev Get token IDs from owner address
@@ -119,8 +119,8 @@ interface IPromptMonsters is IERC721Upgradeable {
   ) external;
 
   /// @dev Mint monster by admin
-  /// @param monsterAddress monster address
-  function mint(address monsterAddress) external;
+  /// @param resurrectionPrompt resurrection prompt
+  function mint(address resurrectionPrompt) external;
 
   /// @dev Burn
   /// @param tokenId_ token ID

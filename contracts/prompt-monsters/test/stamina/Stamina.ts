@@ -12,7 +12,7 @@ describe("Stamina", function () {
   async function init() {
     const { stamina, promptMonsters, erc20 } = await loadFixture(deploy);
 
-    const [deployer, user1, monsterAddress1, monsterAddress2] =
+    const [deployer, user1, resurrectionPrompt1, resurrectionPrompt2] =
       await ethers.getSigners();
 
     expect(
@@ -31,8 +31,8 @@ describe("Stamina", function () {
       erc20,
       deployer,
       user1,
-      monsterAddress1,
-      monsterAddress2,
+      resurrectionPrompt1,
+      resurrectionPrompt2,
     };
   }
 
@@ -54,14 +54,14 @@ describe("Stamina", function () {
         erc20,
         deployer,
         user1,
-        monsterAddress1,
-        monsterAddress2,
+        resurrectionPrompt1,
+        resurrectionPrompt2,
       } = await loadFixture(init);
 
       await expect(
         promptMonsters
           .connect(deployer)
-          .generateMonster(monsterAddress1.address, FireMonsterDetails),
+          .generateMonster(resurrectionPrompt1.address, FireMonsterDetails),
       ).not.to.be.reverted;
 
       await expect(
@@ -73,13 +73,14 @@ describe("Stamina", function () {
           ),
       ).not.to.be.reverted;
 
-      await expect(promptMonsters.connect(user1).mint(monsterAddress1.address))
-        .not.to.be.reverted;
+      await expect(
+        promptMonsters.connect(user1).mint(resurrectionPrompt1.address),
+      ).not.to.be.reverted;
 
       await expect(
         promptMonsters
           .connect(deployer)
-          .generateMonster(monsterAddress2.address, WaterMonsterDetails),
+          .generateMonster(resurrectionPrompt2.address, WaterMonsterDetails),
       ).not.to.be.reverted;
 
       await expect(
@@ -91,8 +92,9 @@ describe("Stamina", function () {
           ),
       ).not.to.be.reverted;
 
-      await expect(promptMonsters.connect(user1).mint(monsterAddress2.address))
-        .not.to.be.reverted;
+      await expect(
+        promptMonsters.connect(user1).mint(resurrectionPrompt2.address),
+      ).not.to.be.reverted;
 
       expect(await stamina.getTimeStd(0)).to.equal(0);
       expect(await stamina.getTimeStd(1)).to.equal(0);
