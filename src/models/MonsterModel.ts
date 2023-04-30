@@ -18,6 +18,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
    * @param maxSkills max skills
    * @param maxSkillsSet max skills set
    * @param stamina stamina
+   * @param resurrectionPrompt resurrection prompt
    */
   private constructor(
     public readonly name: string = "",
@@ -35,6 +36,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
     public readonly maxSkills: number = 100,
     public readonly maxSkillsSet: number = 100,
     public readonly stamina: number = 0,
+    public readonly resurrectionPrompt: string = "",
   ) {
     super("");
   }
