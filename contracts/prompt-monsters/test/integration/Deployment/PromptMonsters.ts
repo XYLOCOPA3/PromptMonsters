@@ -1,4 +1,4 @@
-import { mintPrice } from "../../../scripts/prompt-monsters/mintPrice";
+import { initialMintPrice } from "../../helpers/test_constants";
 import { externalLink } from "../../helpers/test_constants";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers, upgrades } from "hardhat";
@@ -11,7 +11,12 @@ export const deployPromptMonsters = async (
   const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
   const promptMonstersProxy = await upgrades.deployProxy(
     PromptMonsters,
-    [externalLink, erc20Address, mintPrice, promptMonstersWallet],
+    [
+      externalLink,
+      erc20Address,
+      initialMintPrice,
+      promptMonstersWallet.address,
+    ],
     {
       kind: "uups",
       initializer: "initialize",

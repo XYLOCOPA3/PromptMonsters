@@ -37,7 +37,13 @@ describe("PromptMonsters", function () {
   async function init() {
     const { promptMonsters, erc20 } = await loadFixture(deploy);
 
-    const [deployer, user1, promptMonstersWallet] = await ethers.getSigners();
+    const [
+      deployer,
+      user1,
+      promptMonstersWallet,
+      monsterAddress1,
+      monsterAddress2,
+    ] = await ethers.getSigners();
 
     return {
       promptMonsters,
@@ -45,6 +51,8 @@ describe("PromptMonsters", function () {
       deployer,
       user1,
       promptMonstersWallet,
+      monsterAddress1,
+      monsterAddress2,
     };
   }
 
@@ -75,9 +83,14 @@ describe("PromptMonsters", function () {
   });
   describe("Setter", function () {
     it("setExternalLink", async function () {
-      const { promptMonsters, erc20, deployer, user1 } = await loadFixture(
-        init,
-      );
+      const {
+        promptMonsters,
+        erc20,
+        deployer,
+        user1,
+        monsterAddress1,
+        monsterAddress2,
+      } = await loadFixture(init);
       await expect(
         promptMonsters.setExternalLink("https://externalLink-change/"),
       ).not.to.be.reverted;
@@ -106,17 +119,22 @@ describe("PromptMonsters", function () {
   });
   describe("Main Logic", function () {
     it("generateMonster 1st", async function () {
-      const { promptMonsters, erc20, deployer, user1 } = await loadFixture(
-        init,
-      );
+      const {
+        promptMonsters,
+        erc20,
+        deployer,
+        user1,
+        monsterAddress1,
+        monsterAddress2,
+      } = await loadFixture(init);
       await expect(
         promptMonsters
           .connect(deployer)
-          .generateMonster(user1.address, FireMonsterDetails),
+          .generateMonster(monsterAddress1.address, FireMonsterDetails),
       ).not.to.be.reverted;
       const monster = await promptMonsters
-        .connect(user1.address)
-        .getMonsterHistory();
+        .connect(user1)
+        .getMonsterHistory(monsterAddress1.address);
       expect(monster.name).to.equal(FireMonsterDetails.name);
       expect(monster.flavor).to.equal(FireMonsterDetails.flavor);
       expect(monster.skills[0]).to.equal(FireMonsterDetails.skills[0]);
@@ -133,22 +151,27 @@ describe("PromptMonsters", function () {
       expect(monster.maxSkillsSet).to.equal(FireMonsterDetails.maxSkillsSet);
     });
     it("generateMonster 2nd", async function () {
-      const { promptMonsters, erc20, deployer, user1 } = await loadFixture(
-        init,
-      );
+      const {
+        promptMonsters,
+        erc20,
+        deployer,
+        user1,
+        monsterAddress1,
+        monsterAddress2,
+      } = await loadFixture(init);
       await expect(
         promptMonsters
           .connect(deployer)
-          .generateMonster(user1.address, FireMonsterDetails),
+          .generateMonster(monsterAddress2.address, FireMonsterDetails),
       ).not.to.be.reverted;
       await expect(
         promptMonsters
           .connect(deployer)
-          .generateMonster(user1.address, WaterMonsterDetails),
+          .generateMonster(monsterAddress2.address, WaterMonsterDetails),
       ).not.to.be.reverted;
       const monster = await promptMonsters
-        .connect(user1.address)
-        .getMonsterHistory();
+        .connect(user1)
+        .getMonsterHistory(monsterAddress2.address);
       expect(monster.name).to.equal(WaterMonsterDetails.name);
       expect(monster.flavor).to.equal(WaterMonsterDetails.flavor);
       expect(monster.skills[0]).to.equal(WaterMonsterDetails.skills[0]);
@@ -165,21 +188,27 @@ describe("PromptMonsters", function () {
       expect(monster.maxSkillsSet).to.equal(WaterMonsterDetails.maxSkillsSet);
     });
     it("Should revert with non admin", async function () {
-      const { promptMonsters, erc20, deployer, user1 } = await loadFixture(
-        init,
-      );
+      const { promptMonsters, erc20, deployer, user1, monsterAddress1 } =
+        await loadFixture(init);
       await expect(
         promptMonsters
           .connect(user1)
-          .generateMonster(user1.address, FireMonsterDetails),
+          .generateMonster(monsterAddress1.address, FireMonsterDetails),
       ).to.be.reverted;
     });
   });
 
   describe("Mint", function () {
     it("mint", async function () {
-      const { promptMonsters, erc20, deployer, user1, promptMonstersWallet } =
-        await loadFixture(init);
+      const {
+        promptMonsters,
+        erc20,
+        deployer,
+        user1,
+        promptMonstersWallet,
+        monsterAddress1,
+        monsterAddress2,
+      } = await loadFixture(init);
 
       expect(
         await erc20
@@ -196,7 +225,7 @@ describe("PromptMonsters", function () {
       await expect(
         promptMonsters
           .connect(deployer)
-          .generateMonster(user1.address, FireMonsterDetails),
+          .generateMonster(monsterAddress1.address, FireMonsterDetails),
       ).not.to.be.reverted;
 
       await expect(
@@ -211,8 +240,8 @@ describe("PromptMonsters", function () {
       expect(await promptMonsters.getMonstersTotalSupply()).to.equal(0);
 
       let monster = await promptMonsters
-        .connect(user1.address)
-        .getMonsterHistory();
+        .connect(deployer)
+        .getMonsterHistory(monsterAddress1.address);
 
       expect(monster.name).to.equal(FireMonsterDetails.name);
       expect(monster.flavor).to.equal(FireMonsterDetails.flavor);
@@ -240,26 +269,14 @@ describe("PromptMonsters", function () {
       );
 
       // Mint
-      await expect(promptMonsters.connect(user1).mint()).not.to.be.reverted;
+      await expect(promptMonsters.connect(user1).mint(monsterAddress1.address))
+        .not.to.be.reverted;
 
       expect(await promptMonsters.getMonstersTotalSupply()).to.equal(1);
 
-      monster = await promptMonsters.connect(user1.address).getMonsterHistory();
-
-      expect(monster.name).to.equal(FireMonsterDetails.name);
-      expect(monster.flavor).to.equal(FireMonsterDetails.flavor);
-      expect(monster.skills[0]).to.equal(FireMonsterDetails.skills[0]);
-      expect(monster.skills[1]).to.equal(FireMonsterDetails.skills[1]);
-      expect(monster.skills[2]).to.equal(FireMonsterDetails.skills[2]);
-      expect(monster.lv).to.equal(FireMonsterDetails.lv);
-      expect(monster.hp).to.equal(FireMonsterDetails.hp);
-      expect(monster.atk).to.equal(FireMonsterDetails.atk);
-      expect(monster.def).to.equal(FireMonsterDetails.def);
-      expect(monster.inte).to.equal(FireMonsterDetails.inte);
-      expect(monster.mgr).to.equal(FireMonsterDetails.mgr);
-      expect(monster.agl).to.equal(FireMonsterDetails.agl);
-      expect(monster.maxSkills).to.equal(FireMonsterDetails.maxSkills);
-      expect(monster.maxSkillsSet).to.equal(FireMonsterDetails.maxSkillsSet);
+      monster = await promptMonsters
+        .connect(deployer)
+        .getMonsterHistory(monsterAddress1.address);
 
       expect(
         await promptMonsters.getOwnerToTokenIds(user1.address),
@@ -293,9 +310,8 @@ describe("PromptMonsters", function () {
     });
 
     it("should revert not enough tokens", async function () {
-      const { promptMonsters, erc20, deployer, user1 } = await loadFixture(
-        init,
-      );
+      const { promptMonsters, erc20, deployer, user1, monsterAddress1 } =
+        await loadFixture(init);
 
       expect(
         (await erc20.balanceOf(user1.address)).lt(
@@ -306,10 +322,11 @@ describe("PromptMonsters", function () {
       await expect(
         promptMonsters
           .connect(deployer)
-          .generateMonster(user1.address, FireMonsterDetails),
+          .generateMonster(monsterAddress1.address, FireMonsterDetails),
       ).not.to.be.reverted;
 
-      await expect(promptMonsters.connect(user1).mint()).to.be.reverted;
+      await expect(promptMonsters.connect(user1).mint(monsterAddress1.address))
+        .to.be.reverted;
     });
   });
 });

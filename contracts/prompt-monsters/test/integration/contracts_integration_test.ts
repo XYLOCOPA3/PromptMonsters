@@ -6,10 +6,14 @@ describe("Integration Test", function () {
     const [deployer, promptMonstersWallet, user1, user2] =
       await ethers.getSigners();
 
-    const { erc20, promptMonsters } = await deploy(
-      deployer,
-      promptMonstersWallet,
-    );
+    const {
+      promptMonsters,
+      erc20,
+      stamina,
+      battle,
+      battleOffSeason,
+      battleS1,
+    } = await deploy(deployer, promptMonstersWallet);
   });
 
   it("Deploy", async function () {});

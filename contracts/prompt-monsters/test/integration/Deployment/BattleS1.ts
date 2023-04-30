@@ -1,21 +1,24 @@
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers, upgrades } from "hardhat";
 
-export async function deployBattleS1() {
-  const [deployer] = await ethers.getSigners();
+export const deployBattleS1 = async (
+  deployer: SignerWithAddress,
+  promptMonstersAddress: string,
+) => {
   const BattleS1 = await ethers.getContractFactory("BattleS1");
   const battleS1Proxy = await upgrades.deployProxy(
     BattleS1,
-    [deployer.address],
+    [promptMonstersAddress],
     {
       kind: "uups",
       initializer: "initialize",
     },
   );
-  await battleS1Proxy.deployed();
+  await battleS1Proxy.connect(deployer).deployed();
 
   const battleS1 = BattleS1.attach(battleS1Proxy.address);
 
   return {
     battleS1,
   };
-}
+};

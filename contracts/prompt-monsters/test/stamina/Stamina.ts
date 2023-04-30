@@ -12,7 +12,8 @@ describe("Stamina", function () {
   async function init() {
     const { stamina, promptMonsters, erc20 } = await loadFixture(deploy);
 
-    const [deployer, user1] = await ethers.getSigners();
+    const [deployer, user1, monsterAddress1, monsterAddress2] =
+      await ethers.getSigners();
 
     expect(
       await stamina.grantRole(ethers.utils.id("GAME_ROLE"), deployer.address),
@@ -30,6 +31,8 @@ describe("Stamina", function () {
       erc20,
       deployer,
       user1,
+      monsterAddress1,
+      monsterAddress2,
     };
   }
 
@@ -45,13 +48,20 @@ describe("Stamina", function () {
 
   describe("Check stamina", function () {
     it("calculateStamina", async function () {
-      const { stamina, promptMonsters, erc20, deployer, user1 } =
-        await loadFixture(init);
+      const {
+        stamina,
+        promptMonsters,
+        erc20,
+        deployer,
+        user1,
+        monsterAddress1,
+        monsterAddress2,
+      } = await loadFixture(init);
 
       await expect(
         promptMonsters
           .connect(deployer)
-          .generateMonster(user1.address, FireMonsterDetails),
+          .generateMonster(monsterAddress1.address, FireMonsterDetails),
       ).not.to.be.reverted;
 
       await expect(
@@ -63,12 +73,13 @@ describe("Stamina", function () {
           ),
       ).not.to.be.reverted;
 
-      await expect(promptMonsters.connect(user1).mint()).not.to.be.reverted;
+      await expect(promptMonsters.connect(user1).mint(monsterAddress1.address))
+        .not.to.be.reverted;
 
       await expect(
         promptMonsters
           .connect(deployer)
-          .generateMonster(user1.address, WaterMonsterDetails),
+          .generateMonster(monsterAddress2.address, WaterMonsterDetails),
       ).not.to.be.reverted;
 
       await expect(
@@ -80,7 +91,8 @@ describe("Stamina", function () {
           ),
       ).not.to.be.reverted;
 
-      await expect(promptMonsters.connect(user1).mint()).not.to.be.reverted;
+      await expect(promptMonsters.connect(user1).mint(monsterAddress2.address))
+        .not.to.be.reverted;
 
       expect(await stamina.getTimeStd(0)).to.equal(0);
       expect(await stamina.getTimeStd(1)).to.equal(0);
