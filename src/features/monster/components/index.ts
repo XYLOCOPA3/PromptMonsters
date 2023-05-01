@@ -9,3 +9,5 @@ export * from "./GenerateTweetButton";
 export * from "./MonsterMintPriceInit";
 export * from "./OwnedMonstersInit";
 export * from "./MonsterSelector";
+export * from "./ResurrectionPrompt";
+export * from "./FightLanguage";

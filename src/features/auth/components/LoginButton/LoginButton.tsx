@@ -1,15 +1,19 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
-import { mchVerseTestnet } from "@/const/chainParams";
+import {
+  mchVerse,
+  mchVerseMainnet,
+  mchVerseTestnet,
+} from "@/const/chainParams";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
-import { useMonsterController } from "@/hooks/useMonster";
+import { useMonsterState } from "@/hooks/useMonster";
 import { useUserController } from "@/hooks/useUser";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { BaseProps } from "@/types/BaseProps";
 import { useWeb3Modal } from "@web3modal/react";
 import clsx from "clsx";
 import { useSetRecoilState } from "recoil";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 
 export type LoginButtonProps = BaseProps;
 
@@ -19,13 +23,14 @@ export type LoginButtonProps = BaseProps;
  * @param className Style from parent element
  */
 export const LoginButton = ({ className }: LoginButtonProps) => {
-  const setMonsterMinted = useSetRecoilState(monsterMintedState);
-  const [loading, setLoading] = useState(false);
-  const { address, isConnected } = useAccount();
-  const { open, setDefaultChain } = useWeb3Modal();
   const { chain } = useNetwork();
+  const { address, isConnected, connector: activeConnector } = useAccount();
+  const { open, setDefaultChain } = useWeb3Modal();
+  const [monster, monsterController] = useMonsterState();
+  const [loading, setLoading] = useState(false);
+  const setMonsterMinted = useSetRecoilState(monsterMintedState);
   const userController = useUserController();
-  const monsterController = useMonsterController();
+  const { switchNetwork } = useSwitchNetwork();
 
   /**
    * Login button click event
@@ -33,7 +38,6 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
   const handleClick = async () => {
     setLoading(true);
     await open();
-    console.log("Hi");
     setLoading(false);
   };
 
@@ -41,12 +45,25 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
    * Set user info
    */
   const setUserInfo = async () => {
+    if (!isConnected) return;
     try {
-      setDefaultChain(mchVerseTestnet);
-      if (chain!.id !== mchVerseTestnet.id)
-        alert("Please change the network to MCHVerse Testnet.");
-      userController.set(address!);
-      const isSet = await monsterController.init(address!);
+      // console.log(
+      //   process.env.NEXT_PUBLIC_IS_PRODUCTION
+      //     ? mchVerseMainnet
+      //     : mchVerseTestnet,
+      // );
+      setDefaultChain(mchVerse);
+      if (
+        chain!.id !==
+        (process.env.NEXT_PUBLIC_IS_PRODUCTION
+          ? mchVerseMainnet.id
+          : mchVerseTestnet.id)
+      ) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        if (switchNetwork !== undefined) switchNetwork!(mchVerse.id);
+      }
+      userController.set(address!, false);
+      const isSet = await monsterController.init(address!, monster);
       setMonsterMinted(isSet);
     } catch (e) {
       console.error(e);
@@ -55,9 +72,8 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
   };
 
   useLayoutEffectOfSSR(() => {
-    if (!isConnected) return;
     setUserInfo();
-  }, [address]);
+  }, [address, switchNetwork]);
 
   return (
     <Button

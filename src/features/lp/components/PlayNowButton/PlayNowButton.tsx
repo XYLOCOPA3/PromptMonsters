@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "@/components/elements/Button";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
@@ -11,8 +12,9 @@ export type PlayNowButtonProps = BaseProps;
  */
 export const PlayNowButton = ({ className }: PlayNowButtonProps) => {
   return (
-    <div
+    <Link
       // href="/monsters"
+      href="/#"
       className={clsx(
         className,
         "no-underline",
@@ -37,8 +39,8 @@ export const PlayNowButton = ({ className }: PlayNowButtonProps) => {
         )}
       >
         {/* PLAY NOW */}
-        5/1 Release
+        5/1 RELEASE
       </Button>
-    </div>
+    </Link>
   );
 };

@@ -28,9 +28,7 @@ export const StaminaTimer = ({ className }: StaminaTimerProps) => {
       setStaminaTimeStd({ hours: 0, minutes: 0, seconds: 0 });
       return false;
     }
-    const provider = new ethers.providers.JsonRpcProvider(
-      RPC_URL.mchVerseTestnet,
-    );
+    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
     const stamina = Stamina__factory.connect(
       process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
       provider,

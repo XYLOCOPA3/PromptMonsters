@@ -57,8 +57,8 @@ contract PromptMonsters is
 
   /// @dev Initialize
   /// @param externalLink_ external link
-  /// @param erc20Address_ MCH Coin address
-  /// @param mintPrice_ MCH Coin address
+  /// @param erc20Address_ ERC20 address
+  /// @param mintPrice_ mint price
   /// @param promptMonstersWallet_ prompt monsters wallet
   function initialize(
     string memory externalLink_,
@@ -110,13 +110,12 @@ contract PromptMonsters is
   }
 
   /// @dev Get monsters history
+  /// @param resurrectionPrompt resurrection prompt
   /// @return monsterHistory monster history
-  function getMonsterHistory()
-    external
-    view
-    returns (IPromptMonsters.Monster memory monsterHistory)
-  {
-    monsterHistory = _monsterHistory[msg.sender];
+  function getMonsterHistory(
+    address resurrectionPrompt
+  ) external view returns (IPromptMonsters.Monster memory monsterHistory) {
+    monsterHistory = _monsterHistory[resurrectionPrompt];
   }
 
   /// @dev Get token IDs from owner address
@@ -224,7 +223,7 @@ contract PromptMonsters is
     emit SetExternalLink(_msgSender(), oldState, newState_);
   }
 
-  /// @dev Set MCH Coin address
+  /// @dev Set ERC20 address
   /// @param newState_ new state
   function setErc20(address newState_) external onlyRole(DEFAULT_ADMIN_ROLE) {
     address oldState = address(erc20);
@@ -257,32 +256,43 @@ contract PromptMonsters is
   // --------------------------------------------------------------------------------
 
   /// @dev Generate monster
-  /// @param user_ user address
+  /// @param resurrectionPrompt_ resurrection prompt
   /// @param monster_ monster
   function generateMonster(
-    address user_,
+    address resurrectionPrompt_,
     IPromptMonsters.Monster memory monster_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) nonReentrant {
-    _monsterHistory[user_] = monster_;
+    _monsterHistory[resurrectionPrompt_] = monster_;
+    emit GenerateMonster(monster_);
   }
 
-  /// @dev Mint monster
-  function mint() external {
+  /// @dev Mint monster by admin
+  /// @param resurrectionPrompt resurrection prompt
+  function mint(address resurrectionPrompt) external {
     require(
       erc20.balanceOf(msg.sender) >= mintPrice,
-      "PromptMonsters: insufficient MCH Coin balance"
+      "PromptMonsters: insufficient ERC20 balance"
     );
-    IPromptMonsters.Monster memory monster = _monsterHistory[msg.sender];
-    require(monster.lv > 0, "PromptMonsters: monster is not generated");
+    IPromptMonsters.Monster memory monster = _monsterHistory[
+      resurrectionPrompt
+    ];
+    require(monster.lv != 0, "PromptMonsters: monster is not generated");
     uint256 newTokenId = _monsters.length;
+    require(
+      newTokenId != type(uint256).max,
+      "PromptMonsters: token ID is too large"
+    );
     _monsters.push(monster);
+    delete _monsterHistory[resurrectionPrompt];
     erc20.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
     _safeMint(msg.sender, newTokenId);
+
+    emit MintedMonster(msg.sender, newTokenId, monster);
   }
 
   /// @dev Burn
-  ///         This function is not a standard burn function.
-  ///         Your NFT will be transferred to the owner of this contract if you call this function.
+  /// This function is not a standard burn function.
+  /// Your NFT will be transferred to the owner of this contract if you call this function.
   /// @param tokenId_ token ID
   function burn(uint256 tokenId_) external nonReentrant {
     safeTransferFrom(
@@ -295,7 +305,10 @@ contract PromptMonsters is
   /// @dev Check monster ID
   /// @param monsterId monster ID
   function checkMonsterId(uint256 monsterId) external view {
-    require(_exists(monsterId), "PromptMonsters: monster does not exist");
+    require(
+      _exists(monsterId) || monsterId == type(uint256).max,
+      "PromptMonsters: monster does not exist"
+    );
   }
 
   // --------------------------------------------------------------------------------
@@ -349,7 +362,7 @@ contract PromptMonsters is
 
     uint256 y = 240;
     for (uint i; i < monster.skills.length; i++) {
-      if (i + 1 > monster.maxSkillsSet) break;
+      if (i + 1 > 4) break;
       svg = string.concat(
         svg,
         _getSvgText(

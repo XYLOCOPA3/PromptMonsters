@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { mchVerseTestnet } from "@/const/chainParams";
+import { mchVerse } from "@/const/chainParams";
 import { AutoLogin } from "@/features/auth";
 import { MonsterMintPriceInit, OwnedMonstersInit } from "@/features/monster";
 import "@/styles/globals.css";
@@ -16,7 +16,7 @@ import { WagmiConfig, configureChains, createClient } from "wagmi";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID!;
 
-const chains = [mchVerseTestnet];
+const chains = [mchVerse];
 
 const { provider } = configureChains(chains, [w3mProvider({ projectId })]);
 const wagmiClient = createClient({

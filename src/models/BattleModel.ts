@@ -12,12 +12,14 @@ export class BattleModel extends ObjectCopier {
    * @param battleDesc battle description
    * @param enemyName enemy name
    * @param winnerId winner id
+   * @param winnerName winner name
    */
   private constructor(
     public readonly language: string = "",
     public readonly battleDesc: string = "",
     public readonly enemyName: string = "",
     public readonly winnerId: MonsterId = "",
+    public readonly winnerName: string = "",
   ) {
     super();
   }

@@ -13,7 +13,7 @@ export const Header = () => {
   const user = useUserValue();
 
   return (
-    <header className={clsx("fixed", "w-[100%]", "top-0", "z-[1]")}>
+    <header className={clsx("fixed", "w-[100%]", "top-0", "z-[10]")}>
       <div
         className={clsx(
           "flex",
@@ -41,15 +41,8 @@ export const Header = () => {
             width={100}
             height={100}
           />
-          {/* <Image
-            className={clsx("ml-[10px]", "w-[70px]", "md:w-[120px]")}
-            src="/assets/images/prompt-monsters-title.png"
-            alt="title"
-            width={500}
-            height={500}
-          /> */}
         </Link>
-        {user.id === "" ? (
+        {user.freePlay ? (
           <LoginButton className={clsx("mr-[4px]", "md:mr-[20px]")} />
         ) : (
           <MyShortProfile className={clsx("mr-[4px]", "md:mr-[20px]")} />

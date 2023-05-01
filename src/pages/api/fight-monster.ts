@@ -6,6 +6,7 @@ import { calcStaminaFromMonsterId } from "@/features/stamina/utils/calcStamina";
 import { RPC_URL } from "@/lib/wallet";
 import { IPromptMonsters } from "@/typechain/PromptMonsters";
 import { parseJson } from "@/utils/jsonParser";
+import console from "console";
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
@@ -29,12 +30,22 @@ export default async function handler(
 
   const monsterId = req.body.monsterId;
   const language = req.body.language;
+  const resurrectionPrompt = req.body.resurrectionPrompt;
 
   const enemyId = await _getRandomEnemyId(monsterId);
-  const promptMonsters = PromptMonstersContract.instance(
-    RPC_URL.mchVerseTestnet,
-  );
-  const monsters = await promptMonsters.getMonsters([monsterId, enemyId]);
+  const promptMonsters = PromptMonstersContract.instance(RPC_URL.mchVerse);
+  let monsters: IPromptMonsters.MonsterStructOutput[] = [];
+  console.log(monsterId);
+  if (monsterId === "") {
+    const results = await Promise.all([
+      promptMonsters.getMonsterHistory(resurrectionPrompt),
+      promptMonsters.getMonsters([enemyId]),
+    ]);
+    monsters.push(results[0]);
+    monsters.push(results[1][0]);
+  } else {
+    monsters = await promptMonsters.getMonsters([monsterId, enemyId]);
+  }
   const monster = monsters[0];
   const enemy = monsters[1];
   const fightPrompt = _getFightPrompt(
@@ -48,7 +59,7 @@ export default async function handler(
 
   try {
     const stamina = await calcStaminaFromMonsterId(monsterId);
-    console.log(stamina);
+    console.log(`Remaining stamina: ${stamina}`);
     if (stamina < 1) {
       const message = "Stamina is not enough";
       console.log(message);
@@ -67,11 +78,20 @@ export default async function handler(
     console.log(completion.data.choices);
     console.log(completion.data.usage);
     const battleResult = parseJson(completion.data.choices[0].message!.content);
-    const battle = BattleContract.instance(RPC_URL.mchVerseTestnet);
+    if (
+      battleResult.winnerId !== monsterId &&
+      battleResult.winnerId !== "dummy" &&
+      battleResult.winnerId !== enemyId
+    ) {
+      const message = "The battle ended in a stalemate.";
+      console.log(message);
+      return res.status(400).json({ message });
+    }
+    const battle = BattleContract.instance(RPC_URL.mchVerse);
     await battle.addSeasonBattleData(
       monsterId,
-      battleResult.winnerId,
-      battleResult.winnerId === monsterId ? enemyId : monsterId,
+      battleResult.winnerId === enemyId ? enemyId : monsterId,
+      battleResult.winnerId === enemyId ? monsterId : enemyId,
       battleResult.battleDesc,
     );
     res.status(200).json({ result: completion.data.choices });
@@ -97,14 +117,27 @@ const _getFightPrompt = (
   enemy: IPromptMonsters.MonsterStructOutput,
   language: string = "English",
 ): string => {
-  return `m(You): id:${monsterId} name:${monster.name} flavor:${monster.flavor} status: HP:${monster.hp} ATK:${monster.atk} DEF:${monster.def} INT:${monster.inte} MGR:${monster.mgr} AGL:${monster.agl} skills:[${monster.skills}]
-m(Enemy): id:${enemyId} name:${enemy.name} flavor:${enemy.flavor} status: HP:${enemy.hp} ATK:${enemy.atk} DEF:${enemy.def} INT:${enemy.inte} MGR:${enemy.mgr} AGL:${enemy.agl} skills:[${enemy.skills}]
+  return `m(You): id:${monsterId === "" ? "dummy" : monsterId} name:${
+    monster.name
+  } flavor:${monster.flavor} status: HP:${monster.hp} ATK:${monster.atk} DEF:${
+    monster.def
+  } INT:${monster.inte} MGR:${monster.mgr} AGL:${monster.agl} skills:[${
+    monster.skills
+  }]
+m(Enemy): id:${enemyId} name:${enemy.name} flavor:${enemy.flavor} status: HP:${
+    enemy.hp
+  } ATK:${enemy.atk} DEF:${enemy.def} INT:${enemy.inte} MGR:${enemy.mgr} AGL:${
+    enemy.agl
+  } skills:[${enemy.skills}]
 
-Generate battle results for ${monster.name} and ${enemy.name}. Use absolutely "skills", it is impossible to beat a monster with a huge difference in status, write in a novel-style (max 200 chars) & output in JSON.
+Generate battle results for ${monster.name} and ${
+    enemy.name
+  }. Use absolutely "skills", monsters with high status are more likely to win against monsters with low status., write in a novel-style (max 200 chars) & output in JSON.
 key: "language" value: "${language}"
 key: "battleDesc" value: string
 key: "enemyName" value: string
-key: "winnerId" value: string`;
+key: "winnerId" value: string
+key: "winnerName" value: string`;
 };
 
 /**
@@ -113,14 +146,13 @@ key: "winnerId" value: string`;
  * @return {Promise<string>} random enemy monster id
  */
 const _getRandomEnemyId = async (monsterId: string): Promise<string> => {
-  const promptMonsters = PromptMonstersContract.instance(
-    RPC_URL.mchVerseTestnet,
-  );
+  const promptMonsters = PromptMonstersContract.instance(RPC_URL.mchVerse);
   const totalSupply = Number(await promptMonsters.getMonstersTotalSupply());
   if (totalSupply < 1) throw new Error("server: No enemy monsters.");
   let random: number;
   while (true) {
     random = Math.floor(Math.random() * totalSupply);
+    if (monsterId === "") break;
     if (random !== Number(monsterId)) break;
   }
   return random.toString();

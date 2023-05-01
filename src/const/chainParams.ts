@@ -42,3 +42,31 @@ export const mchVerseTestnet = {
     },
   },
 } as const satisfies Chain;
+
+export const mchVerseMainnet = {
+  id: 29548,
+  name: "MCH Verse Mainnet",
+  network: "mchVerseMainnet",
+  nativeCurrency: {
+    decimals: 18,
+    name: "Oasys",
+    symbol: "OAS",
+  },
+  rpcUrls: {
+    public: { http: ["https://rpc.oasys.mycryptoheroes.net/"] },
+    default: { http: ["https://rpc.oasys.mycryptoheroes.net/"] },
+  },
+  blockExplorers: {
+    default: {
+      name: "SnowTrace",
+      url: "https://explorer.oasys.mycryptoheroes.net/",
+    },
+  },
+} as const satisfies Chain;
+
+// export const mchVerse = mchVerseTestnet;
+
+export const mchVerse =
+  process.env.NEXT_PUBLIC_IS_PRODUCTION === "true"
+    ? mchVerseMainnet
+    : mchVerseTestnet;

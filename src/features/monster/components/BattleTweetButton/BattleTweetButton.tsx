@@ -6,7 +6,10 @@ import { useMonsterValue } from "@/hooks/useMonster";
 import { BattleModel } from "@/models/BattleModel";
 import { MonsterModel } from "@/models/MonsterModel";
 import { BaseProps } from "@/types/BaseProps";
-import { trimCharacters100 } from "@/utils/charUtils";
+import {
+  countCharactersForTwitter,
+  trimCharacters100,
+} from "@/utils/charUtils";
 import clsx from "clsx";
 
 export type BattleTweetButtonProps = BaseProps;
@@ -65,16 +68,26 @@ const _getBattleTweet = (
 ): string => {
   const battleDesc = trimCharacters100(battle.battleDesc);
 
-  return `${monster.name} vs ${battle.enemyName}
+  return `Fight!
 
-${battleDesc}...
+${battleDesc}${countCharactersForTwitter(battleDesc) > 100 ? "..." : ""}
 
-Winner is ... ${
-    battle.winnerId === monster.id ? monster.name : battle.enemyName
-  }!
+${monster.name} ${battle.winnerName === monster.name ? "win!!!" : "lose..."}
 
 Check out more stories here!
-https://prompt-monsters-demo-jp.azurewebsites.net/
+https://prompt-monsters.com/
 
 #PromptMonsters #Alert`;
+  //   return `${monster.name} vs ${battle.enemyName}
+
+  // ${battleDesc}...
+
+  // Winner is ... ${
+  //     battle.winnerId === monster.id ? monster.name : battle.enemyName
+  //   }!
+
+  // Check out more stories here!
+  // https://prompt-monsters-demo-jp.azurewebsites.net/
+
+  // #PromptMonsters #Alert`;
 };

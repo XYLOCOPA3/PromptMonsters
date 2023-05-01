@@ -12,6 +12,7 @@ interface IPromptMonsters is IERC721Upgradeable {
   // --------------------------------------------------------------------------------
 
   struct Monster {
+    string feature;
     string name;
     string flavor;
     string[] skills;
@@ -22,8 +23,6 @@ interface IPromptMonsters is IERC721Upgradeable {
     uint32 inte; // INT
     uint32 mgr;
     uint32 agl;
-    uint16 maxSkills;
-    uint16 maxSkillsSet;
   }
 
   // --------------------------------------------------------------------------------
@@ -50,14 +49,22 @@ interface IPromptMonsters is IERC721Upgradeable {
     address newValue
   );
 
+  event GenerateMonster(Monster monster);
+
+  event MintedMonster(
+    address indexed tokenOwner,
+    uint256 indexed newTokenId,
+    Monster monster
+  );
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
 
   /// @dev Initialize
   /// @param externalLink_ external link
-  /// @param erc20Address_ MCH Coin address
-  /// @param mintPrice_ MCH Coin address
+  /// @param erc20Address_ ERC20 address
+  /// @param mintPrice_ mint price
   /// @param promptMonstersWallet_ prompt monsters wallet
   function initialize(
     string memory externalLink_,
@@ -75,11 +82,11 @@ interface IPromptMonsters is IERC721Upgradeable {
   function getMonstersTotalSupply() external view returns (uint256 totalSupply);
 
   /// @dev Get monsters history
+  /// @param resurrectionPrompt resurrection prompt
   /// @return monsterHistory monster history
-  function getMonsterHistory()
-    external
-    view
-    returns (IPromptMonsters.Monster memory monsterHistory);
+  function getMonsterHistory(
+    address resurrectionPrompt
+  ) external view returns (Monster memory monsterHistory);
 
   /// @dev Get token IDs from owner address
   /// @param owner owner
@@ -112,12 +119,16 @@ interface IPromptMonsters is IERC721Upgradeable {
   // --------------------------------------------------------------------------------
 
   /// @dev Generate monster
-  /// @param user_ user address
+  /// @param resurrectionPrompt_ resurrection prompt
   /// @param monster_ monster
-  function generateMonster(address user_, Monster memory monster_) external;
+  function generateMonster(
+    address resurrectionPrompt_,
+    Monster memory monster_
+  ) external;
 
-  /// @dev Mint monster
-  function mint() external;
+  /// @dev Mint monster by admin
+  /// @param resurrectionPrompt resurrection prompt
+  function mint(address resurrectionPrompt) external;
 
   /// @dev Burn
   /// @param tokenId_ token ID

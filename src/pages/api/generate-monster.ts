@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
 import { RPC_URL } from "@/lib/wallet";
 import { parseJson } from "@/utils/jsonParser";
+import { ethers } from "ethers";
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
@@ -24,7 +25,6 @@ export default async function handler(
     return;
   }
 
-  const userId = req.body.userId || "";
   const feature = req.body.feature || "";
   const language = req.body.language || "English";
   if (feature.trim().length === 0) {
@@ -35,6 +35,9 @@ export default async function handler(
     });
     return;
   }
+
+  const resurrectionPrompt = ethers.Wallet.createRandom().address;
+  console.log("Create Monster Resurrection Prompt: ", resurrectionPrompt);
 
   try {
     const generatePrompt = _getGeneratePrompt(feature, language);
@@ -47,16 +50,14 @@ export default async function handler(
     console.log(completion.data.choices);
     console.log(completion.data.usage);
 
-    const promptMonsters = PromptMonstersContract.instance(
-      RPC_URL.mchVerseTestnet,
-    );
+    const promptMonsters = PromptMonstersContract.instance(RPC_URL.mchVerse);
     const monster = _getMonster(
       completion.data.choices[0].message!.content,
       language,
     );
     console.log(monster);
-    await promptMonsters.generateMonster(userId, monster);
-    return res.status(200).json({ monster });
+    await promptMonsters.generateMonster(resurrectionPrompt, monster, feature);
+    return res.status(200).json({ monster, resurrectionPrompt });
   } catch (error) {
     console.log(error);
     return res.status(400).json({ message: error });
@@ -84,20 +85,6 @@ feature="A yellow bear that loves honey":
 {"language":"English","name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":10,"ATK":2,"DEF":4,"INT":6,"MGR":4,"AGL":4},"skills":["Honey Attack","Hug","Healing Song"],"isFiction":true,"isExisting":true}
 
 feature="${feature}":`;
-  //   return `Create a JSON fictional monster:
-  // - Non-litigious words
-  // - Unique "name"
-  // - No proper nouns in "flavor"
-  // - Don't reuse "feature" words
-  // - Apply status that matches the monster's features
-  // - Single JSON output
-  // - Translate values to ${language} (keys untranslated)
-
-  // Example:
-  // feature="A yellow bear that loves honey":
-  // {"name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":10,"ATK":2,"DEF":4,"INT":6,"MGR":4,"AGL":4},"skills":["Honey Attack","Hug","Healing Song"],"isFiction":true,"isExisting":true}
-
-  // feature="${feature}":`;
 };
 
 /**
@@ -108,7 +95,8 @@ feature="${feature}":`;
  */
 const _getMonster = (content: any, language: string): any => {
   let newContent = _replaceLanguage(content, language);
-  const monster = parseJson(newContent);
+  let monster = parseJson(newContent);
+  monster = _floorStatus(monster);
   if (!_isOverStatus(monster)) return monster;
   console.log("over status!!!");
   console.log(monster);
@@ -153,8 +141,10 @@ const _replaceLanguage = (content: any, language: string): string => {
       newContent = newContent.replace("攻撃力", "ATK");
       newContent = newContent.replace("防御力", "DEF");
       newContent = newContent.replace("地力", "INT");
-      newContent = newContent.replace("魔法防御力", "MGR");
+      newContent = newContent.replace("精神力", "MGR");
+      newContent = newContent.replace("魔力", "MGR");
       newContent = newContent.replace("素早さ", "AGL");
+      newContent = newContent.replace("敏捷性", "AGL");
       newContent = newContent.replace("スキル", "skills");
       newContent = newContent.replace("架空の存在", "isFiction");
       newContent = newContent.replace("実在しない", "isExisting");
@@ -198,7 +188,7 @@ const _replaceLanguage = (content: any, language: string): string => {
  * @return {boolean} is over status
  */
 const _isOverStatus = (monster: any): boolean => {
-  if (monster.status.HP > 100) return true;
+  if (monster.status.HP > 40) return true;
   if (monster.status.ATK > 20) return true;
   if (monster.status.DEF > 20) return true;
   if (monster.status.INT > 20) return true;
@@ -214,7 +204,7 @@ const _isOverStatus = (monster: any): boolean => {
  */
 const _fixStatus = (monster: any): any => {
   const newMonster = monster;
-  if (monster.status.HP > 100) newMonster.status.HP = 100;
+  if (monster.status.HP > 40) newMonster.status.HP = 40;
   if (monster.status.ATK > 20) newMonster.status.ATK = 20;
   if (monster.status.DEF > 20) newMonster.status.DEF = 20;
   if (monster.status.INT > 20) newMonster.status.INT = 20;
@@ -226,6 +216,22 @@ const _fixStatus = (monster: any): any => {
   if (monster.status.INT < 1) newMonster.status.INT = 1;
   if (monster.status.MGR < 1) newMonster.status.MGR = 1;
   if (monster.status.AGL < 1) newMonster.status.AGL = 1;
+  return newMonster;
+};
+
+/**
+ * Floor status
+ * @param monster monster
+ * @return {any} monster
+ */
+const _floorStatus = (monster: any): any => {
+  const newMonster = monster;
+  newMonster.status.HP = Math.floor(newMonster.status.HP);
+  newMonster.status.ATK = Math.floor(newMonster.status.ATK);
+  newMonster.status.DEF = Math.floor(newMonster.status.DEF);
+  newMonster.status.INT = Math.floor(newMonster.status.INT);
+  newMonster.status.MGR = Math.floor(newMonster.status.MGR);
+  newMonster.status.AGL = Math.floor(newMonster.status.AGL);
   return newMonster;
 };
 

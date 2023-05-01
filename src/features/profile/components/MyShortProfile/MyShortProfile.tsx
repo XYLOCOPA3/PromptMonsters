@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterController } from "@/hooks/useMonster";
+import { useOwnedMonstersController } from "@/hooks/useOwnedMonsters";
 import { useUserController, useUserValue } from "@/hooks/useUser";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { BaseProps } from "@/types/BaseProps";
@@ -23,6 +24,7 @@ export const MyShortProfile = ({ className }: MyShortProfileProps) => {
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
   const userController = useUserController();
   const monsterController = useMonsterController();
+  const ownedMonstersController = useOwnedMonstersController();
   const { open } = useWeb3Modal();
 
   /**
@@ -36,9 +38,11 @@ export const MyShortProfile = ({ className }: MyShortProfileProps) => {
    * Reset user info
    */
   const resetUserInfo = async () => {
+    if (isConnected) return;
     try {
       userController.reset();
       monsterController.reset();
+      ownedMonstersController.reset();
       setMonsterMinted(false);
     } catch (e) {
       console.error(e);
@@ -47,11 +51,10 @@ export const MyShortProfile = ({ className }: MyShortProfileProps) => {
   };
 
   useLayoutEffectOfSSR(() => {
-    if (isConnected) return;
     resetUserInfo();
   }, [address]);
 
-  if (user.id === "") return <></>;
+  if (user.id === "" || user.freePlay) return <></>;
   return (
     <div
       className={clsx(

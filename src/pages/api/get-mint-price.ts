@@ -8,9 +8,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const promptMonsters = PromptMonstersContract.instance(
-    RPC_URL.mchVerseTestnet,
-  );
+  const promptMonsters = PromptMonstersContract.instance(RPC_URL.mchVerse);
   try {
     res.status(200).json({
       mintPrice: Number(

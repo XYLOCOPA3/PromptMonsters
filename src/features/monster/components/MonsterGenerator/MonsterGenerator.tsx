@@ -4,7 +4,6 @@ import { FeatureInput, GenerateButton } from "@/features/monster";
 import { useBattleController } from "@/hooks/useBattle";
 import { useMonsterController } from "@/hooks/useMonster";
 import { useOwnedMonstersState } from "@/hooks/useOwnedMonsters";
-import { useUserValue } from "@/hooks/useUser";
 import { disableState } from "@/stores/disableState";
 import { languageState } from "@/stores/languageState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
@@ -15,7 +14,8 @@ import clsx from "clsx";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
 let feature = "";
-const languages = ["English", "Japanese", "Korean", "Chinese"];
+// const languages = ["English", "Japanese", "Korean", "Chinese"];
+const languages = ["English", "Japanese"];
 const maxLength = 45;
 
 export type MonsterGeneratorProps = BaseProps;
@@ -26,14 +26,13 @@ export type MonsterGeneratorProps = BaseProps;
  * @param className Style from parent element
  */
 export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
-  const user = useUserValue();
   const [loading, setLoading] = useState(false);
   const [maxLengthOver, setMaxLengthOver] = useState(false);
   const [language, setLanguage] = useRecoilState(languageState);
+  const [ownedMonsters, ownedMonstersController] = useOwnedMonstersState();
   const monsterController = useMonsterController();
   const battleController = useBattleController();
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
-  const [ownedMonsters, ownedMonstersController] = useOwnedMonstersState();
   const setDisable = useSetRecoilState(disableState);
   const setSelectedMonsterIdName = useSetRecoilState(
     selectedMonsterIdNameState,
@@ -49,11 +48,6 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
   };
 
   const handleClick = async () => {
-    battleController.reset();
-    if (user.id === "") {
-      alert("Please connect your wallet to generate a monster.");
-      return;
-    }
     if (maxLengthOver) {
       alert(
         `Too many characters.\n\nPlease limit the number of characters to ${maxLength} for single-byte characters and ${
@@ -62,14 +56,32 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
       );
       return;
     }
+    let hasNotMintedMonster = false;
+    for (let i = 0; i < ownedMonsters.length; i++) {
+      if (ownedMonsters[i].id !== "") continue;
+      hasNotMintedMonster = true;
+      break;
+    }
+    //     if (hasNotMintedMonster) {
+    //       if (
+    //         !confirm(
+    //           `Did you take note of the "Resurrection Prompt"?
+
+    // When you execute "Monster Generation," any unminted monsters will disappear.
+    // But don't worry. By entering the "Resurrection Prompt," you can regenerate them.
+    // Please be careful, as if you forget to note down the "Resurrection Prompt," you won't be able to regenerate the monsters.
+    // NOTE: Once minted, entering the "Resurrection Prompt" will not regenerate the monster.
+
+    // Do you want to proceed with "Monster Generation"?`,
+    //         )
+    //       )
+    //         return;
+    //     }
+    battleController.reset();
     setDisable(true);
     setLoading(true);
     try {
-      const newMonster = await monsterController.generate(
-        user.id,
-        feature,
-        language,
-      );
+      const newMonster = await monsterController.generate(feature, language);
       const lastMonsterIndex = ownedMonsters.length - 1;
       if (lastMonsterIndex === -1) {
         ownedMonstersController.add(newMonster);

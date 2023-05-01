@@ -1,10 +1,15 @@
 import { ethers } from "ethers";
 
+const mchVerse =
+  process.env.NEXT_PUBLIC_IS_PRODUCTION === "true"
+    ? "https://rpc.oasys.mycryptoheroes.net/"
+    : "https://rpc.oasys.sand.mchdfgh.xyz/";
+
 export const RPC_URL = {
   mumbai: "https://rpc-mumbai.maticvigil.com/",
   linea: "https://rpc.goerli.linea.build",
   sandverse: "https://rpc.sandverse.oasys.games/",
-  mchVerseTestnet: "https://rpc.oasys.sand.mchdfgh.xyz/",
+  mchVerse: mchVerse,
 };
 
 export class ServerWallet {

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
+import { mchVerse } from "@/const/chainParams";
 import { useMintPriceValue } from "@/hooks/useMintPrice";
 import { useMonsterState } from "@/hooks/useMonster";
 import { useOwnedMonstersController } from "@/hooks/useOwnedMonsters";
@@ -10,6 +11,7 @@ import { selectedMonsterIdNameState } from "@/stores/selectedMonsterIdNameState"
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import { useNetwork } from "wagmi";
 
 export type MonsterMintButtonProps = BaseProps;
 
@@ -29,21 +31,27 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
     selectedMonsterIdNameState,
   );
   const [disable, setDisable] = useRecoilState(disableState);
+  const { chain } = useNetwork();
 
   /**
    * Click event
    */
   const handleClick = async () => {
+    if (user.id === "") {
+      alert("Please log in if you would like to mint a monster.");
+      return;
+    }
+    if (chain!.id !== mchVerse.id) {
+      alert("Please change network to MCHVerse Mainnet.");
+      return;
+    }
     setDisable(true);
     setLoading(true);
     try {
-      if (user.id === "") {
-        alert("Please login");
-        setDisable(false);
-        setLoading(false);
-        return;
-      }
-      const newMonster = await monsterController.mint(user.id);
+      const newMonster = await monsterController.mint(
+        user.id,
+        monster.resurrectionPrompt,
+      );
       ownedMonstersController.updateAfterMinted(newMonster);
       setSelectedMonsterIdName(`${newMonster.name} | id: ${newMonster.id}`);
       setMonsterMinted(true);
@@ -61,10 +69,10 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
       disabled={disable}
       className={clsx(
         className,
-        "px-[20px]",
-        "py-[10px]",
+        "px-[10px]",
         "w-[100%]",
-        "max-w-[200px]",
+        "h-[40px]",
+        "max-w-[150px]",
       )}
       variant="secondary"
       loading={loading}
