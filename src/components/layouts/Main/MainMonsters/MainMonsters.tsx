@@ -3,6 +3,7 @@ import { Result } from "@/components/elements/Result";
 import { TwitterIcon } from "@/features/lp";
 import {
   BattleTweetButton,
+  FightLanguage,
   GenerateTweetButton,
   MonsterFightButton,
   MonsterFightText,
@@ -77,10 +78,26 @@ export const MainMonsters = () => {
             <GenerateTweetButton />
           </div>
           <div className={clsx("flex", "w-[100%]")}>
-            <div className={clsx("w-[50%]", "flex", "items-start", "flex-col")}>
+            <div
+              className={clsx(
+                "w-[50%]",
+                "flex",
+                "items-start",
+                "flex-col",
+                "select-none",
+              )}
+            >
               {monsterMinted ? <></> : <MonsterMintButton />}
             </div>
             <div className={clsx("w-[50%]", "flex", "items-end", "flex-col")}>
+              <FightLanguage
+                className={clsx(
+                  "w-[100%]",
+                  "z-[1]",
+                  "mb-[10px]",
+                  "max-w-[200px]",
+                )}
+              />
               <MonsterFightButton />
               {monsterMinted ? (
                 <StaminaTimer className={clsx("mt-[5px]")} />
@@ -104,7 +121,7 @@ export const MainMonsters = () => {
           "absolute",
           "top-0",
           "opacity-10",
-          "h-[300%]",
+          "h-[320%]",
           "z-[-1]",
           "md:h-[200%]",
         )}

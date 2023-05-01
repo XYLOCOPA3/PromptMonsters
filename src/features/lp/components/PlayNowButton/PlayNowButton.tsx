@@ -13,7 +13,8 @@ export type PlayNowButtonProps = BaseProps;
 export const PlayNowButton = ({ className }: PlayNowButtonProps) => {
   return (
     <Link
-      href="/monsters"
+      // href="/monsters"
+      href="/#"
       className={clsx(
         className,
         "no-underline",
@@ -37,7 +38,8 @@ export const PlayNowButton = ({ className }: PlayNowButtonProps) => {
           "md:text-[20px]",
         )}
       >
-        PLAY NOW
+        {/* PLAY NOW */}
+        5/1 RELEASE
       </Button>
     </Link>
   );
