@@ -95,7 +95,7 @@ export const ResurrectionPrompt = ({ className }: ResurrectionPromptProps) => {
     <div className={clsx(className, "flex", "justify-center", "items-center")}>
       <Hint
         className={clsx("mr-[5px]")}
-        hintText={`What is the "Resurrection Prompt"?\n\nIt's an ID assigned to a monster when it's generated. Unminted monsters can be resurrected at any time by entering this ID.`}
+        hintText={`What is the "Resurrection Prompt"?\n\nIt's an ID assigned to a monster when it's generated. Unminted monsters can be resurrected at any time by entering this ID.\n\n\n「Resurrection Prompt」とは何ですか？\n\nそれは、モンスターが生成された際に割り当てられるIDです。ミントされていないモンスターは、このIDを入力することでいつでも復活させることができます。`}
       />
       <input
         className={clsx(

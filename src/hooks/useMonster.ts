@@ -87,7 +87,7 @@ export const useMonsterController = (): MonsterController => {
       process.env.NEXT_PUBLIC_MCHCOIN_CONTRACT!,
       provider,
     );
-    const monsterPrice = ethers.utils.parseEther("100");
+    const monsterPrice = ethers.utils.parseEther("50");
     const balanceOfMchc = await mchcReader.balanceOf(userId);
     if (balanceOfMchc.lt(monsterPrice))
       throw new Error("Insufficient balance of MCHC.");
