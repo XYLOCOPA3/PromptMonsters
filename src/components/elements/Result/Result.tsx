@@ -26,6 +26,9 @@ export const Result = ({ className }: ResultProps) => {
       )}
     >
       {_buildIDOrResurrectionPrompt(monster)}
+      <div className={clsx("text-sm", "text-gray-400")}># Feature</div>
+      <div>{monster.feature}</div>
+      <br />
       <div className={clsx("text-sm", "text-gray-400")}># Name</div>
       <div>{monster.name}</div>
       <br />
