@@ -50,9 +50,7 @@ export default async function handler(
     console.log(completion.data.choices);
     console.log(completion.data.usage);
 
-    const promptMonsters = PromptMonstersContract.instance(
-      RPC_URL.mchVerseTestnet,
-    );
+    const promptMonsters = PromptMonstersContract.instance(RPC_URL.mchVerse);
     const monster = _getMonster(
       completion.data.choices[0].message!.content,
       language,

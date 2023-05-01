@@ -59,9 +59,7 @@ export const useMonsterController = (): MonsterController => {
     console.log(monsterJson);
     if (monsterJson.isExisting) throw new Error("This monster is existing.");
     if (!monsterJson.isFiction) throw new Error("This monster is non fiction.");
-    const provider = new ethers.providers.JsonRpcProvider(
-      RPC_URL.mchVerseTestnet,
-    );
+    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
     const stamina = Stamina__factory.connect(
       process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
       provider,
@@ -84,9 +82,7 @@ export const useMonsterController = (): MonsterController => {
     userId: UserId,
     resurrectionPrompt: string,
   ): Promise<MonsterModel> => {
-    const provider = new ethers.providers.JsonRpcProvider(
-      RPC_URL.mchVerseTestnet,
-    );
+    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
     const mchcReader = MCHCoin__factory.connect(
       process.env.NEXT_PUBLIC_MCHCOIN_CONTRACT!,
       provider,
@@ -142,9 +138,7 @@ export const useMonsterController = (): MonsterController => {
     monster: MonsterModel,
   ): Promise<boolean> => {
     if (monster.id === "" && monster.name !== "") return false;
-    const provider = new ethers.providers.JsonRpcProvider(
-      RPC_URL.mchVerseTestnet,
-    );
+    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
     const promptMonsters = PromptMonsters__factory.connect(
       process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
       provider,
@@ -208,9 +202,7 @@ export const useMonsterController = (): MonsterController => {
   const resurrect = async (
     resurrectionPrompt: string,
   ): Promise<MonsterModel> => {
-    const provider = new ethers.providers.JsonRpcProvider(
-      RPC_URL.mchVerseTestnet,
-    );
+    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
     const promptMonsters = PromptMonsters__factory.connect(
       process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
       provider,

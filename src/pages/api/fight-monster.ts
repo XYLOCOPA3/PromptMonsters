@@ -33,9 +33,7 @@ export default async function handler(
   const resurrectionPrompt = req.body.resurrectionPrompt;
 
   const enemyId = await _getRandomEnemyId(monsterId);
-  const promptMonsters = PromptMonstersContract.instance(
-    RPC_URL.mchVerseTestnet,
-  );
+  const promptMonsters = PromptMonstersContract.instance(RPC_URL.mchVerse);
   let monsters: IPromptMonsters.MonsterStructOutput[] = [];
   console.log(monsterId);
   if (monsterId === "") {
@@ -89,7 +87,7 @@ export default async function handler(
       console.log(message);
       return res.status(400).json({ message });
     }
-    const battle = BattleContract.instance(RPC_URL.mchVerseTestnet);
+    const battle = BattleContract.instance(RPC_URL.mchVerse);
     await battle.addSeasonBattleData(
       monsterId,
       battleResult.winnerId === enemyId ? enemyId : monsterId,
@@ -169,9 +167,7 @@ key: "winnerName" value: string`;
  * @return {Promise<string>} random enemy monster id
  */
 const _getRandomEnemyId = async (monsterId: string): Promise<string> => {
-  const promptMonsters = PromptMonstersContract.instance(
-    RPC_URL.mchVerseTestnet,
-  );
+  const promptMonsters = PromptMonstersContract.instance(RPC_URL.mchVerse);
   const totalSupply = Number(await promptMonsters.getMonstersTotalSupply());
   if (totalSupply < 1) throw new Error("server: No enemy monsters.");
   let random: number;
