@@ -49,6 +49,14 @@ interface IPromptMonsters is IERC721Upgradeable {
     address newValue
   );
 
+  event GenerateMonster(Monster monster);
+
+  event MintedMonster(
+    address indexed tokenOwner,
+    uint256 indexed newTokenId,
+    Monster monster
+  );
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
