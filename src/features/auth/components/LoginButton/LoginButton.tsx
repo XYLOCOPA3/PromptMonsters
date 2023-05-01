@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
-import { mchVerseMainnet, mchVerseTestnet } from "@/const/chainParams";
+import {
+  mchVerse,
+  mchVerseMainnet,
+  mchVerseTestnet,
+} from "@/const/chainParams";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterState } from "@/hooks/useMonster";
 import { useUserController } from "@/hooks/useUser";
@@ -43,16 +47,12 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
   const setUserInfo = async () => {
     if (!isConnected) return;
     try {
-      console.log(
-        process.env.NEXT_PUBLIC_IS_PRODUCTION
-          ? mchVerseMainnet
-          : mchVerseTestnet,
-      );
-      setDefaultChain(
-        process.env.NEXT_PUBLIC_IS_PRODUCTION
-          ? mchVerseMainnet
-          : mchVerseTestnet,
-      );
+      // console.log(
+      //   process.env.NEXT_PUBLIC_IS_PRODUCTION
+      //     ? mchVerseMainnet
+      //     : mchVerseTestnet,
+      // );
+      setDefaultChain(mchVerse);
       if (
         chain!.id !==
         (process.env.NEXT_PUBLIC_IS_PRODUCTION
@@ -60,12 +60,7 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
           : mchVerseTestnet.id)
       ) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        if (switchNetwork !== undefined)
-          switchNetwork!(
-            process.env.NEXT_PUBLIC_IS_PRODUCTION
-              ? mchVerseMainnet.id
-              : mchVerseTestnet.id,
-          );
+        if (switchNetwork !== undefined) switchNetwork!(mchVerse.id);
       }
       userController.set(address!, false);
       const isSet = await monsterController.init(address!, monster);
