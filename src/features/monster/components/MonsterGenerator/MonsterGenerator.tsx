@@ -14,7 +14,8 @@ import clsx from "clsx";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
 let feature = "";
-const languages = ["English", "Japanese", "Korean", "Chinese"];
+// const languages = ["English", "Japanese", "Korean", "Chinese"];
+const languages = ["English", "Japanese"];
 const maxLength = 45;
 
 export type MonsterGeneratorProps = BaseProps;

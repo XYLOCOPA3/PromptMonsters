@@ -263,6 +263,7 @@ contract PromptMonsters is
     IPromptMonsters.Monster memory monster_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) nonReentrant {
     _monsterHistory[resurrectionPrompt_] = monster_;
+    emit GenerateMonster(monster_);
   }
 
   /// @dev Mint monster by admin
@@ -285,6 +286,8 @@ contract PromptMonsters is
     delete _monsterHistory[resurrectionPrompt];
     erc20.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
     _safeMint(msg.sender, newTokenId);
+
+    emit MintedMonster(msg.sender, newTokenId, monster);
   }
 
   /// @dev Burn

@@ -63,3 +63,10 @@ export const mchVerseMainnet = {
     },
   },
 } as const satisfies Chain;
+
+// export const mchVerse = mchVerseTestnet;
+
+export const mchVerse =
+  process.env.NEXT_PUBLIC_IS_PRODUCTION === "true"
+    ? mchVerseMainnet
+    : mchVerseTestnet;

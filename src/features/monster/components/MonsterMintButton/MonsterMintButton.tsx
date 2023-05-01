@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
-import { mchVerseTestnet } from "@/const/chainParams";
+import { mchVerse } from "@/const/chainParams";
 import { useMintPriceValue } from "@/hooks/useMintPrice";
 import { useMonsterState } from "@/hooks/useMonster";
 import { useOwnedMonstersController } from "@/hooks/useOwnedMonsters";
@@ -41,7 +41,7 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
       alert("Please log in if you would like to mint a monster.");
       return;
     }
-    if (chain!.id !== mchVerseTestnet.id) {
+    if (chain!.id !== mchVerse.id) {
       alert("Please change network to MCHVerse Mainnet.");
       return;
     }
@@ -69,10 +69,10 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
       disabled={disable}
       className={clsx(
         className,
-        "px-[20px]",
+        "px-[10px]",
         "w-[100%]",
         "h-[40px]",
-        "max-w-[170px]",
+        "max-w-[150px]",
       )}
       variant="secondary"
       loading={loading}

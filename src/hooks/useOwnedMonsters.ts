@@ -31,9 +31,7 @@ export const useOwnedMonstersController = (): OwnedMonsterIdsController => {
    * @param monster monster
    */
   const init = async (userId: UserId, monster: MonsterModel): Promise<void> => {
-    const provider = new ethers.providers.JsonRpcProvider(
-      RPC_URL.mchVerseTestnet,
-    );
+    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
     const promptMonsters = PromptMonsters__factory.connect(
       process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
       provider,

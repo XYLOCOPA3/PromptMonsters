@@ -34,9 +34,7 @@ export const calcStaminaFromMonsterId = async (
   monsterId: MonsterId,
 ): Promise<number> => {
   if (monsterId === "") return 100;
-  const provider = new ethers.providers.JsonRpcProvider(
-    RPC_URL.mchVerseTestnet,
-  );
+  const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
   const staminaContract = Stamina__factory.connect(
     process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
     provider,
