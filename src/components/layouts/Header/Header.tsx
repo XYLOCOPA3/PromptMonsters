@@ -13,7 +13,7 @@ export const Header = () => {
   const user = useUserValue();
 
   return (
-    <header className={clsx("fixed", "w-[100%]", "top-0", "z-[1]")}>
+    <header className={clsx("fixed", "w-[100%]", "top-0", "z-[10]")}>
       <div
         className={clsx(
           "flex",

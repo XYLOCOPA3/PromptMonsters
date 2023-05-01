@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
+import { mchVerseTestnet } from "@/const/chainParams";
 import { useMintPriceValue } from "@/hooks/useMintPrice";
 import { useMonsterState } from "@/hooks/useMonster";
 import { useOwnedMonstersController } from "@/hooks/useOwnedMonsters";
@@ -10,6 +11,7 @@ import { selectedMonsterIdNameState } from "@/stores/selectedMonsterIdNameState"
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import { useNetwork } from "wagmi";
 
 export type MonsterMintButtonProps = BaseProps;
 
@@ -29,6 +31,7 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
     selectedMonsterIdNameState,
   );
   const [disable, setDisable] = useRecoilState(disableState);
+  const { chain } = useNetwork();
 
   /**
    * Click event
@@ -36,6 +39,10 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
   const handleClick = async () => {
     if (user.id === "") {
       alert("Please log in if you would like to mint a monster.");
+      return;
+    }
+    if (chain!.id !== mchVerseTestnet.id) {
+      alert("Please change network to MCHVerse Mainnet.");
       return;
     }
     setDisable(true);
