@@ -9,7 +9,7 @@ import { BaseProps } from "@/types/BaseProps";
 import { useWeb3Modal } from "@web3modal/react";
 import clsx from "clsx";
 import { useSetRecoilState } from "recoil";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 
 export type LoginButtonProps = BaseProps;
 
@@ -20,12 +20,13 @@ export type LoginButtonProps = BaseProps;
  */
 export const LoginButton = ({ className }: LoginButtonProps) => {
   const { chain } = useNetwork();
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, connector: activeConnector } = useAccount();
   const { open, setDefaultChain } = useWeb3Modal();
   const [monster, monsterController] = useMonsterState();
   const [loading, setLoading] = useState(false);
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
   const userController = useUserController();
+  const { switchNetwork } = useSwitchNetwork();
 
   /**
    * Login button click event
@@ -43,8 +44,10 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
     if (!isConnected) return;
     try {
       setDefaultChain(mchVerseTestnet);
-      if (chain!.id !== mchVerseTestnet.id)
-        alert("Please change the network to MCH Verse.");
+      if (chain!.id !== mchVerseTestnet.id) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        if (switchNetwork !== undefined) switchNetwork!(mchVerseTestnet.id);
+      }
       userController.set(address!, false);
       const isSet = await monsterController.init(address!, monster);
       setMonsterMinted(isSet);
@@ -56,7 +59,7 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
 
   useLayoutEffectOfSSR(() => {
     setUserInfo();
-  }, [address]);
+  }, [address, switchNetwork]);
 
   return (
     <Button

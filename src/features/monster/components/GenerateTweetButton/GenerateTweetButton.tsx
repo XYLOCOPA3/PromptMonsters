@@ -64,7 +64,7 @@ const _getGeneratedTweet = (monster: MonsterModel): string => {
   const flavor = trimCharacters100(monster.flavor);
   const skills = monster.skills.join("\n- ");
 
-  return `Generated a monster
+  return `Generated a Monster
 
 ${monster.name}
 ${flavor}${countCharactersForTwitter(flavor) > 100 ? "..." : ""}
@@ -72,7 +72,7 @@ Skills:
 - ${skills}
 
 Check Monster here!
-https://prompt-monsters-demo-jp.azurewebsites.net/
+https://prompt-monsters.com/
 
 #PromptMonsters #Alert`;
 };

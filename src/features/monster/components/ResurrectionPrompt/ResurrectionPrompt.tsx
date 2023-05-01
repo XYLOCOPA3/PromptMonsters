@@ -1,12 +1,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/elements/Button";
+import { Hint } from "@/components/elements/Hint";
 import { useBattleController } from "@/hooks/useBattle";
 import { useMonsterController } from "@/hooks/useMonster";
 import { useOwnedMonstersState } from "@/hooks/useOwnedMonsters";
-import { useUserState } from "@/hooks/useUser";
 import { disableState } from "@/stores/disableState";
-import { languageState } from "@/stores/languageState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { selectedMonsterIdNameState } from "@/stores/selectedMonsterIdNameState";
 import { BaseProps } from "@/types/BaseProps";
@@ -23,15 +22,12 @@ export type ResurrectionPromptProps = BaseProps;
  * @param className Style from parent element
  */
 export const ResurrectionPrompt = ({ className }: ResurrectionPromptProps) => {
-  const [user, userController] = useUserState();
   const [loading, setLoading] = useState(false);
-  const [maxLengthOver, setMaxLengthOver] = useState(false);
-  const [language, setLanguage] = useRecoilState(languageState);
   const [ownedMonsters, ownedMonstersController] = useOwnedMonstersState();
+  const [disable, setDisable] = useRecoilState(disableState);
   const monsterController = useMonsterController();
   const battleController = useBattleController();
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
-  const [disable, setDisable] = useRecoilState(disableState);
   const setSelectedMonsterIdName = useSetRecoilState(
     selectedMonsterIdNameState,
   );
@@ -47,21 +43,21 @@ export const ResurrectionPrompt = ({ className }: ResurrectionPromptProps) => {
       hasNotMintedMonster = true;
       break;
     }
-    if (hasNotMintedMonster) {
-      if (
-        !confirm(
-          `Did you take note of the "Resurrection Prompt"?
+    //     if (hasNotMintedMonster) {
+    //       if (
+    //         !confirm(
+    //           `Did you take note of the "Resurrection Prompt"?
 
-When you execute "Monster Generation," any unminted monsters will disappear.
-But don't worry. By entering the "Resurrection Prompt," you can regenerate them.
-Please be careful, as if you forget to note down the "Resurrection Prompt," you won't be able to regenerate the monsters.
-NOTE: Once minted, entering the "Resurrection Prompt" will not regenerate the monster.
+    // When you execute "Monster Generation," any unminted monsters will disappear.
+    // But don't worry. By entering the "Resurrection Prompt," you can regenerate them.
+    // Please be careful, as if you forget to note down the "Resurrection Prompt," you won't be able to regenerate the monsters.
+    // NOTE: Once minted, entering the "Resurrection Prompt" will not regenerate the monster.
 
-Do you want to proceed with "Monster Generation"?`,
-        )
-      )
-        return;
-    }
+    // Do you want to proceed with "Monster Generation"?`,
+    //         )
+    //       )
+    //         return;
+    //     }
     battleController.reset();
     setDisable(true);
     setLoading(true);
@@ -96,12 +92,15 @@ Do you want to proceed with "Monster Generation"?`,
   };
 
   return (
-    <div className={clsx(className, "flex", "justify-center")}>
+    <div className={clsx(className, "flex", "justify-center", "items-center")}>
+      <Hint
+        className={clsx("mr-[5px]")}
+        hintText={`What is the "Resurrection Prompt"?\n\nIt's an ID assigned to a monster when it's generated. Unminted monsters can be resurrected at any time by entering this ID.`}
+      />
       <input
         className={clsx(
           "w-[80%]",
           "h-[40px]",
-          "mb-[20px]",
           "bg-gray-700",
           "px-2",
           "rounded-lg",

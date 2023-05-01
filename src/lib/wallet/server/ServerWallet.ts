@@ -5,6 +5,7 @@ export const RPC_URL = {
   linea: "https://rpc.goerli.linea.build",
   sandverse: "https://rpc.sandverse.oasys.games/",
   mchVerseTestnet: "https://rpc.oasys.sand.mchdfgh.xyz/",
+  mchVerseMainnet: "https://rpc.oasys.mycryptoheroes.net/",
 };
 
 export class ServerWallet {

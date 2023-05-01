@@ -1,7 +1,7 @@
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useUserController } from "@/hooks/useUser";
 import { BaseProps } from "@/types/BaseProps";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 
 export type AutoLoginProps = BaseProps;
 
@@ -13,6 +13,7 @@ export type AutoLoginProps = BaseProps;
 export const AutoLogin = ({ children }: AutoLoginProps) => {
   const { address } = useAccount();
   const userController = useUserController();
+  const { chain } = useNetwork();
 
   /**
    * 初期化
@@ -24,7 +25,7 @@ export const AutoLogin = ({ children }: AutoLoginProps) => {
 
   useLayoutEffectOfSSR(() => {
     init();
-  }, [address]);
+  }, [address, chain]);
 
   return <>{children}</>;
 };
