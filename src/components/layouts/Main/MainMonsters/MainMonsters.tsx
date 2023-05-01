@@ -82,8 +82,9 @@ export const MainMonsters = () => {
               className={clsx(
                 "w-[50%]",
                 "flex",
-                "items-start",
                 "flex-col",
+                "items-start",
+                "justify-end",
                 "select-none",
               )}
             >
