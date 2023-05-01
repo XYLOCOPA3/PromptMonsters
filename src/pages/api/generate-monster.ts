@@ -143,8 +143,10 @@ const _replaceLanguage = (content: any, language: string): string => {
       newContent = newContent.replace("攻撃力", "ATK");
       newContent = newContent.replace("防御力", "DEF");
       newContent = newContent.replace("地力", "INT");
-      newContent = newContent.replace("魔法防御力", "MGR");
+      newContent = newContent.replace("精神力", "MGR");
+      newContent = newContent.replace("魔力", "MGR");
       newContent = newContent.replace("素早さ", "AGL");
+      newContent = newContent.replace("敏捷性", "AGL");
       newContent = newContent.replace("スキル", "skills");
       newContent = newContent.replace("架空の存在", "isFiction");
       newContent = newContent.replace("実在しない", "isExisting");
