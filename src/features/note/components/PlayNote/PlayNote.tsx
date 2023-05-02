@@ -86,16 +86,19 @@ export const PlayNote = ({ className }: PlayNoteProps) => {
           : `1ミントあたり10 OAS貰えるキャンペーンや、総額5,300 OASのランキングキャンペーンの詳細はこちら↓`}
       </div>
       <Link
-        className={clsx("mb-2", "text-blue-500", "hover:underline")}
+        className={clsx(
+          "mb-2",
+          "text-blue-500",
+          "hover:underline",
+          "font-bold",
+        )}
         href={
           language === "EN"
             ? "https://promptmonsters.substack.com/p/ai-powered-blockchain-game-prompt"
             : "https://prtimes.jp/main/html/rd/p/000000009.000107796.html"
         }
       >
-        {language === "EN"
-          ? `https://promptmonsters.substack.com/p/ai-powered-blockchain-game-prompt`
-          : `https://prtimes.jp/main/html/rd/p/000000009.000107796.html`}
+        {language === "EN" ? "Campaign details" : "キャンペーン詳細"}
       </Link>
       <br />
       <br />
