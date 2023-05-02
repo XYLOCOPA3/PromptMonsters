@@ -99,7 +99,8 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
       setDisable(false);
       if (error instanceof Error) {
         alert("Invalid monster name.\n\nReason: " + error.message);
-        console.error(error);
+        // console.error(error);
+        // console.log(error);
         return;
       }
       alert("Invalid monster name.");

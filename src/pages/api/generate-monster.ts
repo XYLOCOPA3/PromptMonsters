@@ -2,7 +2,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
 import { RPC_URL } from "@/lib/wallet";
+import { FeatureErrorType } from "@/types/FeatureErrorType";
 import { parseJson } from "@/utils/jsonParser";
+import { isNum, isSymbol } from "@/utils/validation";
 import { ethers } from "ethers";
 import { Configuration, OpenAIApi } from "openai";
 
@@ -15,27 +17,44 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (!configuration.apiKey) {
-    res.status(500).json({
-      error: {
-        message:
-          "OpenAI API key not configured, please follow instructions in README.md",
-      },
+  if (req.method !== "POST")
+    return res.status(400).json({
+      message: "Only POST",
     });
-    return;
+  if (!configuration.apiKey) {
+    return res.status(500).json({
+      message:
+        "OpenAI API key not configured, please follow instructions in README.md",
+    });
   }
 
   const feature = req.body.feature || "";
   const language = req.body.language || "English";
-  if (feature.trim().length === 0) {
-    res.status(400).json({
-      error: {
-        message: "Please enter a valid feature",
-      },
-    });
-    return;
-  }
 
+  const result = _checkValidFeature(feature);
+  if (result !== FeatureErrorType.none) {
+    switch (result) {
+      case FeatureErrorType.noFeature:
+        console.log("Feature not found");
+        return res.status(400).json({
+          message: "Feature not found",
+        });
+      case FeatureErrorType.usingSymbol:
+        console.log("Do not use symbol");
+        return res.status(400).json({
+          message: "Do not use symbol",
+        });
+      case FeatureErrorType.usingNum:
+        console.log("Do not use number");
+        return res.status(400).json({
+          message: "Do not use number",
+        });
+      default:
+        return res.status(400).json({
+          message: "Unknown error",
+        });
+    }
+  }
   const resurrectionPrompt = ethers.Wallet.createRandom().address;
   console.log("Create Monster Resurrection Prompt: ", resurrectionPrompt);
 
@@ -96,6 +115,14 @@ feature="${feature}":`;
 const _getMonster = (content: any, language: string): any => {
   let newContent = _replaceLanguage(content, language);
   let monster = parseJson(newContent);
+  console.log(monster);
+  const newSkills = [];
+  for (let i = 0; i < monster.skills.length; i++) {
+    newSkills.push(monster.skills[i]);
+    if (i === 3) break;
+  }
+  monster.skills = newSkills;
+  console.log(monster);
   monster = _floorStatus(monster);
   if (!_isOverStatus(monster)) return monster;
   console.log("over status!!!");
@@ -248,19 +275,16 @@ const _fixHP = (status: any): number => {
   hp += status.MGR * 0.5;
   hp += status.AGL * 0.1;
   return Math.floor(hp);
+};
 
-  // const newMonster = monster;
-  // if (monster.status.HP > 100) newMonster.status.HP = 100;
-  // if (monster.status.ATK > 20) newMonster.status.ATK = 20;
-  // if (monster.status.DEF > 20) newMonster.status.DEF = 20;
-  // if (monster.status.INT > 20) newMonster.status.INT = 20;
-  // if (monster.status.MGR > 20) newMonster.status.MGR = 20;
-  // if (monster.status.AGL > 20) newMonster.status.AGL = 20;
-  // if (monster.status.HP < 1) newMonster.status.HP = 1;
-  // if (monster.status.ATK < 1) newMonster.status.ATK = 1;
-  // if (monster.status.DEF < 1) newMonster.status.DEF = 1;
-  // if (monster.status.INT < 1) newMonster.status.INT = 1;
-  // if (monster.status.MGR < 1) newMonster.status.MGR = 1;
-  // if (monster.status.AGL < 1) newMonster.status.AGL = 1;
-  // return newMonster;
+/**
+ * Check feature
+ * @param feature feature
+ * @return {FeatureErrorType} is valid feature
+ */
+const _checkValidFeature = (feature: string): FeatureErrorType => {
+  if (feature.trim().length === 0) return FeatureErrorType.noFeature;
+  if (isSymbol(feature)) return FeatureErrorType.usingSymbol;
+  if (isNum(feature)) return FeatureErrorType.usingNum;
+  return FeatureErrorType.none;
 };
