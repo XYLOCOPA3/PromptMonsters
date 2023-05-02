@@ -14,7 +14,7 @@
     "move-abi-battle": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/battle/Battle.sol/Battle.json ../../artifacts/Battle.json",
     "move-abi-prompt-monsters": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/prompt-monsters/PromptMonsters.sol/PromptMonsters.json ../../artifacts/PromptMonsters.json",
     "move-abi": "cd artifacts/ && ls | grep -v -E 'MCHCoin.json' | xargs rm -rf && cd .. && npm run move-abi-prompt-monsters && npm run move-abi-battle && npm run move-abi-stamina",
-    "postmove-abi": "rm -rf src/typechain  && npm run typechain"
+    "postmove-abi": "cp .env.development demo-env/.env.production && rm -rf src/typechain  && npm run typechain"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.14",
