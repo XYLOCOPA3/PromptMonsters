@@ -91,14 +91,16 @@ export const MainMonsters = () => {
               {monsterMinted ? <></> : <MonsterMintButton />}
             </div>
             <div className={clsx("w-[50%]", "flex", "items-end", "flex-col")}>
-              <FightLanguage
-                className={clsx(
-                  "w-[100%]",
-                  "z-[1]",
-                  "mb-[10px]",
-                  "max-w-[200px]",
-                )}
-              />
+              {ownedMonsters.length === 0 ? null : (
+                <FightLanguage
+                  className={clsx(
+                    "w-[100%]",
+                    "z-[1]",
+                    "mb-[10px]",
+                    "max-w-[200px]",
+                  )}
+                />
+              )}
               <MonsterFightButton />
               {monsterMinted ? (
                 <StaminaTimer className={clsx("mt-[5px]")} />

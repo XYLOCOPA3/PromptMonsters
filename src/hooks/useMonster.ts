@@ -9,7 +9,7 @@ import {
 } from "@/typechain";
 import { MonsterId } from "@/types/MonsterId";
 import { UserId } from "@/types/UserId";
-import { isNumOrSymbol } from "@/utils/validation";
+import { isSymbol } from "@/utils/validation";
 import { fetchSigner } from "@wagmi/core";
 import axios from "axios";
 import { ethers } from "ethers";
@@ -47,13 +47,25 @@ export const useMonsterController = (): MonsterController => {
     feature: string,
     language: string,
   ): Promise<MonsterModel> => {
-    if (isNumOrSymbol(feature))
+    if (isSymbol(feature))
       throw new Error("Features must not contain numbers or symbols.");
-    const res = await axios.post("/api/generate-monster", {
-      feature,
-      language,
-    });
-    if (res.status !== 200) throw new Error(res.data.message);
+    let res: any;
+    try {
+      res = await axios.post("/api/generate-monster", {
+        feature,
+        language,
+        transitional: {
+          silentJSONParsing: false,
+        },
+      });
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        throw new Error(e.response!.data.message);
+      }
+      console.error(e);
+      throw new Error("Unknown Error");
+    }
+    if (res.status !== 200) throw new Error(res.data);
     const monsterJson = res.data.monster;
     const resurrectionPrompt = res.data.resurrectionPrompt;
     console.log(monsterJson);
