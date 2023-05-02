@@ -37,7 +37,6 @@ export const useUserController = (): UserController => {
    */
   const create = (): string => {
     const wallet = ethers.Wallet.createRandom();
-    console.log("Create Wallet: ", wallet.address);
     setUser((prevState) => {
       return prevState.copyWith({
         id: wallet.address,

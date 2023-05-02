@@ -5,7 +5,6 @@ import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptM
 import { calcStaminaFromMonsterId } from "@/features/stamina/utils/calcStamina";
 import { RPC_URL } from "@/lib/wallet";
 import { IPromptMonsters } from "@/typechain/PromptMonsters";
-import { parseJson } from "@/utils/jsonParser";
 import console from "console";
 import { Configuration, OpenAIApi } from "openai";
 
@@ -21,11 +20,9 @@ export default async function handler(
   if (req.method !== "POST")
     return res.status(400).json({ message: "Only POST" });
   if (!configuration.apiKey) {
-    res.status(500).json({
-      error: {
-        message:
-          "OpenAI API key not configured, please follow instructions in README.md",
-      },
+    res.status(400).json({
+      message:
+        "OpenAI API key not configured, please follow instructions in README.md",
     });
     return;
   }
@@ -79,24 +76,26 @@ export default async function handler(
     });
     console.log(completion.data.choices);
     console.log(completion.data.usage);
-    const battleResult = parseJson(completion.data.choices[0].message!.content);
+    const battleResult = JSON.parse(
+      completion.data.choices[0].message!.content,
+    );
     if (
       battleResult.winnerId !== monsterId &&
-      battleResult.winnerId !== "dummy" &&
+      battleResult.winnerId !== "dummyID" &&
       battleResult.winnerId !== enemyId
     ) {
-      const message = "The battle ended in a stalemate.";
-      console.log(message);
-      return res.status(400).json({ message });
+      battleResult.winnerId = "draw";
+      console.log("The battle ended in a stalemate. -----------------");
+      return res.status(500).json({ battleResult });
     }
     const battle = BattleContract.instance(RPC_URL.mchVerse);
     await battle.addSeasonBattleData(
       monsterId,
       battleResult.winnerId === enemyId ? enemyId : monsterId,
       battleResult.winnerId === enemyId ? monsterId : enemyId,
-      battleResult.battleDesc,
+      battleResult.battleDescription,
     );
-    res.status(200).json({ result: completion.data.choices });
+    return res.status(200).json({ battleResult });
   } catch (error) {
     console.log(error);
     return res.status(400).json({ message: error });
@@ -119,28 +118,54 @@ const _getFightPrompt = (
   enemy: IPromptMonsters.MonsterStructOutput,
   language: string = "English",
 ): string => {
-  return `m(You): id:${monsterId === "" ? "dummy" : monsterId} name:${
-    monster.name
-  } flavor:${monster.flavor} status: HP:${monster.hp} ATK:${monster.atk} DEF:${
-    monster.def
-  } INT:${monster.inte} MGR:${monster.mgr} AGL:${monster.agl} skills:[${
-    monster.skills
-  }]
-m(Enemy): id:${enemyId} name:${enemy.name} flavor:${enemy.flavor} status: HP:${
-    enemy.hp
-  } ATK:${enemy.atk} DEF:${enemy.def} INT:${enemy.inte} MGR:${enemy.mgr} AGL:${
-    enemy.agl
-  } skills:[${enemy.skills}]
+  switch (language) {
+    case "English":
+      return `MonsterA: id:${monsterId === "" ? "dummyID" : monsterId} name:${
+        monster.name
+      } flavor:${monster.flavor} status: HP:${monster.hp} ATK:${
+        monster.atk
+      } DEF:${monster.def} INT:${monster.inte} MGR:${monster.mgr} AGL:${
+        monster.agl
+      } skills:[${monster.skills}]
+MonsterB: id:${enemyId} name:${enemy.name} flavor:${enemy.flavor} status: HP:${
+        enemy.hp
+      } ATK:${enemy.atk} DEF:${enemy.def} INT:${enemy.inte} MGR:${
+        enemy.mgr
+      } AGL:${enemy.agl} skills:[${enemy.skills}]
 
-Generate battle results for ${monster.name} and ${
-    enemy.name
-  }. Use absolutely "skills", monsters with high status are more likely to win against monsters with low status., write in a novel-style (max 200 chars) & output in JSON.
-key: "language" value: "${language}"
-key: "battleDesc" value: string
-key: "enemyName" value: string
-key: "winnerId" value: string
-key: "winnerName" value: string`;
+Example:
+MonsterA vs MonsterB:
+Output in JSON format->{"battleAnalysis": "[Determine advantage in <50 chars using flavor, status, skills.]", "battleDescription":"[Write a <200-char novel-style battle from Monster's flavor, status, skills.],"monsterBId":"1","winnerId":"1"}
+
+${monster.name} vs ${enemy.name}:
+Output in JSON format->`;
+    case "Japanese":
+      return `
+MonsterA: id:${monsterId === "" ? "dummyID" : monsterId} name:${
+        monster.name
+      } flavor:${monster.flavor} status: HP:${monster.hp} ATK:${
+        monster.atk
+      } DEF:${monster.def} INT:${monster.inte} MGR:${monster.mgr} AGL:${
+        monster.agl
+      } skills:[${monster.skills}]
+MonsterB: id:${enemyId} name:${enemy.name} flavor:${enemy.flavor} status: HP:${
+        enemy.hp
+      } ATK:${enemy.atk} DEF:${enemy.def} INT:${enemy.inte} MGR:${
+        enemy.mgr
+      } AGL:${enemy.agl} skills:[${enemy.skills}]
+
+例:
+MonsterA vs MonsterB:
+JSON形式で出力->{"battleAnalysis": "['flavor','status','skills'から有利な方を50文字以内で判定]", "battleDescription":"[Monsterの'flavor','status','skills'から連想した戦闘結果を200文字以内で小説風に書く],"monsterBId":"1","winnerId":"1"}
+
+${monster.name} vs ${enemy.name}:
+JSON形式で出力->`;
+    default:
+      throw new Error("Invalid language");
+  }
 };
+
+// HP->❤️,ATK->💥,DEF->🛡️,INT->🧠,MGR->🛡️✨,AGL->💨
 
 /**
  * Get random enemy monster id

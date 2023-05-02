@@ -25,6 +25,6 @@ export const isNum = (str: string): boolean => {
  * @return {boolean} is NG word
  */
 export const isNGWord = (str: string): boolean => {
-  const pattern = /(HP|ATK|DEF|INT|MGR|AGL)/;
+  const pattern = /(HP|ATK|DEF|INT|MGR|AGL|status|ステータス|全ステ)/;
   return pattern.test(str);
 };
