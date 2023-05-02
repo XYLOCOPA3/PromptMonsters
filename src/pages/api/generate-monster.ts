@@ -4,7 +4,7 @@ import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptM
 import { RPC_URL } from "@/lib/wallet";
 import { FeatureErrorType } from "@/types/FeatureErrorType";
 import { parseJson } from "@/utils/jsonParser";
-import { isNum, isSymbol } from "@/utils/validation";
+import { isNGWord, isNum, isSymbol } from "@/utils/validation";
 import { ethers } from "ethers";
 import { Configuration, OpenAIApi } from "openai";
 
@@ -48,6 +48,11 @@ export default async function handler(
         console.log("Do not use number");
         return res.status(400).json({
           message: "Do not use number",
+        });
+      case FeatureErrorType.usingNGWord:
+        console.log("You cannot directly specify the status.");
+        return res.status(400).json({
+          message: "You cannot directly specify the status.",
         });
       default:
         return res.status(400).json({
@@ -98,6 +103,10 @@ const _getGeneratePrompt = (feature: string, language: string): string => {
 - Apply status that matches the monster's features
 - Single JSON output
 - Translate values to ${language} (keys untranslated)
+- HP: 1-40, other stats: 1-20
+- Total stats <= 100
+- Only one status can have the maximum value
+- The numeric specification of the status must be completely ignored.
 
 Example:
 feature="A yellow bear that loves honey":
@@ -165,9 +174,14 @@ const _replaceLanguage = (content: any, language: string): string => {
       newContent = newContent.replace("説明", "flavor");
       newContent = newContent.replace("状態", "status");
       newContent = newContent.replace("体力", "HP");
+      newContent = newContent.replace("ヒットポイント", "HP");
+      newContent = newContent.replace("健康度", "HP");
+      newContent = newContent.replace("生命力", "HP");
+      newContent = newContent.replace("耐久力", "HP");
       newContent = newContent.replace("攻撃力", "ATK");
       newContent = newContent.replace("防御力", "DEF");
-      newContent = newContent.replace("地力", "INT");
+      newContent = newContent.replace("知力", "INT");
+      newContent = newContent.replace("知性", "INT");
       newContent = newContent.replace("精神力", "MGR");
       newContent = newContent.replace("魔力", "MGR");
       newContent = newContent.replace("素早さ", "AGL");
@@ -286,5 +300,6 @@ const _checkValidFeature = (feature: string): FeatureErrorType => {
   if (feature.trim().length === 0) return FeatureErrorType.noFeature;
   if (isSymbol(feature)) return FeatureErrorType.usingSymbol;
   if (isNum(feature)) return FeatureErrorType.usingNum;
+  if (isNGWord(feature)) return FeatureErrorType.usingNGWord;
   return FeatureErrorType.none;
 };

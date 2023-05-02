@@ -3,4 +3,5 @@ export enum FeatureErrorType {
   noFeature,
   usingSymbol,
   usingNum,
+  usingNGWord,
 }
