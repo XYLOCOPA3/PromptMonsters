@@ -66,28 +66,16 @@ const _getBattleTweet = (
   battle: BattleModel,
   monster: MonsterModel,
 ): string => {
-  const battleDesc = trimCharacters100(battle.battleDesc);
+  const battleDesc = trimCharacters100(battle.battleDescription);
 
   return `Fight!
 
 ${battleDesc}${countCharactersForTwitter(battleDesc) > 100 ? "..." : ""}
 
-${monster.name} ${battle.winnerName === monster.name ? "win!!!" : "lose..."}
+${monster.name} ${battle.winnerId !== battle.monsterBId ? "win!!!" : "lose..."}
 
 Check out more stories here!
 https://prompt-monsters.com/
 
 #PromptMonsters #Alert`;
-  //   return `${monster.name} vs ${battle.enemyName}
-
-  // ${battleDesc}...
-
-  // Winner is ... ${
-  //     battle.winnerId === monster.id ? monster.name : battle.enemyName
-  //   }!
-
-  // Check out more stories here!
-  // https://prompt-monsters-demo-jp.azurewebsites.net/
-
-  // #PromptMonsters #Alert`;
 };

@@ -3,7 +3,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
 import { RPC_URL } from "@/lib/wallet";
 import { FeatureErrorType } from "@/types/FeatureErrorType";
-import { parseJson } from "@/utils/jsonParser";
 import { isNGWord, isNum, isSymbol } from "@/utils/validation";
 import { ethers } from "ethers";
 import { Configuration, OpenAIApi } from "openai";
@@ -79,6 +78,7 @@ export default async function handler(
       completion.data.choices[0].message!.content,
       language,
     );
+    console.log("Fixed status ---------------------------");
     console.log(monster);
     await promptMonsters.generateMonster(resurrectionPrompt, monster, feature);
     return res.status(200).json({ monster, resurrectionPrompt });
@@ -95,14 +95,15 @@ export default async function handler(
  * @return {Promise<string>} Generate monster prompt
  */
 const _getGeneratePrompt = (feature: string, language: string): string => {
-  return `Create a JSON fictional monster:
+  switch (language) {
+    case "English":
+      return `Create a JSON fictional monster:
 - Non-litigious words
 - Unique "name"
 - No proper nouns in "flavor"
 - Don't reuse "feature" words
 - Apply status that matches the monster's features
 - Single JSON output
-- Translate values to ${language} (keys untranslated)
 - HP: 1-40, other stats: 1-20
 - Total stats <= 100
 - Only one status can have the maximum value
@@ -110,9 +111,30 @@ const _getGeneratePrompt = (feature: string, language: string): string => {
 
 Example:
 feature="A yellow bear that loves honey":
-{"language":"English","name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":10,"ATK":2,"DEF":4,"INT":6,"MGR":4,"AGL":4},"skills":["Honey Attack","Hug","Healing Song"],"isFiction":true,"isExisting":true}
+{"language":"English","name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":12,"ATK":2,"DEF":4,"INT":6,"MGR":4,"AGL":4},"skills":["Honey Attack","Hug","Healing Song"],"isFiction":true,"isExisting":true}
 
 feature="${feature}":`;
+    case "Japanese":
+      return `架空のモンスターのJSONを作成する:
+- 訴訟に関連する単語を使用しない
+- "name"はユニークである
+- "flavor"には固有名詞を使用しない
+- "feature"の単語を再利用しない
+- ステータスはモンスターの特徴に合わせる
+- 単一のJSON出力を生成する
+- HP: 1-40、その他のステータス: 1-20
+- 合計ステータスは100を超えてはいけない
+- 最大値を取ることができるステータスは1つだけ
+- ステータスの数値指定は無視する
+
+例:
+feature="黄色い熊 蜂蜜大好き":
+{"name":"くまのプーさん","flavor":"ハチミツが大好きなクマ。のんびり屋で、優しい心を持ち、友達思いの性格をしている。","status":{"HP":12,"ATK":2,"DEF":4,"INT":6,"MGR":4,"AGL":4},"skills":["蜂蜜舐め","ハグ","のんびり歩行"],"isFiction":true,"isExisting":true}
+
+feature="${feature}":`;
+    default:
+      throw new Error("Unknown Language");
+  }
 };
 
 /**
@@ -123,7 +145,8 @@ feature="${feature}":`;
  */
 const _getMonster = (content: any, language: string): any => {
   let newContent = _replaceLanguage(content, language);
-  let monster = parseJson(newContent);
+  let monster = JSON.parse(newContent);
+  console.log("Parse json ---------------------------");
   console.log(monster);
   const newSkills = [];
   for (let i = 0; i < monster.skills.length; i++) {
@@ -131,11 +154,11 @@ const _getMonster = (content: any, language: string): any => {
     if (i === 3) break;
   }
   monster.skills = newSkills;
+  console.log("After adjust skills ---------------------------");
   console.log(monster);
   monster = _floorStatus(monster);
-  if (!_isOverStatus(monster)) return monster;
-  console.log("over status!!!");
-  console.log(monster);
+  if (!_isOverStatus(monster)) return _fixStatus(monster);
+  console.log("over status!!! ---------------------------");
   const mean =
     Math.floor(
       monster.status.ATK +

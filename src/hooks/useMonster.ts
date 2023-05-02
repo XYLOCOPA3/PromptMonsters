@@ -68,7 +68,6 @@ export const useMonsterController = (): MonsterController => {
     if (res.status !== 200) throw new Error(res.data);
     const monsterJson = res.data.monster;
     const resurrectionPrompt = res.data.resurrectionPrompt;
-    console.log(monsterJson);
     if (monsterJson.isExisting) throw new Error("This monster is existing.");
     if (!monsterJson.isFiction) throw new Error("This monster is non fiction.");
     const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
@@ -194,17 +193,27 @@ export const useMonsterController = (): MonsterController => {
     language: string,
     resurrectionPrompt: string,
   ): Promise<string> => {
-    const res = await axios.post("/api/fight-monster", {
-      monsterId,
-      language,
-      resurrectionPrompt,
-    });
-    const content = res.data.result[0].message.content;
-    if (monsterId === "") return content;
+    let res: any;
+    try {
+      res = await axios.post("/api/fight-monster", {
+        monsterId,
+        language,
+        resurrectionPrompt,
+      });
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.response!.status === 500) return e.response!.data.battleResult;
+        throw new Error(e.response!.data.message);
+      }
+      console.error(e);
+      throw new Error("Unknown Error");
+    }
+    const battleResult = res.data.battleResult;
+    if (monsterId === "") return battleResult;
     setMonster((prevState) => {
       return prevState.copyWith({ stamina: prevState.stamina - 1 });
     });
-    return content;
+    return battleResult;
   };
 
   /**

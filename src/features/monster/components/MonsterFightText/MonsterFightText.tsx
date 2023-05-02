@@ -27,11 +27,17 @@ export const MonsterFightText = ({ className }: MonsterFightTextProps) => {
         "whitespace-pre-wrap",
       )}
     >
-      <div>{battle.battleDesc}</div>
+      <div>{battle.battleDescription}</div>
       <br />
       <div>
-        {monster.name}{" "}
-        {battle.winnerName === monster.name ? "win!!!" : "lose..."}
+        {battle.winnerId === "draw" ? (
+          "This FIGHT ended in a draw."
+        ) : (
+          <>
+            {monster.name}{" "}
+            {battle.winnerId !== battle.monsterBId ? "win!!!" : "lose..."}
+          </>
+        )}
       </div>
     </div>
   );

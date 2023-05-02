@@ -8,18 +8,16 @@ export class BattleModel extends ObjectCopier {
    * ```
    * export const dummyMonster = BattleModel.create({ language: "Japanese" });
    * ```
-   * @param language language
-   * @param battleDesc battle description
-   * @param enemyName enemy name
+   * @param battleAnalysis battle analysis
+   * @param battleDescription battle description
+   * @param monsterBId monster B id
    * @param winnerId winner id
-   * @param winnerName winner name
    */
   private constructor(
-    public readonly language: string = "",
-    public readonly battleDesc: string = "",
-    public readonly enemyName: string = "",
+    public readonly battleAnalysis: string = "",
+    public readonly battleDescription: string = "",
+    public readonly monsterBId: string = "",
     public readonly winnerId: MonsterId = "",
-    public readonly winnerName: string = "",
   ) {
     super();
   }
