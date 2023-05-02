@@ -47,11 +47,6 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
   const setUserInfo = async () => {
     if (!isConnected) return;
     try {
-      // console.log(
-      //   process.env.NEXT_PUBLIC_IS_PRODUCTION
-      //     ? mchVerseMainnet
-      //     : mchVerseTestnet,
-      // );
       setDefaultChain(mchVerse);
       if (
         chain!.id !==

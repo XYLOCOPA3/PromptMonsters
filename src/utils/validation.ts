@@ -14,8 +14,17 @@ export const isSymbol = (str: string): boolean => {
  * @return {boolean} is number or symbol
  */
 export const isNum = (str: string): boolean => {
-  const pattern = /[0-9一二三四五六七八九十よんじゅう]/;
-  // const pattern =
-  //   /[0-9一二三四五六七八九十百千万億兆京いちにさんしよんごろくしちはちきゅうじゅうひゃくせんまんおくちょうけいひとつふたつみっつよっついつつむっつななつやっつここのつとお]/;
+  const pattern =
+    /(三十|サンジュウ|ｻﾝｼﾞｭｳ|thirty|四十|ヨンジュウ|ﾖﾝｼﾞｭｳ|[0-9]+)|((一|二|三|四|五|六|七|八|九)?十(一|二|三|四|五|六|七|八|九)?|(一|二|三|四|五|六|七|八|九))/;
+  return pattern.test(str);
+};
+
+/**
+ * Check str is NG word
+ * @param str string
+ * @return {boolean} is NG word
+ */
+export const isNGWord = (str: string): boolean => {
+  const pattern = /(HP|ATK|DEF|INT|MGR|AGL|status|ステータス|全ステ)/;
   return pattern.test(str);
 };

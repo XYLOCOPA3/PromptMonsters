@@ -35,15 +35,15 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
     setLoading(true);
     battleController.reset();
     try {
-      const content = await monsterController.fight(
+      const battleResult = await monsterController.fight(
         monster.id,
         language,
         monster.resurrectionPrompt,
       );
-      battleController.set(content);
+      battleController.set(battleResult);
     } catch (e) {
       console.error(e);
-      alert("Failed to fight.");
+      alert(`Failed to fight.\n\nReason: ${e}`);
     }
     setDisable(false);
     setLoading(false);
