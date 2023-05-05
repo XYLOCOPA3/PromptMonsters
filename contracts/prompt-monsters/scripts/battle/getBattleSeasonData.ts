@@ -6,13 +6,14 @@ export async function getSeasonBattleDataByMonsterId() {
 
   const battle = Battle.attach(BATTLE_PROXY_ADDRESS);
 
-  const monsterId = 10;
+  const seasonId = 1;
+  const monsterId = 615;
   console.log("getSeasonBattleDataByMonsterId ------------------");
-  console.log(await battle.getSeasonBattleDataByMonsterId(0, monsterId));
+  console.log(await battle.getSeasonBattleDataByMonsterId(seasonId, monsterId));
   console.log("getSeasonWinCount ------------------");
-  console.log(await battle.getSeasonWinCount(0, monsterId));
+  console.log(await battle.getSeasonWinCount(seasonId, monsterId));
   console.log("getSeasonMatchCount ------------------");
-  console.log(await battle.getSeasonMatchCount(0, monsterId));
+  console.log(await battle.getSeasonMatchCount(seasonId, monsterId));
 }
 
 getSeasonBattleDataByMonsterId().catch((error) => {
