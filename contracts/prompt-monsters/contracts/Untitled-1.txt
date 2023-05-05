@@ -1,0 +1,92 @@
+[
+  BigNumber { value: "231" },
+  BigNumber { value: "423" },
+  BigNumber { value: "471" },
+  BigNumber { value: "465" },
+  BigNumber { value: "527" },
+  BigNumber { value: "572" }
+]
+
+
+231
+423
+465
+527
+572
+573
+
+
+[
+  BigNumber { value: "231" },
+  BigNumber { value: "423" },
+  BigNumber { value: "471" },
+  BigNumber { value: "465" },
+  BigNumber { value: "527" },
+  BigNumber { value: "572" }
+]
+
+
+
+465番を交換することを想定
+
+  function _removeOwnerToTokenIds(address from_, uint256 tokenId_) private {
+    uint256 lastTokenId = _ownerToTokenIds[from_][
+      _ownerToTokenIds[from_].length - 1
+    ];
+    if (tokenId_ != lastTokenId) {
+      uint256 tokenIdIndex = _ownerToTokenIdsIndex[from_][tokenId_];
+      _ownerToTokenIds[from_][tokenIdIndex] = lastTokenId;
+    }
+    _ownerToTokenIds[from_].pop();
+    delete _ownerToTokenIdsIndex[from_][tokenId_];
+  }
+
+from_ = 0xf04820Bbc0D6B7F7B1f2fE888E5fc60DF6B61262
+tokenId_ = 465
+
+uint256 lastTokenId = _ownerToTokenIds[from_][
+  _ownerToTokenIds[from_].length - 1
+];
+l = _ownerToTokenIds[from_].length - 1 = 5
+lastTokenId = _ownerToTokenIds[0xf04820Bbc0D6B7F7B1f2fE888E5fc60DF6B61262][5] = 572
+
+if (tokenId_ != lastTokenId) {
+  uint256 tokenIdIndex = _ownerToTokenIdsIndex[from_][tokenId_];
+  _ownerToTokenIds[from_][tokenIdIndex] = lastTokenId;
+}
+tokenIdIndex = 3
+_ownerToTokenIds[from_][3] = 572
+
+231
+423
+471
+465 -> 572
+527
+572
+
+_ownerToTokenIds[from_].pop();
+delete _ownerToTokenIdsIndex[from_][tokenId_];
+
+231
+423
+471
+572
+527
+572 -> pop
+
+
+_ownerToTokenIdsIndex = tokenIdIndex
+
+231 -> 0
+423 -> 1
+471 -> 2
+465 -> 3 -> 0
+527 -> 4
+572 -> 5 -> 3
+
+0
+1
+2
+3
+4
+5
