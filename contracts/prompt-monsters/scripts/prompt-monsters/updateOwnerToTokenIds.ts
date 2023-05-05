@@ -16,36 +16,6 @@ export async function main() {
   const BattleS1 = await ethers.getContractFactory("BattleS1");
   const battles1 = BattleS1.attach(BATTLE_S1_PROXY_ADDRESS);
 
-  // const totalMonsters = Number(await promptMonsters.getMonstersTotalSupply());
-  // console.log("totalMonsters: ", totalMonsters.toString());
-
-  // const tokenIds = [];
-  // const holders = [];
-  // for (let i = 0; i < totalMonsters; i++) {
-  //   tokenIds.push(i);
-  //   holders.push(await promptMonsters.ownerOf(i));
-  //   console.log(`${i}: ${await promptMonsters.ownerOf(i)}`);
-  // }
-
-  // // tokenIDとholderをcsvとして保存
-  // let csv = `ID,holder\n`;
-  // holders.forEach((holder, i) => {
-  //   csv += `${i},${holder}\n`;
-  // });
-
-  // // csvをファイルに出力
-  // // BOM付きUTF-8で出力する
-  // const fs = require("fs");
-  // const path = require("path");
-  // fs.writeFileSync(__dirname, "\uFEFF" + csv, "utf8");
-
-  // const monsters = await promptMonsters.getMonsters(tokenIds);
-  // for (let i = 0; i < monsters.length; i++) {
-  //   console.log(`${i} ${monsters[i].name}`);
-  // }
-
-  // 188, 195, 397, 410, 417, 463, 466, 468, 544, 558,
-
   // ユーザー情報のチェック -----------------------------------
   // const users = [
   //   // "0x5df4660295BEd7Abc783480c7d28d8c015Cfb37a",
