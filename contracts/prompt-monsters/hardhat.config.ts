@@ -1,5 +1,6 @@
 import "@nomicfoundation/hardhat-toolbox";
 import "@openzeppelin/hardhat-upgrades";
+import "hardhat-contract-sizer";
 import { HardhatUserConfig, task } from "hardhat/config";
 
 require("dotenv").config();
@@ -51,7 +52,6 @@ const config: HardhatUserConfig = {
     local: {
       url: "http://localhost:8545",
       accounts: [LOCAL_PRIVATE_KEY as string],
-      allowUnlimitedContractSize: true,
     },
   },
   etherscan: {
