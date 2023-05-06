@@ -101,6 +101,13 @@ describe("PromptMonsters", function () {
         resurrectionPrompt1,
         resurrectionPrompt2,
       } = await loadFixture(init);
+
+      expect(
+        await promptMonsters.getMonsterIdByResurrectionPrompt(
+          resurrectionPrompt1.address,
+        ),
+      ).to.equal(0);
+
       await expect(
         promptMonsters
           .connect(deployer)
@@ -122,6 +129,12 @@ describe("PromptMonsters", function () {
       expect(monster.inte).to.equal(FireMonsterDetails.inte);
       expect(monster.mgr).to.equal(FireMonsterDetails.mgr);
       expect(monster.agl).to.equal(FireMonsterDetails.agl);
+
+      expect(
+        await promptMonsters.getMonsterIdByResurrectionPrompt(
+          resurrectionPrompt1.address,
+        ),
+      ).to.equal(0);
     });
 
     it("generateMonster 2nd", async function () {
@@ -133,16 +146,43 @@ describe("PromptMonsters", function () {
         resurrectionPrompt1,
         resurrectionPrompt2,
       } = await loadFixture(init);
+
+      expect(
+        await promptMonsters.getMonsterIdByResurrectionPrompt(
+          resurrectionPrompt1.address,
+        ),
+      ).to.equal(0);
+
+      expect(
+        await promptMonsters.getMonsterIdByResurrectionPrompt(
+          resurrectionPrompt2.address,
+        ),
+      ).to.equal(0);
+
       await expect(
         promptMonsters
           .connect(deployer)
           .generateMonster(resurrectionPrompt2.address, FireMonsterDetails),
       ).not.to.be.reverted;
+
       await expect(
         promptMonsters
           .connect(deployer)
           .generateMonster(resurrectionPrompt2.address, WaterMonsterDetails),
       ).not.to.be.reverted;
+
+      expect(
+        await promptMonsters.getMonsterIdByResurrectionPrompt(
+          resurrectionPrompt1.address,
+        ),
+      ).to.equal(0);
+
+      expect(
+        await promptMonsters.getMonsterIdByResurrectionPrompt(
+          resurrectionPrompt2.address,
+        ),
+      ).to.equal(0);
+
       const monster = await promptMonsters
         .connect(user1)
         .getMonsterHistory(resurrectionPrompt2.address);
@@ -201,6 +241,18 @@ describe("PromptMonsters", function () {
           .generateMonster(resurrectionPrompt1.address, FireMonsterDetails),
       ).not.to.be.reverted;
 
+      expect(
+        await promptMonsters.getMonsterIdByResurrectionPrompt(
+          resurrectionPrompt1.address,
+        ),
+      ).to.equal(0);
+
+      expect(
+        await promptMonsters.getMonsterIdByResurrectionPrompt(
+          resurrectionPrompt2.address,
+        ),
+      ).to.equal(0);
+
       await expect(
         erc20
           .connect(user1)
@@ -245,6 +297,18 @@ describe("PromptMonsters", function () {
         promptMonsters.connect(user1).mint(resurrectionPrompt1.address),
       ).not.to.be.reverted;
 
+      expect(
+        await promptMonsters.getMonsterIdByResurrectionPrompt(
+          resurrectionPrompt1.address,
+        ),
+      ).to.equal(0);
+
+      expect(
+        await promptMonsters.getMonsterIdByResurrectionPrompt(
+          resurrectionPrompt2.address,
+        ),
+      ).to.equal(0);
+
       expect(await promptMonsters.getMonstersTotalSupply()).to.equal(1);
 
       monster = await promptMonsters
@@ -276,6 +340,88 @@ describe("PromptMonsters", function () {
       expect(getMonster0.inte).to.equal(FireMonsterDetails.inte);
       expect(getMonster0.mgr).to.equal(FireMonsterDetails.mgr);
       expect(getMonster0.agl).to.equal(FireMonsterDetails.agl);
+    });
+
+    it("mint 2", async function () {
+      const {
+        promptMonsters,
+        erc20,
+        deployer,
+        user1,
+        promptMonstersWallet,
+        resurrectionPrompt1,
+        resurrectionPrompt2,
+      } = await loadFixture(init);
+
+      expect(
+        await erc20
+          .connect(deployer)
+          .transfer(user1.address, ethers.utils.parseEther("10000")),
+      ).not.to.be.reverted;
+
+      await expect(
+        promptMonsters
+          .connect(deployer)
+          .generateMonster(resurrectionPrompt1.address, FireMonsterDetails),
+      ).not.to.be.reverted;
+
+      await expect(
+        erc20
+          .connect(user1)
+          .increaseAllowance(
+            promptMonsters.address,
+            ethers.utils.parseEther("100"),
+          ),
+      ).not.to.be.reverted;
+
+      expect(
+        await promptMonsters.getMonsterIdByResurrectionPrompt(
+          resurrectionPrompt1.address,
+        ),
+      ).to.equal(0);
+
+      // Mint
+      await expect(
+        promptMonsters.connect(user1).mint(resurrectionPrompt1.address),
+      ).not.to.be.reverted;
+
+      expect(
+        await promptMonsters.getMonsterIdByResurrectionPrompt(
+          resurrectionPrompt1.address,
+        ),
+      ).to.equal(0);
+
+      await expect(
+        promptMonsters
+          .connect(deployer)
+          .generateMonster(resurrectionPrompt2.address, WaterMonsterDetails),
+      ).not.to.be.reverted;
+
+      await expect(
+        erc20
+          .connect(user1)
+          .increaseAllowance(
+            promptMonsters.address,
+            ethers.utils.parseEther("100"),
+          ),
+      ).not.to.be.reverted;
+
+      expect(
+        await promptMonsters.getMonsterIdByResurrectionPrompt(
+          resurrectionPrompt2.address,
+        ),
+      ).to.equal(0);
+
+      // Mint
+      await expect(
+        promptMonsters.connect(user1).mint(resurrectionPrompt2.address),
+      ).not.to.be.reverted;
+
+      expect(
+        await promptMonsters.getMonsterIdByResurrectionPrompt(
+          resurrectionPrompt2.address,
+        ),
+      ).to.equal(1);
     });
 
     it("should revert not enough tokens", async function () {

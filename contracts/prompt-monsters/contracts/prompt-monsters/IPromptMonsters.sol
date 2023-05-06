@@ -123,6 +123,13 @@ interface IPromptMonsters is IERC721Upgradeable {
     uint256[] memory tokenIds_
   ) external view returns (Monster[] memory monsters);
 
+  /// @dev Get monster ID by resurrectionPrompt
+  /// @param resurrectionPrompt_ resurrection prompt
+  /// @return monsterId monster ID
+  function getMonsterIdByResurrectionPrompt(
+    address resurrectionPrompt_
+  ) external view returns (uint256);
+
   /// @dev Get contract URI
   /// @return uri contract URI
   function contractURI() external view returns (string memory uri);

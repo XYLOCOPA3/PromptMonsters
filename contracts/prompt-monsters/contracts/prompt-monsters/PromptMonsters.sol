@@ -45,6 +45,8 @@ contract PromptMonsters is
 
   IPromptMonsters.Monster[] private _monsters;
 
+  mapping(address => uint256) public resurrectionIndex;
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
@@ -156,6 +158,15 @@ contract PromptMonsters is
         ++i;
       }
     }
+  }
+
+  /// @dev Get monster ID by resurrectionPrompt
+  /// @param resurrectionPrompt_ resurrection prompt
+  /// @return monsterId monster ID
+  function getMonsterIdByResurrectionPrompt(
+    address resurrectionPrompt_
+  ) external view returns (uint256) {
+    return resurrectionIndex[resurrectionPrompt_];
   }
 
   /// @dev Get token URI
@@ -318,6 +329,7 @@ contract PromptMonsters is
       "PromptMonsters: token ID is too large"
     );
     _monsters.push(monster);
+    resurrectionIndex[resurrectionPrompt] = newTokenId;
     delete _monsterHistory[resurrectionPrompt];
     erc20.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
     _safeMint(msg.sender, newTokenId);
