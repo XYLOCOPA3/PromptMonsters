@@ -103,9 +103,7 @@ describe("PromptMonsters", function () {
       } = await loadFixture(init);
 
       expect(
-        await promptMonsters.getMonsterIdByResurrectionPrompt(
-          resurrectionPrompt1.address,
-        ),
+        await promptMonsters.resurrectionIndex(resurrectionPrompt1.address),
       ).to.equal(0);
 
       await expect(
@@ -131,9 +129,7 @@ describe("PromptMonsters", function () {
       expect(monster.agl).to.equal(FireMonsterDetails.agl);
 
       expect(
-        await promptMonsters.getMonsterIdByResurrectionPrompt(
-          resurrectionPrompt1.address,
-        ),
+        await promptMonsters.resurrectionIndex(resurrectionPrompt1.address),
       ).to.equal(0);
     });
 
@@ -148,15 +144,11 @@ describe("PromptMonsters", function () {
       } = await loadFixture(init);
 
       expect(
-        await promptMonsters.getMonsterIdByResurrectionPrompt(
-          resurrectionPrompt1.address,
-        ),
+        await promptMonsters.resurrectionIndex(resurrectionPrompt1.address),
       ).to.equal(0);
 
       expect(
-        await promptMonsters.getMonsterIdByResurrectionPrompt(
-          resurrectionPrompt2.address,
-        ),
+        await promptMonsters.resurrectionIndex(resurrectionPrompt2.address),
       ).to.equal(0);
 
       await expect(
@@ -172,15 +164,11 @@ describe("PromptMonsters", function () {
       ).not.to.be.reverted;
 
       expect(
-        await promptMonsters.getMonsterIdByResurrectionPrompt(
-          resurrectionPrompt1.address,
-        ),
+        await promptMonsters.resurrectionIndex(resurrectionPrompt1.address),
       ).to.equal(0);
 
       expect(
-        await promptMonsters.getMonsterIdByResurrectionPrompt(
-          resurrectionPrompt2.address,
-        ),
+        await promptMonsters.resurrectionIndex(resurrectionPrompt2.address),
       ).to.equal(0);
 
       const monster = await promptMonsters
@@ -242,15 +230,11 @@ describe("PromptMonsters", function () {
       ).not.to.be.reverted;
 
       expect(
-        await promptMonsters.getMonsterIdByResurrectionPrompt(
-          resurrectionPrompt1.address,
-        ),
+        await promptMonsters.resurrectionIndex(resurrectionPrompt1.address),
       ).to.equal(0);
 
       expect(
-        await promptMonsters.getMonsterIdByResurrectionPrompt(
-          resurrectionPrompt2.address,
-        ),
+        await promptMonsters.resurrectionIndex(resurrectionPrompt2.address),
       ).to.equal(0);
 
       await expect(
@@ -298,15 +282,11 @@ describe("PromptMonsters", function () {
       ).not.to.be.reverted;
 
       expect(
-        await promptMonsters.getMonsterIdByResurrectionPrompt(
-          resurrectionPrompt1.address,
-        ),
+        await promptMonsters.resurrectionIndex(resurrectionPrompt1.address),
       ).to.equal(0);
 
       expect(
-        await promptMonsters.getMonsterIdByResurrectionPrompt(
-          resurrectionPrompt2.address,
-        ),
+        await promptMonsters.resurrectionIndex(resurrectionPrompt2.address),
       ).to.equal(0);
 
       expect(await promptMonsters.getMonstersTotalSupply()).to.equal(1);
@@ -375,9 +355,7 @@ describe("PromptMonsters", function () {
       ).not.to.be.reverted;
 
       expect(
-        await promptMonsters.getMonsterIdByResurrectionPrompt(
-          resurrectionPrompt1.address,
-        ),
+        await promptMonsters.resurrectionIndex(resurrectionPrompt1.address),
       ).to.equal(0);
 
       // Mint
@@ -386,9 +364,7 @@ describe("PromptMonsters", function () {
       ).not.to.be.reverted;
 
       expect(
-        await promptMonsters.getMonsterIdByResurrectionPrompt(
-          resurrectionPrompt1.address,
-        ),
+        await promptMonsters.resurrectionIndex(resurrectionPrompt1.address),
       ).to.equal(0);
 
       await expect(
@@ -407,9 +383,7 @@ describe("PromptMonsters", function () {
       ).not.to.be.reverted;
 
       expect(
-        await promptMonsters.getMonsterIdByResurrectionPrompt(
-          resurrectionPrompt2.address,
-        ),
+        await promptMonsters.resurrectionIndex(resurrectionPrompt2.address),
       ).to.equal(0);
 
       // Mint
@@ -418,9 +392,7 @@ describe("PromptMonsters", function () {
       ).not.to.be.reverted;
 
       expect(
-        await promptMonsters.getMonsterIdByResurrectionPrompt(
-          resurrectionPrompt2.address,
-        ),
+        await promptMonsters.resurrectionIndex(resurrectionPrompt2.address),
       ).to.equal(1);
     });
 

@@ -160,15 +160,6 @@ contract PromptMonsters is
     }
   }
 
-  /// @dev Get monster ID by resurrectionPrompt
-  /// @param resurrectionPrompt_ resurrection prompt
-  /// @return monsterId monster ID
-  function getMonsterIdByResurrectionPrompt(
-    address resurrectionPrompt_
-  ) external view returns (uint256) {
-    return resurrectionIndex[resurrectionPrompt_];
-  }
-
   /// @dev Get token URI
   /// @param tokenId_ token ID
   /// @return uri token URI

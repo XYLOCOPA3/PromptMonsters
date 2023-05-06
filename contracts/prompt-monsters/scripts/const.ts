@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 
-const IS_PRODUCTION = process.env.IS_PRODUCTION === "true";
+const IS_PRODUCTION = process.env.IS_PRODUCTION === "false";
 
 // --------------------------------------------------
 // Battle
