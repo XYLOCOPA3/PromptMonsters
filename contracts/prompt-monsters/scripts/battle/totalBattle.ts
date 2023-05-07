@@ -70,6 +70,7 @@ export async function main() {
     return {
       monsterId: i,
       monsterName: monsters[i].name,
+      flavor: monsters[i].flavor,
       matchCount: matchCount.toNumber(),
       winCount: winCount,
       winRate: winCount * 1 - loseCount * 1,
@@ -97,11 +98,13 @@ export async function main() {
   // 1行目は "No., WinRate, MatchCount, WinCount, ID, Name, Time" とする
   // 2行目以降は各モンスターの情報をカンマ区切りで出力する
   // 1行目の文字数を計算して、各項目の開始位置が揃うように出力する
-  let csv = `No.,WinRate,MatchCount,WinCount,ID,Name,Time\n`;
+  let csv = `No.,WinRate,MatchCount,WinCount,ID,Name,flavor,Time\n`;
   winRates.forEach((winRate, i) => {
-    csv += `${i + 1},${winRate.winRate},${winRate.matchCount},${
+    csv += `"${i + 1}","${winRate.winRate}","${winRate.matchCount}","${
       winRate.winCount
-    },${winRate.monsterId},${winRate.monsterName},${nowJST}\n`;
+    }","${winRate.monsterId}","${winRate.monsterName}","${
+      winRate.flavor
+    }","${nowJST}"\n`;
   });
 
   // "total" ディレクトリがなければ作成する
