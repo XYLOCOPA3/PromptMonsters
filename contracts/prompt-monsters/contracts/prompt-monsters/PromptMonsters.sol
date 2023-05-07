@@ -45,6 +45,8 @@ contract PromptMonsters is
 
   IPromptMonsters.Monster[] private _monsters;
 
+  mapping(address => uint256) public resurrectionIndex;
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
@@ -125,6 +127,17 @@ contract PromptMonsters is
     address owner
   ) external view returns (uint256[] memory tokenIds) {
     tokenIds = _ownerToTokenIds[owner];
+  }
+
+  /// @dev Get token IDs from owner address index
+  /// @param owner owner
+  /// @param tokenId_ token ID
+  /// @return tokenIdsIndex token IDs
+  function getOwnerToTokenIdsIndex(
+    address owner,
+    uint256 tokenId_
+  ) external view returns (uint256 tokenIdsIndex) {
+    tokenIdsIndex = _ownerToTokenIdsIndex[owner][tokenId_];
   }
 
   /// @dev Get monsters
@@ -251,6 +264,30 @@ contract PromptMonsters is
     emit SetPromptMonstersWallet(_msgSender(), oldState, newState_);
   }
 
+  /// @dev Set owner to token ID
+  /// @param user_ user
+  /// @param ownerToTokenIdIndex_ owner to token ID index
+  /// @param newState_ new state
+  function setOwnerToTokenId(
+    address user_,
+    uint256 ownerToTokenIdIndex_,
+    uint256 newState_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _ownerToTokenIds[user_][ownerToTokenIdIndex_] = newState_;
+  }
+
+  /// @dev Set owner to token ID index
+  /// @param user_ user
+  /// @param tokenId_ token ID
+  /// @param newState_ new state
+  function setOwnerToTokenIdIndex(
+    address user_,
+    uint256 tokenId_,
+    uint256 newState_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _ownerToTokenIdsIndex[user_][tokenId_] = newState_;
+  }
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
@@ -283,6 +320,7 @@ contract PromptMonsters is
       "PromptMonsters: token ID is too large"
     );
     _monsters.push(monster);
+    resurrectionIndex[resurrectionPrompt] = newTokenId;
     delete _monsterHistory[resurrectionPrompt];
     erc20.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
     _safeMint(msg.sender, newTokenId);
@@ -416,12 +454,13 @@ contract PromptMonsters is
     uint256 lastTokenId = _ownerToTokenIds[from_][
       _ownerToTokenIds[from_].length - 1
     ];
-    if (tokenId_ != lastTokenId) {
-      uint256 tokenIdIndex = _ownerToTokenIdsIndex[from_][tokenId_];
+    uint256 tokenIdIndex = _ownerToTokenIdsIndex[from_][tokenId_];
+    if (tokenId_ != lastTokenId)
       _ownerToTokenIds[from_][tokenIdIndex] = lastTokenId;
-    }
     _ownerToTokenIds[from_].pop();
     delete _ownerToTokenIdsIndex[from_][tokenId_];
+    if (tokenId_ != lastTokenId)
+      _ownerToTokenIdsIndex[from_][lastTokenId] = tokenIdIndex;
   }
 
   /// @dev Before token transfer

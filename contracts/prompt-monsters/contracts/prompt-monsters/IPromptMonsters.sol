@@ -49,6 +49,18 @@ interface IPromptMonsters is IERC721Upgradeable {
     address newValue
   );
 
+  event SetOwnerToTokenId(
+    address indexed publisher,
+    uint256 oldValue,
+    uint256 newValue
+  );
+
+  event SetOwnerToTokenIdIndex(
+    address indexed publisher,
+    uint256 oldValue,
+    uint256 newValue
+  );
+
   event GenerateMonster(Monster monster);
 
   event MintedMonster(
@@ -95,6 +107,15 @@ interface IPromptMonsters is IERC721Upgradeable {
     address owner
   ) external view returns (uint256[] memory tokenIds);
 
+  /// @dev Get token IDs from owner address index
+  /// @param owner owner
+  /// @param tokenId_ token ID
+  /// @return tokenIdsIndex token IDs
+  function getOwnerToTokenIdsIndex(
+    address owner,
+    uint256 tokenId_
+  ) external view returns (uint256 tokenIdsIndex);
+
   /// @dev Get monsters
   /// @param tokenIds_ token IDs
   /// @return monsters monsters
@@ -113,6 +134,26 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @dev Set external link
   /// @param newState_ new state
   function setExternalLink(string memory newState_) external;
+
+  /// @dev Set owner to token ID
+  /// @param user_ user
+  /// @param ownerToTokenIdIndex_ owner to token ID index
+  /// @param newState_ new state
+  function setOwnerToTokenId(
+    address user_,
+    uint256 ownerToTokenIdIndex_,
+    uint256 newState_
+  ) external;
+
+  /// @dev Set owner to token ID index
+  /// @param user_ user
+  /// @param tokenId_ token ID
+  /// @param newState_ new state
+  function setOwnerToTokenIdIndex(
+    address user_,
+    uint256 tokenId_,
+    uint256 newState_
+  ) external;
 
   // --------------------------------------------------------------------------------
   // Main Logic

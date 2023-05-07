@@ -1,5 +1,7 @@
 import { ethers } from "ethers";
 
+// demo環境に変更したい場合は.envのIS_PRODUCTIONをfalseにする
+// ここを直接変更しないこと
 const IS_PRODUCTION = process.env.IS_PRODUCTION === "true";
 
 // --------------------------------------------------

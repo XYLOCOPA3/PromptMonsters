@@ -20,7 +20,7 @@
     "deploy-coin": "npx hardhat run scripts/Mock/deployCoin.ts --network $npm_config_network",
     "preverify": "npm run clean",
     "verify": "npx hardhat verify $npm_config_contract --network $npm_config_network --constructor-args scripts/$npm_config_name/argument.ts",
-    "preupgrade": "npm run test-$npm_config_name",
+    "preupgrade": "npm run clean && npm run test-$npm_config_name",
     "upgrade": "npx hardhat run scripts/$npm_config_name/upgrade.ts --network $npm_config_network",
     "upgrade-no-test": "npx hardhat run scripts/$npm_config_name/upgrade.ts --network $npm_config_network",
     "update": "npx -p npm-check-updates  -c 'ncu' && npx -p npm-check-updates  -c 'ncu -u' && npm i",
@@ -30,7 +30,8 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
     "@openzeppelin/hardhat-upgrades": "^1.22.1",
-    "hardhat": "^2.13.1"
+    "hardhat": "^2.13.1",
+    "hardhat-contract-sizer": "^2.8.0"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.3",
