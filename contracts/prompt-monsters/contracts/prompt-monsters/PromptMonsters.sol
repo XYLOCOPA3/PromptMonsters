@@ -45,6 +45,8 @@ contract PromptMonsters is
 
   IPromptMonsters.Monster[] private _monsters;
 
+  mapping(address => uint256) public resurrectionIndex;
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
@@ -318,6 +320,7 @@ contract PromptMonsters is
       "PromptMonsters: token ID is too large"
     );
     _monsters.push(monster);
+    resurrectionIndex[resurrectionPrompt] = newTokenId;
     delete _monsterHistory[resurrectionPrompt];
     erc20.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
     _safeMint(msg.sender, newTokenId);
