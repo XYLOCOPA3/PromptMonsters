@@ -43,21 +43,6 @@ export const ResurrectionPrompt = ({ className }: ResurrectionPromptProps) => {
       hasNotMintedMonster = true;
       break;
     }
-    //     if (hasNotMintedMonster) {
-    //       if (
-    //         !confirm(
-    //           `Did you take note of the "Resurrection Prompt"?
-
-    // When you execute "Monster Generation," any unminted monsters will disappear.
-    // But don't worry. By entering the "Resurrection Prompt," you can regenerate them.
-    // Please be careful, as if you forget to note down the "Resurrection Prompt," you won't be able to regenerate the monsters.
-    // NOTE: Once minted, entering the "Resurrection Prompt" will not regenerate the monster.
-
-    // Do you want to proceed with "Monster Generation"?`,
-    //         )
-    //       )
-    //         return;
-    //     }
     battleController.reset();
     setDisable(true);
     setLoading(true);
@@ -95,7 +80,7 @@ export const ResurrectionPrompt = ({ className }: ResurrectionPromptProps) => {
     <div className={clsx(className, "flex", "justify-center", "items-center")}>
       <Hint
         className={clsx("mr-[5px]")}
-        hintText={`What is the "Resurrection Prompt"?\n\nIt's an ID assigned to a monster when it's generated. Unminted monsters can be resurrected at any time by entering this ID.\n\n\n「Resurrection Prompt」とは何ですか？\n\nそれは、モンスターが生成された際に割り当てられるIDです。ミントされていないモンスターは、このIDを入力することでいつでも復活させることができます。`}
+        hintText={`What is the "Resurrection Prompt"?\n\nIt's an ID assigned to a monster when it's generated. Unminted monsters can be resurrected at any time by entering this ID.\n\n\n「Resurrection Prompt」とは？\n\nモンスターが生成された際に割り当てられるIDです。ミントされていないモンスターは、このIDを入力することでいつでも復活させることができます。`}
       />
       <input
         className={clsx(
@@ -108,6 +93,7 @@ export const ResurrectionPrompt = ({ className }: ResurrectionPromptProps) => {
         type="text"
         name="name"
         placeholder="Resurrection Prompt"
+        autoComplete="off"
         onChange={handleChange}
       />
       <Button
