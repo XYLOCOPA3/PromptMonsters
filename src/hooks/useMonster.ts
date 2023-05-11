@@ -7,9 +7,10 @@ import {
   PromptMonsters__factory,
   Stamina__factory,
 } from "@/typechain";
+import { FeatureErrorType } from "@/types/FeatureErrorType";
 import { MonsterId } from "@/types/MonsterId";
 import { UserId } from "@/types/UserId";
-import { isSymbol } from "@/utils/validation";
+import { checkFeature, isSymbol } from "@/utils/validation";
 import { fetchSigner } from "@wagmi/core";
 import axios from "axios";
 import { ethers } from "ethers";
@@ -49,6 +50,21 @@ export const useMonsterController = (): MonsterController => {
   ): Promise<MonsterModel> => {
     if (isSymbol(feature))
       throw new Error("Features must not contain numbers or symbols.");
+    const result = checkFeature(feature);
+    if (result !== FeatureErrorType.ok) {
+      switch (result) {
+        case FeatureErrorType.noFeature:
+          throw new Error("Do not empty feature");
+        case FeatureErrorType.usingSymbol:
+          throw new Error("Do not use symbol");
+        case FeatureErrorType.usingNum:
+          throw new Error("Do not use number");
+        case FeatureErrorType.usingNGWord:
+          throw new Error("Do not use NG word");
+        default:
+          throw new Error("Unknown error");
+      }
+    }
     let res: any;
     try {
       res = await axios.post("/api/generate-monster", {

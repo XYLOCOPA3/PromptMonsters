@@ -59,7 +59,7 @@ export const STAMINA_PROXY_ADDRESS = IS_PRODUCTION
 // Mock
 // --------------------------------------------------
 
-export const MCHC_ADDRESS = IS_PRODUCTION
+export const MOCK_ERC20_ADDRESS = IS_PRODUCTION
   ? "0x9e5aac1ba1a2e6aed6b32689dfcf62a509ca96f3" // mchMainnet
   : "0x4d7761FdCD3cC12cBb4100A2F8CE97e9D51430aa"; // mchTestnet
 // "0x5FbDB2315678afecb367f032d93F642f64180aa3" // local node

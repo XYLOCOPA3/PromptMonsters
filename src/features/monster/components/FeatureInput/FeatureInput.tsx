@@ -18,6 +18,7 @@ export const FeatureInput = ({ className, onChange }: FeatureInputProps) => {
       type="text"
       name="name"
       placeholder="Monster features: ex. fire, cool, dragon"
+      autoComplete="off"
       onChange={onChange}
     />
   );

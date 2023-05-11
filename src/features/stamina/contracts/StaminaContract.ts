@@ -17,7 +17,7 @@ export class StaminaContract {
     if (!this._instance) {
       this._instance = new StaminaContract(
         Stamina__factory.connect(
-          process.env.NEXT_PUBLIC_BATTLE_CONTRACT!,
+          process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
           ServerWallet.instance(rpcURL).signer,
         ),
       );
