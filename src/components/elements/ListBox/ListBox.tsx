@@ -8,7 +8,7 @@ import { useRecoilValue } from "recoil";
 
 export type ListBoxProps = {
   selected: string;
-  setSelected: Dispatch<SetStateAction<string>>;
+  setSelected: Dispatch<SetStateAction<string>> | ((language: string) => void);
   list: string[];
 } & BaseProps;
 

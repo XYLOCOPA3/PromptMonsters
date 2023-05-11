@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
 import { useBattleController } from "@/hooks/useBattle";
+import { useLanguageValue } from "@/hooks/useLanguage";
 import { useMonsterState } from "@/hooks/useMonster";
-import { useUserValue } from "@/hooks/useUser";
 import { disableState } from "@/stores/disableState";
-import { languageState } from "@/stores/languageState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
@@ -19,9 +18,8 @@ export type MonsterFightButtonProps = BaseProps;
  * @param className Style from parent element
  */
 export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
-  const language = useRecoilValue(languageState);
+  const language = useLanguageValue();
   const monsterMinted = useRecoilValue(monsterMintedState);
-  const user = useUserValue();
   const [monster, monsterController] = useMonsterState();
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);

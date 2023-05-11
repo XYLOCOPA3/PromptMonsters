@@ -1,8 +1,7 @@
 import { ListBox } from "@/components/elements/ListBox";
-import { languageState } from "@/stores/languageState";
+import { useLanguageState } from "@/hooks/useLanguage";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
-import { useRecoilState } from "recoil";
 
 let feature = "";
 const languages = ["English", "Japanese"];
@@ -15,7 +14,7 @@ export type FightLanguageProps = BaseProps;
  * @param className Style from parent element
  */
 export const FightLanguage = ({ className }: FightLanguageProps) => {
-  const [language, setLanguage] = useRecoilState(languageState);
+  const [language, setLanguage] = useLanguageState();
 
   return (
     <ListBox
