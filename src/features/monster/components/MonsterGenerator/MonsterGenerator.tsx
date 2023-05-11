@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ListBox } from "@/components/elements/ListBox";
+import { Warning } from "@/components/elements/Warning";
 import { FeatureInput, GenerateButton } from "@/features/monster";
 import { useBattleController } from "@/hooks/useBattle";
 import { useLanguageState } from "@/hooks/useLanguage";
@@ -105,10 +106,10 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
           "w-[100%]",
         )}
       >
-        {/* <Warning
+        <Warning
           className={clsx("mr-[5px]")}
-          hintText={`Warning: In this game, the use of monsters with features that manipulate status illegitimately or violate public morals and ethics is strictly prohibited. If such a monster is used, there is a possibility of account suspension or permanent banishment. We appreciate your understanding and cooperation.\n\n警告：当ゲームにおいて、ステータスを不正に操作する特徴や公俗良序に反する特徴を持つモンスターの使用は固く禁止されています。もし、このようなモンスターを使用した場合、アカウント停止や永久追放の処分を受ける可能性があります。お客様のご理解とご協力をお願い致します。`}
-        /> */}
+          hintText={`Warning: The creation of monsters with features that manipulate stats illegitimately or violate public decency and order, as well as the creation of monsters that infringe upon third-party copyrights, is strictly prohibited in this game. If you generate and use such monsters, you may face penalties such as account suspension, permanent ban, and other measures deemed necessary by our company. We appreciate your understanding and cooperation.\n\n警告：当ゲームでは、ステータスを不正に操作する特徴や公俗良序に反する特徴を持つモンスターの生成および、第三者の著作権を侵害するモンスターの生成は固く禁止されています。このようなモンスターを生成し使用した場合、アカウント停止や永久追放の処分、その他当社が必要と判断する措置を取る可能性があります。お客様のご理解とご協力をお願い致します。`}
+        />
         <FeatureInput
           className={clsx("w-[100%]", "h-[40px]")}
           onChange={handleChange}
