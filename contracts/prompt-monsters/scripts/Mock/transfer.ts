@@ -1,10 +1,10 @@
-import { MCHC_ADDRESS } from "../const";
+import { MOCK_ERC20_ADDRESS } from "../const";
 import { ethers } from "hardhat";
 
 export async function transfer() {
   const Erc20 = await ethers.getContractFactory("Erc20");
 
-  const erc20 = Erc20.attach(MCHC_ADDRESS);
+  const erc20 = Erc20.attach(MOCK_ERC20_ADDRESS);
 
   const address: string = "0x8Bcd35185a8068BB197BC957f7dDFEE77007BF3A";
 

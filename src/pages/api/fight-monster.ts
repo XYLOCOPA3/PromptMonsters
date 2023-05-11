@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { BattleContract } from "@/features/battle/api/contracts/BattleContract";
 import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
 import { calcStaminaFromMonsterId } from "@/features/stamina/utils/calcStamina";
+import { getFightPrompt } from "@/lib/prompt";
 import { RPC_URL } from "@/lib/wallet";
 import { IPromptMonsters } from "@/typechain/PromptMonsters";
 import console from "console";
@@ -47,7 +48,7 @@ export default async function handler(
   }
   const monster = monsters[0];
   const enemy = monsters[1];
-  const fightPrompt = _getFightPrompt(
+  const fightPrompt = getFightPrompt(
     monsterId,
     monster,
     enemyId,
@@ -101,71 +102,6 @@ export default async function handler(
     return res.status(400).json({ message: error });
   }
 }
-
-/**
- * Get fight prompt
- * @param monsterId monster id
- * @param monster monster struct
- * @param enemyId enemy monster id
- * @param enemy enemy struct
- * @param language output language
- * @return {Promise<string>} fight prompt
- */
-const _getFightPrompt = (
-  monsterId: string,
-  monster: IPromptMonsters.MonsterStructOutput,
-  enemyId: string,
-  enemy: IPromptMonsters.MonsterStructOutput,
-  language: string = "English",
-): string => {
-  switch (language) {
-    case "English":
-      return `MonsterA: id:${monsterId === "" ? "dummyID" : monsterId} name:${
-        monster.name
-      } flavor:${monster.flavor} status: HP:${monster.hp} ATK:${
-        monster.atk
-      } DEF:${monster.def} INT:${monster.inte} MGR:${monster.mgr} AGL:${
-        monster.agl
-      } skills:[${monster.skills}]
-MonsterB: id:${enemyId} name:${enemy.name} flavor:${enemy.flavor} status: HP:${
-        enemy.hp
-      } ATK:${enemy.atk} DEF:${enemy.def} INT:${enemy.inte} MGR:${
-        enemy.mgr
-      } AGL:${enemy.agl} skills:[${enemy.skills}]
-
-Example:
-MonsterA vs MonsterB:
-Output in JSON format->{"battleAnalysis": "[Determine advantage in <50 chars using flavor, status, skills.]", "battleDescription":"[Write a <200-char novel-style battle from Monster's flavor, status, skills.],"monsterBId":"1","winnerId":"1"}
-
-${monster.name} vs ${enemy.name}:
-Output in JSON format->`;
-    case "Japanese":
-      return `
-MonsterA: id:${monsterId === "" ? "dummyID" : monsterId} name:${
-        monster.name
-      } flavor:${monster.flavor} status: HP:${monster.hp} ATK:${
-        monster.atk
-      } DEF:${monster.def} INT:${monster.inte} MGR:${monster.mgr} AGL:${
-        monster.agl
-      } skills:[${monster.skills}]
-MonsterB: id:${enemyId} name:${enemy.name} flavor:${enemy.flavor} status: HP:${
-        enemy.hp
-      } ATK:${enemy.atk} DEF:${enemy.def} INT:${enemy.inte} MGR:${
-        enemy.mgr
-      } AGL:${enemy.agl} skills:[${enemy.skills}]
-
-例:
-MonsterA vs MonsterB:
-JSON形式で出力->{"battleAnalysis": "['flavor','status','skills'から有利な方を50文字以内で判定]", "battleDescription":"[Monsterの'flavor','status','skills'から連想した戦闘結果を200文字以内で小説風に書く],"monsterBId":"1","winnerId":"1"}
-
-${monster.name} vs ${enemy.name}:
-JSON形式で出力->`;
-    default:
-      throw new Error("Invalid language");
-  }
-};
-
-// HP->❤️,ATK->💥,DEF->🛡️,INT->🧠,MGR->🛡️✨,AGL->💨
 
 /**
  * Get random enemy monster id

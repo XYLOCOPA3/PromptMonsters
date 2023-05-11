@@ -1,6 +1,6 @@
 import {
   PROMPT_MONSTERS_EXTERNAL_LINK,
-  MCHC_ADDRESS,
+  MOCK_ERC20_ADDRESS,
   PROMPT_MONSTERS_WALLET,
   MINT_PRICE,
 } from "../const";
@@ -24,7 +24,7 @@ async function main() {
     PromptMonsters,
     [
       PROMPT_MONSTERS_EXTERNAL_LINK,
-      MCHC_ADDRESS,
+      MOCK_ERC20_ADDRESS,
       MINT_PRICE,
       PROMPT_MONSTERS_WALLET,
     ],
