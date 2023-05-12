@@ -20,7 +20,7 @@ export const checkFeature = (feature: string): FeatureErrorType => {
  */
 export const isSymbol = (str: string): boolean => {
   const pattern =
-    /[!@#$%^&*()_+={}|[\]\\;:<>/?！＃＄％＆（）ー＝＾〜＼｜＠｀「『；＋：＊」』＜＞？＿]/;
+    /[!@#$%^&*()_+={}|[\]\\;:<>/?！＃＄％＆（）＝＾＼｜＠｀「『；＋：＊」』＜＞？＿]/;
   return pattern.test(str);
 };
 
