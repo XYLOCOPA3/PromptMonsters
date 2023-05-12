@@ -155,6 +155,10 @@ interface IPromptMonsters is IERC721Upgradeable {
     uint256 newState_
   ) external;
 
+  /// @dev Set prompt monsters image
+  /// @param newState_ new state
+  function setPromptMonstersImage(address newState_) external;
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------

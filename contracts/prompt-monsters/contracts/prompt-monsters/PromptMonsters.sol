@@ -14,6 +14,8 @@ import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeE
 
 import {IPromptMonsters} from "./IPromptMonsters.sol";
 
+import {IPromptMonstersImage} from "../prompt-monsters-image/IPromptMonstersImage.sol";
+
 /// @title PromptMonsters
 /// @author keit (@keitEngineer)
 /// @dev This is a contract of PromptMonsters.
@@ -46,6 +48,8 @@ contract PromptMonsters is
   IPromptMonsters.Monster[] private _monsters;
 
   mapping(address => uint256) public resurrectionIndex;
+
+  IPromptMonstersImage public promptMonstersImage;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -167,27 +171,7 @@ contract PromptMonsters is
     uint256 tokenId_
   ) public view override returns (string memory uri) {
     _requireMinted(tokenId_);
-    string memory svg = _getSvg(tokenId_);
-    IPromptMonsters.Monster memory monster = _monsters[tokenId_];
-    string memory json = Base64Upgradeable.encode(
-      bytes(
-        string(
-          abi.encodePacked(
-            '{"name": "',
-            monster.name,
-            '", "description": "',
-            monster.flavor,
-            '", "image": "data:image/svg+xml;base64,',
-            Base64Upgradeable.encode(bytes(svg)),
-            '"}'
-          )
-        )
-      )
-    );
-    string memory finalTokenUri = string(
-      abi.encodePacked("data:application/json;base64,", json)
-    );
-    uri = finalTokenUri;
+    uri = promptMonstersImage.tokenURI(tokenId_, _monsters[tokenId_]);
   }
 
   /// @dev Get contract URI
@@ -288,6 +272,14 @@ contract PromptMonsters is
     _ownerToTokenIdsIndex[user_][tokenId_] = newState_;
   }
 
+  /// @dev Set prompt monsters image
+  /// @param newState_ new state
+  function setPromptMonstersImage(
+    address newState_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    promptMonstersImage = IPromptMonstersImage(newState_);
+  }
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
@@ -352,92 +344,6 @@ contract PromptMonsters is
   // --------------------------------------------------------------------------------
   // Internal
   // --------------------------------------------------------------------------------
-
-  /// @dev Get SVG
-  /// @param tokenId_ token ID
-  /// @return svg SVG
-  function _getSvg(uint256 tokenId_) internal view returns (string memory svg) {
-    IPromptMonsters.Monster memory monster = _monsters[tokenId_];
-    svg = string.concat(
-      '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" />',
-      _getSvgText(10, 20, monster.name),
-      _getSvgText(
-        10,
-        60,
-        string.concat("LV: ", StringsUpgradeable.toString(monster.lv))
-      ),
-      _getSvgText(
-        10,
-        100,
-        string.concat("HP: ", StringsUpgradeable.toString(monster.hp))
-      ),
-      _getSvgText(
-        10,
-        120,
-        string.concat("ATK: ", StringsUpgradeable.toString(monster.atk))
-      ),
-      _getSvgText(
-        10,
-        140,
-        string.concat("DEF: ", StringsUpgradeable.toString(monster.def))
-      ),
-      _getSvgText(
-        10,
-        160,
-        string.concat("INT: ", StringsUpgradeable.toString(monster.inte))
-      ),
-      _getSvgText(
-        10,
-        180,
-        string.concat("MGR: ", StringsUpgradeable.toString(monster.mgr))
-      ),
-      _getSvgText(
-        10,
-        200,
-        string.concat("AGL: ", StringsUpgradeable.toString(monster.agl))
-      )
-    );
-
-    uint256 y = 240;
-    for (uint i; i < monster.skills.length; i++) {
-      if (i + 1 > 4) break;
-      svg = string.concat(
-        svg,
-        _getSvgText(
-          10,
-          y + 20 * i,
-          string.concat(
-            "Skill",
-            StringsUpgradeable.toString(i + 1),
-            ": ",
-            monster.skills[i]
-          )
-        )
-      );
-    }
-    svg = string.concat(svg, "</svg>");
-  }
-
-  /// @dev Get SVG text
-  /// @param x_ x position
-  /// @param y_ y position
-  /// @param text_ text
-  /// @return svg SVG
-  function _getSvgText(
-    uint256 x_,
-    uint256 y_,
-    string memory text_
-  ) internal pure returns (string memory svg) {
-    svg = string.concat(
-      '<text x="',
-      StringsUpgradeable.toString(x_),
-      '" y="',
-      StringsUpgradeable.toString(y_),
-      '" class="base">',
-      text_,
-      "</text>"
-    );
-  }
 
   /// @dev Add owner to token IDs
   /// @param to_ recipient
