@@ -66,6 +66,8 @@ contract PromptMonstersImage is
         '"data:image/svg+xml;base64,',
         Base64Upgradeable.encode(bytes(svg))
       );
+    } else {
+      imageURL_ = string.concat('"', imageURL_);
     }
     string memory json = Base64Upgradeable.encode(
       bytes(

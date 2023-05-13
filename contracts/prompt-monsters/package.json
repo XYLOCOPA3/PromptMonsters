@@ -26,7 +26,8 @@
     "upgrade-no-test": "npx hardhat run scripts/$npm_config_name/upgrade.ts --network $npm_config_network",
     "update": "npx -p npm-check-updates  -c 'ncu' && npx -p npm-check-updates  -c 'ncu -u' && npm i",
     "mock-transfer": "npx hardhat run scripts/Mock/transfer.ts --network $npm_config_network",
-    "script": "npx hardhat run scripts/$npm_config_name/$npm_config_file.ts --network $npm_config_network"
+    "script": "npx hardhat run scripts/$npm_config_name/$npm_config_file.ts --network $npm_config_network",
+    "size": "npx hardhat size-contracts"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
