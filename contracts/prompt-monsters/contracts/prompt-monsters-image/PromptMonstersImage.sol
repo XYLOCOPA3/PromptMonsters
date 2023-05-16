@@ -69,17 +69,51 @@ contract PromptMonstersImage is
     } else {
       imageURL_ = string.concat('"', imageURL_);
     }
-    string memory json = Base64Upgradeable.encode(
+    string memory skills = "";
+    for (uint i; i < monster_.skills.length; i++) {
+      if (i + 1 > 4) break;
+      skills = string.concat(
+        skills,
+        ' }, { "trait_type": ',
+        '"Skill',
+        StringsUpgradeable.toString(i + 1),
+        '", "value": "',
+        monster_.skills[i],
+        '"'
+      );
+    }
+    string memory json = string(
+      abi.encodePacked(
+        '{"name": "',
+        monster_.name,
+        '", "description": "',
+        monster_.flavor,
+        '", "image": ',
+        imageURL_,
+        '", "attributes": [ { "trait_type": "LV", "value": ',
+        StringsUpgradeable.toString(monster_.lv),
+        ' }, { "trait_type": "HP", "value": ',
+        StringsUpgradeable.toString(monster_.hp),
+        ' }, { "trait_type": "ATK", "value": ',
+        StringsUpgradeable.toString(monster_.atk)
+      )
+    );
+    // `Stack too deep` エラーで実行できないため分割
+    json = Base64Upgradeable.encode(
       bytes(
         string(
           abi.encodePacked(
-            '{"name": "',
-            monster_.name,
-            '", "description": "',
-            monster_.flavor,
-            '", "image": ',
-            imageURL_,
-            '"}'
+            json,
+            ' }, { "trait_type": "DEF", "value": ',
+            StringsUpgradeable.toString(monster_.def),
+            ' }, { "trait_type": "INT", "value": ',
+            StringsUpgradeable.toString(monster_.inte),
+            ' }, { "trait_type": "MGR", "value": ',
+            StringsUpgradeable.toString(monster_.mgr),
+            ' }, { "trait_type": "AGL", "value": ',
+            StringsUpgradeable.toString(monster_.agl),
+            skills,
+            " } ] }"
           )
         )
       )

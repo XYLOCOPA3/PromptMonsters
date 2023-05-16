@@ -52,7 +52,7 @@ export const MINT_PRICE = ethers.utils.parseEther("50");
 // --------------------------------------------------
 
 export const PROMPT_MONSTERS_IMAGE_PROXY_ADDRESS = IS_PRODUCTION
-  ? "0x0000000000000000000000000000000000000000" // mchMainnet
+  ? "0xfCe6237F5CBB539bd3a116Dd9b949920aE01Df58" // mchMainnet
   : "0x757731511815ddfd3c5e43DB29C33B22C43d431e"; // mchTestnet
 
 // --------------------------------------------------
