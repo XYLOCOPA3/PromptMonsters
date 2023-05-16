@@ -30,11 +30,32 @@ interface IStamina {
     uint256 indexed newValue
   );
 
+  event SetRestorePrice(
+    address indexed publisher,
+    uint256 indexed oldState,
+    uint256 indexed newState
+  );
+
   event ConsumeStamina(
     uint256 indexed monsterId,
     uint256 indexed consumedStamina,
     uint256 indexed newTimeStd
   );
+
+  event SetPromptMonstersWallet(
+    address indexed publisher,
+    address oldValue,
+    address newValue
+  );
+
+  event RestoredStamina(
+    address indexed publisher,
+    uint256 indexed monsterId,
+    uint256 indexed restorePrice,
+    uint256 timeStd
+  );
+
+  event SetErc20(address indexed publisher, address oldValue, address newValue);
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -85,6 +106,18 @@ interface IStamina {
   /// @param _staminaRecoveryTime stamina recovery time
   function setStaminaRecoveryTime(uint256 _staminaRecoveryTime) external;
 
+  /// @dev Set restore price
+  /// @param newState_ restore price
+  function setRestorePrice(uint256 newState_) external;
+
+  /// @dev Set prompt monsters wallet
+  /// @param newState_ new state
+  function setPromptMonstersWallet(address newState_) external;
+
+  /// @dev Set ERC20 address
+  /// @param newState_ new state
+  function setErc20(address newState_) external;
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
@@ -93,4 +126,8 @@ interface IStamina {
   /// @param monsterId ID of the monster
   /// @param consumedStamina consumed stamina
   function consumeStamina(uint256 monsterId, uint256 consumedStamina) external;
+
+  /// @dev restore stamina
+  /// @param monsterId ID of the monster
+  function restoreStamina(uint256 monsterId) external;
 }
