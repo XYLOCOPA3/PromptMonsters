@@ -63,6 +63,8 @@ export const STAMINA_PROXY_ADDRESS = IS_PRODUCTION
   ? "0xA1485837B3958F61ce494f71f368CF5477C5C3FB" // mchMainnet
   : "0x76C321d318a379F8F439Cae9a2a0eD267b0eA89A"; // mchTestnet
 
+export const RESTORE_PRICE = ethers.utils.parseEther("5");
+
 // --------------------------------------------------
 // Mock
 // --------------------------------------------------
