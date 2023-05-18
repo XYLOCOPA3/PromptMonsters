@@ -2,7 +2,7 @@ import { PROMPT_MONSTERS_PROXY_ADDRESS } from "../const";
 import { ethers } from "hardhat";
 
 export async function main() {
-  const monsterId = 1;
+  const monsterId = 259;
 
   const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
   const promptMonsters = PromptMonsters.attach(PROMPT_MONSTERS_PROXY_ADDRESS);

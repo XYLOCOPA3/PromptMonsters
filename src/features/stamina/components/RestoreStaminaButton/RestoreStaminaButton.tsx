@@ -51,7 +51,6 @@ export const RestoreStaminaButton = ({
         console.log(e.message);
         const msg = _getErrorMsg(e.message);
         alert("Failed to restore stamina.\n\nReason: " + msg);
-        // alert("Failed to restore stamina.\n\nReason: " + e.message);
       } else
         alert(
           "Failed to restore stamina.\n\n" +
@@ -66,7 +65,8 @@ export const RestoreStaminaButton = ({
     restorePriceController.init();
   }, []);
 
-  if (restorePrice === 0 || monster.stamina !== 0) return <></>;
+  if (restorePrice === 0 || monster.stamina !== 0 || monster.name === "")
+    return <></>;
   return (
     <Button
       disabled={disable}
