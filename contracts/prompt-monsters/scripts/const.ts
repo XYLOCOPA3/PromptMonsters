@@ -48,12 +48,22 @@ export const PROMPT_MONSTERS_WALLET =
 export const MINT_PRICE = ethers.utils.parseEther("50");
 
 // --------------------------------------------------
+// PromptMonstersImage
+// --------------------------------------------------
+
+export const PROMPT_MONSTERS_IMAGE_PROXY_ADDRESS = IS_PRODUCTION
+  ? "0xfCe6237F5CBB539bd3a116Dd9b949920aE01Df58" // mchMainnet
+  : "0x757731511815ddfd3c5e43DB29C33B22C43d431e"; // mchTestnet
+
+// --------------------------------------------------
 // Stamina
 // --------------------------------------------------
 
 export const STAMINA_PROXY_ADDRESS = IS_PRODUCTION
   ? "0xA1485837B3958F61ce494f71f368CF5477C5C3FB" // mchMainnet
   : "0x76C321d318a379F8F439Cae9a2a0eD267b0eA89A"; // mchTestnet
+
+export const RESTORE_PRICE = ethers.utils.parseEther("5");
 
 // --------------------------------------------------
 // Mock

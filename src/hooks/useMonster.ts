@@ -1,3 +1,4 @@
+import { MAX_STAMINA } from "@/const/monster";
 import { calcStaminaFromMonsterId } from "@/features/stamina/utils/calcStamina";
 import { RPC_URL } from "@/lib/wallet";
 import { MonsterModel } from "@/models/MonsterModel";
@@ -28,6 +29,11 @@ export interface MonsterController {
     resurrectionPrompt: string,
   ) => Promise<string>;
   resurrect: (resurrectionPrompt: string) => Promise<MonsterModel>;
+  restoreStamina: (
+    monsterId: MonsterId,
+    restorePrice: number,
+    userId: UserId,
+  ) => Promise<void>;
 }
 
 export const useMonsterValue = (): MonsterState => {
@@ -265,6 +271,60 @@ export const useMonsterController = (): MonsterController => {
     return newMonster;
   };
 
+  /**
+   * Restore stamina
+   * @param monsterId monster id
+   * @param restorePrice restore price
+   */
+  const restoreStamina = async (
+    monsterId: MonsterId,
+    restorePrice: number,
+    userId: UserId,
+  ): Promise<void> => {
+    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
+    const mchcReader = MCHCoin__factory.connect(
+      process.env.NEXT_PUBLIC_MCHCOIN_CONTRACT!,
+      provider,
+    );
+    const restoreStaminaPrice = ethers.utils.parseEther(
+      restorePrice.toString(),
+    );
+    const results = await Promise.all([
+      mchcReader.balanceOf(userId),
+      mchcReader.allowance(userId, process.env.NEXT_PUBLIC_STAMINA_CONTRACT!),
+    ]);
+    const balanceOfMchc = results[0];
+    if (balanceOfMchc.lt(restoreStaminaPrice))
+      throw new Error("Insufficient balance of MCHC.");
+    let allowance = results[1];
+    if (allowance.lt(restoreStaminaPrice)) {
+      const mchcWriter = MCHCoin__factory.connect(
+        process.env.NEXT_PUBLIC_MCHCOIN_CONTRACT!,
+        (await fetchSigner())!,
+      );
+      await (
+        await mchcWriter.approve(
+          process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
+          restoreStaminaPrice,
+        )
+      ).wait();
+    }
+    allowance = await mchcReader.allowance(
+      userId,
+      process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
+    );
+    if (allowance.lt(restoreStaminaPrice))
+      throw new Error("Insufficient allowance of MCHC.");
+    const stamina = Stamina__factory.connect(
+      process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
+      (await fetchSigner())!,
+    );
+    await (await stamina.restoreStamina(monsterId)).wait();
+    setMonster((prevState) => {
+      return prevState.copyWith({ stamina: MAX_STAMINA });
+    });
+  };
+
   const controller: MonsterController = {
     generate,
     mint,
@@ -273,6 +333,7 @@ export const useMonsterController = (): MonsterController => {
     reset,
     fight,
     resurrect,
+    restoreStamina,
   };
   return controller;
 };

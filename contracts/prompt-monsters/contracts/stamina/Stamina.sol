@@ -8,6 +8,8 @@ import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgrad
 import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
 import {IStamina} from "./IStamina.sol";
 
+import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
 /// @title Stamina
 /// @dev This is a contract of Stamina.
 contract Stamina is
@@ -29,6 +31,13 @@ contract Stamina is
   uint256 public staminaRecoveryTime;
 
   mapping(uint256 => uint256) public timeStd;
+
+  using SafeERC20 for IERC20;
+  IERC20 public erc20;
+
+  uint256 public restorePrice;
+
+  address public promptMonstersWallet;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -134,6 +143,35 @@ contract Stamina is
     emit SetStaminaRecoveryTime(msg.sender, _staminaRecoveryTime);
   }
 
+  /// @dev Set restore price
+  /// @param newState_ restore price
+  function setRestorePrice(
+    uint256 newState_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    uint256 oldState_ = restorePrice;
+    restorePrice = newState_;
+
+    emit SetRestorePrice(msg.sender, oldState_, restorePrice);
+  }
+
+  /// @dev Set prompt monsters wallet
+  /// @param newState_ new state
+  function setPromptMonstersWallet(
+    address newState_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    address oldState = promptMonstersWallet;
+    promptMonstersWallet = newState_;
+    emit SetPromptMonstersWallet(_msgSender(), oldState, newState_);
+  }
+
+  /// @dev Set ERC20 address
+  /// @param newState_ new state
+  function setErc20(address newState_) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    address oldState = address(erc20);
+    erc20 = IERC20(newState_);
+    emit SetErc20(_msgSender(), oldState, newState_);
+  }
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
@@ -173,6 +211,28 @@ contract Stamina is
     timeStd[monsterId] = _timeStd + (_staminaRecoveryTime * consumedStamina);
 
     emit ConsumeStamina(monsterId, consumedStamina, timeStd[monsterId]);
+  }
+
+  /// @dev restore stamina
+  /// @param monsterId ID of the monster
+  function restoreStamina(uint256 monsterId) external {
+    promptMonsters.checkMonsterId(monsterId);
+    require(
+      monsterId != type(uint256).max,
+      "Stamina: You cannot restore stamina of the free monster"
+    );
+    uint256 stamina = _calculateStamina(monsterId);
+    require(
+      stamina == 0,
+      "Stamina: You cannot restore stamina because it is not empty"
+    );
+
+    erc20.safeTransferFrom(msg.sender, promptMonstersWallet, restorePrice);
+
+    uint256 oldTimeStd = timeStd[monsterId];
+    timeStd[monsterId] = 0;
+
+    emit RestoredStamina(msg.sender, monsterId, restorePrice, oldTimeStd);
   }
 
   // --------------------------------------------------------------------------------
