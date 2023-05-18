@@ -2,9 +2,10 @@ import { PROMPT_MONSTERS_IMAGE_PROXY_ADDRESS } from "../const";
 import { ethers } from "hardhat";
 
 export async function main() {
-  const monsterId = 0;
+  const monsterId = 504;
   const imageURL =
-    "https://ipfs.io/ipfs/bafkreief46e6uokwtt6j5nemlp3imsygbv2pcnc3h2kwjalqa5m4bomapm"; // prompt dragon
+    // "https://ipfs.io/ipfs/bafkreief46e6uokwtt6j5nemlp3imsygbv2pcnc3h2kwjalqa5m4bomapm"; // id: 0, prompt dragon
+    "https://ipfs.io/ipfs/bafkreigsygmfdwm4vxgv77vcfm7nimhilqsxdzq32qnji3vbrcp6i2aog4"; // id: 504, 創世の巨神 スザンヌ
 
   const PromptMonstersImage = await ethers.getContractFactory(
     "PromptMonstersImage",
