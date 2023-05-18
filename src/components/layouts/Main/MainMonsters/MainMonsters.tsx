@@ -13,7 +13,7 @@ import {
   ResurrectionPrompt,
 } from "@/features/monster";
 import { PlayNote } from "@/features/note";
-import { StaminaTimer } from "@/features/stamina";
+import { RestoreStaminaButton, StaminaTimer } from "@/features/stamina";
 import { useOwnedMonstersValue } from "@/hooks/useOwnedMonsters";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import clsx from "clsx";
@@ -107,6 +107,7 @@ export const MainMonsters = () => {
               ) : (
                 <></>
               )}
+              <RestoreStaminaButton className={clsx("mt-[5px]")} />
             </div>
           </div>
           <MonsterFightText className={clsx("w-[100%]", "mt-[40px]")} />

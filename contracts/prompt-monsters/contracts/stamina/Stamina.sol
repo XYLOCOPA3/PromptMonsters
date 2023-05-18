@@ -221,6 +221,11 @@ contract Stamina is
       monsterId != type(uint256).max,
       "Stamina: You cannot restore stamina of the free monster"
     );
+    uint256 stamina = _calculateStamina(monsterId);
+    require(
+      stamina == 0,
+      "Stamina: You cannot restore stamina because it is not empty"
+    );
 
     erc20.safeTransferFrom(msg.sender, promptMonstersWallet, restorePrice);
 
