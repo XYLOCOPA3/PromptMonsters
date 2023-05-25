@@ -29,6 +29,22 @@ export const BATTLE_S1_PROXY_ADDRESS = IS_PRODUCTION
   : "0xc79BB7EA1c8523779091C4c233665137461a3047"; // mchTestnet
 
 // --------------------------------------------------
+// BossBattle
+// --------------------------------------------------
+
+export const BOSS_BATTLE_PROXY_ADDRESS = IS_PRODUCTION
+  ? "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" // mchMainnet
+  : "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"; // mchTestnet
+
+// --------------------------------------------------
+// BossBattleMzDao
+// --------------------------------------------------
+
+export const BOSS_BATTLE_MZ_DAO_PROXY_ADDRESS = IS_PRODUCTION
+  ? "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" // mchMainnet
+  : "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"; // mchTestnet
+
+// --------------------------------------------------
 // PromptMonsters
 // --------------------------------------------------
 
