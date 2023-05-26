@@ -8,7 +8,7 @@ interface IBossMonster {
   // State
   // --------------------------------------------------------------------------------
 
-  struct MonsterStatusForBbEvent {
+  struct MonsterAdjForBossMonster {
     uint256 terrainAdj;
     uint256 specialBuff;
   }

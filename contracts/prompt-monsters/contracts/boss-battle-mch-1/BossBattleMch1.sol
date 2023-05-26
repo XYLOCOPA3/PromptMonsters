@@ -31,7 +31,7 @@ contract BossBattleMch1 is
 
   BBState public initialBBState;
 
-  mapping(uint256 => uint256) public highScore;
+  mapping(address => uint256) public highScore;
 
   // key: resurrection prompt => value: {score, monster hp, boss hp}
   mapping(address => BBState) private bbStates;
