@@ -27,9 +27,7 @@ contract BossBattle is
 
   IPromptMonsters public promptMonsters;
 
-  mapping(uint256 => bool) public isInBossBattleById;
-
-  mapping(address => bool) public isInBossBattleByRp;
+  mapping(address => bool) public isUserInBossBattle;
 
   address[] private _bossBattleEventsAddress;
 
@@ -110,26 +108,32 @@ contract BossBattle is
 
   /// @dev Start boss battle of the event
   /// @param bossBattleEventAddress BossBattleEvent contract address
-  function startEventBossBattle(
-    address bossBattleEventAddress
+  /// @param resurrectionPrompt resurrection prompt
+  function startBossBattle(
+    address bossBattleEventAddress,
+    address resurrectionPrompt
   ) external onlyRole(GAME_ROLE) {
+    // @todo check isUserInBossBattle flag and turn it to true
     // @todo check if this is the first time of boss battle with PromptMonsters aditional status for boss battle
     // @todo if this is the first time, set additional status for skills in PromptMonsters
     // @todo excute startBossBattle() in arbitary BossBattleEvent contract
   }
 
-  /// @dev retrieve boss battle data for the Event
+  /// @dev retrieve boss battle data to calculate battle result
   /// @param bossBattleEventAddress BossBattleEvent contract address
   /// @return bossBattleData
-  function retrieveEventBossBattleData(
+  function retrieveBossBattleData(
     address bossBattleEventAddress
-  ) external view returns (BBState memory bossBattleData) {
+  ) external view returns (bossBattleData memory) {
     // @todo retrieve boss battle data from arbitary BossBattleEvent contract
+    // @todo retrieve monster status from PromptMonsters contract
+    // @todo merge two data and return
+    return bossBattleData("", ["", "", "", ""], 0, 0, 0, 0);
   }
 
-  /// @dev Battle with boss of the event
+  /// @dev Record battle result with boss of the event
   /// @param bossBattleEventAddress BossBattleEvent contract address
-  function battleEventBoss(
+  function recordBossBattle(
     address bossBattleEventAddress
   ) external onlyRole(GAME_ROLE) {
     // @todo excute battle() in arbitary BossBattleEvent contract
@@ -137,10 +141,11 @@ contract BossBattle is
 
   /// @dev End boss battle of the event
   /// @param bossBattleEventAddress BossBattleEvent contract address
-  function endEventBossBattle(
+  function endBossBattle(
     address bossBattleEventAddress
   ) external onlyRole(GAME_ROLE) {
     // @todo excute endBossBattle() in arbitary BossBattleEvent contract
+    // @todo check isUserInBossBattle flag and turn it to false
   }
 
   // --------------------------------------------------------------------------------

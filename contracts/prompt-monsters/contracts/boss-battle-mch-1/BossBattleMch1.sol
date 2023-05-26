@@ -5,14 +5,15 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
+import {IBossBattleEvent} from "../interfaces/IBossBattleEvent.sol";
 import {IBossMonster} from "../interfaces/IBossMonster.sol";
 import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
 
-/// @title BossMonsterMzclubUfo
-/// @dev This is a contract of BossMonsterMzclubUfo.
-contract BossMonsterMzclubUfo is
+/// @title BossBattleMch1
+/// @dev This is a contract of BossBattleMch1.
+contract BossBattleMch1 is
   Initializable,
-  IBossMonster,
+  IBossBattleEvent,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
 {
@@ -22,12 +23,18 @@ contract BossMonsterMzclubUfo is
 
   bytes32 public GAME_ROLE;
 
+  IBossMonster public bossMonster;
+
   IPromptMonsters public promptMonsters;
 
-  BossStatus public bossStatus;
+  mapping(address => bool) public isMonsterInBossBattle;
 
-  // key: resurrection prompt, value: {terrainAdj, specialBuff}
-  mapping(address => MonsterStatusForBbEvent) private _monsterStatuses;
+  BBState public initialBBState;
+
+  mapping(uint256 => uint256) public highScore;
+
+  // key: resurrection prompt => value: {score, monster hp, boss hp}
+  mapping(address => BBState) private bbStates;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -48,14 +55,39 @@ contract BossMonsterMzclubUfo is
 
     _grantRole(GAME_ROLE, msg.sender);
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+
+    initialBBState = BBState(0, 0, 100, 100);
   }
 
   // --------------------------------------------------------------------------------
   // Getter
   // --------------------------------------------------------------------------------
+
+  /// @dev Get bossMonsterAddress
+  /// @return address of bossMonster
+  function getBossMonsterAddress() external view returns (address) {
+    return address(bossMonster);
+  }
+
+  /// @dev Get promptMonstersAddress
+  /// @return address of promptMonsters
+  function getPromptMonstersAddress() external view returns (address) {
+    return address(promptMonsters);
+  }
+
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
+
+  /// @dev Set bossMonsterAddress
+  /// @param bossMonsterAddress address of bossMonster
+  function setBossMonsterAddress(
+    address bossMonsterAddress
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    bossMonster = IBossMonster(bossMonsterAddress);
+
+    emit SetBossMonsterAddress(msg.sender, bossMonsterAddress);
+  }
 
   /// @dev Set promptMonstersAddress
   /// @param promptMonstersAddress address of promptMonsters
@@ -71,11 +103,53 @@ contract BossMonsterMzclubUfo is
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @dev retrieve all data for
+  /// @dev Start boss battle
+  /// @param resurrectionPrompt resurrection prompt
+  function startBossBattle(
+    address resurrectionPrompt
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    require(
+      !isMonsterInBossBattle[resurrectionPrompt],
+      "BossBattle: already started"
+    );
+    isMonsterInBossBattle[resurrectionPrompt] = true;
+    // @todo if this is the first time to play this BB, set monster's bbStatus for this BossMonster
+    // @todo initialize bbState
+  }
+
+  /// @dev recordBossBattle
+  /// @param resurrectionPrompt resurrection prompt
+  /// @param bbState bbState to update
+  function recordBossBattle(
+    address resurrectionPrompt,
+    BBState memory bbState
+  ) external onlyRole(GAME_ROLE) {
+    require(
+      isMonsterInBossBattle[resurrectionPrompt],
+      "BossBattle: not started"
+    );
+    // @todo update bbStates
+    // @todo if the monster is dead, excute endBossBattle()
+    // @todo emit event if the monster is alive or dead
+  }
+
+  /// @dev End boss battle
+  /// @param resurrectionPrompt resurrection prompt
+  function endBossBattle(
+    address resurrectionPrompt
+  ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    // @todo check isMonsterInBossBattle flag
+    // @todo update highScore if the score is higher than the previous one
+    // @todo initialize bbState
+    // @todo turn isMonsterInBossBattle flag to false
+  }
 
   // --------------------------------------------------------------------------------
   // Internal
   // --------------------------------------------------------------------------------
+
+  /// @dev initialize bbStates
+  /// @param resurrectionPrompt resurrection prompt
 
   /// @dev Authorize upgrade
   /// @param newImplementation new implementation address

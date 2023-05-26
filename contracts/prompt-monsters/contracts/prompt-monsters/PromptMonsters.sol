@@ -51,6 +51,15 @@ contract PromptMonsters is
 
   IPromptMonstersImage public promptMonstersImage;
 
+  // @todo add event/emit
+  bool public paused;
+
+  mapping(address => bool) public isMinted;
+
+  mapping(uint256 => address) public indexResurrection;
+
+  mapping(address => mapping(string => uint256)) public skillTypes;
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
@@ -99,6 +108,32 @@ contract PromptMonsters is
     returns (bool)
   {
     return super.supportsInterface(interfaceId);
+  }
+
+  // --------------------------------------------------------------------------------
+  // Modifier
+  // --------------------------------------------------------------------------------
+
+  /// @dev Modifier to make a function callable only when the contract is not paused.
+  modifier whenNotPaused() {
+    _requireNotPaused();
+    _;
+  }
+
+  /// @dev Modifier to make a function callable only when the contract is paused.
+  modifier whenPaused() {
+    _requirePaused();
+    _;
+  }
+
+  /// @dev Throws if the contract is paused.
+  function _requireNotPaused() internal view {
+    require(!paused, "Pausable: paused");
+  }
+
+  /// @dev Throws if the contract is not paused.
+  function _requirePaused() internal view {
+    require(paused, "Pausable: not paused");
   }
 
   // --------------------------------------------------------------------------------
@@ -280,6 +315,16 @@ contract PromptMonsters is
     promptMonstersImage = IPromptMonstersImage(newState_);
   }
 
+  /// @dev Triggers stopped state
+  function pause() external onlyRole(DEFAULT_ADMIN_ROLE) whenNotPaused {
+    paused = true;
+  }
+
+  /// @dev Returns to normal state
+  function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) whenPaused {
+    paused = false;
+  }
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
@@ -297,7 +342,7 @@ contract PromptMonsters is
 
   /// @dev Mint monster by admin
   /// @param resurrectionPrompt resurrection prompt
-  function mint(address resurrectionPrompt) external {
+  function mint(address resurrectionPrompt) external whenNotPaused {
     require(
       erc20.balanceOf(msg.sender) >= mintPrice,
       "PromptMonsters: insufficient ERC20 balance"
@@ -313,7 +358,9 @@ contract PromptMonsters is
     );
     _monsters.push(monster);
     resurrectionIndex[resurrectionPrompt] = newTokenId;
-    delete _monsterHistory[resurrectionPrompt];
+    indexResurrection[newTokenId] = resurrectionPrompt;
+    // delete _monsterHistory[resurrectionPrompt];
+    isMinted[resurrectionPrompt] = true;
     erc20.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
     _safeMint(msg.sender, newTokenId);
 
@@ -324,7 +371,7 @@ contract PromptMonsters is
   /// This function is not a standard burn function.
   /// Your NFT will be transferred to the owner of this contract if you call this function.
   /// @param tokenId_ token ID
-  function burn(uint256 tokenId_) external nonReentrant {
+  function burn(uint256 tokenId_) external nonReentrant whenNotPaused {
     safeTransferFrom(
       _msgSender(),
       getRoleMember(DEFAULT_ADMIN_ROLE, 0),
@@ -339,6 +386,21 @@ contract PromptMonsters is
       _exists(monsterId) || monsterId == type(uint256).max,
       "PromptMonsters: monster does not exist"
     );
+  }
+
+  /// @dev assign skillTypes
+  /// @param resurrectionPrompt_ resurrection prompt
+  /// @param types_ types
+  function assignSkillTypes(
+    address resurrectionPrompt_,
+    uint256[] memory types_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    require(
+      types_.length <= 4,
+      "PromptMonsters: types length must be less than or equal to 4"
+    );
+    // @todo get monster skills and choose 4 skills
+    // @todo assign skills to types
   }
 
   // --------------------------------------------------------------------------------
