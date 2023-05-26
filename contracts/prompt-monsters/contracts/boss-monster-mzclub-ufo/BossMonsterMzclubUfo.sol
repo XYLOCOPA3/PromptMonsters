@@ -5,14 +5,14 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
-import {IBossBattleEvent} from "../interfaces/IBossBattleEvent.sol";
+import {IBossMonster} from "../interfaces/IBossMonster.sol";
 import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
 
-/// @title BossBattleMzDao
-/// @dev This is a contract of BossBattleMzDao.
-contract BossBattleMzDao is
+/// @title BossMonsterMzclubUfo
+/// @dev This is a contract of BossMonsterMzclubUfo.
+contract BossMonsterMzclubUfo is
   Initializable,
-  IBossBattleEvent,
+  IBossMonster,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
 {
@@ -24,15 +24,10 @@ contract BossBattleMzDao is
 
   IPromptMonsters public promptMonsters;
 
-  bool public isInBossBattle;
-
   BossStatus public bossStatus;
 
-  // key: resurrection prompt => value: {score, monster hp, boss hp}
-  mapping(address => BBState) private bbStates;
-
   // key: resurrection prompt, value: {terrainAdj, specialBuff}
-  mapping(address => MonsterStatusForBbEvent) private _bbStatuses;
+  mapping(address => MonsterStatusForBbEvent) private _monsterStatuses;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -76,33 +71,7 @@ contract BossBattleMzDao is
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @dev Start boss battle
-  /// @param resurrectionPrompt resurrection prompt
-  function startBossBattle(
-    address resurrectionPrompt
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    require(!isInBossBattle, "BossBattleMzDao: already started");
-    isInBossBattle = true;
-  }
-
-  /// @dev battle
-  /// @param resurrectionPrompt resurrection prompt
-  /// @param skillIndex skill index of the monster to use
-  /// @return result of the battle
-  function battle(
-    address resurrectionPrompt,
-    uint256 skillIndex
-  ) external onlyRole(GAME_ROLE) returns (bool) {
-    require(isInBossBattle, "BossBattleMzDao: not started");
-    // @todo return if the monster is alive
-    return true;
-  }
-
-  /// @dev End boss battle
-  /// @param resurrectionPrompt resurrection prompt
-  function endBossBattle(
-    address resurrectionPrompt
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {}
+  /// @dev retrieve all data for
 
   // --------------------------------------------------------------------------------
   // Internal

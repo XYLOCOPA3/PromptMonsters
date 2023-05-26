@@ -5,15 +5,15 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
-import {IBossBattle} from "./IBossBattle.sol";
 import {IBossBattleEvent} from "../interfaces/IBossBattleEvent.sol";
+import {IBossMonster} from "../interfaces/IBossMonster.sol";
 import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
 
-/// @title BossBattle
-/// @dev This is a contract of BossBattle.
-contract BossBattle is
+/// @title BossBattleMzclub1
+/// @dev This is a contract of BossBattleMzclub1.
+contract BossBattleMzclub1 is
   Initializable,
-  IBossBattle,
+  IBossBattleEvent,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
 {
@@ -23,15 +23,20 @@ contract BossBattle is
 
   bytes32 public GAME_ROLE;
 
-  bool public whenBossBattleActive;
+  IBossMonster public bossMonster;
 
   IPromptMonsters public promptMonsters;
 
-  mapping(uint256 => bool) public isInBossBattleById;
+  bool public isInBossBattle;
 
-  mapping(address => bool) public isInBossBattleByRp;
+  BBState public initialBBState;
 
-  address[] private _bossBattleEventsAddress;
+  mapping(uint256 => uint256) public totalScoreById;
+
+  mapping(uint256 => uint256) public totalScoreByRp;
+
+  // key: resurrection prompt => value: {score, monster hp, boss hp}
+  mapping(address => BBState) private bbStates;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -52,44 +57,38 @@ contract BossBattle is
 
     _grantRole(GAME_ROLE, msg.sender);
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+
+    initialBBState = BBState(0, 0, 100, 100);
   }
 
   // --------------------------------------------------------------------------------
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @dev Get bossBattleEventAddress
-  /// @return bossBattleEventAddress address of bossBattleEvent
-  function getBossBattleEventAddress(
-    uint256 index
-  ) external view returns (address bossBattleEventAddress) {
-    bossBattleEventAddress = _bossBattleEventsAddress[index];
+  /// @dev Get bossMonsterAddress
+  /// @return address of bossMonster
+  function getBossMonsterAddress() external view returns (address) {
+    return address(bossMonster);
   }
 
   /// @dev Get promptMonstersAddress
-  /// @return promptMonstersAddress address of promptMonsters
-  function getPromptMonstersAddress()
-    external
-    view
-    returns (address promptMonstersAddress)
-  {
-    promptMonstersAddress = address(promptMonsters);
+  /// @return address of promptMonsters
+  function getPromptMonstersAddress() external view returns (address) {
+    return address(promptMonsters);
   }
-
-  /// @dev Get whenBossBattleActive
 
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
 
-  /// @dev Add bossBattleEventAddress
-  /// @param bossBattleEventAddress address of bossBattleEvent
-  function addBossBattleEventAddress(
-    address bossBattleEventAddress
+  /// @dev Set bossMonsterAddress
+  /// @param bossMonsterAddress address of bossMonster
+  function setBossMonsterAddress(
+    address bossMonsterAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    _bossBattleEventsAddress.push(bossBattleEventAddress);
+    bossMonster = IBossMonster(bossMonsterAddress);
 
-    emit AddBossBattleEventAddress(msg.sender, bossBattleEventAddress);
+    emit SetBossMonsterAddress(msg.sender, bossMonsterAddress);
   }
 
   /// @dev Set promptMonstersAddress
@@ -102,53 +101,47 @@ contract BossBattle is
     emit SetPromptMonstersAddress(msg.sender, promptMonstersAddress);
   }
 
-  /// @dev Set whenBossBattleActive
-
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @dev Start boss battle of the event
-  /// @param bossBattleEventAddress BossBattleEvent contract address
-  function startEventBossBattle(
-    address bossBattleEventAddress
-  ) external onlyRole(GAME_ROLE) {
-    // @todo check if this is the first time of boss battle with PromptMonsters aditional status for boss battle
-    // @todo if this is the first time, set additional status for skills in PromptMonsters
-    // @todo excute startBossBattle() in arbitary BossBattleEvent contract
+  /// @dev Start boss battle
+  /// @param resurrectionPrompt resurrection prompt
+  function startBossBattle(
+    address resurrectionPrompt
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    require(!isInBossBattle, "BossBattleMzDao: already started");
+    isInBossBattle = true;
+    // @todo if this is the first time to play this BB, set bbStatus in this BossMonster
+    // @todo initialize bbStates
   }
 
-  /// @dev retrieve boss battle data for the Event
-  /// @param bossBattleEventAddress BossBattleEvent contract address
-  /// @return bossBattleData
-  function retrieveEventBossBattleData(
-    address bossBattleEventAddress
-  ) external view returns (BBState memory bossBattleData) {
-    // @todo retrieve boss battle data from arbitary BossBattleEvent contract
+  /// @dev battle
+  /// @param resurrectionPrompt resurrection prompt
+  /// @param bbState bbState to update
+  /// @return result of the battle
+  function battle(
+    address resurrectionPrompt,
+    BBState memory bbState
+  ) external onlyRole(GAME_ROLE) {
+    require(isInBossBattle, "BossBattleMzDao: not started");
+    // @todo update bbStates
+    // @todo if the monster is dead, excute endBossBattle()
+    // @todo emit event if the monster is alive
   }
 
-  /// @dev Battle with boss of the event
-  /// @param bossBattleEventAddress BossBattleEvent contract address
-  function battleEventBoss(
-    address bossBattleEventAddress
-  ) external onlyRole(GAME_ROLE) {
-    // @todo excute battle() in arbitary BossBattleEvent contract
-  }
-
-  /// @dev End boss battle of the event
-  /// @param bossBattleEventAddress BossBattleEvent contract address
-  function endEventBossBattle(
-    address bossBattleEventAddress
-  ) external onlyRole(GAME_ROLE) {
-    // @todo excute endBossBattle() in arbitary BossBattleEvent contract
-  }
+  /// @dev End boss battle
+  /// @param resurrectionPrompt resurrection prompt
+  function endBossBattle(
+    address resurrectionPrompt
+  ) public onlyRole(DEFAULT_ADMIN_ROLE) {}
 
   // --------------------------------------------------------------------------------
   // Internal
   // --------------------------------------------------------------------------------
 
-  /// @dev Initialize initial status for BossBattleMzDao
-  function _initializeBBStatus() internal onlyRole(DEFAULT_ADMIN_ROLE) {}
+  /// @dev initialize bbStates
+  /// @param resurrectionPrompt resurrection prompt
 
   /// @dev Authorize upgrade
   /// @param newImplementation new implementation address
