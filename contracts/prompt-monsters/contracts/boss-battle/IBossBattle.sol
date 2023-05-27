@@ -30,6 +30,7 @@ interface IBossBattle {
 
   event SetPromptMonstersAddress(
     address indexed publisher,
+    address indexed oldValue,
     address indexed newValue
   );
 

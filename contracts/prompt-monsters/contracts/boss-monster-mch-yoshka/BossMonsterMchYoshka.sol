@@ -26,7 +26,6 @@ contract BossMonsterMchYoshka is
 
   BossStatus public bossStatus;
 
-  // key: resurrection prompt, value: {terrainAdj, specialBuff}
   mapping(address => MonsterAdjForBossMonster) private _monstersAdjs;
 
   // --------------------------------------------------------------------------------
@@ -66,9 +65,10 @@ contract BossMonsterMchYoshka is
   function setPromptMonstersAddress(
     address promptMonstersAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    address oldValue = address(promptMonsters);
     promptMonsters = IPromptMonsters(promptMonstersAddress);
 
-    emit SetPromptMonstersAddress(msg.sender, promptMonstersAddress);
+    emit SetPromptMonstersAddress(msg.sender, oldValue, promptMonstersAddress);
   }
 
   /// @dev Set bossStatus
@@ -80,7 +80,7 @@ contract BossMonsterMchYoshka is
 
   /// @dev Assign monster adjs for this boss monster
   /// @param resurrectionPrompt resurrection prompt
-  /// @param terrainAdj terrain adj
+  /// @param fieldAdj terrain adj
   /// @param specialBuff special buff
 
   /// @dev Retrieve monster adjs for this boss monster

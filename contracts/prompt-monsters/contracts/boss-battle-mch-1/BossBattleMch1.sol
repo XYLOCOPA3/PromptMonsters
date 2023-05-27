@@ -33,7 +33,6 @@ contract BossBattleMch1 is
 
   mapping(address => uint256) public highScore;
 
-  // key: resurrection prompt => value: {score, monster hp, boss hp}
   mapping(address => BBState) private bbStates;
 
   // --------------------------------------------------------------------------------
@@ -60,20 +59,21 @@ contract BossBattleMch1 is
   }
 
   // --------------------------------------------------------------------------------
-  // Getter
+  // State
   // --------------------------------------------------------------------------------
 
-  /// @dev Get bossMonsterAddress
-  /// @return address of bossMonster
-  function getBossMonsterAddress() external view returns (address) {
-    return address(bossMonster);
+  /// @dev check if the monster is in boss battle
+  modifier onlyMonsterInBossBattle(address resurrectionPrompt) {
+    require(
+      isMonsterInBossBattle[resurrectionPrompt],
+      "BossBattle: not started"
+    );
+    _;
   }
 
-  /// @dev Get promptMonstersAddress
-  /// @return address of promptMonsters
-  function getPromptMonstersAddress() external view returns (address) {
-    return address(promptMonsters);
-  }
+  // --------------------------------------------------------------------------------
+  // Getter
+  // --------------------------------------------------------------------------------
 
   // --------------------------------------------------------------------------------
   // Setter
@@ -84,9 +84,10 @@ contract BossBattleMch1 is
   function setBossMonsterAddress(
     address bossMonsterAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    address oldValue = address(bossMonster);
     bossMonster = IBossMonster(bossMonsterAddress);
 
-    emit SetBossMonsterAddress(msg.sender, bossMonsterAddress);
+    emit SetBossMonsterAddress(msg.sender, oldValue, bossMonsterAddress);
   }
 
   /// @dev Set promptMonstersAddress
@@ -94,9 +95,10 @@ contract BossBattleMch1 is
   function setPromptMonstersAddress(
     address promptMonstersAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    address oldValue = address(promptMonsters);
     promptMonsters = IPromptMonsters(promptMonstersAddress);
 
-    emit SetPromptMonstersAddress(msg.sender, promptMonstersAddress);
+    emit SetPromptMonstersAddress(msg.sender, oldValue, promptMonstersAddress);
   }
 
   // --------------------------------------------------------------------------------
@@ -123,11 +125,7 @@ contract BossBattleMch1 is
   function recordBossBattle(
     address resurrectionPrompt,
     BBState memory bbState
-  ) external onlyRole(GAME_ROLE) {
-    require(
-      isMonsterInBossBattle[resurrectionPrompt],
-      "BossBattle: not started"
-    );
+  ) external onlyRole(GAME_ROLE) onlyMonsterInBossBattle(resurrectionPrompt) {
     // @todo update bbStates
     // @todo if the monster is dead, excute endBossBattle()
     // @todo emit event if the monster is alive or dead

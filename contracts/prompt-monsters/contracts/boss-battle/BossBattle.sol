@@ -96,9 +96,10 @@ contract BossBattle is
   function setPromptMonstersAddress(
     address promptMonstersAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    address oldValue = address(promptMonsters);
     promptMonsters = IPromptMonsters(promptMonstersAddress);
 
-    emit SetPromptMonstersAddress(msg.sender, promptMonstersAddress);
+    emit SetPromptMonstersAddress(msg.sender, oldValue, promptMonstersAddress);
   }
 
   /// @dev Set whenBossBattleActive
@@ -134,10 +135,10 @@ contract BossBattle is
     // @todo excute startBossBattle() in arbitary BossBattleEvent contract
   }
 
-  /// @dev retrieve boss battle data to calculate battle result
+  /// @dev get boss battle data to calculate battle result
   /// @param bossBattleEventAddress BossBattleEvent contract address
   /// @return bossBattleData
-  function retrieveBossBattleData(
+  function getBossBattleData(
     address bossBattleEventAddress
   ) external view returns (bossBattleData memory) {
     // @todo retrieve boss battle data from arbitary BossBattleEvent contract

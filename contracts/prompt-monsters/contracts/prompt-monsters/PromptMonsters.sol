@@ -56,8 +56,12 @@ contract PromptMonsters is
 
   mapping(address => bool) public isMinted;
 
-  mapping(uint256 => address) public indexResurrection;
+  mapping(uint256 => address) public monsterIdToResurrectionPrompt;
 
+  // 0 → その他
+  // 1 → 物理攻撃
+  // 2 → 特殊攻撃
+  // 100 → 回復
   mapping(address => mapping(string => uint256)) public skillTypes;
 
   // --------------------------------------------------------------------------------
@@ -116,24 +120,14 @@ contract PromptMonsters is
 
   /// @dev Modifier to make a function callable only when the contract is not paused.
   modifier whenNotPaused() {
-    _requireNotPaused();
+    require(!paused, "Pausable: paused");
     _;
   }
 
   /// @dev Modifier to make a function callable only when the contract is paused.
   modifier whenPaused() {
-    _requirePaused();
-    _;
-  }
-
-  /// @dev Throws if the contract is paused.
-  function _requireNotPaused() internal view {
-    require(!paused, "Pausable: paused");
-  }
-
-  /// @dev Throws if the contract is not paused.
-  function _requirePaused() internal view {
     require(paused, "Pausable: not paused");
+    _;
   }
 
   // --------------------------------------------------------------------------------
@@ -358,7 +352,7 @@ contract PromptMonsters is
     );
     _monsters.push(monster);
     resurrectionIndex[resurrectionPrompt] = newTokenId;
-    indexResurrection[newTokenId] = resurrectionPrompt;
+    monsterIdToResurrectionPrompt[newTokenId] = resurrectionPrompt;
     // delete _monsterHistory[resurrectionPrompt];
     isMinted[resurrectionPrompt] = true;
     erc20.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);

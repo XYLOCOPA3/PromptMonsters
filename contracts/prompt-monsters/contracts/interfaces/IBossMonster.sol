@@ -9,7 +9,7 @@ interface IBossMonster {
   // --------------------------------------------------------------------------------
 
   struct MonsterAdjForBossMonster {
-    uint256 terrainAdj;
+    uint256 fieldAdj;
     uint256 specialBuff;
   }
 
@@ -33,6 +33,7 @@ interface IBossMonster {
 
   event SetPromptMonstersAddress(
     address indexed publisher,
+    address indexed oldValue,
     address indexed newValue
   );
 

@@ -21,11 +21,13 @@ interface IBossBattleEvent {
 
   event SetBossMonsterAddress(
     address indexed publisher,
+    address indexed oldValue,
     address indexed newValue
   );
 
   event SetPromptMonstersAddress(
     address indexed publisher,
+    address indexed oldValue,
     address indexed newValue
   );
 
