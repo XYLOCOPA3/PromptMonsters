@@ -182,4 +182,12 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @dev Check monster ID
   /// @param monsterId monster ID
   function checkMonsterId(uint256 monsterId) external view;
+
+  /// @dev assign skillTypes
+  /// @param resurrectionPrompt_ resurrection prompt
+  /// @param types_ types
+  function assignSkillTypes(
+    address resurrectionPrompt_,
+    uint256[] memory types_
+  ) external;
 }

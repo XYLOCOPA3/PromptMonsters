@@ -7,6 +7,7 @@ import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgrad
 
 import {IBossBattle} from "./IBossBattle.sol";
 import {IBossBattleEvent} from "../interfaces/IBossBattleEvent.sol";
+import {IBossMonster} from "../interfaces/IBossMonster.sol";
 import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
 
 /// @title BossBattle
@@ -106,6 +107,20 @@ contract BossBattle is
   // Main Logic
   // --------------------------------------------------------------------------------
 
+  /// @dev Check if user is ready to start arbitary boss battle
+  /// @param resurrectionPrompt resurrection prompt
+  /// @param bossBattleEventAddress BossBattleEvent contract address
+  /// @return if user is ready to start arbitary boss battle
+  function checkReadyToBossBattle(
+    address resurrectionPrompt,
+    address bossBattleEventAddress
+  ) external view returns (bool[2] memory) {
+    // @todo check if this is the first time of boss battle with PromptMonsters aditional status for boss battle
+    // @todo check if user is ready to fight arbitary boss monster
+    // bool checkBbEvent = IBossMonster(address(IBossBattle(bossBattleEventAddress).bossMonster())).
+    return [true, true];
+  }
+
   /// @dev Start boss battle of the event
   /// @param bossBattleEventAddress BossBattleEvent contract address
   /// @param resurrectionPrompt resurrection prompt
@@ -113,8 +128,8 @@ contract BossBattle is
     address bossBattleEventAddress,
     address resurrectionPrompt
   ) external onlyRole(GAME_ROLE) {
-    // @todo check isUserInBossBattle flag and turn it to true
-    // @todo check if this is the first time of boss battle with PromptMonsters aditional status for boss battle
+    require(isUserInBossBattle[msg.sender] == false, "already in boss battle");
+    isUserInBossBattle[msg.sender] = true;
     // @todo if this is the first time, set additional status for skills in PromptMonsters
     // @todo excute startBossBattle() in arbitary BossBattleEvent contract
   }

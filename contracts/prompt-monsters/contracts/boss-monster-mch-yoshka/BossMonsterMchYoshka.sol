@@ -86,6 +86,11 @@ contract BossMonsterMchYoshka is
   /// @dev Retrieve monster adjs for this boss monster
   /// @param resurrectionPrompt resurrection prompt
   /// @return Adjs
+  function retrieveMonsterAdjsForBossMonster(
+    address resurrectionPrompt
+  ) external view returns (MonsterAdjForBossMonster memory) {
+    return _monstersAdjs[resurrectionPrompt];
+  }
 
   // --------------------------------------------------------------------------------
   // Internal
