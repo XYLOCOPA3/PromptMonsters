@@ -9,10 +9,10 @@ interface IBossBattleEvent {
   // --------------------------------------------------------------------------------
 
   struct BBState {
-    uint256 turn;
-    uint256 score;
-    uint256 monsterAdj;
-    uint256 bossAdj;
+    uint32 turn;
+    uint32 score;
+    uint32 monsterAdj;
+    uint32 bossAdj;
   }
 
   // --------------------------------------------------------------------------------
