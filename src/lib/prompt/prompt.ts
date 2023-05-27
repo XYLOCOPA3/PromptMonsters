@@ -1,3 +1,4 @@
+import { LANGUAGES } from "@/const/language";
 import { IPromptMonsters } from "@/typechain/PromptMonsters";
 
 /**
@@ -11,7 +12,7 @@ export const getGeneratingPrompt = (
   language: string,
 ): string => {
   switch (language) {
-    case "English":
+    case LANGUAGES[0]:
       return `Create a JSON fictional monster:
 - Non-litigious words
 - Unique "name"
@@ -29,7 +30,7 @@ feature="A yellow bear that loves honey":
 {"language":"English","name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":12,"ATK":2,"DEF":4,"INT":6,"MGR":4,"AGL":4},"skills":["Honey Attack","Hug","Healing Song"],"isFiction":true,"isExisting":true}
 
 feature="${feature}":`;
-    case "Japanese":
+    case LANGUAGES[1]:
       return `架空のモンスターのJSONを作成する:
 - 訴訟に関連する単語を使用しない
 - "name"はユニークである
@@ -69,7 +70,7 @@ export const getFightPrompt = (
   language: string = "English",
 ): string => {
   switch (language) {
-    case "English":
+    case LANGUAGES[0]:
       return `MonsterA: id:${monsterId === "" ? "dummyID" : monsterId} name:${
         monster.name
       } flavor:${monster.flavor} status: HP:${monster.hp} ATK:${
@@ -89,7 +90,7 @@ Output in JSON format->{"battleAnalysis": "[Determine advantage in <50 chars usi
 
 ${monster.name} vs ${enemy.name}:
 Output in JSON format->`;
-    case "Japanese":
+    case LANGUAGES[1]:
       return `
 MonsterA: id:${monsterId === "" ? "dummyID" : monsterId} name:${
         monster.name

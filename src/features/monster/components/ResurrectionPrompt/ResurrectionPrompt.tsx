@@ -5,11 +5,12 @@ import { Hint } from "@/components/elements/Hint";
 import { useBattleController } from "@/hooks/useBattle";
 import { useMonsterController } from "@/hooks/useMonster";
 import { useOwnedMonstersState } from "@/hooks/useOwnedMonsters";
+import { useSetSelectedMonsterIdNameState } from "@/hooks/useSelectedMonsterIdName";
 import { disableState } from "@/stores/disableState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
-import { selectedMonsterIdNameState } from "@/stores/selectedMonsterIdNameState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
 let resurrectionPrompt = "";
@@ -28,9 +29,8 @@ export const ResurrectionPrompt = ({ className }: ResurrectionPromptProps) => {
   const monsterController = useMonsterController();
   const battleController = useBattleController();
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
-  const setSelectedMonsterIdName = useSetRecoilState(
-    selectedMonsterIdNameState,
-  );
+  const setSelectedMonsterIdName = useSetSelectedMonsterIdNameState();
+  const { t: tCommon } = useTranslation("common");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     resurrectionPrompt = e.target.value;
@@ -78,10 +78,7 @@ export const ResurrectionPrompt = ({ className }: ResurrectionPromptProps) => {
 
   return (
     <div className={clsx(className, "flex", "justify-center", "items-center")}>
-      <Hint
-        className={clsx("mr-[5px]")}
-        hintText={`What is the "Resurrection Prompt"?\n\nIt's an ID assigned to a monster when it's generated. Unminted monsters can be resurrected at any time by entering this ID.\n\n\n「Resurrection Prompt」とは？\n\nモンスターが生成された際に割り当てられるIDです。ミントされていないモンスターは、このIDを入力することでいつでも復活させることができます。`}
-      />
+      <Hint className={clsx("mr-[5px]")} hintText={tCommon("hint")} />
       <input
         className={clsx(
           "w-[80%]",

@@ -6,7 +6,7 @@ export class BattleModel extends ObjectCopier {
    * Constructor
    * You must create an instance with the static method `create`.
    * ```
-   * export const dummyMonster = BattleModel.create({ language: "Japanese" });
+   * export const dummyMonster = BattleModel.create({ language: "English" });
    * ```
    * @param battleAnalysis battle analysis
    * @param battleDescription battle description

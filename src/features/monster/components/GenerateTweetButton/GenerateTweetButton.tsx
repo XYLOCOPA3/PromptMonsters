@@ -9,6 +9,7 @@ import {
   trimCharacters100,
 } from "@/utils/charUtils";
 import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 
 export type GenerateTweetButtonProps = BaseProps;
 
@@ -21,6 +22,7 @@ export const GenerateTweetButton = ({
   className,
 }: GenerateTweetButtonProps) => {
   const monster = useMonsterValue();
+  const { t: tMonsters } = useTranslation("monsters");
 
   if (monster.name === "") return <></>;
   return (
@@ -32,7 +34,7 @@ export const GenerateTweetButton = ({
       target="_blank"
     >
       <Button
-        className={clsx("w-[40px]", "h-[40px]", "md:w-[100px]")}
+        className={clsx("w-[40px]", "h-[40px]", "md:w-[120px]")}
         variant="twitter"
         shape="circle"
       >
@@ -47,7 +49,7 @@ export const GenerateTweetButton = ({
           <div
             className={clsx("ml-[10px]", "text-black", "hidden", "md:inline")}
           >
-            Tweet
+            {tMonsters("tweet")}
           </div>
         </div>
       </Button>

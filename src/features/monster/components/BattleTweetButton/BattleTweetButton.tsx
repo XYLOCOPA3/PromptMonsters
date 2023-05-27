@@ -11,6 +11,7 @@ import {
   trimCharacters100,
 } from "@/utils/charUtils";
 import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 
 export type BattleTweetButtonProps = BaseProps;
 
@@ -22,6 +23,7 @@ export type BattleTweetButtonProps = BaseProps;
 export const BattleTweetButton = ({ className }: BattleTweetButtonProps) => {
   const monster = useMonsterValue();
   const battle = useBattleValue();
+  const { t: tMonsters } = useTranslation("monsters");
 
   if (battle.winnerId === "") return <></>;
   return (
@@ -33,7 +35,7 @@ export const BattleTweetButton = ({ className }: BattleTweetButtonProps) => {
       target="_blank"
     >
       <Button
-        className={clsx("w-[40px]", "h-[40px]", "md:w-[100px]")}
+        className={clsx("w-[40px]", "h-[40px]", "md:w-[120px]")}
         variant="twitter"
         shape="circle"
       >
@@ -48,7 +50,7 @@ export const BattleTweetButton = ({ className }: BattleTweetButtonProps) => {
           <div
             className={clsx("ml-[10px]", "text-black", "hidden", "md:inline")}
           >
-            Tweet
+            {tMonsters("tweet")}
           </div>
         </div>
       </Button>
