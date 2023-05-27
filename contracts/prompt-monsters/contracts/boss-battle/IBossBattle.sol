@@ -10,6 +10,15 @@ interface IBossBattle {
   // State
   // --------------------------------------------------------------------------------
 
+  struct bossBattleData {
+    string name;
+    string[4] skills;
+    uint32 atk;
+    uint32 def;
+    uint32 inte; // INT
+    uint32 mgr;
+  }
+
   // --------------------------------------------------------------------------------
   // Event
   // --------------------------------------------------------------------------------
@@ -21,6 +30,7 @@ interface IBossBattle {
 
   event SetPromptMonstersAddress(
     address indexed publisher,
+    address indexed oldValue,
     address indexed newValue
   );
 

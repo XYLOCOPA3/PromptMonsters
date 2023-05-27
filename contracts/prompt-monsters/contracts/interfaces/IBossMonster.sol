@@ -1,29 +1,35 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-/// @title IBossBattleEvent
-/// @dev This is an interface of BossBattleEvent.
-interface IBossBattleEvent {
+/// @title IBossMonster
+/// @dev This is an interface of BossMonster.
+interface IBossMonster {
   // --------------------------------------------------------------------------------
   // State
   // --------------------------------------------------------------------------------
 
-  struct BBState {
-    uint256 turn;
-    uint256 score;
-    uint256 monsterAdj;
-    uint256 bossAdj;
+  struct MonsterAdjForBossMonster {
+    uint256 fieldAdj;
+    uint256 specialBuff;
+  }
+
+  struct BossStatus {
+    string feature;
+    string name;
+    string flavor;
+    string[] skills;
+    uint32 lv;
+    uint32 hp;
+    uint32 atk;
+    uint32 def;
+    uint32 inte; // INT
+    uint32 mgr;
+    uint32 agl;
   }
 
   // --------------------------------------------------------------------------------
   // Event
   // --------------------------------------------------------------------------------
-
-  event SetBossMonsterAddress(
-    address indexed publisher,
-    address indexed oldValue,
-    address indexed newValue
-  );
 
   event SetPromptMonstersAddress(
     address indexed publisher,
@@ -47,4 +53,11 @@ interface IBossBattleEvent {
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
+
+  /// @dev Retrieve monster adjs for this boss monster
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return Adjs
+  function retrieveMonsterAdjsForBossMonster(
+    address resurrectionPrompt
+  ) external view returns (MonsterAdjForBossMonster memory);
 }
