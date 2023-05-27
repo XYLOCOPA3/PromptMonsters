@@ -7,13 +7,13 @@ import { disableState } from "@/stores/disableState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 import { useRecoilState, useRecoilValue } from "recoil";
 
 export type MonsterFightButtonProps = BaseProps;
 
 /**
  * Monster fight button
- * @feature
  * @keit0728
  * @param className Style from parent element
  */
@@ -24,6 +24,7 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
   const battleController = useBattleController();
+  const { t: tMonsters } = useTranslation("monsters");
 
   /**
    * Click event
@@ -62,10 +63,10 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
       loading={loading}
       onClick={handleClick}
     >
-      FIGHT
+      {tMonsters("fight")}
       {monsterMinted ? (
         <div className={clsx("text-[12px]", "md:text-[16px]")}>
-          Stamina: {monster.stamina} / 3
+          {tMonsters("stamina")}: {monster.stamina} / 3
         </div>
       ) : (
         <></>

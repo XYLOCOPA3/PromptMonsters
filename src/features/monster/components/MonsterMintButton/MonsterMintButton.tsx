@@ -4,10 +4,10 @@ import { mchVerse } from "@/const/chainParams";
 import { useMintPriceValue } from "@/hooks/useMintPrice";
 import { useMonsterState } from "@/hooks/useMonster";
 import { useOwnedMonstersController } from "@/hooks/useOwnedMonsters";
+import { useSetSelectedMonsterIdNameState } from "@/hooks/useSelectedMonsterIdName";
 import { useUserValue } from "@/hooks/useUser";
 import { disableState } from "@/stores/disableState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
-import { selectedMonsterIdNameState } from "@/stores/selectedMonsterIdNameState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -27,9 +27,7 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
   const [loading, setLoading] = useState(false);
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
   const ownedMonstersController = useOwnedMonstersController();
-  const setSelectedMonsterIdName = useSetRecoilState(
-    selectedMonsterIdNameState,
-  );
+  const setSelectedMonsterIdName = useSetSelectedMonsterIdNameState();
   const [disable, setDisable] = useRecoilState(disableState);
   const { chain } = useNetwork();
 
@@ -52,8 +50,8 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
         user.id,
         monster.resurrectionPrompt,
       );
-      ownedMonstersController.updateAfterMinted(newMonster);
       setSelectedMonsterIdName(`${newMonster.name} | id: ${newMonster.id}`);
+      ownedMonstersController.updateAfterMinted(newMonster);
       setMonsterMinted(true);
     } catch (e) {
       console.error(e);
