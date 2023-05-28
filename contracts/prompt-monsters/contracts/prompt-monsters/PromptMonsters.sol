@@ -235,6 +235,24 @@ contract PromptMonsters is
     uri = finalTokenUri;
   }
 
+  // /// @dev Get skill types
+  // /// @param resurrectionPrompt resurrection prompt
+  // /// @param skills skills
+  // /// @return skillTypes skill types
+  // function getSkillTypes(
+  //   address resurrectionPrompt,
+  //   uint256[] memory skills
+  // ) external view returns (uint256[] memory) {
+  //   uint256[4] memory _skillTypes = new uint256[](4);
+  //   for (uint i; i < skillsLength; ) {
+  //     _skillTypes[i] = skillTypes[resurrectionPrompt][skills[i]];
+  //     unchecked {
+  //       ++i;
+  //     }
+  //   }
+  //   return _skillTypes;
+  // }
+
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
@@ -389,12 +407,20 @@ contract PromptMonsters is
     address resurrectionPrompt_,
     uint256[] memory types_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    uint256 typesLength = types_.length;
     require(
-      types_.length <= 4,
+      typesLength <= 4,
       "PromptMonsters: types length must be less than or equal to 4"
     );
-    // @todo get monster skills and choose 4 skills
-    // @todo assign skills to types
+    for (uint256 i = 0; i < typesLength; ) {
+      skillTypes[resurrectionPrompt_][
+        _monsterHistory[resurrectionPrompt_].skills[i]
+      ] = types_[i];
+
+      unchecked {
+        ++i;
+      }
+    }
   }
 
   // --------------------------------------------------------------------------------

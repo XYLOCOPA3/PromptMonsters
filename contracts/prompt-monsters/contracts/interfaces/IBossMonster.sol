@@ -54,10 +54,10 @@ interface IBossMonster {
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @dev Retrieve monster adjs for this boss monster
+  /// @dev Get monster adjs for this boss monster
   /// @param resurrectionPrompt resurrection prompt
   /// @return Adjs
-  function retrieveMonsterAdjsForBossMonster(
+  function getMonsterAdjsForBossMonster(
     address resurrectionPrompt
   ) external view returns (MonsterAdjForBossMonster memory);
 }

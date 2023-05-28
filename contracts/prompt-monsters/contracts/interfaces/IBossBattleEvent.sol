@@ -41,10 +41,30 @@ interface IBossBattleEvent {
   // --------------------------------------------------------------------------------
   // Getter
   // --------------------------------------------------------------------------------
+
+  /// @dev Get bossMonsterAddress
+  function getBossMonsterAddress() external view returns (address);
+
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
+
+  /// @dev Start boss battle
+  /// @param resurrectionPrompt resurrection prompt
+  function startBossBattle(address resurrectionPrompt) external;
+
+  /// @dev recordBossBattle
+  /// @param resurrectionPrompt resurrection prompt
+  /// @param bbState bbState to update
+  function recordBossBattle(
+    address resurrectionPrompt,
+    BBState memory bbState
+  ) external;
+
+  /// @dev End boss battle
+  /// @param resurrectionPrompt resurrection prompt
+  function endBossBattle(address resurrectionPrompt) external;
 }

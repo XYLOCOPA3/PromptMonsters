@@ -82,11 +82,21 @@ contract BossMonsterMchYoshka is
   /// @param resurrectionPrompt resurrection prompt
   /// @param fieldAdj terrain adj
   /// @param specialBuff special buff
+  function setMonsterAdjsForBossMonster(
+    address resurrectionPrompt,
+    uint256 fieldAdj,
+    uint256 specialBuff
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _monstersAdjs[resurrectionPrompt] = MonsterAdjForBossMonster(
+      fieldAdj,
+      specialBuff
+    );
+  }
 
-  /// @dev Retrieve monster adjs for this boss monster
+  /// @dev Get monster adjs for this boss monster
   /// @param resurrectionPrompt resurrection prompt
   /// @return Adjs
-  function retrieveMonsterAdjsForBossMonster(
+  function getMonsterAdjsForBossMonster(
     address resurrectionPrompt
   ) external view returns (MonsterAdjForBossMonster memory) {
     return _monstersAdjs[resurrectionPrompt];

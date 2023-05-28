@@ -75,6 +75,11 @@ contract BossBattleMch1 is
   // Getter
   // --------------------------------------------------------------------------------
 
+  /// @dev Get bossMonsterAddress
+  function getBossMonsterAddress() external view returns (address) {
+    return address(bossMonster);
+  }
+
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
@@ -114,9 +119,9 @@ contract BossBattleMch1 is
       !isMonsterInBossBattle[resurrectionPrompt],
       "BossBattle: already started"
     );
+    // @todo ? if this is the first time to play this BB, set monster's bbStatus for this BossMonster
+    bbStates[resurrectionPrompt] = initialBBState;
     isMonsterInBossBattle[resurrectionPrompt] = true;
-    // @todo if this is the first time to play this BB, set monster's bbStatus for this BossMonster
-    // @todo initialize bbState
   }
 
   /// @dev recordBossBattle
@@ -126,9 +131,9 @@ contract BossBattleMch1 is
     address resurrectionPrompt,
     BBState memory bbState
   ) external onlyRole(GAME_ROLE) onlyMonsterInBossBattle(resurrectionPrompt) {
-    // @todo update bbStates
-    // @todo if the monster is dead, excute endBossBattle()
-    // @todo emit event if the monster is alive or dead
+    bbStates[resurrectionPrompt] = bbState;
+    // @todo ? if the monster is dead, excute endBossBattle()
+    // @todo ? emit event if the monster is alive or dead
   }
 
   /// @dev End boss battle
@@ -138,8 +143,9 @@ contract BossBattleMch1 is
   ) public onlyRole(DEFAULT_ADMIN_ROLE) {
     // @todo check isMonsterInBossBattle flag
     // @todo update highScore if the score is higher than the previous one
-    // @todo initialize bbState
+    bbStates[resurrectionPrompt] = initialBBState;
     // @todo turn isMonsterInBossBattle flag to false
+    isMonsterInBossBattle[resurrectionPrompt] = false;
   }
 
   // --------------------------------------------------------------------------------

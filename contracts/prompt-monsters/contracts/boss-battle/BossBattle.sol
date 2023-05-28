@@ -108,18 +108,59 @@ contract BossBattle is
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @dev Check if user is ready to start arbitary boss battle
-  /// @param resurrectionPrompt resurrection prompt
+  // /// @dev Check if user is ready to start arbitary boss battle
+  // /// @param resurrectionPrompt resurrection prompt
+  // /// @param bossBattleEventAddress BossBattleEvent contract address
+  // /// @return if user is ready to start arbitary boss battle
+  // function checkReadyToBossBattle(
+  //   address resurrectionPrompt,
+  //   address bossBattleEventAddress
+  // ) external view returns (bool[2] memory) {
+  //   // @todo ? check if this is the first time of boss battle with PromptMonsters aditional status for boss battle
+  //   // @todo ? check if user is ready to fight arbitary boss monster
+  //   address bossMonsterAddress = address(
+  //     IBossBattleEvent(bossBattleEventAddress).getBossMonsterAddress()
+  //   );
+  //   uint256 monsterFieldAdj = IBossMonster(bossMonsterAddress)
+  //     .getMonsterAdjsForBossMonster(resurrectionPrompt)
+  //     .fieldAdj;
+  //   bool checkBbEvent = monsterFieldAdj != 0;
+  //   return [true, checkBbEvent];
+  // }
+
+  /// @dev get boss battle data to calculate battle result
   /// @param bossBattleEventAddress BossBattleEvent contract address
-  /// @return if user is ready to start arbitary boss battle
-  function checkReadyToBossBattle(
-    address resurrectionPrompt,
-    address bossBattleEventAddress
-  ) external view returns (bool[2] memory) {
-    // @todo check if this is the first time of boss battle with PromptMonsters aditional status for boss battle
-    // @todo check if user is ready to fight arbitary boss monster
-    // bool checkBbEvent = IBossMonster(address(IBossBattle(bossBattleEventAddress).bossMonster())).
-    return [true, true];
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return bossBattleData
+  function getBossBattleData(
+    address bossBattleEventAddress,
+    address resurrectionPrompt
+  ) external view returns (bossBattleData memory) {
+    IPromptMonsters.Monster memory monster = promptMonsters.getMonsterHistory(
+      resurrectionPrompt
+    );
+
+    // string[4] memory skillTypes;
+    // for (uint256 i = 0; i < 4; ) {
+    //   skillTypes[i] = promptMonsters.getSkillTypes(
+    //     resurrectionPrompt,
+    //     monster.skills[i]
+    //   );
+
+    //   unchecked {
+    //     ++i;
+    //   }
+    // }
+
+    address bossMonsterAddress = address(
+      IBossBattleEvent(bossBattleEventAddress).getBossMonsterAddress()
+    );
+    IBossMonster.MonsterAdjForBossMonster memory monsterFieldAdj = IBossMonster(
+      bossMonsterAddress
+    ).getMonsterAdjsForBossMonster(resurrectionPrompt);
+
+    // @todo merge two data and return
+    return bossBattleData("", ["", "", "", ""], 0, 0, 0, 0);
   }
 
   /// @dev Start boss battle of the event
@@ -131,20 +172,13 @@ contract BossBattle is
   ) external onlyRole(GAME_ROLE) {
     require(isUserInBossBattle[msg.sender] == false, "already in boss battle");
     isUserInBossBattle[msg.sender] = true;
-    // @todo if this is the first time, set additional status for skills in PromptMonsters
-    // @todo excute startBossBattle() in arbitary BossBattleEvent contract
-  }
-
-  /// @dev get boss battle data to calculate battle result
-  /// @param bossBattleEventAddress BossBattleEvent contract address
-  /// @return bossBattleData
-  function getBossBattleData(
-    address bossBattleEventAddress
-  ) external view returns (bossBattleData memory) {
-    // @todo retrieve boss battle data from arbitary BossBattleEvent contract
-    // @todo retrieve monster status from PromptMonsters contract
-    // @todo merge two data and return
-    return bossBattleData("", ["", "", "", ""], 0, 0, 0, 0);
+    // @todo ? check if this is the first time of boss battle with PromptMonsters aditional status for boss battle
+    // @todo ? if this is the first time, set additional status for skills in PromptMonsters
+    // @todo ? excute startBossBattle() in arbitary BossBattleEvent contract
+    IBossBattleEvent(bossBattleEventAddress).startBossBattle(
+      resurrectionPrompt
+    );
+    // @todo turn user boss battle flag to true
   }
 
   /// @dev Record battle result with boss of the event
@@ -152,15 +186,16 @@ contract BossBattle is
   function recordBossBattle(
     address bossBattleEventAddress
   ) external onlyRole(GAME_ROLE) {
-    // @todo excute battle() in arbitary BossBattleEvent contract
+    // @todo excute recordBossBattle() in arbitary BossBattleEvent contract
   }
 
   /// @dev End boss battle of the event
   /// @param bossBattleEventAddress BossBattleEvent contract address
   function endBossBattle(
-    address bossBattleEventAddress
+    address bossBattleEventAddress,
+    address resurrectionPrompt
   ) external onlyRole(GAME_ROLE) {
-    // @todo excute endBossBattle() in arbitary BossBattleEvent contract
+    IBossBattleEvent(bossBattleEventAddress).endBossBattle(resurrectionPrompt);
     // @todo check isUserInBossBattle flag and turn it to false
   }
 
