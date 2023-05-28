@@ -9,6 +9,7 @@ interface IBossBattleEvent {
   // --------------------------------------------------------------------------------
 
   struct BBState {
+    uint32 hp;
     uint32 turn;
     uint32 score;
     uint32 monsterAdj;
@@ -63,6 +64,10 @@ interface IBossBattleEvent {
     address resurrectionPrompt,
     BBState memory bbState
   ) external;
+
+  /// @dev End boss battle with win
+  /// @param resurrectionPrompt resurrection prompt
+  function endBossBattleWithWin(address resurrectionPrompt) external;
 
   /// @dev End boss battle
   /// @param resurrectionPrompt resurrection prompt

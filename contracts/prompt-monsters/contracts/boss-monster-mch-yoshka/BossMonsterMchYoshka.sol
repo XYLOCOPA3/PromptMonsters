@@ -78,6 +78,15 @@ contract BossMonsterMchYoshka is
   // Main Logic
   // --------------------------------------------------------------------------------
 
+  /// @dev Get monster adjs for this boss monster
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return Adjs
+  function getMonsterAdjsForBossMonster(
+    address resurrectionPrompt
+  ) external view returns (MonsterAdjForBossMonster memory) {
+    return _monstersAdjs[resurrectionPrompt];
+  }
+
   /// @dev Assign monster adjs for this boss monster
   /// @param resurrectionPrompt resurrection prompt
   /// @param fieldAdj terrain adj
@@ -91,15 +100,7 @@ contract BossMonsterMchYoshka is
       fieldAdj,
       specialBuff
     );
-  }
-
-  /// @dev Get monster adjs for this boss monster
-  /// @param resurrectionPrompt resurrection prompt
-  /// @return Adjs
-  function getMonsterAdjsForBossMonster(
-    address resurrectionPrompt
-  ) external view returns (MonsterAdjForBossMonster memory) {
-    return _monstersAdjs[resurrectionPrompt];
+    // @todo event emit
   }
 
   // --------------------------------------------------------------------------------

@@ -62,7 +62,7 @@ contract PromptMonsters is
   // 1 → 物理攻撃
   // 2 → 特殊攻撃
   // 100 → 回復
-  mapping(address => mapping(string => uint256)) public skillTypes;
+  mapping(address => mapping(string => uint32)) public skillsTypes;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -235,23 +235,49 @@ contract PromptMonsters is
     uri = finalTokenUri;
   }
 
-  // /// @dev Get skill types
-  // /// @param resurrectionPrompt resurrection prompt
-  // /// @param skills skills
-  // /// @return skillTypes skill types
-  // function getSkillTypes(
-  //   address resurrectionPrompt,
-  //   uint256[] memory skills
-  // ) external view returns (uint256[] memory) {
-  //   uint256[4] memory _skillTypes = new uint256[](4);
-  //   for (uint i; i < skillsLength; ) {
-  //     _skillTypes[i] = skillTypes[resurrectionPrompt][skills[i]];
-  //     unchecked {
-  //       ++i;
-  //     }
-  //   }
-  //   return _skillTypes;
-  // }
+  /// @dev Get monster with skill types
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return monster with skillsTypes
+  function getMonsterWithSkillTypes(
+    address resurrectionPrompt
+  ) external view returns (MonsterwithSkillTypes memory) {
+    Monster memory monster = _monsterHistory[resurrectionPrompt];
+    uint32[] memory _skillsTypes;
+    uint256 skillsLength = monster.skills.length;
+
+    for (uint i; i < skillsLength; ) {
+      _skillsTypes[i] = skillsTypes[resurrectionPrompt][monster.skills[i]];
+      if (i == 3) {
+        break;
+      }
+      unchecked {
+        ++i;
+      }
+    }
+
+    return
+      MonsterwithSkillTypes({
+        feature: monster.feature,
+        name: monster.name,
+        flavor: monster.flavor,
+        skills: monster.skills,
+        skillsTypes: _skillsTypes,
+        lv: monster.lv,
+        hp: monster.hp,
+        atk: monster.atk,
+        def: monster.def,
+        inte: monster.inte, // INT
+        mgr: monster.mgr,
+        agl: monster.agl
+      });
+  }
+
+  /// @dev Get user of monster
+  /// @param ressurectionPrompt resurrection prompt
+  /// @return monster owner user address
+  function getUser(address ressurectionPrompt) external view returns (address) {
+    return ownerOf(resurrectionIndex[ressurectionPrompt]);
+  }
 
   // --------------------------------------------------------------------------------
   // Setter
@@ -330,11 +356,13 @@ contract PromptMonsters is
   /// @dev Triggers stopped state
   function pause() external onlyRole(DEFAULT_ADMIN_ROLE) whenNotPaused {
     paused = true;
+    emit Paused(_msgSender());
   }
 
   /// @dev Returns to normal state
   function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) whenPaused {
     paused = false;
+    emit Unpaused(_msgSender());
   }
 
   // --------------------------------------------------------------------------------
@@ -400,27 +428,28 @@ contract PromptMonsters is
     );
   }
 
-  /// @dev assign skillTypes
+  /// @dev assign skillsTypes
   /// @param resurrectionPrompt_ resurrection prompt
-  /// @param types_ types
+  /// @param skillsTypes_ types
   function assignSkillTypes(
     address resurrectionPrompt_,
-    uint256[] memory types_
+    uint32[] memory skillsTypes_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    uint256 typesLength = types_.length;
     require(
-      typesLength <= 4,
+      skillsTypes_.length <= 4,
       "PromptMonsters: types length must be less than or equal to 4"
     );
-    for (uint256 i = 0; i < typesLength; ) {
-      skillTypes[resurrectionPrompt_][
+    uint256 skillLength = _monsterHistory[resurrectionPrompt_].skills.length;
+    for (uint256 i = 0; i < skillLength; ) {
+      skillsTypes[resurrectionPrompt_][
         _monsterHistory[resurrectionPrompt_].skills[i]
-      ] = types_[i];
+      ] = skillsTypes_[i];
 
       unchecked {
         ++i;
       }
     }
+    // @todo event emit
   }
 
   // --------------------------------------------------------------------------------

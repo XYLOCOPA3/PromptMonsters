@@ -31,7 +31,7 @@ contract BossBattleMch1 is
 
   BBState public initialBBState;
 
-  mapping(address => uint256) public highScore;
+  mapping(address => uint256) public highScores;
 
   mapping(address => BBState) private bbStates;
 
@@ -55,7 +55,7 @@ contract BossBattleMch1 is
     _grantRole(GAME_ROLE, msg.sender);
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
 
-    initialBBState = BBState(0, 0, 100, 100);
+    initialBBState = BBState(400, 0, 0, 100, 100);
   }
 
   // --------------------------------------------------------------------------------
@@ -119,7 +119,6 @@ contract BossBattleMch1 is
       !isMonsterInBossBattle[resurrectionPrompt],
       "BossBattle: already started"
     );
-    // @todo ? if this is the first time to play this BB, set monster's bbStatus for this BossMonster
     bbStates[resurrectionPrompt] = initialBBState;
     isMonsterInBossBattle[resurrectionPrompt] = true;
   }
@@ -132,19 +131,35 @@ contract BossBattleMch1 is
     BBState memory bbState
   ) external onlyRole(GAME_ROLE) onlyMonsterInBossBattle(resurrectionPrompt) {
     bbStates[resurrectionPrompt] = bbState;
-    // @todo ? if the monster is dead, excute endBossBattle()
-    // @todo ? emit event if the monster is alive or dead
+  }
+
+  /// @dev End boss battle with win
+  /// @param resurrectionPrompt resurrection prompt
+  function endBossBattleWithWin(
+    address resurrectionPrompt
+  )
+    public
+    onlyRole(DEFAULT_ADMIN_ROLE)
+    onlyMonsterInBossBattle(resurrectionPrompt)
+  {
+    require(bbStates[resurrectionPrompt].hp > 0, "BossBattle: you lose");
+    uint256 score = bbStates[resurrectionPrompt].score;
+    if (score > highScores[resurrectionPrompt]) {
+      highScores[resurrectionPrompt] = score;
+    }
+    endBossBattle(resurrectionPrompt);
   }
 
   /// @dev End boss battle
   /// @param resurrectionPrompt resurrection prompt
   function endBossBattle(
     address resurrectionPrompt
-  ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-    // @todo check isMonsterInBossBattle flag
-    // @todo update highScore if the score is higher than the previous one
+  )
+    public
+    onlyRole(DEFAULT_ADMIN_ROLE)
+    onlyMonsterInBossBattle(resurrectionPrompt)
+  {
     bbStates[resurrectionPrompt] = initialBBState;
-    // @todo turn isMonsterInBossBattle flag to false
     isMonsterInBossBattle[resurrectionPrompt] = false;
   }
 

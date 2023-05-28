@@ -10,13 +10,16 @@ interface IBossBattle {
   // State
   // --------------------------------------------------------------------------------
 
-  struct bossBattleData {
+  struct BossBattleData {
     string name;
-    string[4] skills;
+    string[] skills;
+    uint32[] skillsTypes;
     uint32 atk;
     uint32 def;
     uint32 inte; // INT
     uint32 mgr;
+    uint256 fieldAdj;
+    uint256 specialBuff;
   }
 
   // --------------------------------------------------------------------------------
