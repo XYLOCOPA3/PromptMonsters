@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import { Drawer } from "@/components/elements/Drawer";
 import { mchVerse } from "@/const/chainParams";
 import { AutoLogin } from "@/features/auth";
-import { MonsterMintPriceInit, OwnedMonstersInit } from "@/features/monster";
+import { BossInit } from "@/features/boss";
+import { TwitterIcon } from "@/features/lp";
+import {
+  MonsterInit,
+  MonsterMintPriceInit,
+  OwnedMonstersInit,
+} from "@/features/monster";
 import "@/styles/globals.css";
 import {
   EthereumClient,
@@ -11,6 +18,7 @@ import {
   w3mProvider,
 } from "@web3modal/ethereum";
 import { Web3Modal } from "@web3modal/react";
+import { appWithTranslation } from "next-i18next";
 import { RecoilRoot } from "recoil";
 import { WagmiConfig, configureChains, createClient } from "wagmi";
 
@@ -27,7 +35,7 @@ const wagmiClient = createClient({
 
 const ethereumClient = new EthereumClient(wagmiClient, chains);
 
-export default function App({ Component, pageProps }: AppProps) {
+const App = ({ Component, pageProps }: AppProps) => {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -280,7 +288,13 @@ export default function App({ Component, pageProps }: AppProps) {
             <AutoLogin>
               <MonsterMintPriceInit>
                 <OwnedMonstersInit>
-                  <Component {...pageProps} />
+                  <BossInit>
+                    <MonsterInit>
+                      <TwitterIcon />
+                      <Drawer />
+                      <Component {...pageProps} />
+                    </MonsterInit>
+                  </BossInit>
                 </OwnedMonstersInit>
               </MonsterMintPriceInit>
             </AutoLogin>
@@ -290,4 +304,6 @@ export default function App({ Component, pageProps }: AppProps) {
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
     </>
   );
-}
+};
+
+export default appWithTranslation(App);

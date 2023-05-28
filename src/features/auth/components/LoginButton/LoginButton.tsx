@@ -13,6 +13,7 @@ import { BaseProps } from "@/types/BaseProps";
 import { useWeb3Modal } from "@web3modal/react";
 import clsx from "clsx";
 import { useSetRecoilState } from "recoil";
+// import { isSet } from "util/types";
 import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 
 export type LoginButtonProps = BaseProps;
@@ -58,8 +59,6 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
         if (switchNetwork !== undefined) switchNetwork!(mchVerse.id);
       }
       userController.set(address!, false);
-      const isSet = await monsterController.init(address!, monster);
-      setMonsterMinted(isSet);
     } catch (e) {
       console.error(e);
       alert("Failed to login.\n\n" + e);
@@ -84,6 +83,7 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
         "md:h-[35px]",
         "md:text-[15px]",
       )}
+      variant="secondary"
       loading={loading}
       onClick={handleClick}
     >

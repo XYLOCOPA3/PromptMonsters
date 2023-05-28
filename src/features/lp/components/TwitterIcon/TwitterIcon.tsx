@@ -25,6 +25,7 @@ export const TwitterIcon = ({ className }: TwitterIconProps) => {
         "cursor-pointer",
         "z-[1]",
       )}
+      target="_blank"
     >
       <Image
         src="/assets/images/twitter.svg"

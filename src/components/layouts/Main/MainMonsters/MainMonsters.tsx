@@ -1,22 +1,21 @@
-import Image from "next/image";
-import { Result } from "@/components/elements/Result";
-import { TwitterIcon } from "@/features/lp";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { Background } from "@/components/elements/Background";
 import {
   BattleTweetButton,
-  FightLanguage,
   GenerateTweetButton,
   MonsterFightButton,
   MonsterFightText,
   MonsterGenerator,
   MonsterMintButton,
   MonsterSelector,
+  MonsterStatus,
   ResurrectionPrompt,
 } from "@/features/monster";
-import { PlayNote } from "@/features/note";
 import { RestoreStaminaButton, StaminaTimer } from "@/features/stamina";
-import { useOwnedMonstersValue } from "@/hooks/useOwnedMonsters";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 import { useRecoilValue } from "recoil";
 
 /**
@@ -25,32 +24,45 @@ import { useRecoilValue } from "recoil";
  */
 export const MainMonsters = () => {
   const monsterMinted = useRecoilValue(monsterMintedState);
-  const ownedMonsters = useOwnedMonstersValue();
+  const { t: tMonsters } = useTranslation("monsters");
+  const { locale } = useRouter();
 
   return (
     <>
-      <TwitterIcon />
+      <Background
+        className={clsx("opacity-10")}
+        src="/assets/images/bg-arena.png"
+      />
       <div
         className={clsx(
           "flex",
           "items-center",
           "flex-col",
-          "mt-[100px]",
-          ownedMonsters.length === 0 ? "h-[150%]" : "",
+          "mt-[80px]",
+          "md:mt-[100px]",
         )}
       >
-        <div
-          className={clsx(
-            "w-[90%]",
-            "mb-[30px]",
-            "max-w-[700px]",
-            "flex",
-            "flex-col",
-            "items-center",
-          )}
-        >
-          <PlayNote className={clsx("w-[100%]")} />
+        <div className={clsx("font-bold", "text-[28px]", "md:text-[50px]")}>
+          MONSTER GENERATOR
         </div>
+        <Link
+          className={clsx(
+            "font-bold",
+            "text-[16px]",
+            "text-blue-500",
+            "hover:underline",
+            "mb-[40px]",
+            "md:text-[20px]",
+          )}
+          href={
+            locale === "ja"
+              ? "https://www.notion.so/xylocopa/Monster-Generator-25cd0f553bb648b29ebac04567389cc7?pvs=4"
+              : "https://www.notion.so/xylocopa/English-How-to-play-Monster-Generator-f37dbaa2e363406a8606a8824465d57f?pvs=4"
+          }
+          target="_blank"
+        >
+          {tMonsters("howToPlay")}
+        </Link>
         <MonsterGenerator className={clsx("my-[20px]", "w-[300px]")} />
         <div>or</div>
         <ResurrectionPrompt className={clsx("my-[20px]", "w-[300px]")} />
@@ -58,22 +70,16 @@ export const MainMonsters = () => {
           className={clsx(
             "w-[90%]",
             "mb-[20px]",
-            "max-w-[700px]",
+            "max-w-[512px]",
             "flex",
             "flex-col",
             "items-center",
           )}
         >
-          {ownedMonsters.length === 0 ? (
-            <></>
-          ) : (
-            <div
-              className={clsx("w-[100%]", "mb-[10px]", "flex", "justify-end")}
-            >
-              <MonsterSelector className={clsx("w-[50%]")} />
-            </div>
-          )}
-          <Result className={clsx("w-[100%]", "mb-[10px]")} />
+          <div className={clsx("w-[100%]", "mb-[10px]", "flex", "justify-end")}>
+            <MonsterSelector className={clsx("w-[50%]")} />
+          </div>
+          <MonsterStatus className={clsx("w-[100%]", "mb-[10px]")} />
           <div className={clsx("w-[100%]", "mb-[20px]", "flex", "justify-end")}>
             <GenerateTweetButton />
           </div>
@@ -91,16 +97,6 @@ export const MainMonsters = () => {
               {monsterMinted ? <></> : <MonsterMintButton />}
             </div>
             <div className={clsx("w-[50%]", "flex", "items-end", "flex-col")}>
-              {ownedMonsters.length === 0 ? null : (
-                <FightLanguage
-                  className={clsx(
-                    "w-[100%]",
-                    "z-[1]",
-                    "mb-[10px]",
-                    "max-w-[200px]",
-                  )}
-                />
-              )}
               <MonsterFightButton />
               {monsterMinted ? (
                 <StaminaTimer className={clsx("mt-[5px]")} />
@@ -119,21 +115,6 @@ export const MainMonsters = () => {
           </div>
         </div>
       </div>
-      <Image
-        className={clsx(
-          "object-cover",
-          "absolute",
-          "top-0",
-          "opacity-10",
-          "h-[320%]",
-          "z-[-1]",
-          "md:h-[200%]",
-        )}
-        src="/assets/images/bg-arena.png"
-        alt="bg-arena"
-        width={4000}
-        height={2000}
-      />
     </>
   );
 };

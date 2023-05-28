@@ -3,14 +3,14 @@ import { MonsterModel } from "@/models/MonsterModel";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 
-export type ResultProps = BaseProps;
+export type MonsterStatusProps = BaseProps;
 
 /**
  * Result of monster generator
  * @keit0728
  * @param className Style from parent element
  */
-export const Result = ({ className }: ResultProps) => {
+export const MonsterStatus = ({ className }: MonsterStatusProps) => {
   const monster = useMonsterValue();
 
   if (monster.name === "") return <></>;

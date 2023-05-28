@@ -1,5 +1,4 @@
 import { MAX_STAMINA } from "@/const/monster";
-import { calcStaminaFromMonsterId } from "@/features/stamina/utils/calcStamina";
 import { RPC_URL } from "@/lib/wallet";
 import { MonsterModel } from "@/models/MonsterModel";
 import { MonsterState, monsterState } from "@/stores/monsterState";
@@ -14,13 +13,13 @@ import { UserId } from "@/types/UserId";
 import { checkFeature, isSymbol } from "@/utils/validation";
 import { fetchSigner } from "@wagmi/core";
 import axios from "axios";
+import { getCookie } from "cookies-next";
 import { ethers } from "ethers";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export interface MonsterController {
   generate: (feature: string, language: string) => Promise<MonsterModel>;
   mint: (userId: UserId, resurrectionPrompt: string) => Promise<MonsterModel>;
-  init: (userId: UserId, monster: MonsterModel) => Promise<boolean>;
   set: (monster: MonsterModel) => void;
   reset: () => void;
   fight: (
@@ -34,6 +33,7 @@ export interface MonsterController {
     restorePrice: number,
     userId: UserId,
   ) => Promise<void>;
+  init: () => Promise<void>;
 }
 
 export const useMonsterValue = (): MonsterState => {
@@ -160,33 +160,6 @@ export const useMonsterController = (): MonsterController => {
       monsterContract,
       Number(await stamina.staminaLimit()),
     );
-  };
-
-  /**
-   * Init monster
-   * @param userId user id
-   */
-  const init = async (
-    userId: UserId,
-    monster: MonsterModel,
-  ): Promise<boolean> => {
-    if (monster.id === "" && monster.name !== "") return false;
-    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
-    const promptMonsters = PromptMonsters__factory.connect(
-      process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
-      provider,
-    );
-    const tokenIds = await promptMonsters.getOwnerToTokenIds(userId);
-    if (tokenIds.length === 0) return false;
-    const ownedMonster = (await promptMonsters.getMonsters(tokenIds))[0];
-    setMonster(
-      MonsterModel.fromContract(
-        tokenIds[0].toString(),
-        ownedMonster,
-        await calcStaminaFromMonsterId(tokenIds[0].toString()),
-      ),
-    );
-    return true;
   };
 
   /**
@@ -325,15 +298,40 @@ export const useMonsterController = (): MonsterController => {
     });
   };
 
+  /**
+   * Init monster
+   */
+  const init = async (): Promise<void> => {
+    const selectedMonsterId = getCookie("SELECTED_MONSTER_ID");
+    if (selectedMonsterId === "") return;
+
+    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
+    const promptMonsters = PromptMonsters__factory.connect(
+      process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
+      provider,
+    );
+    const stamina = Stamina__factory.connect(
+      process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
+      provider,
+    );
+    const results = await Promise.all([
+      promptMonsters.getMonsters([Number(selectedMonsterId)]),
+      stamina.staminaLimit(),
+    ]);
+    const monster = results[0][0];
+    const staminaLimit = results[1];
+    setMonster(MonsterModel.fromContract("", monster, Number(staminaLimit)));
+  };
+
   const controller: MonsterController = {
     generate,
     mint,
-    init,
     set,
     reset,
     fight,
     resurrect,
     restoreStamina,
+    init,
   };
   return controller;
 };

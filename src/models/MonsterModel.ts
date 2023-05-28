@@ -19,7 +19,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
    * @param stamina stamina
    * @param resurrectionPrompt resurrection prompt
    */
-  private constructor(
+  constructor(
     public readonly feature: string = "",
     public readonly name: string = "",
     public readonly flavor: string = "",
@@ -35,6 +35,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
     },
     public readonly stamina: number = 0,
     public readonly resurrectionPrompt: string = "",
+    public readonly imageURL: string = "",
   ) {
     super("");
   }
