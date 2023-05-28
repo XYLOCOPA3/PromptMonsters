@@ -153,11 +153,6 @@ interface IPromptMonsters is IERC721Upgradeable {
     address resurrectionPrompt
   ) external view returns (MonsterwithSkillTypes memory);
 
-  /// @dev Get user of monster
-  /// @param ressurectionPrompt resurrection prompt
-  /// @return monster owner user address
-  function getUser(address ressurectionPrompt) external view returns (address);
-
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------

@@ -28,8 +28,6 @@ contract BossBattle is
 
   IPromptMonsters public promptMonsters;
 
-  mapping(address => bool) public isUserInBossBattle;
-
   address[] private _bossBattleEventsAddress;
 
   // --------------------------------------------------------------------------------
@@ -147,20 +145,14 @@ contract BossBattle is
     address bossBattleEventAddress,
     address resurrectionPrompt
   ) external onlyRole(GAME_ROLE) {
-    address user = promptMonsters.getUser(resurrectionPrompt);
-    require(isUserInBossBattle[user] == false, "already in boss battle");
-    require(
-      user == address(0) || isUserInBossBattle[user] == false,
-      "already in boss battle"
-    );
-    // @todo ? check if this is the first time of boss battle with PromptMonsters aditional status for boss battle
+    uint32[] memory skillsTypes = promptMonsters
+      .getMonsterWithSkillTypes(resurrectionPrompt)
+      .skillsTypes;
+    require(skillsTypes[0] != 0, "no skills");
     // @todo ? if this is the first time, set additional status for skills in PromptMonsters
     IBossBattleEvent(bossBattleEventAddress).startBossBattle(
       resurrectionPrompt
     );
-    if (user != address(0)) {
-      isUserInBossBattle[user] = true;
-    }
   }
 
   /// @dev Record battle result with boss of the event
@@ -197,7 +189,6 @@ contract BossBattle is
     address resurrectionPrompt
   ) external onlyRole(GAME_ROLE) {
     IBossBattleEvent(bossBattleEventAddress).endBossBattle(resurrectionPrompt);
-    // @todo check isUserInBossBattle flag and turn it to false
   }
 
   // --------------------------------------------------------------------------------

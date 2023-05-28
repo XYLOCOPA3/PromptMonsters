@@ -51,17 +51,17 @@ contract PromptMonsters is
 
   IPromptMonstersImage public promptMonstersImage;
 
-  // @todo add event/emit
   bool public paused;
 
   mapping(address => bool) public isMinted;
 
   mapping(uint256 => address) public monsterIdToResurrectionPrompt;
 
-  // 0 → その他
-  // 1 → 物理攻撃
-  // 2 → 特殊攻撃
-  // 100 → 回復
+  // 0 → 未定
+  // 1 → その他
+  // 100 → 物理攻撃
+  // 101 → 特殊攻撃
+  // 200 → 回復
   mapping(address => mapping(string => uint32)) public skillsTypes;
 
   // --------------------------------------------------------------------------------
@@ -270,13 +270,6 @@ contract PromptMonsters is
         mgr: monster.mgr,
         agl: monster.agl
       });
-  }
-
-  /// @dev Get user of monster
-  /// @param ressurectionPrompt resurrection prompt
-  /// @return monster owner user address
-  function getUser(address ressurectionPrompt) external view returns (address) {
-    return ownerOf(resurrectionIndex[ressurectionPrompt]);
   }
 
   // --------------------------------------------------------------------------------
