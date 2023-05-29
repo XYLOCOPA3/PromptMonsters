@@ -74,6 +74,31 @@ contract BossBattle is
   }
 
   /// @dev Get isBossBattleActive
+  /// @return _isBossBattleActive isBossBattleActive
+  function getIsBossBattleActive()
+    external
+    view
+    returns (bool _isBossBattleActive)
+  {
+    _isBossBattleActive = isBossBattleActive;
+  }
+
+  /// @dev Get monster adjs for the boss battle
+  /// @param bossBattleEventAddress address of bossBattleEvent
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return monsterAdjs monster adjs for the boss battle
+  function getMonsterAdjsForBossBattle(
+    address bossBattleEventAddress,
+    address resurrectionPrompt
+  ) public view returns (IBossMonster.MonsterAdjForBossMonster memory) {
+    address bossMonsterAddress = address(
+      IBossBattleEvent(bossBattleEventAddress).getBossMonsterAddress()
+    );
+    return
+      IBossMonster(bossMonsterAddress).getMonsterAdjsForBossMonster(
+        resurrectionPrompt
+      );
+  }
 
   // --------------------------------------------------------------------------------
   // Setter
@@ -86,7 +111,7 @@ contract BossBattle is
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     _bossBattleEventsAddress.push(bossBattleEventAddress);
 
-    emit AddBossBattleEventAddress(msg.sender, bossBattleEventAddress);
+    emit AddBossBattleEventAddress(_msgSender(), bossBattleEventAddress);
   }
 
   /// @dev Set promptMonstersAddress
@@ -97,15 +122,22 @@ contract BossBattle is
     address oldValue = address(promptMonsters);
     promptMonsters = IPromptMonsters(promptMonstersAddress);
 
-    emit SetPromptMonstersAddress(msg.sender, oldValue, promptMonstersAddress);
+    emit SetPromptMonstersAddress(
+      _msgSender(),
+      oldValue,
+      promptMonstersAddress
+    );
   }
 
   /// @dev Set isBossBattleActive
   /// @param _isBossBattleActive isBossBattleActive
-  function setisBossBattleActive(
+  function setIsBossBattleActive(
     bool _isBossBattleActive
-  ) external onlyRole(GAME_ROLE) {
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    bool oldValue = isBossBattleActive;
     isBossBattleActive = _isBossBattleActive;
+
+    emit SetIsBossBattleActive(_msgSender(), oldValue, _isBossBattleActive);
   }
 
   // --------------------------------------------------------------------------------
@@ -123,12 +155,11 @@ contract BossBattle is
     IPromptMonsters.MonsterwithSkillTypes memory monster = promptMonsters
       .getMonsterWithSkillTypes(resurrectionPrompt);
 
-    address bossMonsterAddress = address(
-      IBossBattleEvent(bossBattleEventAddress).getBossMonsterAddress()
-    );
-    IBossMonster.MonsterAdjForBossMonster memory monsterAdjs = IBossMonster(
-      bossMonsterAddress
-    ).getMonsterAdjsForBossMonster(resurrectionPrompt);
+    IBossMonster.MonsterAdjForBossMonster
+      memory monsterAdjs = getMonsterAdjsForBossBattle(
+        bossBattleEventAddress,
+        resurrectionPrompt
+      );
 
     return
       BossBattleData({
@@ -155,6 +186,16 @@ contract BossBattle is
       .getMonsterWithSkillTypes(resurrectionPrompt)
       .skillsTypes;
     require(skillsTypes[0] != 0, "no skills");
+
+    IBossMonster.MonsterAdjForBossMonster
+      memory monsterAdjs = getMonsterAdjsForBossBattle(
+        bossBattleEventAddress,
+        resurrectionPrompt
+      );
+    require(monsterAdjs.fieldAdj != 0, "no fieldAdj");
+
+    require(isBossBattleActive, "boss battle is not active");
+
     IBossBattleEvent(bossBattleEventAddress).startBossBattle(
       resurrectionPrompt
     );

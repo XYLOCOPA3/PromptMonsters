@@ -94,7 +94,7 @@ contract BossBattleMch1 is
     address oldValue = address(bossMonster);
     bossMonster = IBossMonster(bossMonsterAddress);
 
-    emit SetBossMonsterAddress(msg.sender, oldValue, bossMonsterAddress);
+    emit SetBossMonsterAddress(_msgSender(), oldValue, bossMonsterAddress);
   }
 
   /// @dev Set promptMonstersAddress
@@ -105,7 +105,26 @@ contract BossBattleMch1 is
     address oldValue = address(promptMonsters);
     promptMonsters = IPromptMonsters(promptMonstersAddress);
 
-    emit SetPromptMonstersAddress(msg.sender, oldValue, promptMonstersAddress);
+    emit SetPromptMonstersAddress(
+      _msgSender(),
+      oldValue,
+      promptMonstersAddress
+    );
+  }
+
+  /// @dev Set isBossBattleEventActive
+  /// @param _isBossBattleEventActive isBossBattleEventActive
+  function setIsBossBattleEventActive(
+    bool _isBossBattleEventActive
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    bool oldValue = isBossBattleEventActive;
+    isBossBattleEventActive = _isBossBattleEventActive;
+
+    emit SetIsBossBattleEventActive(
+      _msgSender(),
+      oldValue,
+      _isBossBattleEventActive
+    );
   }
 
   // --------------------------------------------------------------------------------
@@ -116,7 +135,8 @@ contract BossBattleMch1 is
   /// @param resurrectionPrompt resurrection prompt
   function startBossBattle(
     address resurrectionPrompt
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  ) external onlyRole(GAME_ROLE) {
+    require(isBossBattleEventActive, "BossBattle: not active");
     require(
       !isMonsterInBossBattle[resurrectionPrompt],
       "BossBattle: already started"
@@ -139,11 +159,7 @@ contract BossBattleMch1 is
   /// @param resurrectionPrompt resurrection prompt
   function endBossBattleWithWin(
     address resurrectionPrompt
-  )
-    public
-    onlyRole(DEFAULT_ADMIN_ROLE)
-    onlyMonsterInBossBattle(resurrectionPrompt)
-  {
+  ) public onlyRole(GAME_ROLE) onlyMonsterInBossBattle(resurrectionPrompt) {
     require(bbStates[resurrectionPrompt].hp > 0, "BossBattle: you lose");
     uint256 score = bbStates[resurrectionPrompt].score;
     if (score > highScores[resurrectionPrompt]) {
@@ -156,11 +172,7 @@ contract BossBattleMch1 is
   /// @param resurrectionPrompt resurrection prompt
   function endBossBattle(
     address resurrectionPrompt
-  )
-    public
-    onlyRole(DEFAULT_ADMIN_ROLE)
-    onlyMonsterInBossBattle(resurrectionPrompt)
-  {
+  ) public onlyRole(GAME_ROLE) onlyMonsterInBossBattle(resurrectionPrompt) {
     bbStates[resurrectionPrompt] = initialBBState;
     isMonsterInBossBattle[resurrectionPrompt] = false;
   }

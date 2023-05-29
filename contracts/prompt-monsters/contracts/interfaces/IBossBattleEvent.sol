@@ -32,6 +32,12 @@ interface IBossBattleEvent {
     address indexed newValue
   );
 
+  event SetIsBossBattleEventActive(
+    address indexed publisher,
+    bool indexed oldValue,
+    bool indexed newValue
+  );
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
@@ -49,6 +55,19 @@ interface IBossBattleEvent {
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
+
+  /// @dev Set bossMonsterAddress
+  /// @param bossMonsterAddress address of bossMonster
+  function setBossMonsterAddress(address bossMonsterAddress) external;
+
+  /// @dev Set promptMonstersAddress
+  /// @param promptMonstersAddress address of promptMonsters
+  function setPromptMonstersAddress(address promptMonstersAddress) external;
+
+  /// @dev Set isBossBattleEventActive
+  /// @param _isBossBattleEventActive isBossBattleEventActive
+  function setIsBossBattleEventActive(bool _isBossBattleEventActive) external;
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
