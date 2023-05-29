@@ -24,11 +24,9 @@ contract BossBattle is
 
   bytes32 public GAME_ROLE;
 
-  bool public whenBossBattleActive;
+  bool public isBossBattleActive;
 
   IPromptMonsters public promptMonsters;
-
-  mapping(address => bool) public isUserInBossBattle;
 
   address[] private _bossBattleEventsAddress;
 
@@ -75,7 +73,32 @@ contract BossBattle is
     promptMonstersAddress = address(promptMonsters);
   }
 
-  /// @dev Get whenBossBattleActive
+  /// @dev Get isBossBattleActive
+  /// @return _isBossBattleActive isBossBattleActive
+  function getIsBossBattleActive()
+    external
+    view
+    returns (bool _isBossBattleActive)
+  {
+    _isBossBattleActive = isBossBattleActive;
+  }
+
+  /// @dev Get monster adjs for the boss battle
+  /// @param bossBattleEventAddress address of bossBattleEvent
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return monsterAdjs monster adjs for the boss battle
+  function getMonsterAdjsForBossBattle(
+    address bossBattleEventAddress,
+    address resurrectionPrompt
+  ) public view returns (IBossMonster.MonsterAdjForBossMonster memory) {
+    address bossMonsterAddress = address(
+      IBossBattleEvent(bossBattleEventAddress).getBossMonsterAddress()
+    );
+    return
+      IBossMonster(bossMonsterAddress).getMonsterAdjsForBossMonster(
+        resurrectionPrompt
+      );
+  }
 
   // --------------------------------------------------------------------------------
   // Setter
@@ -88,7 +111,7 @@ contract BossBattle is
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     _bossBattleEventsAddress.push(bossBattleEventAddress);
 
-    emit AddBossBattleEventAddress(msg.sender, bossBattleEventAddress);
+    emit AddBossBattleEventAddress(_msgSender(), bossBattleEventAddress);
   }
 
   /// @dev Set promptMonstersAddress
@@ -99,27 +122,57 @@ contract BossBattle is
     address oldValue = address(promptMonsters);
     promptMonsters = IPromptMonsters(promptMonstersAddress);
 
-    emit SetPromptMonstersAddress(msg.sender, oldValue, promptMonstersAddress);
+    emit SetPromptMonstersAddress(
+      _msgSender(),
+      oldValue,
+      promptMonstersAddress
+    );
   }
 
-  /// @dev Set whenBossBattleActive
+  /// @dev Set isBossBattleActive
+  /// @param _isBossBattleActive isBossBattleActive
+  function setIsBossBattleActive(
+    bool _isBossBattleActive
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    bool oldValue = isBossBattleActive;
+    isBossBattleActive = _isBossBattleActive;
+
+    emit SetIsBossBattleActive(_msgSender(), oldValue, _isBossBattleActive);
+  }
 
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @dev Check if user is ready to start arbitary boss battle
-  /// @param resurrectionPrompt resurrection prompt
+  /// @dev get boss battle data to calculate battle result
   /// @param bossBattleEventAddress BossBattleEvent contract address
-  /// @return if user is ready to start arbitary boss battle
-  function checkReadyToBossBattle(
-    address resurrectionPrompt,
-    address bossBattleEventAddress
-  ) external view returns (bool[2] memory) {
-    // @todo check if this is the first time of boss battle with PromptMonsters aditional status for boss battle
-    // @todo check if user is ready to fight arbitary boss monster
-    // bool checkBbEvent = IBossMonster(address(IBossBattle(bossBattleEventAddress).bossMonster())).
-    return [true, true];
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return bossBattleData
+  function getBossBattleData(
+    address bossBattleEventAddress,
+    address resurrectionPrompt
+  ) external view returns (BossBattleData memory) {
+    IPromptMonsters.MonsterwithSkillTypes memory monster = promptMonsters
+      .getMonsterWithSkillTypes(resurrectionPrompt);
+
+    IBossMonster.MonsterAdjForBossMonster
+      memory monsterAdjs = getMonsterAdjsForBossBattle(
+        bossBattleEventAddress,
+        resurrectionPrompt
+      );
+
+    return
+      BossBattleData({
+        name: monster.name,
+        skills: monster.skills,
+        skillsTypes: monster.skillsTypes,
+        atk: monster.atk,
+        def: monster.def,
+        inte: monster.inte,
+        mgr: monster.mgr,
+        fieldAdj: monsterAdjs.fieldAdj,
+        specialBuff: monsterAdjs.specialBuff
+      });
   }
 
   /// @dev Start boss battle of the event
@@ -129,39 +182,59 @@ contract BossBattle is
     address bossBattleEventAddress,
     address resurrectionPrompt
   ) external onlyRole(GAME_ROLE) {
-    require(isUserInBossBattle[msg.sender] == false, "already in boss battle");
-    isUserInBossBattle[msg.sender] = true;
-    // @todo if this is the first time, set additional status for skills in PromptMonsters
-    // @todo excute startBossBattle() in arbitary BossBattleEvent contract
-  }
+    uint32[] memory skillsTypes = promptMonsters
+      .getMonsterWithSkillTypes(resurrectionPrompt)
+      .skillsTypes;
+    require(skillsTypes[0] != 0, "no skills");
 
-  /// @dev get boss battle data to calculate battle result
-  /// @param bossBattleEventAddress BossBattleEvent contract address
-  /// @return bossBattleData
-  function getBossBattleData(
-    address bossBattleEventAddress
-  ) external view returns (bossBattleData memory) {
-    // @todo retrieve boss battle data from arbitary BossBattleEvent contract
-    // @todo retrieve monster status from PromptMonsters contract
-    // @todo merge two data and return
-    return bossBattleData("", ["", "", "", ""], 0, 0, 0, 0);
+    IBossMonster.MonsterAdjForBossMonster
+      memory monsterAdjs = getMonsterAdjsForBossBattle(
+        bossBattleEventAddress,
+        resurrectionPrompt
+      );
+    require(monsterAdjs.fieldAdj != 0, "no fieldAdj");
+
+    require(isBossBattleActive, "boss battle is not active");
+
+    IBossBattleEvent(bossBattleEventAddress).startBossBattle(
+      resurrectionPrompt
+    );
   }
 
   /// @dev Record battle result with boss of the event
   /// @param bossBattleEventAddress BossBattleEvent contract address
+  /// @param resurrectionPrompt resurrection prompt
+  /// @param bbState bbState to update
   function recordBossBattle(
-    address bossBattleEventAddress
+    address bossBattleEventAddress,
+    address resurrectionPrompt,
+    IBossBattleEvent.BBState memory bbState
   ) external onlyRole(GAME_ROLE) {
-    // @todo excute battle() in arbitary BossBattleEvent contract
+    IBossBattleEvent(bossBattleEventAddress).recordBossBattle(
+      resurrectionPrompt,
+      bbState
+    );
   }
 
-  /// @dev End boss battle of the event
+  /// @dev End boss battle of the event with win
   /// @param bossBattleEventAddress BossBattleEvent contract address
-  function endBossBattle(
-    address bossBattleEventAddress
+  /// @param resurrectionPrompt resurrection prompt
+  function endBossBattleWithWin(
+    address bossBattleEventAddress,
+    address resurrectionPrompt
   ) external onlyRole(GAME_ROLE) {
-    // @todo excute endBossBattle() in arbitary BossBattleEvent contract
-    // @todo check isUserInBossBattle flag and turn it to false
+    IBossBattleEvent(bossBattleEventAddress).endBossBattleWithWin(
+      resurrectionPrompt
+    );
+  }
+
+  /// @dev End boss battle of the event with lose
+  /// @param bossBattleEventAddress BossBattleEvent contract address
+  function endBossBattleWithLose(
+    address bossBattleEventAddress,
+    address resurrectionPrompt
+  ) external onlyRole(GAME_ROLE) {
+    IBossBattleEvent(bossBattleEventAddress).endBossBattle(resurrectionPrompt);
   }
 
   // --------------------------------------------------------------------------------

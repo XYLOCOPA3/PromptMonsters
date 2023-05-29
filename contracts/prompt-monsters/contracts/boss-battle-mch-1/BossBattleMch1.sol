@@ -27,11 +27,13 @@ contract BossBattleMch1 is
 
   IPromptMonsters public promptMonsters;
 
+  bool public isBossBattleEventActive;
+
   mapping(address => bool) public isMonsterInBossBattle;
 
   BBState public initialBBState;
 
-  mapping(address => uint256) public highScore;
+  mapping(address => uint256) public highScores;
 
   mapping(address => BBState) private bbStates;
 
@@ -55,7 +57,7 @@ contract BossBattleMch1 is
     _grantRole(GAME_ROLE, msg.sender);
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
 
-    initialBBState = BBState(0, 0, 100, 100);
+    initialBBState = BBState(400, 0, 0, 100, 100);
   }
 
   // --------------------------------------------------------------------------------
@@ -75,6 +77,11 @@ contract BossBattleMch1 is
   // Getter
   // --------------------------------------------------------------------------------
 
+  /// @dev Get bossMonsterAddress
+  function getBossMonsterAddress() external view returns (address) {
+    return address(bossMonster);
+  }
+
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
@@ -87,7 +94,7 @@ contract BossBattleMch1 is
     address oldValue = address(bossMonster);
     bossMonster = IBossMonster(bossMonsterAddress);
 
-    emit SetBossMonsterAddress(msg.sender, oldValue, bossMonsterAddress);
+    emit SetBossMonsterAddress(_msgSender(), oldValue, bossMonsterAddress);
   }
 
   /// @dev Set promptMonstersAddress
@@ -98,7 +105,26 @@ contract BossBattleMch1 is
     address oldValue = address(promptMonsters);
     promptMonsters = IPromptMonsters(promptMonstersAddress);
 
-    emit SetPromptMonstersAddress(msg.sender, oldValue, promptMonstersAddress);
+    emit SetPromptMonstersAddress(
+      _msgSender(),
+      oldValue,
+      promptMonstersAddress
+    );
+  }
+
+  /// @dev Set isBossBattleEventActive
+  /// @param _isBossBattleEventActive isBossBattleEventActive
+  function setIsBossBattleEventActive(
+    bool _isBossBattleEventActive
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    bool oldValue = isBossBattleEventActive;
+    isBossBattleEventActive = _isBossBattleEventActive;
+
+    emit SetIsBossBattleEventActive(
+      _msgSender(),
+      oldValue,
+      _isBossBattleEventActive
+    );
   }
 
   // --------------------------------------------------------------------------------
@@ -109,14 +135,14 @@ contract BossBattleMch1 is
   /// @param resurrectionPrompt resurrection prompt
   function startBossBattle(
     address resurrectionPrompt
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  ) external onlyRole(GAME_ROLE) {
+    require(isBossBattleEventActive, "BossBattle: not active");
     require(
       !isMonsterInBossBattle[resurrectionPrompt],
       "BossBattle: already started"
     );
+    bbStates[resurrectionPrompt] = initialBBState;
     isMonsterInBossBattle[resurrectionPrompt] = true;
-    // @todo if this is the first time to play this BB, set monster's bbStatus for this BossMonster
-    // @todo initialize bbState
   }
 
   /// @dev recordBossBattle
@@ -126,20 +152,29 @@ contract BossBattleMch1 is
     address resurrectionPrompt,
     BBState memory bbState
   ) external onlyRole(GAME_ROLE) onlyMonsterInBossBattle(resurrectionPrompt) {
-    // @todo update bbStates
-    // @todo if the monster is dead, excute endBossBattle()
-    // @todo emit event if the monster is alive or dead
+    bbStates[resurrectionPrompt] = bbState;
+  }
+
+  /// @dev End boss battle with win
+  /// @param resurrectionPrompt resurrection prompt
+  function endBossBattleWithWin(
+    address resurrectionPrompt
+  ) public onlyRole(GAME_ROLE) onlyMonsterInBossBattle(resurrectionPrompt) {
+    require(bbStates[resurrectionPrompt].hp > 0, "BossBattle: you lose");
+    uint256 score = bbStates[resurrectionPrompt].score;
+    if (score > highScores[resurrectionPrompt]) {
+      highScores[resurrectionPrompt] = score;
+    }
+    endBossBattle(resurrectionPrompt);
   }
 
   /// @dev End boss battle
   /// @param resurrectionPrompt resurrection prompt
   function endBossBattle(
     address resurrectionPrompt
-  ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-    // @todo check isMonsterInBossBattle flag
-    // @todo update highScore if the score is higher than the previous one
-    // @todo initialize bbState
-    // @todo turn isMonsterInBossBattle flag to false
+  ) public onlyRole(GAME_ROLE) onlyMonsterInBossBattle(resurrectionPrompt) {
+    bbStates[resurrectionPrompt] = initialBBState;
+    isMonsterInBossBattle[resurrectionPrompt] = false;
   }
 
   // --------------------------------------------------------------------------------

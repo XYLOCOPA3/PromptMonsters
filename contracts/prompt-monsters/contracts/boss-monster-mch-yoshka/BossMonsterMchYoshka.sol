@@ -53,9 +53,6 @@ contract BossMonsterMchYoshka is
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @dev Get bossStatus
-  /// @return bossStatus
-
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
@@ -68,28 +65,60 @@ contract BossMonsterMchYoshka is
     address oldValue = address(promptMonsters);
     promptMonsters = IPromptMonsters(promptMonstersAddress);
 
-    emit SetPromptMonstersAddress(msg.sender, oldValue, promptMonstersAddress);
+    emit SetPromptMonstersAddress(
+      _msgSender(),
+      oldValue,
+      promptMonstersAddress
+    );
   }
 
   /// @dev Set bossStatus
-  /// @param bossStatus  bossStatus
+  /// @param _bossStatus boss status
+  function setBossStatus(
+    BossStatus memory _bossStatus
+  ) external onlyRole(GAME_ROLE) {
+    BossStatus memory oldValue = bossStatus;
+    bossStatus = _bossStatus;
+
+    emit SetBossStatus(_msgSender(), oldValue, _bossStatus);
+  }
 
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
 
+  /// @dev Get monster adjs for this boss monster
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return Adjs
+  function getMonsterAdjsForBossMonster(
+    address resurrectionPrompt
+  ) external view returns (MonsterAdjForBossMonster memory) {
+    return _monstersAdjs[resurrectionPrompt];
+  }
+
   /// @dev Assign monster adjs for this boss monster
   /// @param resurrectionPrompt resurrection prompt
   /// @param fieldAdj terrain adj
   /// @param specialBuff special buff
-
-  /// @dev Retrieve monster adjs for this boss monster
-  /// @param resurrectionPrompt resurrection prompt
-  /// @return Adjs
-  function retrieveMonsterAdjsForBossMonster(
-    address resurrectionPrompt
-  ) external view returns (MonsterAdjForBossMonster memory) {
-    return _monstersAdjs[resurrectionPrompt];
+  function setMonsterAdjsForBossMonster(
+    address resurrectionPrompt,
+    uint256 fieldAdj,
+    uint256 specialBuff
+  ) external onlyRole(GAME_ROLE) {
+    MonsterAdjForBossMonster memory monsterAdjs = MonsterAdjForBossMonster(
+      fieldAdj,
+      specialBuff
+    );
+    MonsterAdjForBossMonster memory oldValue = _monstersAdjs[
+      resurrectionPrompt
+    ];
+    _monstersAdjs[resurrectionPrompt] = monsterAdjs;
+    emit SetMonsterAdjsForBossMonster(
+      _msgSender(),
+      resurrectionPrompt,
+      oldValue,
+      monsterAdjs
+    );
   }
 
   // --------------------------------------------------------------------------------

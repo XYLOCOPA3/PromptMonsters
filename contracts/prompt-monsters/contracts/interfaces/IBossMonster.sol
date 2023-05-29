@@ -37,6 +37,19 @@ interface IBossMonster {
     address indexed newValue
   );
 
+  event SetBossStatus(
+    address indexed publisher,
+    BossStatus oldValue,
+    BossStatus newValue
+  );
+
+  event SetMonsterAdjsForBossMonster(
+    address indexed publisher,
+    address indexed resurrectionPrompt,
+    MonsterAdjForBossMonster oldValue,
+    MonsterAdjForBossMonster newValue
+  );
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
@@ -50,14 +63,23 @@ interface IBossMonster {
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
+
+  /// @dev Set promptMonstersAddress
+  /// @param promptMonstersAddress address of promptMonsters
+  function setPromptMonstersAddress(address promptMonstersAddress) external;
+
+  /// @dev Set bossStatus
+  /// @param _bossStatus boss status
+  function setBossStatus(BossStatus memory _bossStatus) external;
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @dev Retrieve monster adjs for this boss monster
+  /// @dev Get monster adjs for this boss monster
   /// @param resurrectionPrompt resurrection prompt
   /// @return Adjs
-  function retrieveMonsterAdjsForBossMonster(
+  function getMonsterAdjsForBossMonster(
     address resurrectionPrompt
   ) external view returns (MonsterAdjForBossMonster memory);
 }

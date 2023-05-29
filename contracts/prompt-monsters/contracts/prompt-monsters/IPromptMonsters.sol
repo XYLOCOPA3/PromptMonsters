@@ -25,6 +25,21 @@ interface IPromptMonsters is IERC721Upgradeable {
     uint32 agl;
   }
 
+  struct MonsterwithSkillTypes {
+    string feature;
+    string name;
+    string flavor;
+    string[] skills;
+    uint32[] skillsTypes;
+    uint32 lv;
+    uint32 hp;
+    uint32 atk;
+    uint32 def;
+    uint32 inte; // INT
+    uint32 mgr;
+    uint32 agl;
+  }
+
   // --------------------------------------------------------------------------------
   // Event
   // --------------------------------------------------------------------------------
@@ -68,6 +83,16 @@ interface IPromptMonsters is IERC721Upgradeable {
     uint256 indexed newTokenId,
     Monster monster
   );
+
+  event AssignSkillTypes(
+    address indexed publisher,
+    address indexed resurrectionPrompt,
+    uint32[] skillTypes
+  );
+
+  event Paused(address account);
+
+  event Unpaused(address account);
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -127,6 +152,13 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @return uri contract URI
   function contractURI() external view returns (string memory uri);
 
+  /// @dev Get monster with skill types
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return monster with skillTypes
+  function getMonsterWithSkillTypes(
+    address resurrectionPrompt
+  ) external view returns (MonsterwithSkillTypes memory);
+
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
@@ -159,6 +191,12 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @param newState_ new state
   function setPromptMonstersImage(address newState_) external;
 
+  /// @dev Triggers stopped state
+  function pause() external;
+
+  /// @dev Returns to normal state
+  function unpause() external;
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
@@ -188,6 +226,6 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @param types_ types
   function assignSkillTypes(
     address resurrectionPrompt_,
-    uint256[] memory types_
+    uint32[] memory types_
   ) external;
 }
