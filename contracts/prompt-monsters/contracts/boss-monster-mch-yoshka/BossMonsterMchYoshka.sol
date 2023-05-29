@@ -100,7 +100,12 @@ contract BossMonsterMchYoshka is
       fieldAdj,
       specialBuff
     );
-    // @todo event emit
+    emit SetMonsterAdjsForBossMonster(
+      _msgSender(),
+      resurrectionPrompt,
+      fieldAdj,
+      specialBuff
+    );
   }
 
   // --------------------------------------------------------------------------------

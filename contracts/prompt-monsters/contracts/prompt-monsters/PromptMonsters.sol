@@ -442,7 +442,7 @@ contract PromptMonsters is
         ++i;
       }
     }
-    // @todo event emit
+    emit AssignSkillTypes(_msgSender(), resurrectionPrompt_, skillsTypes_);
   }
 
   // --------------------------------------------------------------------------------

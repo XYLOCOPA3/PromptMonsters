@@ -84,6 +84,12 @@ interface IPromptMonsters is IERC721Upgradeable {
     Monster monster
   );
 
+  event AssignSkillTypes(
+    address indexed publisher,
+    address indexed resurrectionPrompt,
+    uint32[] skillTypes
+  );
+
   event Paused(address account);
 
   event Unpaused(address account);
@@ -184,6 +190,12 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @dev Set prompt monsters image
   /// @param newState_ new state
   function setPromptMonstersImage(address newState_) external;
+
+  /// @dev Triggers stopped state
+  function pause() external;
+
+  /// @dev Returns to normal state
+  function unpause() external;
 
   // --------------------------------------------------------------------------------
   // Main Logic

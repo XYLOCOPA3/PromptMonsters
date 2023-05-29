@@ -27,6 +27,8 @@ contract BossBattleMch1 is
 
   IPromptMonsters public promptMonsters;
 
+  bool public isBossBattleEventActive;
+
   mapping(address => bool) public isMonsterInBossBattle;
 
   BBState public initialBBState;

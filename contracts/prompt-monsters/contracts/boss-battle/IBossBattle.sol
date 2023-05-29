@@ -47,9 +47,32 @@ interface IBossBattle {
   // --------------------------------------------------------------------------------
   // Getter
   // --------------------------------------------------------------------------------
+
+  /// @dev Get bossBattleEventAddress
+  /// @return bossBattleEventAddress address of bossBattleEvent
+  function getBossBattleEventAddress(
+    uint256 index
+  ) external view returns (address bossBattleEventAddress);
+
+  /// @dev Get promptMonstersAddress
+  /// @return promptMonstersAddress address of promptMonsters
+  function getPromptMonstersAddress()
+    external
+    view
+    returns (address promptMonstersAddress);
+
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
+
+  /// @dev Add bossBattleEventAddress
+  /// @param bossBattleEventAddress address of bossBattleEvent
+  function addBossBattleEventAddress(address bossBattleEventAddress) external;
+
+  /// @dev Set promptMonstersAddress
+  /// @param promptMonstersAddress address of promptMonsters
+  function setPromptMonstersAddress(address promptMonstersAddress) external;
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------

@@ -24,7 +24,7 @@ contract BossBattle is
 
   bytes32 public GAME_ROLE;
 
-  bool public whenBossBattleActive;
+  bool public isBossBattleActive;
 
   IPromptMonsters public promptMonsters;
 
@@ -73,7 +73,7 @@ contract BossBattle is
     promptMonstersAddress = address(promptMonsters);
   }
 
-  /// @dev Get whenBossBattleActive
+  /// @dev Get isBossBattleActive
 
   // --------------------------------------------------------------------------------
   // Setter
@@ -100,7 +100,13 @@ contract BossBattle is
     emit SetPromptMonstersAddress(msg.sender, oldValue, promptMonstersAddress);
   }
 
-  /// @dev Set whenBossBattleActive
+  /// @dev Set isBossBattleActive
+  /// @param _isBossBattleActive isBossBattleActive
+  function setisBossBattleActive(
+    bool _isBossBattleActive
+  ) external onlyRole(GAME_ROLE) {
+    isBossBattleActive = _isBossBattleActive;
+  }
 
   // --------------------------------------------------------------------------------
   // Main Logic
@@ -149,7 +155,6 @@ contract BossBattle is
       .getMonsterWithSkillTypes(resurrectionPrompt)
       .skillsTypes;
     require(skillsTypes[0] != 0, "no skills");
-    // @todo ? if this is the first time, set additional status for skills in PromptMonsters
     IBossBattleEvent(bossBattleEventAddress).startBossBattle(
       resurrectionPrompt
     );

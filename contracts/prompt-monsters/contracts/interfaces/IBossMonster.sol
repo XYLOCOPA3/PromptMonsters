@@ -37,6 +37,13 @@ interface IBossMonster {
     address indexed newValue
   );
 
+  event SetMonsterAdjsForBossMonster(
+    address indexed publisher,
+    address indexed resurrectionPrompt,
+    uint256 fieldAdj,
+    uint256 specialBuff
+  );
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
