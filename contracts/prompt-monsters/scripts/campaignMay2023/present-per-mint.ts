@@ -74,7 +74,7 @@ export async function main() {
     "---------------------------------- send 10 OAS to unique owners ----------------------------------",
   );
 
-  // 送金処理
+  // XYLOCOPAのウォレットから送金する処理
 }
 
 main().catch((error) => {
