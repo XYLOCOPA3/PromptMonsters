@@ -100,7 +100,7 @@ describe("Integration Test", function () {
           resurrectionPrompt1.address,
         );
         expect(transformMonsterDetails(generatedMonster1)).to.deep.equal(
-          emptyDetails,
+          FireMonsterDetails,
         );
       });
     });
