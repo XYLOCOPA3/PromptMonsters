@@ -1,17 +1,13 @@
-import { MAX_STAMINA } from "@/const/monster";
+import { ClientMCHCoin } from "@/features/mchcoin/api/ClientMCHCoin";
+import { ClientPromptMonsters } from "@/features/monster/api/contracts/ClientPromptMonsters";
+import { ClientStamina } from "@/features/stamina/api/ClientStamina";
 import { RPC_URL } from "@/lib/wallet";
 import { MonsterModel } from "@/models/MonsterModel";
 import { MonsterState, monsterState } from "@/stores/monsterState";
-import {
-  MCHCoin__factory,
-  PromptMonsters__factory,
-  Stamina__factory,
-} from "@/typechain";
 import { FeatureErrorType } from "@/types/FeatureErrorType";
 import { MonsterId } from "@/types/MonsterId";
 import { UserId } from "@/types/UserId";
 import { checkFeature, isSymbol } from "@/utils/validation";
-import { fetchSigner } from "@wagmi/core";
 import axios from "axios";
 import { getCookie } from "cookies-next";
 import { ethers } from "ethers";
@@ -92,16 +88,12 @@ export const useMonsterController = (): MonsterController => {
     const resurrectionPrompt = res.data.resurrectionPrompt;
     if (monsterJson.isExisting) throw new Error("This monster is existing.");
     if (!monsterJson.isFiction) throw new Error("This monster is non fiction.");
-    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
-    const stamina = Stamina__factory.connect(
-      process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
-      provider,
-    );
+    const stamina = ClientStamina.instance();
     const monster = MonsterModel.fromData(
       monsterJson,
       feature,
       resurrectionPrompt,
-      Number(await stamina.staminaLimit()),
+      Number(await stamina.getStaminaLimit()),
     );
     setMonster(monster);
     return monster;
@@ -115,50 +107,44 @@ export const useMonsterController = (): MonsterController => {
     userId: UserId,
     resurrectionPrompt: string,
   ): Promise<MonsterModel> => {
-    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
-    const mchcReader = MCHCoin__factory.connect(
-      process.env.NEXT_PUBLIC_MCHCOIN_CONTRACT!,
-      provider,
-    );
-    const monsterPrice = ethers.utils.parseEther("50");
-    const balanceOfMchc = await mchcReader.balanceOf(userId);
+    const promptMonsters = ClientPromptMonsters.instance();
+    const mchcoin = ClientMCHCoin.instance();
+    const results1 = await Promise.all([
+      promptMonsters.getMintPrice(),
+      mchcoin.getBalanceOf(userId),
+      mchcoin.getAllowance(
+        userId,
+        process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
+      ),
+    ]);
+    const monsterPrice = results1[0];
+    const balanceOfMchc = results1[1];
     if (balanceOfMchc.lt(monsterPrice))
       throw new Error("Insufficient balance of MCHC.");
-    const allowance = await mchcReader.allowance(
-      userId,
-      process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
-    );
+    const allowance = results1[2];
     if (allowance.lt(monsterPrice)) {
-      const mchcWriter = MCHCoin__factory.connect(
-        process.env.NEXT_PUBLIC_MCHCOIN_CONTRACT!,
-        (await fetchSigner())!,
+      await mchcoin.approve(
+        process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
+        monsterPrice,
       );
-      await (
-        await mchcWriter.approve(
-          process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
-          monsterPrice,
-        )
-      ).wait();
     }
-    const promptMonsters = PromptMonsters__factory.connect(
-      process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
-      (await fetchSigner())!,
-    );
-    await (await promptMonsters.mint(resurrectionPrompt)).wait();
+    await promptMonsters.mint(resurrectionPrompt);
+
     const monsterIds = await promptMonsters.getOwnerToTokenIds(userId);
     const monsterId = monsterIds[monsterIds.length - 1].toString();
+    const stamina = ClientStamina.instance();
+    const results2 = await Promise.all([
+      promptMonsters.getMonsters([monsterId]),
+      stamina.getStaminaLimit(),
+    ]);
+    const monsterContract = results2[0][0];
     setMonster((prevState) => {
       return prevState.copyWith({ id: monsterId });
     });
-    const monsterContract = (await promptMonsters.getMonsters([monsterId]))[0];
-    const stamina = Stamina__factory.connect(
-      process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
-      provider,
-    );
     return MonsterModel.fromContract(
       monsterId,
       monsterContract,
-      Number(await stamina.staminaLimit()),
+      Number(results2[1]),
     );
   };
 
@@ -218,18 +204,11 @@ export const useMonsterController = (): MonsterController => {
   const resurrect = async (
     resurrectionPrompt: string,
   ): Promise<MonsterModel> => {
-    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
-    const promptMonsters = PromptMonsters__factory.connect(
-      process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
-      provider,
-    );
-    const stamina = Stamina__factory.connect(
-      process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
-      provider,
-    );
+    const promptMonsters = ClientPromptMonsters.instance();
+    const stamina = ClientStamina.instance();
     const results = await Promise.all([
       promptMonsters.getMonsterHistory(resurrectionPrompt),
-      stamina.staminaLimit(),
+      stamina.getStaminaLimit(),
     ]);
     const resurrectedMonster = results[0];
     const staminaLimit = results[1];
@@ -255,46 +234,37 @@ export const useMonsterController = (): MonsterController => {
     userId: UserId,
   ): Promise<void> => {
     const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
-    const mchcReader = MCHCoin__factory.connect(
-      process.env.NEXT_PUBLIC_MCHCOIN_CONTRACT!,
-      provider,
-    );
+    const mchcoin = ClientMCHCoin.instance();
     const restoreStaminaPrice = ethers.utils.parseEther(
       restorePrice.toString(),
     );
     const results = await Promise.all([
-      mchcReader.balanceOf(userId),
-      mchcReader.allowance(userId, process.env.NEXT_PUBLIC_STAMINA_CONTRACT!),
+      mchcoin.getBalanceOf(userId),
+      mchcoin.getAllowance(userId, process.env.NEXT_PUBLIC_STAMINA_CONTRACT!),
     ]);
     const balanceOfMchc = results[0];
     if (balanceOfMchc.lt(restoreStaminaPrice))
       throw new Error("Insufficient balance of MCHC.");
     let allowance = results[1];
     if (allowance.lt(restoreStaminaPrice)) {
-      const mchcWriter = MCHCoin__factory.connect(
-        process.env.NEXT_PUBLIC_MCHCOIN_CONTRACT!,
-        (await fetchSigner())!,
+      await mchcoin.approve(
+        process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
+        restoreStaminaPrice,
       );
-      await (
-        await mchcWriter.approve(
-          process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
-          restoreStaminaPrice,
-        )
-      ).wait();
     }
-    allowance = await mchcReader.allowance(
+    allowance = await mchcoin.getAllowance(
       userId,
       process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
     );
     if (allowance.lt(restoreStaminaPrice))
       throw new Error("Insufficient allowance of MCHC.");
-    const stamina = Stamina__factory.connect(
-      process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
-      (await fetchSigner())!,
-    );
-    await (await stamina.restoreStamina(monsterId)).wait();
+    const stamina = ClientStamina.instance();
+    const results2 = await Promise.all([
+      stamina.restoreStamina(monsterId),
+      stamina.getStaminaLimit(),
+    ]);
     setMonster((prevState) => {
-      return prevState.copyWith({ stamina: MAX_STAMINA });
+      return prevState.copyWith({ stamina: Number(results2[1]) });
     });
   };
 
@@ -303,20 +273,13 @@ export const useMonsterController = (): MonsterController => {
    */
   const init = async (): Promise<void> => {
     const selectedMonsterId = getCookie("SELECTED_MONSTER_ID");
-    if (selectedMonsterId === "") return;
+    if (selectedMonsterId === "" || selectedMonsterId === undefined) return;
 
-    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
-    const promptMonsters = PromptMonsters__factory.connect(
-      process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
-      provider,
-    );
-    const stamina = Stamina__factory.connect(
-      process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
-      provider,
-    );
+    const promptMonsters = ClientPromptMonsters.instance();
+    const stamina = ClientStamina.instance();
     const results = await Promise.all([
-      promptMonsters.getMonsters([Number(selectedMonsterId)]),
-      stamina.staminaLimit(),
+      promptMonsters.getMonsters([selectedMonsterId!.toString()]),
+      stamina.getStaminaLimit(),
     ]);
     const monster = results[0][0];
     const staminaLimit = results[1];

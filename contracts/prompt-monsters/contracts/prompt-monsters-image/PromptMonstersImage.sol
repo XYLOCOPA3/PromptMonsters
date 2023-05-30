@@ -51,6 +51,49 @@ contract PromptMonstersImage is
   // Getter
   // --------------------------------------------------------------------------------
 
+  // --------------------------------------------------------------------------------
+  // Setter
+  // --------------------------------------------------------------------------------
+
+  /// @dev Set image URL
+  /// @param tokenId_ token ID
+  /// @param newState_ new state
+  function setImageURL(
+    uint256 tokenId_,
+    string memory newState_
+  ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    string memory oldState = imageURL[tokenId_];
+    imageURL[tokenId_] = newState_;
+    emit SetImageURL(_msgSender(), oldState, newState_);
+  }
+
+  /// @dev Set image URL
+  /// @param tokenIds_ token ID
+  /// @param newStates_ new state
+  function setBatchImageURL(
+    uint256[] memory tokenIds_,
+    string[] memory newStates_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    require(tokenIds_.length == newStates_.length, "Invalid length");
+    for (uint256 i; i < tokenIds_.length; i++) {
+      setImageURL(tokenIds_[i], newStates_[i]);
+    }
+  }
+
+  /// @dev Set Prompt Monsters
+  /// @param newState_ new state
+  function setPromptMonsters(
+    address newState_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    address oldState = address(promptMonsters);
+    promptMonsters = IPromptMonsters(newState_);
+    emit SetPromptMonsters(_msgSender(), oldState, newState_);
+  }
+
+  // --------------------------------------------------------------------------------
+  // Main Logic
+  // --------------------------------------------------------------------------------
+
   /// @dev Get token URI
   /// @param tokenId_ token ID
   /// @param monster_ monster
@@ -124,43 +167,40 @@ contract PromptMonstersImage is
     uri = finalTokenUri;
   }
 
-  // --------------------------------------------------------------------------------
-  // Setter
-  // --------------------------------------------------------------------------------
-
-  /// @dev Set image URL
-  /// @param tokenId_ token ID
-  /// @param newState_ new state
-  function setImageURL(
-    uint256 tokenId_,
-    string memory newState_
-  ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-    string memory oldState = imageURL[tokenId_];
-    imageURL[tokenId_] = newState_;
-    emit SetImageURL(_msgSender(), oldState, newState_);
-  }
-
-  /// @dev Set image URL
-  /// @param tokenIds_ token ID
-  /// @param newStates_ new state
-  function setBatchImageURL(
-    uint256[] memory tokenIds_,
-    string[] memory newStates_
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    require(tokenIds_.length == newStates_.length, "Invalid length");
-    for (uint256 i; i < tokenIds_.length; i++) {
-      setImageURL(tokenIds_[i], newStates_[i]);
-    }
-  }
-
-  /// @dev Set Prompt Monsters
-  /// @param newState_ new state
-  function setPromptMonsters(
-    address newState_
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    address oldState = address(promptMonsters);
-    promptMonsters = IPromptMonsters(newState_);
-    emit SetPromptMonsters(_msgSender(), oldState, newState_);
+  /// @dev Get contract URI
+  /// @param name_ NFT name
+  /// @param externalLink_ external link
+  /// @return uri contract URI
+  function contractURI(
+    string memory name_,
+    string memory externalLink_
+  ) external pure returns (string memory uri) {
+    string memory svg = string.concat(
+      "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 350 350'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='black' /><text x='50%' y='50%' class='base' dominant-baseline='middle' text-anchor='middle'>",
+      name_,
+      "</text></svg>"
+    );
+    string memory json = Base64Upgradeable.encode(
+      bytes(
+        string(
+          abi.encodePacked(
+            '{"name": "',
+            name_,
+            '", "description": "',
+            name_,
+            ' is Generative AI Game.", "image": "data:image/svg+xml;base64,',
+            Base64Upgradeable.encode(bytes(svg)),
+            '", "external_link": "',
+            externalLink_,
+            '"}'
+          )
+        )
+      )
+    );
+    string memory finalTokenUri = string(
+      abi.encodePacked("data:application/json;base64,", json)
+    );
+    uri = finalTokenUri;
   }
 
   // --------------------------------------------------------------------------------

@@ -8,7 +8,7 @@ interface IBossMonster {
   // State
   // --------------------------------------------------------------------------------
 
-  struct MonsterAdjForBossMonster {
+  struct MonsterAdj {
     uint256 fieldAdj;
     uint256 specialBuff;
   }
@@ -46,8 +46,8 @@ interface IBossMonster {
   event SetMonsterAdjsForBossMonster(
     address indexed publisher,
     address indexed resurrectionPrompt,
-    MonsterAdjForBossMonster oldValue,
-    MonsterAdjForBossMonster newValue
+    MonsterAdj oldValue,
+    MonsterAdj newValue
   );
 
   // --------------------------------------------------------------------------------
@@ -81,5 +81,5 @@ interface IBossMonster {
   /// @return Adjs
   function getMonsterAdjsForBossMonster(
     address resurrectionPrompt
-  ) external view returns (MonsterAdjForBossMonster memory);
+  ) external view returns (MonsterAdj memory);
 }

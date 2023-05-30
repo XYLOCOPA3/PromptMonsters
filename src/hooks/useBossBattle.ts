@@ -2,15 +2,17 @@ import { BossBattleModel } from "@/models/BossBattleModel";
 import { BossBattleState, bossBattleState } from "@/stores/bossBattleState";
 import { BossBattlePhase } from "@/types/BossBattlePhase";
 import { EnumItem } from "@/types/EnumItem";
+import { MonsterId } from "@/types/MonsterId";
+import axios from "axios";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 let usedBossSkill = "";
 let bossDamaged = 0;
 let droppedItemId = -1;
-let bossNextActionSignIndex = -1;
+let bossNextActionSignIndex = 0;
 
 export interface BossBattleController {
-  init: () => void;
+  init: (monsterId: MonsterId) => Promise<void>;
   moveStart: () => Promise<void>;
   moveFightSelector: () => Promise<void>;
   moveItemSelector: () => Promise<void>;
@@ -35,11 +37,28 @@ export const useBossBattleController = (): BossBattleController => {
   /**
    * Init bossBattle
    */
-  const init = (): void => {
+  const init = async (monsterId: MonsterId): Promise<void> => {
+    // TODO: 補正値がない場合は生成をリクエスト
+    // const
+    let res: any;
+    try {
+      res = await axios.post("/api/boss/generate-skill-desc", {
+        monsterId,
+      });
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.response!.status === 500) return e.response!.data.battleResult;
+        throw new Error(e.response!.data.message);
+      }
+      console.error(e);
+      throw new Error("Unknown Error");
+    }
+    console.log(res);
+
     usedBossSkill = "";
     bossDamaged = 0;
     droppedItemId = -1;
-    bossNextActionSignIndex = -1;
+    bossNextActionSignIndex = 0;
     setBossBattle(BossBattleModel.create({}));
   };
 
@@ -50,7 +69,6 @@ export const useBossBattleController = (): BossBattleController => {
     usedBossSkill = "";
     bossDamaged = 0;
     droppedItemId = -1;
-    bossNextActionSignIndex = -1;
     setBossBattle((prevState) => {
       return prevState.copyWith({
         phase: BossBattlePhase.start,

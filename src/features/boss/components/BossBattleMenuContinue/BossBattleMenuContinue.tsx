@@ -1,8 +1,5 @@
 import { BossBattleNoButton, BossBattleYesButton } from "@/features/boss";
-import { getBossNextActionSignMsg } from "@/features/boss/utils/utils";
 import { useBossValue } from "@/hooks/useBoss";
-import { useBossBattleState } from "@/hooks/useBossBattle";
-import { useLanguageValue } from "@/hooks/useLanguage";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
@@ -18,17 +15,11 @@ export type BossBattleMenuContinueProps = BaseProps;
 export const BossBattleMenuContinue = ({
   className,
 }: BossBattleMenuContinueProps) => {
-  const language = useLanguageValue();
   const monster = useMonsterValue();
   const boss = useBossValue();
-  const [bossBattle, bossBattleController] = useBossBattleState();
   const { t: tBossBattle } = useTranslation("boss-battle");
 
-  const handleNextClick = async () => {
-    await bossBattleController.moveBossActionResult();
-  };
-
-  if (monster.name === "" || boss.name === "" || language === "") return <></>;
+  if (monster.name === "" || boss.name === "") return <></>;
   return (
     <>
       <div className={clsx(className, "flex", "mb-[10px]", "h-[250px]")}>
@@ -42,13 +33,6 @@ export const BossBattleMenuContinue = ({
             "border-[1px]",
           )}
         >
-          {getBossNextActionSignMsg(
-            bossBattle.bossNextActionSignIndex,
-            language as "日本語" | "English",
-            boss.name,
-          )}
-          <br />
-          <br />
           {tBossBattle("continue")}
           <br />
           <br />

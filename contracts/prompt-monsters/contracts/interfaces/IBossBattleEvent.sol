@@ -22,20 +22,44 @@ interface IBossBattleEvent {
 
   event SetBossMonsterAddress(
     address indexed publisher,
-    address indexed oldValue,
-    address indexed newValue
+    address indexed oldState,
+    address indexed newState
   );
 
   event SetPromptMonstersAddress(
     address indexed publisher,
-    address indexed oldValue,
-    address indexed newValue
+    address indexed oldState,
+    address indexed newState
   );
 
-  event SetIsBossBattleEventActive(
+  event SetBossBattleEventActivated(
     address indexed publisher,
-    bool indexed oldValue,
-    bool indexed newValue
+    bool indexed oldState,
+    bool indexed newState
+  );
+
+  event SetBatchIsMonsterInBossBattle(
+    address indexed publisher,
+    bool[] indexed oldState,
+    bool[] indexed newState
+  );
+
+  event SetInitialIBBState(
+    address indexed publisher,
+    BBState indexed oldState,
+    BBState indexed newState
+  );
+
+  event SetBatchHighScores(
+    address indexed publisher,
+    uint256[] indexed oldState,
+    uint256[] indexed newState
+  );
+
+  event SetBatchBbStates(
+    address indexed publisher,
+    BBState[] indexed oldState,
+    BBState[] indexed newState
   );
 
   // --------------------------------------------------------------------------------
@@ -66,7 +90,7 @@ interface IBossBattleEvent {
 
   /// @dev Set isBossBattleEventActive
   /// @param _isBossBattleEventActive isBossBattleEventActive
-  function setIsBossBattleEventActive(bool _isBossBattleEventActive) external;
+  function setBossBattleEventActivated(bool _isBossBattleEventActive) external;
 
   // --------------------------------------------------------------------------------
   // Main Logic

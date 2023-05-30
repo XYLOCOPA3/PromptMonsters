@@ -98,15 +98,16 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                     </div>
                     <div
                       className={clsx(
-                        "font-bold",
-                        "text-[32px]",
-                        "text-end",
-                        "mb-[10px]",
+                        "flex",
+                        "justify-between",
+                        "items-center",
                       )}
                     >
-                      {tBossBattle("updatedHighScore")}
-                    </div>
-                    <div className={clsx("flex", "justify-end")}>
+                      <div
+                        className={clsx("font-bold", "text-[32px]", "text-end")}
+                      >
+                        {tBossBattle("updatedHighScore")}
+                      </div>
                       <BossBattleOKButton
                         className={clsx("px-[30px]", "text-[20px]")}
                         onClick={closeModal}

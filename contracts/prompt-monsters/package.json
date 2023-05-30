@@ -16,7 +16,7 @@
     "deploy": "npx hardhat run scripts/$npm_config_name/deploy.ts --network $npm_config_network",
     "post-deploy": "npx hardhat run scripts/$npm_config_name/post-deploy.ts --network $npm_config_network",
     "deploy-all": "npm run deploy --network=$npm_config_network --name=battle && npm run deploy --network=$npm_config_network --name=battle-off-season && npm run deploy --network=$npm_config_network --name=battle-s1 && npm run deploy --network=$npm_config_network --name=prompt-monsters && npm run deploy --network=$npm_config_network --name=stamina",
-    "post-deploy-all": "npm run post-deploy --network=$npm_config_network --name=battle && npm run post-deploy --network=$npm_config_network --name=battle-off-season && npm run post-deploy --network=$npm_config_network --name=battle-s1 && npm run post-deploy --network=$npm_config_network --name=stamina",
+    "post-deploy-all": "npm run post-deploy --network=$npm_config_network --name=battle && npm run post-deploy --network=$npm_config_network --name=battle-off-season && npm run post-deploy --network=$npm_config_network --name=battle-s1 && npm run post-deploy --network=$npm_config_network --name=prompt-monsters  && npm run post-deploy --network=$npm_config_network --name=stamina",
     "predeploy-coin": "npm run clean",
     "deploy-coin": "npx hardhat run scripts/Mock/deployCoin.ts --network $npm_config_network",
     "preverify": "npm run clean",
@@ -26,7 +26,7 @@
     "upgrade-no-test": "npx hardhat run scripts/$npm_config_name/upgrade.ts --network $npm_config_network",
     "update": "npx -p npm-check-updates  -c 'ncu' && npx -p npm-check-updates  -c 'ncu -u' && npm i",
     "mock-transfer": "npx hardhat run scripts/Mock/transfer.ts --network $npm_config_network",
-    "script": "npx hardhat run scripts/$npm_config_name/$npm_config_file.ts --network $npm_config_network",
+    "script": "npx hardhat run scripts/$npm_config_name/utils/$npm_config_file.ts --network $npm_config_network",
     "size": "npx hardhat size-contracts"
   },
   "devDependencies": {

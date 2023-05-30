@@ -9,12 +9,11 @@ import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgrad
 import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import {StringsUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import {Base64Upgradeable} from "@openzeppelin/contracts-upgradeable/utils/Base64Upgradeable.sol";
-
 import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import {IPromptMonsters} from "./IPromptMonsters.sol";
-
 import {IPromptMonstersImage} from "../prompt-monsters-image/IPromptMonstersImage.sol";
+import {IPromptMonstersExtension} from "../prompt-monsters-extension/IPromptMonstersExtension.sol";
 
 /// @title PromptMonsters
 /// @author keit (@keitEngineer)
@@ -57,12 +56,7 @@ contract PromptMonsters is
 
   mapping(uint256 => address) public monsterIdToResurrectionPrompt;
 
-  // 0 → 未定
-  // 1 → その他
-  // 100 → 物理攻撃
-  // 101 → 特殊攻撃
-  // 200 → 回復
-  mapping(address => mapping(string => uint32)) public skillsTypes;
+  IPromptMonstersExtension private _promptMonstersExtension;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -206,70 +200,7 @@ contract PromptMonsters is
   /// @dev Get contract URI
   /// @return uri contract URI
   function contractURI() external view returns (string memory uri) {
-    string memory name_ = name();
-    string memory svg = string.concat(
-      "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 350 350'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='black' /><text x='50%' y='50%' class='base' dominant-baseline='middle' text-anchor='middle'>",
-      name_,
-      "</text></svg>"
-    );
-    string memory json = Base64Upgradeable.encode(
-      bytes(
-        string(
-          abi.encodePacked(
-            '{"name": "',
-            name_,
-            '", "description": "',
-            name_,
-            ' is Generative AI Game.", "image": "data:image/svg+xml;base64,',
-            Base64Upgradeable.encode(bytes(svg)),
-            '", "external_link": "',
-            _externalLink,
-            '"}'
-          )
-        )
-      )
-    );
-    string memory finalTokenUri = string(
-      abi.encodePacked("data:application/json;base64,", json)
-    );
-    uri = finalTokenUri;
-  }
-
-  /// @dev Get monster with skill types
-  /// @param resurrectionPrompt resurrection prompt
-  /// @return monster with skillsTypes
-  function getMonsterWithSkillTypes(
-    address resurrectionPrompt
-  ) external view returns (MonsterwithSkillTypes memory) {
-    Monster memory monster = _monsterHistory[resurrectionPrompt];
-    uint32[] memory _skillsTypes;
-    uint256 skillsLength = monster.skills.length;
-
-    for (uint i; i < skillsLength; ) {
-      _skillsTypes[i] = skillsTypes[resurrectionPrompt][monster.skills[i]];
-      if (i == 3) {
-        break;
-      }
-      unchecked {
-        ++i;
-      }
-    }
-
-    return
-      MonsterwithSkillTypes({
-        feature: monster.feature,
-        name: monster.name,
-        flavor: monster.flavor,
-        skills: monster.skills,
-        skillsTypes: _skillsTypes,
-        lv: monster.lv,
-        hp: monster.hp,
-        atk: monster.atk,
-        def: monster.def,
-        inte: monster.inte, // INT
-        mgr: monster.mgr,
-        agl: monster.agl
-      });
+    uri = promptMonstersImage.contractURI(name(), _externalLink);
   }
 
   // --------------------------------------------------------------------------------
@@ -346,6 +277,14 @@ contract PromptMonsters is
     promptMonstersImage = IPromptMonstersImage(newState_);
   }
 
+  /// @dev Set prompt monsters extension
+  /// @param newState_ new state
+  function setPromptMonstersExtension(
+    address newState_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _promptMonstersExtension = IPromptMonstersExtension(newState_);
+  }
+
   /// @dev Triggers stopped state
   function pause() external onlyRole(DEFAULT_ADMIN_ROLE) whenNotPaused {
     paused = true;
@@ -392,7 +331,6 @@ contract PromptMonsters is
     _monsters.push(monster);
     resurrectionIndex[resurrectionPrompt] = newTokenId;
     monsterIdToResurrectionPrompt[newTokenId] = resurrectionPrompt;
-    // delete _monsterHistory[resurrectionPrompt];
     isMinted[resurrectionPrompt] = true;
     erc20.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
     _safeMint(msg.sender, newTokenId);
@@ -421,28 +359,30 @@ contract PromptMonsters is
     );
   }
 
-  /// @dev assign skillsTypes
-  /// @param resurrectionPrompt_ resurrection prompt
-  /// @param skillsTypes_ types
-  function assignSkillTypes(
-    address resurrectionPrompt_,
-    uint32[] memory skillsTypes_
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    require(
-      skillsTypes_.length <= 4,
-      "PromptMonsters: types length must be less than or equal to 4"
-    );
-    uint256 skillLength = _monsterHistory[resurrectionPrompt_].skills.length;
-    for (uint256 i = 0; i < skillLength; ) {
-      skillsTypes[resurrectionPrompt_][
-        _monsterHistory[resurrectionPrompt_].skills[i]
-      ] = skillsTypes_[i];
-
+  /// @dev Get monster extensions
+  /// @param resurrectionPrompts_ resurrection prompts
+  /// @return monsterExtensions monster extensions
+  function getMonsterExtensions(
+    address[] memory resurrectionPrompts_
+  )
+    external
+    view
+    returns (
+      IPromptMonstersExtension.MonsterExtension[] memory monsterExtensions
+    )
+  {
+    uint256 length = resurrectionPrompts_.length;
+    monsterExtensions = new IPromptMonstersExtension.MonsterExtension[](length);
+    for (uint i; i < length; ) {
+      address rp = resurrectionPrompts_[i];
+      monsterExtensions[i] = _promptMonstersExtension.getMonsterExtension(
+        rp,
+        _monsterHistory[resurrectionPrompts_[i]]
+      );
       unchecked {
         ++i;
       }
     }
-    emit AssignSkillTypes(_msgSender(), resurrectionPrompt_, skillsTypes_);
   }
 
   // --------------------------------------------------------------------------------
