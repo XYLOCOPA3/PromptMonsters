@@ -203,6 +203,16 @@ contract PromptMonsters is
     uri = promptMonstersImage.contractURI(name(), _externalLink);
   }
 
+  /// @dev Get monsters total supply
+  /// @return totalSupply token IDs
+  function getPromptMonstersExtension()
+    external
+    view
+    returns (IPromptMonstersExtension totalSupply)
+  {
+    totalSupply = _promptMonstersExtension;
+  }
+
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------

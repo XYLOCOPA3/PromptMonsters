@@ -38,6 +38,12 @@ interface IPromptMonstersExtension {
     uint32[][] newState
   );
 
+  event SetPromptMonsters(
+    address indexed publisher,
+    address oldState,
+    address newState
+  );
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------

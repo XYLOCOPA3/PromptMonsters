@@ -122,6 +122,16 @@ contract PromptMonstersExtension is
     emit SetBatchSkillTypes(_msgSender(), rps_, skills_, oldState, skillTypes_);
   }
 
+  /// @dev Set prompt monsters
+  /// @param newState_ new state
+  function setPromptMonsters(
+    address newState_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    address oldState = address(_promptMonsters);
+    _promptMonsters = IPromptMonsters(newState_);
+    emit SetPromptMonsters(_msgSender(), oldState, newState_);
+  }
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
