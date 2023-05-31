@@ -2,8 +2,9 @@ import { ethers } from "ethers";
 
 const mchVerse =
   process.env.NEXT_PUBLIC_IS_PRODUCTION === "true"
-    ? "https://rpc.oasys.mycryptoheroes.net/"
-    : "https://rpc.oasys.sand.mchdfgh.xyz/";
+    ? "https://rpc.oasys.mycryptoheroes.net/" // mchMainnet
+    : "https://rpc.sandverse.oasys.games/"; // sandverse
+// : "https://rpc.oasys.sand.mchdfgh.xyz/"; // mchTestnet
 
 export const RPC_URL = {
   mumbai: "https://rpc-mumbai.maticvigil.com/",

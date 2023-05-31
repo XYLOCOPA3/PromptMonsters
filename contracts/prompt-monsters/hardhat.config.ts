@@ -8,6 +8,7 @@ require("dotenv").config();
 const {
   POLYGON_MUMBAI_ALCHEMY_KEY,
   PRIVATE_KEY,
+  DEV_PRIVATE_KEY,
   LOCAL_PRIVATE_KEY,
   POLYGONSCAN_API,
 } = process.env;
@@ -34,7 +35,7 @@ const config: HardhatUserConfig = {
     sandverse: {
       url: "https://rpc.sandverse.oasys.games/",
       chainId: 20197,
-      accounts: [PRIVATE_KEY as string],
+      accounts: [DEV_PRIVATE_KEY as string],
       gasPrice: 0,
     },
     mchMainnet: {

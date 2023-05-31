@@ -20,13 +20,8 @@ async function main() {
 
   console.log("Completed deployment");
 
-  // Wait 10 seconds before verification, because it fails if it is done immediately after deployment
-  // console.log("Waiting for 10 seconds before verification...");
-  // await new Promise((resolve) => setTimeout(resolve, 10000));
-
   console.log("---------------------------------------------");
-  ("---------------------------------------------");
-  console.log("--- End Erc20 Deploy -----9999999999---------");
+  console.log("--- End Erc20 Deploy ------------------------");
   console.log("---------------------------------------------");
 }
 

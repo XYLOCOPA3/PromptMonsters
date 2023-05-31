@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
-import {
-  mchVerse,
-  mchVerseMainnet,
-  mchVerseTestnet,
-} from "@/const/chainParams";
+import { mchVerse } from "@/const/chainParams";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterState } from "@/hooks/useMonster";
 import { useUserController } from "@/hooks/useUser";
@@ -48,12 +44,7 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
     if (!isConnected) return;
     try {
       setDefaultChain(mchVerse);
-      if (
-        chain!.id !==
-        (process.env.NEXT_PUBLIC_IS_PRODUCTION
-          ? mchVerseMainnet.id
-          : mchVerseTestnet.id)
-      ) {
+      if (chain!.id !== mchVerse.id) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         if (switchNetwork !== undefined) switchNetwork!(mchVerse.id);
       }
