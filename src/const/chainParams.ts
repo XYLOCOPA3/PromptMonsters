@@ -69,4 +69,5 @@ export const mchVerseMainnet = {
 export const mchVerse =
   process.env.NEXT_PUBLIC_IS_PRODUCTION === "true"
     ? mchVerseMainnet
-    : mchVerseTestnet;
+    : oasysSand;
+// : mchVerseTestnet;
