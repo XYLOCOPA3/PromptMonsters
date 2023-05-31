@@ -1,7 +1,11 @@
 import { Button } from "@/components/elements/Button";
-import { getBossAppearedMsg } from "@/features/boss/utils/utils";
+import {
+  getBossAppearedMsg,
+  getBossNextActionSignMsg,
+} from "@/features/boss/utils/utils";
 import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleState } from "@/hooks/useBossBattle";
+import { useLanguageValue } from "@/hooks/useLanguage";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
@@ -16,6 +20,7 @@ export type BossBattleMenuStartProps = BaseProps;
 export const BossBattleMenuStart = ({
   className,
 }: BossBattleMenuStartProps) => {
+  const language = useLanguageValue();
   const boss = useBossValue();
   const [bossBattle, bossBattleController] = useBossBattleState();
   const { t: tBossBattle } = useTranslation("boss-battle");
@@ -30,7 +35,7 @@ export const BossBattleMenuStart = ({
     await bossBattleController.moveItemSelector();
   };
 
-  if (boss.name === "") return <></>;
+  if (boss.name === "" || language === "") return <></>;
   return (
     <div className={clsx(className, "flex", "mb-[10px]", "h-[250px]")}>
       <div
@@ -80,7 +85,20 @@ export const BossBattleMenuStart = ({
           "border-[1px]",
         )}
       >
-        {getBossAppearedMsg(boss.name, tBossBattle("bossAppeared"))}
+        {bossBattle.turn === 0 ? (
+          <>
+            {getBossAppearedMsg(boss.name, tBossBattle("bossAppeared"))}
+            <br />
+            <br />
+          </>
+        ) : (
+          <></>
+        )}
+        {getBossNextActionSignMsg(
+          bossBattle.bossNextActionSignIndex,
+          language as "日本語" | "English",
+          boss.name,
+        )}
       </div>
     </div>
   );

@@ -3,6 +3,8 @@ pragma solidity ^0.8.18;
 
 import {IERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
 
+import {IPromptMonstersExtension} from "../prompt-monsters-extension/IPromptMonstersExtension.sol";
+
 /// @title IPromptMonsters
 /// @author keit (@keitEngineer)
 /// @dev This is an interface of PromptMonsters.
@@ -16,21 +18,6 @@ interface IPromptMonsters is IERC721Upgradeable {
     string name;
     string flavor;
     string[] skills;
-    uint32 lv;
-    uint32 hp;
-    uint32 atk;
-    uint32 def;
-    uint32 inte; // INT
-    uint32 mgr;
-    uint32 agl;
-  }
-
-  struct MonsterwithSkillTypes {
-    string feature;
-    string name;
-    string flavor;
-    string[] skills;
-    uint32[] skillsTypes;
     uint32 lv;
     uint32 hp;
     uint32 atk;
@@ -82,12 +69,6 @@ interface IPromptMonsters is IERC721Upgradeable {
     address indexed tokenOwner,
     uint256 indexed newTokenId,
     Monster monster
-  );
-
-  event AssignSkillTypes(
-    address indexed publisher,
-    address indexed resurrectionPrompt,
-    uint32[] skillTypes
   );
 
   event Paused(address account);
@@ -152,13 +133,6 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @return uri contract URI
   function contractURI() external view returns (string memory uri);
 
-  /// @dev Get monster with skill types
-  /// @param resurrectionPrompt resurrection prompt
-  /// @return monster with skillTypes
-  function getMonsterWithSkillTypes(
-    address resurrectionPrompt
-  ) external view returns (MonsterwithSkillTypes memory);
-
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
@@ -221,11 +195,15 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @param monsterId monster ID
   function checkMonsterId(uint256 monsterId) external view;
 
-  /// @dev assign skillTypes
-  /// @param resurrectionPrompt_ resurrection prompt
-  /// @param types_ types
-  function assignSkillTypes(
-    address resurrectionPrompt_,
-    uint32[] memory types_
-  ) external;
+  /// @dev Get monster extensions
+  /// @param resurrectionPrompts_ resurrection prompts
+  /// @return monsterExtensions monster extensions
+  function getMonsterExtensions(
+    address[] memory resurrectionPrompts_
+  )
+    external
+    view
+    returns (
+      IPromptMonstersExtension.MonsterExtension[] memory monsterExtensions
+    );
 }

@@ -26,7 +26,7 @@ contract BossMonsterMchYoshka is
 
   BossStatus public bossStatus;
 
-  mapping(address => MonsterAdjForBossMonster) private _monstersAdjs;
+  mapping(address => MonsterAdj) private _monstersAdjs;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -92,7 +92,7 @@ contract BossMonsterMchYoshka is
   /// @return Adjs
   function getMonsterAdjsForBossMonster(
     address resurrectionPrompt
-  ) external view returns (MonsterAdjForBossMonster memory) {
+  ) external view returns (MonsterAdj memory) {
     return _monstersAdjs[resurrectionPrompt];
   }
 
@@ -105,13 +105,8 @@ contract BossMonsterMchYoshka is
     uint256 fieldAdj,
     uint256 specialBuff
   ) external onlyRole(GAME_ROLE) {
-    MonsterAdjForBossMonster memory monsterAdjs = MonsterAdjForBossMonster(
-      fieldAdj,
-      specialBuff
-    );
-    MonsterAdjForBossMonster memory oldValue = _monstersAdjs[
-      resurrectionPrompt
-    ];
+    MonsterAdj memory monsterAdjs = MonsterAdj(fieldAdj, specialBuff);
+    MonsterAdj memory oldValue = _monstersAdjs[resurrectionPrompt];
     _monstersAdjs[resurrectionPrompt] = monsterAdjs;
     emit SetMonsterAdjsForBossMonster(
       _msgSender(),

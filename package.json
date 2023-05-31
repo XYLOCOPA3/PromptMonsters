@@ -10,10 +10,11 @@
     "format": "prettier --write '**/*.js' '**/*.ts' '**/*.tsx' '**/*.json' '**/*.yml' '**/*.sol' --ignore-path .gitignore && npm run lint",
     "typechain": "typechain --target ethers-v5 artifacts/*.json --out-dir src/typechain",
     "premove-abi": "cd contracts/prompt-monsters && npm run compile",
-    "move-abi-stamina": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/stamina/Stamina.sol/Stamina.json ../../artifacts/Stamina.json",
     "move-abi-battle": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/battle/Battle.sol/Battle.json ../../artifacts/Battle.json",
     "move-abi-prompt-monsters": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/prompt-monsters/PromptMonsters.sol/PromptMonsters.json ../../artifacts/PromptMonsters.json",
-    "move-abi": "cd artifacts/ && ls | grep -v -E 'MCHCoin.json' | xargs rm -rf && cd .. && npm run move-abi-prompt-monsters && npm run move-abi-battle && npm run move-abi-stamina",
+    "move-abi-prompt-monsters-extension": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/prompt-monsters-extension/PromptMonstersExtension.sol/PromptMonstersExtension.json ../../artifacts/PromptMonstersExtension.json",
+    "move-abi-stamina": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/stamina/Stamina.sol/Stamina.json ../../artifacts/Stamina.json",
+    "move-abi": "cd artifacts/ && ls | grep -v -E 'MCHCoin.json' | xargs rm -rf && cd .. && npm run move-abi-prompt-monsters && npm run move-abi-prompt-monsters-extension && npm run move-abi-battle && npm run move-abi-stamina",
     "postmove-abi": "cp .env.development demo-env/.env.production && rm -rf src/typechain  && npm run typechain"
   },
   "dependencies": {
@@ -44,7 +45,7 @@
     "recoil": "^0.7.7",
     "tailwindcss": "3.3.1",
     "typescript": "5.0.4",
-    "wagmi": "^0.12.10"
+    "wagmi": "^1.0.8"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.1.1",

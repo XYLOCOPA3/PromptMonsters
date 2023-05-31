@@ -117,3 +117,59 @@ JSON形式で出力->`;
 };
 
 // HP->❤️,ATK->💥,DEF->🛡️,INT->🧠,MGR->🛡️✨,AGL->💨
+
+/**
+ * Get skill description prompt
+ * @param skills skills
+ * @return {string} skill description prompt
+ */
+export const getSkillDescPrompt = (skills: string[]): string => {
+  if (skills.length === 0) return "";
+  let skillPrompt = "";
+  switch (skills.length) {
+    case 1:
+      skillPrompt = `["${skills[0]}"]`;
+      break;
+    case 2:
+      skillPrompt = `["${skills[0]}","${skills[1]}"]`;
+      break;
+    case 3:
+      skillPrompt = `["${skills[0]}","${skills[1]}","${skills[2]}"]`;
+      break;
+    default:
+      skillPrompt = `["${skills[0]}","${skills[1]}","${skills[2]}","${skills[3]}"]`;
+      break;
+  }
+  return `Please tell me the type of skill based on the skill name.
+
+- Please choose the skill type from the following options.
+- Please avoid using "Other" whenever possible.
+
+Skill types:
+["Physical Attack","Special Attack","Healing","Other"]
+
+Example
+"""
+Skills: ["Punch","Fire","Soul Renewal","Joke"]
+->["Physical Attack","Special Attack","Healing","Other"]
+"""
+
+Skills: ${skillPrompt}
+->`;
+  //   return `Please tell me the type of skill based on the skill name.
+
+  // - Please choose the skill type from the following options.
+  // - It is allowed to actively use "other".
+
+  // Skill types:
+  // ["Physical Attack","Special Attack","Healing","Other"]
+
+  // Example
+  // """
+  // Skills: ["Punch","Fire","Soul Renewal","Joke"]
+  // ->["Physical Attack","Special Attack","Healing","Other"]
+  // """
+
+  // Skills: ${skillPrompt}
+  // ->`;
+};

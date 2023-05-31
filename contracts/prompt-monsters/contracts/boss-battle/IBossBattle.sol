@@ -55,42 +55,33 @@ interface IBossBattle {
   // Getter
   // --------------------------------------------------------------------------------
 
+  /// @dev Get addresses of bossBattleEvent
+  /// @param bbeIds_ IDs of bossBattleEvent
+  /// @return bossBattleEvents addresses of bossBattleEvent
+  function getBossBattleEvents(
+    uint256[] memory bbeIds_
+  ) external view returns (address[] memory bossBattleEvents);
+
   /// @dev Get bossBattleEventAddress
-  /// @return bossBattleEventAddress address of bossBattleEvent
-  function getBossBattleEventAddress(
-    uint256 index
-  ) external view returns (address bossBattleEventAddress);
+  /// @return length addresses of bossBattleEvent
+  function getBossBattleEventsLength() external view returns (uint256 length);
 
-  /// @dev Get promptMonstersAddress
-  /// @return promptMonstersAddress address of promptMonsters
-  function getPromptMonstersAddress()
-    external
-    view
-    returns (address promptMonstersAddress);
-
-  /// @dev Get isBossBattleActive
-  /// @return _isBossBattleActive isBossBattleActive
-  function getIsBossBattleActive()
-    external
-    view
-    returns (bool _isBossBattleActive);
-
-  /// @dev Get monster adjs for the boss battle
-  /// @param bossBattleEventAddress address of bossBattleEvent
-  /// @param resurrectionPrompt resurrection prompt
-  /// @return monsterAdjs monster adjs for the boss battle
-  function getMonsterAdjsForBossBattle(
-    address bossBattleEventAddress,
-    address resurrectionPrompt
-  ) external view returns (IBossMonster.MonsterAdjForBossMonster memory);
+  // /// @dev Get monster adjs for the boss battle
+  // /// @param bossBattleEventAddress address of bossBattleEvent
+  // /// @param resurrectionPrompt resurrection prompt
+  // /// @return monsterAdjs monster adjs for the boss battle
+  // function getMonsterAdjsForBossBattle(
+  //   address bossBattleEventAddress,
+  //   address resurrectionPrompt
+  // ) external view returns (IBossMonster.MonsterAdj memory);
 
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
 
-  /// @dev Add bossBattleEventAddress
-  /// @param bossBattleEventAddress address of bossBattleEvent
-  function addBossBattleEventAddress(address bossBattleEventAddress) external;
+  // /// @dev Add bossBattleEventAddress
+  // /// @param bossBattleEventAddress address of bossBattleEvent
+  // function addBossBattleEventAddress(address bossBattleEventAddress) external;
 
   /// @dev Set promptMonstersAddress
   /// @param promptMonstersAddress address of promptMonsters
@@ -104,22 +95,22 @@ interface IBossBattle {
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @dev get boss battle data to calculate battle result
-  /// @param bossBattleEventAddress BossBattleEvent contract address
-  /// @param resurrectionPrompt resurrection prompt
-  /// @return bossBattleData
-  function getBossBattleData(
-    address bossBattleEventAddress,
-    address resurrectionPrompt
-  ) external view returns (BossBattleData memory);
+  // /// @dev get boss battle data to calculate battle result
+  // /// @param bossBattleEventAddress BossBattleEvent contract address
+  // /// @param resurrectionPrompt resurrection prompt
+  // /// @return bossBattleData
+  // function getBossBattleData(
+  //   address bossBattleEventAddress,
+  //   address resurrectionPrompt
+  // ) external view returns (BossBattleData memory);
 
-  /// @dev Start boss battle of the event
-  /// @param bossBattleEventAddress BossBattleEvent contract address
-  /// @param resurrectionPrompt resurrection prompt
-  function startBossBattle(
-    address bossBattleEventAddress,
-    address resurrectionPrompt
-  ) external;
+  // /// @dev Start boss battle of the event
+  // /// @param bossBattleEventAddress BossBattleEvent contract address
+  // /// @param resurrectionPrompt resurrection prompt
+  // function startBossBattle(
+  //   address bossBattleEventAddress,
+  //   address resurrectionPrompt
+  // ) external;
 
   /// @dev Record battle result with boss of the event
   /// @param bossBattleEventAddress BossBattleEvent contract address

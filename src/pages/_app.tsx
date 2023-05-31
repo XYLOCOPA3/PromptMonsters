@@ -20,19 +20,16 @@ import {
 import { Web3Modal } from "@web3modal/react";
 import { appWithTranslation } from "next-i18next";
 import { RecoilRoot } from "recoil";
-import { WagmiConfig, configureChains, createClient } from "wagmi";
+import { WagmiConfig, configureChains, createConfig } from "wagmi";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID!;
-
 const chains = [mchVerse];
-
-const { provider } = configureChains(chains, [w3mProvider({ projectId })]);
-const wagmiClient = createClient({
+const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
+const wagmiClient = createConfig({
   autoConnect: true,
   connectors: w3mConnectors({ version: 1, chains, projectId }),
-  provider,
+  publicClient,
 });
-
 const ethereumClient = new EthereumClient(wagmiClient, chains);
 
 const App = ({ Component, pageProps }: AppProps) => {
@@ -283,7 +280,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         <link rel="manifest" href="/assets/favicons/manifest.json" />{" "}
       </Head>
       {ready ? (
-        <WagmiConfig client={wagmiClient}>
+        <WagmiConfig config={wagmiClient}>
           <RecoilRoot>
             <AutoLogin>
               <MonsterMintPriceInit>

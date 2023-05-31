@@ -25,7 +25,6 @@ export const Header = () => {
   const setDrawerOpen = useSetRecoilState(drawerOpenState);
 
   const handleClick = () => {
-    console.log("Hi");
     setDrawerOpen(true);
   };
 

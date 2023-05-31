@@ -29,7 +29,7 @@ export class BossBattleModel extends BaseModel<string> {
     public readonly currentMonsterDamaged: number = 0,
     public readonly usedBossSkill: string = "",
     public readonly currentBossDamaged: number = 0,
-    public readonly bossNextActionSignIndex: number = -1,
+    public readonly bossNextActionSignIndex: number = 0,
     public readonly defeated: boolean = false,
     public readonly defensed: boolean = false,
   ) {

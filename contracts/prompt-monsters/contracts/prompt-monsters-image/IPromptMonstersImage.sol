@@ -35,15 +35,6 @@ interface IPromptMonstersImage {
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @dev Get token URI
-  /// @param tokenId_ token ID
-  /// @param monster_ monster
-  /// @return uri token URI
-  function tokenURI(
-    uint256 tokenId_,
-    IPromptMonsters.Monster memory monster_
-  ) external view returns (string memory uri);
-
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
@@ -64,4 +55,26 @@ interface IPromptMonstersImage {
   /// @dev Set Prompt Monsters
   /// @param newState_ new state
   function setPromptMonsters(address newState_) external;
+
+  // --------------------------------------------------------------------------------
+  // Main Logic
+  // --------------------------------------------------------------------------------
+
+  /// @dev Get token URI
+  /// @param tokenId_ token ID
+  /// @param monster_ monster
+  /// @return uri token URI
+  function tokenURI(
+    uint256 tokenId_,
+    IPromptMonsters.Monster memory monster_
+  ) external view returns (string memory uri);
+
+  /// @dev Get contract URI
+  /// @param name_ NFT name
+  /// @param externalLink_ external link
+  /// @return uri contract URI
+  function contractURI(
+    string memory name_,
+    string memory externalLink_
+  ) external pure returns (string memory uri);
 }

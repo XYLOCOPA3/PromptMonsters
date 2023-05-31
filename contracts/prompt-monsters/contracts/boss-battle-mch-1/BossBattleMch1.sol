@@ -21,21 +21,22 @@ contract BossBattleMch1 is
   // State
   // --------------------------------------------------------------------------------
 
-  bytes32 public GAME_ROLE;
+  bytes32 private GAME_ROLE;
 
-  IBossMonster public bossMonster;
+  IBossMonster private _bossMonster;
 
-  IPromptMonsters public promptMonsters;
+  IPromptMonsters private _promptMonsters;
 
-  bool public isBossBattleEventActive;
+  bool private _bossBattleEventActivated;
 
-  mapping(address => bool) public isMonsterInBossBattle;
+  // TODO: 名前変える
+  mapping(address => bool) private _isMonsterInBossBattle;
 
-  BBState public initialBBState;
+  IBossBattleEvent.BBState private _initialIBBState;
 
-  mapping(address => uint256) public highScores;
+  mapping(address => uint256) private _highScores;
 
-  mapping(address => BBState) private bbStates;
+  mapping(address => IBossBattleEvent.BBState) private _bbStates;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -57,7 +58,7 @@ contract BossBattleMch1 is
     _grantRole(GAME_ROLE, msg.sender);
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
 
-    initialBBState = BBState(400, 0, 0, 100, 100);
+    _initialIBBState = IBossBattleEvent.BBState(400, 0, 0, 100, 100);
   }
 
   // --------------------------------------------------------------------------------
@@ -67,7 +68,7 @@ contract BossBattleMch1 is
   /// @dev check if the monster is in boss battle
   modifier onlyMonsterInBossBattle(address resurrectionPrompt) {
     require(
-      isMonsterInBossBattle[resurrectionPrompt],
+      _isMonsterInBossBattle[resurrectionPrompt],
       "BossBattle: not started"
     );
     _;
@@ -77,9 +78,94 @@ contract BossBattleMch1 is
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @dev Get bossMonsterAddress
-  function getBossMonsterAddress() external view returns (address) {
-    return address(bossMonster);
+  /// @dev Get GAME_ROLE
+  /// @return returnState GAME_ROLE
+  function getGameRole() external view returns (bytes32 returnState) {
+    returnState = GAME_ROLE;
+  }
+
+  /// @dev Get _bossMonster
+  /// @return returnState _bossMonster
+  function getBossMonsterAddress() external view returns (address returnState) {
+    returnState = address(_bossMonster);
+  }
+
+  /// @dev Get _promptMonsters
+  /// @return returnState _promptMonsters
+  function getPromptMonstersAddress()
+    external
+    view
+    returns (address returnState)
+  {
+    returnState = address(_promptMonsters);
+  }
+
+  /// @dev Get _bossBattleEventActivated
+  /// @return returnState _bossBattleEventActivated
+  function getBossBattleEventActivated()
+    external
+    view
+    returns (bool returnState)
+  {
+    returnState = _bossBattleEventActivated;
+  }
+
+  /// @dev Get batch _isMonsterInBossBattle
+  /// @param rps_ resurrection prompts
+  /// @return returnState _isMonsterInBossBattle
+  function getBatchIsMonsterInBossBattle(
+    address[] memory rps_
+  ) external view returns (bool[] memory returnState) {
+    uint256 length = rps_.length;
+    returnState = new bool[](length);
+    for (uint256 i; i < length; ) {
+      returnState[i] = _isMonsterInBossBattle[rps_[i]];
+      unchecked {
+        ++i;
+      }
+    }
+  }
+
+  /// @dev Get _initialIBBState
+  /// @return returnState _initialIBBState
+  function getInitialBBState()
+    external
+    view
+    returns (IBossBattleEvent.BBState memory returnState)
+  {
+    returnState = _initialIBBState;
+  }
+
+  /// @dev Get batch _highScores
+  /// @param rps_ resurrection prompts
+  /// @return returnState _highScores
+  function getBatchHighScores(
+    address[] memory rps_
+  ) external view returns (uint256[] memory returnState) {
+    uint256 length = rps_.length;
+    returnState = new uint256[](length);
+    for (uint256 i; i < length; ) {
+      returnState[i] = _highScores[rps_[i]];
+      unchecked {
+        ++i;
+      }
+    }
+  }
+
+  /// @dev Get batch _bbStates
+  /// @param rps_ resurrection prompts
+  /// @return returnState _bbStates
+  function getBatchBbStates(
+    address[] memory rps_
+  ) external view returns (IBossBattleEvent.BBState[] memory returnState) {
+    uint256 length = rps_.length;
+    returnState = new IBossBattleEvent.BBState[](length);
+    for (uint256 i; i < length; ) {
+      returnState[i] = _bbStates[rps_[i]];
+      unchecked {
+        ++i;
+      }
+    }
   }
 
   // --------------------------------------------------------------------------------
@@ -87,44 +173,127 @@ contract BossBattleMch1 is
   // --------------------------------------------------------------------------------
 
   /// @dev Set bossMonsterAddress
-  /// @param bossMonsterAddress address of bossMonster
+  /// @param bossMonsterAddress_ address of bossMonster
   function setBossMonsterAddress(
-    address bossMonsterAddress
+    address bossMonsterAddress_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    address oldValue = address(bossMonster);
-    bossMonster = IBossMonster(bossMonsterAddress);
+    address oldState = address(_bossMonster);
+    _bossMonster = IBossMonster(bossMonsterAddress_);
 
-    emit SetBossMonsterAddress(_msgSender(), oldValue, bossMonsterAddress);
+    emit SetBossMonsterAddress(_msgSender(), oldState, bossMonsterAddress_);
   }
 
   /// @dev Set promptMonstersAddress
-  /// @param promptMonstersAddress address of promptMonsters
+  /// @param promptMonstersAddress_ address of promptMonsters
   function setPromptMonstersAddress(
-    address promptMonstersAddress
+    address promptMonstersAddress_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    address oldValue = address(promptMonsters);
-    promptMonsters = IPromptMonsters(promptMonstersAddress);
+    address oldState = address(_promptMonsters);
+    _promptMonsters = IPromptMonsters(promptMonstersAddress_);
 
     emit SetPromptMonstersAddress(
       _msgSender(),
-      oldValue,
-      promptMonstersAddress
+      oldState,
+      promptMonstersAddress_
     );
   }
 
-  /// @dev Set isBossBattleEventActive
-  /// @param _isBossBattleEventActive isBossBattleEventActive
-  function setIsBossBattleEventActive(
-    bool _isBossBattleEventActive
+  /// @dev Set bossBattleEventActivated
+  /// @param bossBattleEventActivated_ bossBattleEventActivated
+  function setBossBattleEventActivated(
+    bool bossBattleEventActivated_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    bool oldValue = isBossBattleEventActive;
-    isBossBattleEventActive = _isBossBattleEventActive;
+    bool oldState = _bossBattleEventActivated;
+    _bossBattleEventActivated = bossBattleEventActivated_;
 
-    emit SetIsBossBattleEventActive(
+    emit SetBossBattleEventActivated(
       _msgSender(),
-      oldValue,
-      _isBossBattleEventActive
+      oldState,
+      _bossBattleEventActivated
     );
+  }
+
+  /// @dev Set batch isMonsterInBossBattle
+  /// @param rps_ resurrection prompts
+  /// @param isMonsterInBossBattles_ isMonsterInBossBattles
+  function setBatchIsMonsterInBossBattle(
+    address[] memory rps_,
+    bool[] memory isMonsterInBossBattles_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    uint256 length = rps_.length;
+    require(
+      length == isMonsterInBossBattles_.length,
+      "BossBattleEvent: mismatch length"
+    );
+    bool[] memory oldState = new bool[](length);
+    for (uint256 i; i < length; ) {
+      oldState[i] = _isMonsterInBossBattle[rps_[i]];
+      _isMonsterInBossBattle[rps_[i]] = isMonsterInBossBattles_[i];
+      unchecked {
+        ++i;
+      }
+    }
+
+    emit SetBatchIsMonsterInBossBattle(
+      _msgSender(),
+      oldState,
+      isMonsterInBossBattles_
+    );
+  }
+
+  /// @dev Set initialIBBState
+  /// @param initialIBBState_ initialIBBState
+  function setInitialIBBState(
+    IBossBattleEvent.BBState memory initialIBBState_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    IBossBattleEvent.BBState memory oldState = _initialIBBState;
+    _initialIBBState = initialIBBState_;
+
+    emit SetInitialIBBState(_msgSender(), oldState, _initialIBBState);
+  }
+
+  /// @dev Set batch highScores
+  /// @param rps_ resurrection prompts
+  /// @param highScores_ highScores
+  function setBatchHighScores(
+    address[] memory rps_,
+    uint256[] memory highScores_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    uint256 length = rps_.length;
+    require(length == highScores_.length, "BossBattleEvent: mismatch length");
+    uint256[] memory oldState = new uint256[](length);
+    for (uint256 i; i < length; ) {
+      oldState[i] = _highScores[rps_[i]];
+      _highScores[rps_[i]] = highScores_[i];
+      unchecked {
+        ++i;
+      }
+    }
+
+    emit SetBatchHighScores(_msgSender(), oldState, highScores_);
+  }
+
+  /// @dev Set batch bbStates
+  /// @param rps_ resurrection prompts
+  /// @param bbStates_ bbStates
+  function setBatchBbStates(
+    address[] memory rps_,
+    IBossBattleEvent.BBState[] memory bbStates_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    uint256 length = rps_.length;
+    require(length == bbStates_.length, "BossBattleEvent: mismatch length");
+    IBossBattleEvent.BBState[] memory oldState = new IBossBattleEvent.BBState[](
+      length
+    );
+    for (uint256 i; i < length; ) {
+      oldState[i] = _bbStates[rps_[i]];
+      _bbStates[rps_[i]] = bbStates_[i];
+      unchecked {
+        ++i;
+      }
+    }
+
+    emit SetBatchBbStates(_msgSender(), oldState, bbStates_);
   }
 
   // --------------------------------------------------------------------------------
@@ -136,13 +305,13 @@ contract BossBattleMch1 is
   function startBossBattle(
     address resurrectionPrompt
   ) external onlyRole(GAME_ROLE) {
-    require(isBossBattleEventActive, "BossBattle: not active");
+    require(_bossBattleEventActivated, "BossBattle: not active");
     require(
-      !isMonsterInBossBattle[resurrectionPrompt],
+      !_isMonsterInBossBattle[resurrectionPrompt],
       "BossBattle: already started"
     );
-    bbStates[resurrectionPrompt] = initialBBState;
-    isMonsterInBossBattle[resurrectionPrompt] = true;
+    _bbStates[resurrectionPrompt] = _initialIBBState;
+    _isMonsterInBossBattle[resurrectionPrompt] = true;
   }
 
   /// @dev recordBossBattle
@@ -150,9 +319,9 @@ contract BossBattleMch1 is
   /// @param bbState bbState to update
   function recordBossBattle(
     address resurrectionPrompt,
-    BBState memory bbState
+    IBossBattleEvent.BBState memory bbState
   ) external onlyRole(GAME_ROLE) onlyMonsterInBossBattle(resurrectionPrompt) {
-    bbStates[resurrectionPrompt] = bbState;
+    _bbStates[resurrectionPrompt] = bbState;
   }
 
   /// @dev End boss battle with win
@@ -160,10 +329,10 @@ contract BossBattleMch1 is
   function endBossBattleWithWin(
     address resurrectionPrompt
   ) public onlyRole(GAME_ROLE) onlyMonsterInBossBattle(resurrectionPrompt) {
-    require(bbStates[resurrectionPrompt].hp > 0, "BossBattle: you lose");
-    uint256 score = bbStates[resurrectionPrompt].score;
-    if (score > highScores[resurrectionPrompt]) {
-      highScores[resurrectionPrompt] = score;
+    require(_bbStates[resurrectionPrompt].hp > 0, "BossBattle: you lose");
+    uint256 score = _bbStates[resurrectionPrompt].score;
+    if (score > _highScores[resurrectionPrompt]) {
+      _highScores[resurrectionPrompt] = score;
     }
     endBossBattle(resurrectionPrompt);
   }
@@ -173,8 +342,8 @@ contract BossBattleMch1 is
   function endBossBattle(
     address resurrectionPrompt
   ) public onlyRole(GAME_ROLE) onlyMonsterInBossBattle(resurrectionPrompt) {
-    bbStates[resurrectionPrompt] = initialBBState;
-    isMonsterInBossBattle[resurrectionPrompt] = false;
+    _bbStates[resurrectionPrompt] = _initialIBBState;
+    _isMonsterInBossBattle[resurrectionPrompt] = false;
   }
 
   // --------------------------------------------------------------------------------
