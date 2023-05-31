@@ -26,11 +26,11 @@ const config: HardhatUserConfig = {
   networks: {
     mumbai: {
       url: POLYGON_MUMBAI_ALCHEMY_KEY,
-      accounts: [PRIVATE_KEY as string],
+      accounts: [DEV_PRIVATE_KEY as string],
     },
     linea: {
-      url: `https://rpc.goerli.linea.build/`,
-      accounts: [PRIVATE_KEY as string],
+      url: "https://rpc.goerli.linea.build/",
+      accounts: [DEV_PRIVATE_KEY as string],
     },
     sandverse: {
       url: "https://rpc.sandverse.oasys.games/",

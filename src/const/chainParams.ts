@@ -1,5 +1,7 @@
 import { Chain } from "wagmi";
 
+// import { polygonMumbai } from "@wagmi/chains";
+
 // export const CHAINID_MUMBAI = "0x13881";
 export const CHAINID_MUMBAI = 80001;
 export const CHAINID_LINEA = "0xe704";
@@ -70,4 +72,5 @@ export const mchVerse =
   process.env.NEXT_PUBLIC_IS_PRODUCTION === "true"
     ? mchVerseMainnet
     : oasysSand;
+// : polygonMumbai;
 // : mchVerseTestnet;
