@@ -1,6 +1,9 @@
 import { ServerWallet } from "@/lib/wallet";
 import { PromptMonsters, PromptMonsters__factory } from "@/typechain";
-import { IPromptMonsters } from "@/typechain/PromptMonsters";
+import {
+  IPromptMonsters,
+  IPromptMonstersExtension,
+} from "@/typechain/PromptMonsters";
 import { UserId } from "@/types/UserId";
 import { ethers } from "ethers";
 
@@ -104,6 +107,17 @@ export class PromptMonstersContract {
    */
   getMonstersTotalSupply = async (): Promise<number> => {
     return Number(await this._promptMonsters.getMonstersTotalSupply());
+  };
+
+  /**
+   * getMonsterExtensions
+   * @param resurrectionPrompts resurrection prompts
+   * @return {Promise<IPromptMonstersExtension.MonsterExtensionStructOutput>} monster extension struct output
+   */
+  getMonsterExtensions = async (
+    resurrectionPrompts: string[],
+  ): Promise<IPromptMonstersExtension.MonsterExtensionStructOutput[]> => {
+    return await this._promptMonsters.getMonsterExtensions(resurrectionPrompts);
   };
 
   /**

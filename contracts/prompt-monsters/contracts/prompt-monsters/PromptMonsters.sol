@@ -203,14 +203,14 @@ contract PromptMonsters is
     uri = promptMonstersImage.contractURI(name(), _externalLink);
   }
 
-  /// @dev Get monsters total supply
-  /// @return totalSupply token IDs
+  /// @dev Get _promptMonstersExtension
+  /// @return returnState _promptMonstersExtension
   function getPromptMonstersExtension()
     external
     view
-    returns (IPromptMonstersExtension totalSupply)
+    returns (IPromptMonstersExtension returnState)
   {
-    totalSupply = _promptMonstersExtension;
+    returnState = _promptMonstersExtension;
   }
 
   // --------------------------------------------------------------------------------
@@ -305,6 +305,26 @@ contract PromptMonsters is
   function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) whenPaused {
     paused = false;
     emit Unpaused(_msgSender());
+  }
+
+  /// @dev Set monsterId to resurrection prompt
+  /// @param monsterId_ monster ID
+  /// @param resurrectionPrompt_ resurrection prompt
+  function setMonsterIdToResurrectionPrompt(
+    uint256 monsterId_,
+    address resurrectionPrompt_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    monsterIdToResurrectionPrompt[monsterId_] = resurrectionPrompt_;
+  }
+
+  /// @dev Set monsterId to resurrection prompt
+  /// @param monsterId_ monster ID
+  /// @param resurrectionPrompt_ resurrection prompt
+  function setMonsterHistory(
+    uint256 monsterId_,
+    address resurrectionPrompt_
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _monsterHistory[resurrectionPrompt_] = _monsters[monsterId_];
   }
 
   // --------------------------------------------------------------------------------

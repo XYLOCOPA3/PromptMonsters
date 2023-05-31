@@ -1,7 +1,9 @@
 import { Button } from "@/components/elements/Button";
+import { SKILL_TYPE_NAME } from "@/const/monster";
 import { BossBattlePrevButton } from "@/features/boss/components/BossBattlePrevButton";
 import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleController } from "@/hooks/useBossBattle";
+import { useLanguageValue } from "@/hooks/useLanguage";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { monsterInitState } from "@/stores/monsterInitState";
@@ -24,6 +26,7 @@ export const BossBattleMenuFight = ({
   const monster = useMonsterValue();
   const monsterInit = useRecoilValue(monsterInitState);
   const bossBattleController = useBossBattleController();
+  const language = useLanguageValue();
 
   const handleSkill1Click = async () => {
     await bossBattleController.attack(monster.skills[0]);
@@ -49,7 +52,7 @@ export const BossBattleMenuFight = ({
     }
   }, [monsterInit]);
 
-  if (boss.name === "" || !monsterInit) return <></>;
+  if (boss.name === "" || !monsterInit || language === "") return <></>;
   return (
     <>
       <div
@@ -61,6 +64,8 @@ export const BossBattleMenuFight = ({
               className={clsx("mr-[5px]")}
               onClick={handleSkill1Click}
               skillName={monster.skills[0]}
+              skillType={monster.skillTypes[0]}
+              language={language}
             />
           ) : (
             <div className={clsx("w-1/2", "mr-[5px]")}></div>
@@ -70,6 +75,8 @@ export const BossBattleMenuFight = ({
               className={clsx("ml-[5px]")}
               onClick={handleSkill2Click}
               skillName={monster.skills[1]}
+              skillType={monster.skillTypes[1]}
+              language={language}
             />
           ) : (
             <div className={clsx("w-1/2", "ml-[5px]")}></div>
@@ -81,6 +88,8 @@ export const BossBattleMenuFight = ({
               className={clsx("mr-[5px]")}
               onClick={handleSkill3Click}
               skillName={monster.skills[2]}
+              skillType={monster.skillTypes[2]}
+              language={language}
             />
           ) : (
             <div className={clsx("w-1/2", "mr-[5px]")}></div>
@@ -90,6 +99,8 @@ export const BossBattleMenuFight = ({
               className={clsx("ml-[5px]")}
               onClick={handleSkill4Click}
               skillName={monster.skills[3]}
+              skillType={monster.skillTypes[3]}
+              language={language}
             />
           ) : (
             <div className={clsx("w-1/2", "ml-[5px]")}></div>
@@ -105,7 +116,7 @@ export const BossBattleMenuFight = ({
  * Boss battle score
  * @param score score
  */
-const Skill = ({ className, onClick, skillName }: any) => {
+const Skill = ({ className, onClick, skillName, skillType, language }: any) => {
   return (
     <div
       className={clsx(
@@ -136,7 +147,8 @@ const Skill = ({ className, onClick, skillName }: any) => {
           "text-[12px]",
         )}
       >
-        物理攻撃
+        {SKILL_TYPE_NAME[language as "日本語" | "English"].get(skillType) ??
+          "???"}
       </div>
     </div>
   );

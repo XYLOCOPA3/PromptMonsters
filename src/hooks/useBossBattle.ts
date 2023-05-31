@@ -1,8 +1,11 @@
+import { ClientPromptMonsters } from "@/features/monster/api/contracts/ClientPromptMonsters";
 import { BossBattleModel } from "@/models/BossBattleModel";
 import { BossBattleState, bossBattleState } from "@/stores/bossBattleState";
+import { monsterState } from "@/stores/monsterState";
 import { BossBattlePhase } from "@/types/BossBattlePhase";
 import { EnumItem } from "@/types/EnumItem";
 import { MonsterId } from "@/types/MonsterId";
+import { hasUnknownSkill } from "@/utils/monsterUtil";
 import axios from "axios";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
@@ -33,28 +36,44 @@ export const useBossBattleValue = (): BossBattleState => {
 
 export const useBossBattleController = (): BossBattleController => {
   const setBossBattle = useSetRecoilState(bossBattleState);
+  const setMonster = useSetRecoilState(monsterState);
 
   /**
    * Init bossBattle
    */
   const init = async (monsterId: MonsterId): Promise<void> => {
-    // TODO: 補正値がない場合は生成をリクエスト
-    // const
-    let res: any;
-    try {
-      res = await axios.post("/api/boss/generate-skill-desc", {
-        monsterId,
-      });
-    } catch (e) {
-      if (axios.isAxiosError(e)) {
-        if (e.response!.status === 500) return e.response!.data.battleResult;
-        throw new Error(e.response!.data.message);
+    const promptMonsters = ClientPromptMonsters.instance();
+    const resurrectionPrompt =
+      await promptMonsters.getMonsterIdToResurrectionPrompt(monsterId);
+    const monsterExtension = (
+      await promptMonsters.getMonsterExtensions([resurrectionPrompt])
+    )[0];
+    console.log(monsterExtension);
+    if (hasUnknownSkill(monsterExtension.skillTypes)) {
+      let res: any;
+      try {
+        res = await axios.post("/api/boss/generate-skill-desc", {
+          resurrectionPrompt,
+        });
+      } catch (e) {
+        if (axios.isAxiosError(e)) {
+          if (e.response!.status === 500) return e.response!.data.battleResult;
+          throw new Error(e.response!.data.message);
+        }
+        console.error(e);
+        throw new Error("Unknown Error");
       }
-      console.error(e);
-      throw new Error("Unknown Error");
+      console.log(res);
+      const skillTypes = res.data.skillTypes;
+      console.log(skillTypes);
+      setMonster((prevState) => {
+        return prevState.copyWith({ skillTypes: skillTypes });
+      });
+    } else {
+      setMonster((prevState) => {
+        return prevState.copyWith({ skillTypes: monsterExtension.skillTypes });
+      });
     }
-    console.log(res);
-
     usedBossSkill = "";
     bossDamaged = 0;
     droppedItemId = -1;
@@ -66,6 +85,7 @@ export const useBossBattleController = (): BossBattleController => {
    * moveStart
    */
   const moveStart = async (): Promise<void> => {
+    // TODO: 戻るでターンが進まないようにする
     usedBossSkill = "";
     bossDamaged = 0;
     droppedItemId = -1;

@@ -107,7 +107,7 @@ contract PromptMonstersExtension is
         "PromptMonstersExtension: mismatch skill length"
       );
       oldState[i] = new uint32[](skillsLength);
-      for (uint256 j; j < rpsLength; ) {
+      for (uint256 j; j < skillsLength; ) {
         oldState[i][j] = _skillTypes[rps_[i]][skills_[i][j]];
         _skillTypes[rps_[i]][skills_[i][j]] = skillTypes_[i][j];
         unchecked {

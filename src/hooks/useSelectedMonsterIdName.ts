@@ -18,8 +18,6 @@ export const useSetSelectedMonsterIdNameState = (): ((
     (selectedMonsterIdName: string) => {
       const ids = selectedMonsterIdName.split(" ");
       const id = ids[ids.length - 1];
-      console.log("id", id);
-      console.log("test", !isNaN(Number(id)) ? id : "");
       setCookie("SELECTED_MONSTER_ID", !isNaN(Number(id)) ? id : "");
       setSelectedMonsterIdNameInternal(selectedMonsterIdName);
     },

@@ -1,6 +1,9 @@
 import { ClientWallet } from "@/lib/wallet/client";
 import { PromptMonsters, PromptMonsters__factory } from "@/typechain";
-import { IPromptMonsters } from "@/typechain/PromptMonsters";
+import {
+  IPromptMonsters,
+  IPromptMonstersExtension,
+} from "@/typechain/PromptMonsters";
 import { ethers } from "ethers";
 
 export class ClientPromptMonsters {
@@ -77,6 +80,30 @@ export class ClientPromptMonsters {
   ): Promise<ethers.ContractReceipt> => {
     await this._beforeWrite();
     return await (await this._writer!.mint(resurrectionPrompt)).wait();
+  };
+
+  /**
+   * getMonsterExtensions
+   * @param resurrectionPrompts resurrection prompts
+   * @return {Promise<IPromptMonstersExtension.MonsterExtensionStructOutput>} monster extension struct output
+   */
+  getMonsterExtensions = async (
+    resurrectionPrompts: string[],
+  ): Promise<IPromptMonstersExtension.MonsterExtensionStructOutput[]> => {
+    return await this._reader.getMonsterExtensions(resurrectionPrompts);
+  };
+
+  /**
+   * getMonsterIdToResurrectionPrompt
+   * @param monsterId resurrection prompt
+   * @return {Promise<string>} resurrection prompt
+   */
+  getMonsterIdToResurrectionPrompt = async (
+    monsterId: string,
+  ): Promise<string> => {
+    return await this._reader.monsterIdToResurrectionPrompt(
+      ethers.BigNumber.from(monsterId),
+    );
   };
 
   /**

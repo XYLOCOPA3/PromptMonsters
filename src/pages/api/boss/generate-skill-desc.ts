@@ -1,8 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
-import { getSkillDescPrompt } from "@/lib/prompt";
+import { ServerPromptMonstersExtension } from "@/features/monster/api/contracts/ServerPromptMonstersExtension";
+import { getSkillDescPrompt as getSkillTypePrompt } from "@/lib/prompt";
 import { RPC_URL } from "@/lib/wallet";
+import { SkillType } from "@/types/SkillType";
+import {
+  getMonsterSkillsLimit4,
+  getSkillTypesFromStr,
+  hasUnknownSkill,
+} from "@/utils/monsterUtil";
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
@@ -23,13 +30,25 @@ export default async function handler(
       message: "OpenAI API key not configured",
     });
   }
-
-  const monsterId = req.body.monsterId || "";
+  const resurrectionPrompt = req.body.resurrectionPrompt || "";
+  if (resurrectionPrompt === "") {
+    return res.status(400).json({
+      message: "Unknown monster",
+    });
+  }
 
   try {
     const promptMonsters = PromptMonstersContract.instance(RPC_URL.mchVerse);
-    const monster = (await promptMonsters.getMonsters([monsterId]))[0];
-    const prompt = getSkillDescPrompt(monster.skills);
+    const monsterExtension = (
+      await promptMonsters.getMonsterExtensions([resurrectionPrompt])
+    )[0];
+    if (!hasUnknownSkill(monsterExtension.skillTypes)) {
+      return res.status(400).json({
+        message: "This monster has no unknown skill",
+      });
+    }
+    // TODO: Unknownスキルのみ更新
+    const prompt = getSkillTypePrompt(monsterExtension.skills);
     console.log(prompt);
 
     const completion = await openai.createChatCompletion({
@@ -40,9 +59,22 @@ export default async function handler(
     console.log(completion.data.choices);
     console.log(completion.data.usage);
 
-    const skillDescs = JSON.parse(completion.data.choices[0].message!.content);
+    const skillTypesStr = JSON.parse(
+      completion.data.choices[0].message!.content,
+    ) as SkillType[];
+    const skillTypes = getSkillTypesFromStr(skillTypesStr);
+    console.log(skillTypes);
+    const promptMonstersExtension = ServerPromptMonstersExtension.instance(
+      RPC_URL.mchVerse,
+    );
+    console.log(getMonsterSkillsLimit4(monsterExtension.skills));
+    await promptMonstersExtension.setBatchSkillTypes(
+      [resurrectionPrompt],
+      [getMonsterSkillsLimit4(monsterExtension.skills)],
+      [skillTypes],
+    );
 
-    return res.status(200).json({ result: "" });
+    return res.status(200).json({ skillTypes });
   } catch (error) {
     if (error instanceof Error) {
       console.error(error.message);

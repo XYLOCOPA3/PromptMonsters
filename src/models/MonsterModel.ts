@@ -18,6 +18,8 @@ export class MonsterModel extends BaseModel<MonsterId> {
    * @param status status
    * @param stamina stamina
    * @param resurrectionPrompt resurrection prompt
+   * @param imageURL image URL
+   * @param skillTypes skill types
    */
   constructor(
     public readonly feature: string = "",
@@ -36,6 +38,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
     public readonly stamina: number = 0,
     public readonly resurrectionPrompt: string = "",
     public readonly imageURL: string = "",
+    public readonly skillTypes: number[] = [],
   ) {
     super("");
   }
