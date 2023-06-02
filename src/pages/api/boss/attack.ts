@@ -1,7 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { NOT_FOUND_SKILL } from "@/const/monster";
 import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
 import { RPC_URL } from "@/lib/wallet";
+import { getMonsterSkillsLimit4, isUnknownSkill } from "@/utils/monsterUtil";
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
@@ -17,23 +19,21 @@ export default async function handler(
     return res.status(400).json({
       message: "Only POST",
     });
-  if (!configuration.apiKey) {
+  if (!configuration.apiKey)
     return res.status(500).json({
       message: "OpenAI API key not configured",
     });
-  }
   const resurrectionPrompt = req.body.resurrectionPrompt || "";
   const skill = req.body.skill || "";
-  if (resurrectionPrompt === "") {
+  if (resurrectionPrompt === "")
     return res.status(400).json({
       message: "Unknown monster",
     });
-  }
-  if (skill === "") {
+
+  if (skill === "")
     return res.status(400).json({
       message: "Unknown skill",
     });
-  }
 
   let monsterDamaged = 50;
 
@@ -42,6 +42,17 @@ export default async function handler(
     const monsterExtension = (
       await promptMonsters.getMonsterExtensions([resurrectionPrompt])
     )[0];
+    const skillsLimit4 = getMonsterSkillsLimit4(monsterExtension.skills);
+    const skillIndex = skillsLimit4.indexOf(skill);
+    if (skillIndex === NOT_FOUND_SKILL)
+      return res.status(400).json({
+        message: "Not found skill",
+      });
+    if (isUnknownSkill(monsterExtension.skillTypes[skillIndex]))
+      return res.status(400).json({
+        message: "Unknown skillType",
+      });
+
     // if (!hasUnknownSkill(monsterExtension.skillTypes)) {
     //   return res.status(400).json({
     //     message: "This monster has no unknown skill",

@@ -9,8 +9,8 @@ interface IBossMonster {
   // --------------------------------------------------------------------------------
 
   struct MonsterAdj {
-    uint256 fieldAdj;
-    uint256 specialBuff;
+    uint32 fieldAdj;
+    uint32 specialAdj;
   }
 
   struct BossStatus {
@@ -43,11 +43,11 @@ interface IBossMonster {
     BossStatus newValue
   );
 
-  event SetMonsterAdjsForBossMonster(
+  event SetMonsterAdjs(
     address indexed publisher,
-    address indexed resurrectionPrompt,
-    MonsterAdj oldValue,
-    MonsterAdj newValue
+    address[] indexed resurrectionPrompts,
+    MonsterAdj[] oldValue,
+    MonsterAdj[] newValue
   );
 
   // --------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ interface IBossMonster {
   /// @dev Get monster adjs for this boss monster
   /// @param resurrectionPrompt resurrection prompt
   /// @return Adjs
-  function getMonsterAdjsForBossMonster(
+  function getMonsterAdjs(
     address resurrectionPrompt
   ) external view returns (MonsterAdj memory);
 }

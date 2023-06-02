@@ -41,8 +41,8 @@ export const BOSS_BATTLE_PROXY_ADDRESS = IS_PRODUCTION
 // --------------------------------------------------
 
 export const BOSS_BATTLE_MZ_DAO_PROXY_ADDRESS = IS_PRODUCTION
-  ? "0x70997970C51812dc3A010C7d01b50e0d17dc79C8" // mchMainnet
-  : "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"; // mchTestnet
+  ? "0x0000000000000000000000000000000000000000" // mchMainnet
+  : "0x0000000000000000000000000000000000000000"; // mchTestnet
 
 // --------------------------------------------------
 // PromptMonsters

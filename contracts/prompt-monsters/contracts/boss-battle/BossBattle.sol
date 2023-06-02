@@ -91,7 +91,7 @@ contract BossBattle is
   //   );
   //   monsterAdjs = new IBossMonster.MonsterAdj[](rps_.length);
   //   return
-  //     IBossMonster(bossMonsterAddress).getMonsterAdjsForBossMonster(
+  //     IBossMonster(bossMonsterAddress).getMonsterAdjs(
   //       resurrectionPrompt
   //     );
   // }

@@ -1,9 +1,8 @@
-import { ClientPromptMonsters } from "@/features/monster/api/contracts/ClientPromptMonsters";
 import { BossBattleModel } from "@/models/BossBattleModel";
+import { MonsterModel } from "@/models/MonsterModel";
 import { BossBattleState, bossBattleState } from "@/stores/bossBattleState";
 import { BossBattlePhase } from "@/types/BossBattlePhase";
 import { EnumItem } from "@/types/EnumItem";
-import { MonsterId } from "@/types/MonsterId";
 import { hasUnknownSkill } from "@/utils/monsterUtil";
 import axios from "axios";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -14,7 +13,7 @@ let droppedItemId = -1;
 let bossNextActionSignIndex = 0;
 
 export interface BossBattleController {
-  init: (monsterId: MonsterId) => Promise<number[]>;
+  init: (monster: MonsterModel) => Promise<number[]>;
   moveStart: () => Promise<void>;
   moveFightSelector: () => Promise<void>;
   moveItemSelector: () => Promise<void>;
@@ -39,21 +38,13 @@ export const useBossBattleController = (): BossBattleController => {
   /**
    * Init bossBattle
    */
-  const init = async (monsterId: MonsterId): Promise<number[]> => {
-    const promptMonsters = ClientPromptMonsters.instance();
-    const resurrectionPrompt = (
-      await promptMonsters.getResurrectionPrompts([monsterId])
-    )[0];
-    console.log(resurrectionPrompt);
-    const monsterExtension = (
-      await promptMonsters.getMonsterExtensions([resurrectionPrompt])
-    )[0];
+  const init = async (monster: MonsterModel): Promise<number[]> => {
     let skillTypes: number[] = [];
-    if (hasUnknownSkill(monsterExtension.skillTypes)) {
+    if (hasUnknownSkill(monster.skillTypes)) {
       let res: any;
       try {
         res = await axios.post("/api/boss/generate-skill-desc", {
-          resurrectionPrompt,
+          resurrectionPrompt: monster.resurrectionPrompt,
         });
       } catch (e) {
         if (axios.isAxiosError(e)) {
@@ -66,7 +57,7 @@ export const useBossBattleController = (): BossBattleController => {
       skillTypes = res.data.skillTypes;
     } else {
       console.log("Your monster has no unknown skill.");
-      skillTypes = monsterExtension.skillTypes;
+      skillTypes = monster.skillTypes;
     }
     usedBossSkill = "";
     bossDamaged = 0;

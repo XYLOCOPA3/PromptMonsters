@@ -31,7 +31,7 @@ export const BossBattleButton = ({ className }: BossBattleButtonProps) => {
     setDisable(true);
     setLoading(true);
     try {
-      const skillTypes = await bossBattleController.init(monster.id);
+      const skillTypes = await bossBattleController.init(monster);
       monsterController.set(monster.copyWith({ skillTypes }));
     } catch (error) {
       setLoading(false);
