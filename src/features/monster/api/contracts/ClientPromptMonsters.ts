@@ -4,6 +4,7 @@ import {
   IPromptMonsters,
   IPromptMonstersExtension,
 } from "@/typechain/PromptMonsters";
+import { MonsterId } from "@/types/MonsterId";
 import { ethers } from "ethers";
 
 export class ClientPromptMonsters {
@@ -94,16 +95,18 @@ export class ClientPromptMonsters {
   };
 
   /**
-   * getMonsterIdToResurrectionPrompt
-   * @param monsterId resurrection prompt
-   * @return {Promise<string>} resurrection prompt
+   * getResurrectionPrompts
+   * @param monsterIds monster ids
+   * @return {Promise<string[]>} resurrection prompts
    */
-  getMonsterIdToResurrectionPrompt = async (
-    monsterId: string,
-  ): Promise<string> => {
-    return await this._reader.monsterIdToResurrectionPrompt(
-      ethers.BigNumber.from(monsterId),
-    );
+  getResurrectionPrompts = async (
+    monsterIds: MonsterId[],
+  ): Promise<string[]> => {
+    const monsterIdsNum: ethers.BigNumber[] = [];
+    for (let i = 0; i < monsterIds.length; i++) {
+      monsterIdsNum.push(ethers.BigNumber.from(monsterIds[i]));
+    }
+    return await this._reader.getResurrectionPrompts(monsterIdsNum);
   };
 
   /**

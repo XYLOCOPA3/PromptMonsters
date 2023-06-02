@@ -1,7 +1,6 @@
 import { ClientPromptMonsters } from "@/features/monster/api/contracts/ClientPromptMonsters";
 import { BossBattleModel } from "@/models/BossBattleModel";
 import { BossBattleState, bossBattleState } from "@/stores/bossBattleState";
-import { monsterState } from "@/stores/monsterState";
 import { BossBattlePhase } from "@/types/BossBattlePhase";
 import { EnumItem } from "@/types/EnumItem";
 import { MonsterId } from "@/types/MonsterId";
@@ -15,7 +14,7 @@ let droppedItemId = -1;
 let bossNextActionSignIndex = 0;
 
 export interface BossBattleController {
-  init: (monsterId: MonsterId) => Promise<void>;
+  init: (monsterId: MonsterId) => Promise<number[]>;
   moveStart: () => Promise<void>;
   moveFightSelector: () => Promise<void>;
   moveItemSelector: () => Promise<void>;
@@ -24,7 +23,7 @@ export interface BossBattleController {
   moveContinue: () => Promise<void>;
   moveEnd: (lifePoint: number) => Promise<void>;
   changePhase: (phase: BossBattlePhase) => Promise<void>;
-  attack: (skill: string) => Promise<void>;
+  attack: (resurrectionPrompt: string, skill: string) => Promise<void>;
   defense: () => Promise<void>;
   setItemId: (itemId: number) => Promise<void>;
   useItem: (itemId: number) => Promise<void>;
@@ -36,19 +35,20 @@ export const useBossBattleValue = (): BossBattleState => {
 
 export const useBossBattleController = (): BossBattleController => {
   const setBossBattle = useSetRecoilState(bossBattleState);
-  const setMonster = useSetRecoilState(monsterState);
 
   /**
    * Init bossBattle
    */
-  const init = async (monsterId: MonsterId): Promise<void> => {
+  const init = async (monsterId: MonsterId): Promise<number[]> => {
     const promptMonsters = ClientPromptMonsters.instance();
-    const resurrectionPrompt =
-      await promptMonsters.getMonsterIdToResurrectionPrompt(monsterId);
+    const resurrectionPrompt = (
+      await promptMonsters.getResurrectionPrompts([monsterId])
+    )[0];
+    console.log(resurrectionPrompt);
     const monsterExtension = (
       await promptMonsters.getMonsterExtensions([resurrectionPrompt])
     )[0];
-    console.log(monsterExtension);
+    let skillTypes: number[] = [];
     if (hasUnknownSkill(monsterExtension.skillTypes)) {
       let res: any;
       try {
@@ -63,22 +63,17 @@ export const useBossBattleController = (): BossBattleController => {
         console.error(e);
         throw new Error("Unknown Error");
       }
-      console.log(res);
-      const skillTypes = res.data.skillTypes;
-      console.log(skillTypes);
-      setMonster((prevState) => {
-        return prevState.copyWith({ skillTypes: skillTypes });
-      });
+      skillTypes = res.data.skillTypes;
     } else {
-      setMonster((prevState) => {
-        return prevState.copyWith({ skillTypes: monsterExtension.skillTypes });
-      });
+      console.log("Your monster has no unknown skill.");
+      skillTypes = monsterExtension.skillTypes;
     }
     usedBossSkill = "";
     bossDamaged = 0;
     droppedItemId = -1;
     bossNextActionSignIndex = 0;
     setBossBattle(BossBattleModel.create({}));
+    return skillTypes;
   };
 
   /**
@@ -195,11 +190,33 @@ export const useBossBattleController = (): BossBattleController => {
 
   /**
    * attack
+   * @param resurrectionPrompt resurrectionPrompt
    * @param skill skill
    */
-  const attack = async (skill: string): Promise<void> => {
+  const attack = async (
+    resurrectionPrompt: string,
+    skill: string,
+  ): Promise<void> => {
     // TODO: ダメージ計算リクエスト
-    const monsterDamaged = 50;
+    let res: any;
+    try {
+      res = await axios.post("/api/boss/attack", {
+        resurrectionPrompt,
+        skill,
+      });
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.response!.status === 500) return e.response!.data.battleResult;
+        throw new Error(e.response!.data.message);
+      }
+      console.error(e);
+      throw new Error("Unknown Error");
+    }
+    console.log(res);
+    const monsterDamaged = res.data.monsterDamaged;
+    console.log(monsterDamaged);
+
+    // const monsterDamaged = 50;
 
     const results = await _getBossActionResult();
     usedBossSkill = results.usedBossSkill;

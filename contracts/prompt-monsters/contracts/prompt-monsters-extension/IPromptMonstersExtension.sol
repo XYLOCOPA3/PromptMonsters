@@ -24,6 +24,7 @@ interface IPromptMonstersExtension {
     uint32 mgr;
     uint32 agl;
     uint32[] skillTypes;
+    address resurrectionPrompt;
   }
 
   // --------------------------------------------------------------------------------

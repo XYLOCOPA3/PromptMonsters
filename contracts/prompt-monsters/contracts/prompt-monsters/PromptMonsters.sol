@@ -54,7 +54,8 @@ contract PromptMonsters is
 
   mapping(address => bool) public isMinted;
 
-  mapping(uint256 => address) public monsterIdToResurrectionPrompt;
+  /// @custom:oz-renamed-from monsterIdToResurrectionPrompt
+  mapping(uint256 => address) private _monsterIdToResurrectionPrompt;
 
   IPromptMonstersExtension private _promptMonstersExtension;
 
@@ -213,6 +214,22 @@ contract PromptMonsters is
     returnState = _promptMonstersExtension;
   }
 
+  /// @dev Get resurrection prompts
+  /// @param monsterIds_ monster IDs
+  /// @return returnValue resurrection prompts
+  function getResurrectionPrompts(
+    uint256[] memory monsterIds_
+  ) external view returns (address[] memory returnValue) {
+    uint256 monsterIdsLength = monsterIds_.length;
+    returnValue = new address[](monsterIdsLength);
+    for (uint i; i < monsterIdsLength; ) {
+      returnValue[i] = _monsterIdToResurrectionPrompt[monsterIds_[i]];
+      unchecked {
+        ++i;
+      }
+    }
+  }
+
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
@@ -314,7 +331,7 @@ contract PromptMonsters is
     uint256 monsterId_,
     address resurrectionPrompt_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    monsterIdToResurrectionPrompt[monsterId_] = resurrectionPrompt_;
+    _monsterIdToResurrectionPrompt[monsterId_] = resurrectionPrompt_;
   }
 
   /// @dev Set monsterId to resurrection prompt
@@ -360,7 +377,7 @@ contract PromptMonsters is
     );
     _monsters.push(monster);
     resurrectionIndex[resurrectionPrompt] = newTokenId;
-    monsterIdToResurrectionPrompt[newTokenId] = resurrectionPrompt;
+    _monsterIdToResurrectionPrompt[newTokenId] = resurrectionPrompt;
     isMinted[resurrectionPrompt] = true;
     erc20.safeTransferFrom(msg.sender, promptMonstersWallet, mintPrice);
     _safeMint(msg.sender, newTokenId);

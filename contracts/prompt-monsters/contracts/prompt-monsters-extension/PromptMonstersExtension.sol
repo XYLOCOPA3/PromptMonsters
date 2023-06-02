@@ -169,7 +169,8 @@ contract PromptMonstersExtension is
       inte: monster_.inte,
       mgr: monster_.mgr,
       agl: monster_.agl,
-      skillTypes: skillTypes
+      skillTypes: skillTypes,
+      resurrectionPrompt: resurrectionPrompt_
     });
   }
 
