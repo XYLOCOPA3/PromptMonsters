@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
+import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
+
 /// @title IBossMonster
 /// @dev This is an interface of BossMonster.
 interface IBossMonster {
@@ -13,7 +15,7 @@ interface IBossMonster {
     uint32 specialAdj;
   }
 
-  struct BossStatus {
+  struct Boss {
     string feature;
     string name;
     string flavor;
@@ -27,21 +29,32 @@ interface IBossMonster {
     uint32 agl;
   }
 
+  struct BossExtension {
+    string feature;
+    string name;
+    string flavor;
+    string[] skills;
+    uint32 lv;
+    uint32 hp;
+    uint32 atk;
+    uint32 def;
+    uint32 inte; // INT
+    uint32 mgr;
+    uint32 agl;
+    uint32[] skillTypes;
+  }
+
   // --------------------------------------------------------------------------------
   // Event
   // --------------------------------------------------------------------------------
 
-  event SetPromptMonstersAddress(
+  event SetPromptMonsters(
     address indexed publisher,
     address indexed oldValue,
     address indexed newValue
   );
 
-  event SetBossStatus(
-    address indexed publisher,
-    BossStatus oldValue,
-    BossStatus newValue
-  );
+  event SetBoss(address indexed publisher, Boss oldValue, Boss newValue);
 
   event SetMonsterAdjs(
     address indexed publisher,
@@ -60,26 +73,49 @@ interface IBossMonster {
   // --------------------------------------------------------------------------------
   // Getter
   // --------------------------------------------------------------------------------
+
+  /// @dev Get _promptMonsters
+  /// @return returnState _promptMonsters
+  function getPromptMonsters()
+    external
+    view
+    returns (IPromptMonsters returnState);
+
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
 
   /// @dev Set promptMonstersAddress
   /// @param promptMonstersAddress address of promptMonsters
-  function setPromptMonstersAddress(address promptMonstersAddress) external;
+  function setPromptMonsters(address promptMonstersAddress) external;
 
-  /// @dev Set bossStatus
-  /// @param _bossStatus boss status
-  function setBossStatus(BossStatus memory _bossStatus) external;
+  // /// @dev Set bossStatus
+  // /// @param _bossStatus boss status
+  // function setBossStatus(Boss memory _bossStatus) external;
 
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @dev Get monster adjs for this boss monster
-  /// @param resurrectionPrompt resurrection prompt
-  /// @return Adjs
+  /// @dev Get monster adjs
+  /// @param resurrectionPrompts resurrection prompts
+  /// @return monsterAdjs monster adjs
   function getMonsterAdjs(
-    address resurrectionPrompt
-  ) external view returns (MonsterAdj memory);
+    address[] memory resurrectionPrompts
+  ) external view returns (MonsterAdj[] memory monsterAdjs);
+
+  /// @dev Get boss extension
+  /// @return bossExtension boss extension
+  function getBossExtension()
+    external
+    view
+    returns (BossExtension memory bossExtension);
+
+  /// @dev Set monster adjs for this boss monster
+  /// @param resurrectionPrompts resurrection prompt
+  /// @param monsterAdjs monster adjs
+  function setMonsterAdjs(
+    address[] memory resurrectionPrompts,
+    MonsterAdj[] memory monsterAdjs
+  ) external;
 }
