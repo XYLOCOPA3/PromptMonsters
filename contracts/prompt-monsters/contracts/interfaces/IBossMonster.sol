@@ -2,6 +2,7 @@
 pragma solidity ^0.8.18;
 
 import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
+import {IPromptMonstersExtension} from "../prompt-monsters-extension/IPromptMonstersExtension.sol";
 
 /// @title IBossMonster
 /// @dev This is an interface of BossMonster.
@@ -12,36 +13,7 @@ interface IBossMonster {
 
   struct MonsterAdj {
     uint32 fieldAdj;
-    uint32 specialAdj;
-  }
-
-  struct Boss {
-    string feature;
-    string name;
-    string flavor;
-    string[] skills;
-    uint32 lv;
-    uint32 hp;
-    uint32 atk;
-    uint32 def;
-    uint32 inte; // INT
-    uint32 mgr;
-    uint32 agl;
-  }
-
-  struct BossExtension {
-    string feature;
-    string name;
-    string flavor;
-    string[] skills;
-    uint32 lv;
-    uint32 hp;
-    uint32 atk;
-    uint32 def;
-    uint32 inte; // INT
-    uint32 mgr;
-    uint32 agl;
-    uint32[] skillTypes;
+    uint32 weaknessFeatureAdj;
   }
 
   // --------------------------------------------------------------------------------
@@ -54,7 +26,17 @@ interface IBossMonster {
     address indexed newValue
   );
 
-  event SetBoss(address indexed publisher, Boss oldValue, Boss newValue);
+  event SetBoss(
+    address indexed publisher,
+    IPromptMonsters.Monster oldValue,
+    IPromptMonsters.Monster newValue
+  );
+
+  event SetSkillTypes(
+    address indexed publisher,
+    uint32[] oldValue,
+    uint32[] newValue
+  );
 
   event SetMonsterAdjs(
     address indexed publisher,
@@ -89,9 +71,9 @@ interface IBossMonster {
   /// @param promptMonstersAddress address of promptMonsters
   function setPromptMonsters(address promptMonstersAddress) external;
 
-  // /// @dev Set bossStatus
-  // /// @param _bossStatus boss status
-  // function setBossStatus(Boss memory _bossStatus) external;
+  /// @dev Set bossStatus
+  /// @param _bossStatus boss status
+  function setBossStatus(IPromptMonsters.Monster memory _bossStatus) external;
 
   // --------------------------------------------------------------------------------
   // Main Logic
@@ -104,12 +86,12 @@ interface IBossMonster {
     address[] memory resurrectionPrompts
   ) external view returns (MonsterAdj[] memory monsterAdjs);
 
-  /// @dev Get boss extension
-  /// @return bossExtension boss extension
-  function getBossExtension()
-    external
-    view
-    returns (BossExtension memory bossExtension);
+  // /// @dev Get boss extension
+  // /// @return bossExtension boss extension
+  // function getBossExtension()
+  //   external
+  //   view
+  //   returns (BossExtension memory bossExtension);
 
   /// @dev Set monster adjs for this boss monster
   /// @param resurrectionPrompts resurrection prompt

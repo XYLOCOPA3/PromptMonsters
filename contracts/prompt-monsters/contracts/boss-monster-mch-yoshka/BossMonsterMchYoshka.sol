@@ -5,8 +5,7 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
-import {IBossMonster} from "../interfaces/IBossMonster.sol";
-import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
+import {IBossMonster, IPromptMonsters, IPromptMonstersExtension} from "../interfaces/IBossMonster.sol";
 
 /// @title BossMonsterMchYoshka
 /// @dev This is a contract of BossMonsterMchYoshka.
@@ -22,13 +21,11 @@ contract BossMonsterMchYoshka is
 
   bytes32 private GAME_ROLE;
 
-  IPromptMonsters private _promptMonsters;
-
   mapping(address => uint32) private _fieldAdjs;
 
-  mapping(address => uint32) private _specialAdjs;
+  mapping(address => uint32) private _weaknessFeatureAdjs;
 
-  IBossMonster.Boss private _boss;
+  IPromptMonsters.Monster private _boss;
 
   mapping(string => uint32) private _skillTypes;
 
@@ -57,41 +54,44 @@ contract BossMonsterMchYoshka is
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @dev Get _promptMonsters
-  /// @return returnState _promptMonsters
-  function getPromptMonsters()
-    external
-    view
-    returns (IPromptMonsters returnState)
-  {
-    returnState = _promptMonsters;
-  }
-
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
 
-  /// @dev Set promptMonstersAddress
-  /// @param promptMonstersAddress address of promptMonsters
-  function setPromptMonsters(
-    address promptMonstersAddress
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    address oldValue = address(_promptMonsters);
-    _promptMonsters = IPromptMonsters(promptMonstersAddress);
+  /// @dev Set boss
+  /// @param boss boss
+  function setBoss(
+    IPromptMonsters.Monster memory boss
+  ) external onlyRole(GAME_ROLE) {
+    IPromptMonsters.Monster memory oldValue = _boss;
+    _boss = boss;
 
-    emit SetPromptMonsters(_msgSender(), oldValue, promptMonstersAddress);
+    emit SetBoss(_msgSender(), oldValue, _boss);
   }
 
-  // /// @dev Set bossStatus
-  // /// @param bossStatus boss status
-  // function setBoss(
-  //   Boss memory bossStatus
-  // ) external onlyRole(GAME_ROLE) {
-  //   Boss memory oldValue = _boss;
-  //   _boss = bossStatus;
+  /// @dev Set _skillTypes
+  /// @param skills skills
+  /// @param skillTypes skillTypes
+  function setSkillTypes(
+    string[] memory skills,
+    uint32[] memory skillTypes
+  ) external onlyRole(GAME_ROLE) {
+    uint256 length = skills.length;
+    require(
+      length == skillTypes.length,
+      "BossMonsterMchYoshka: length mismatch"
+    );
+    uint32[] memory oldValue = new uint32[](length);
+    for (uint i; i < length; ) {
+      oldValue[i] = _skillTypes[skills[i]];
+      _skillTypes[skills[i]] = skillTypes[i];
+      unchecked {
+        i++;
+      }
+    }
 
-  //   emit SetBoss(_msgSender(), oldValue, _boss);
-  // }
+    emit SetSkillTypes(_msgSender(), oldValue, skillTypes);
+  }
 
   // --------------------------------------------------------------------------------
   // Main Logic
@@ -108,7 +108,7 @@ contract BossMonsterMchYoshka is
     for (uint i; i < length; ) {
       monsterAdjs[i] = IBossMonster.MonsterAdj(
         _fieldAdjs[resurrectionPrompts[i]],
-        _specialAdjs[resurrectionPrompts[i]]
+        _weaknessFeatureAdjs[resurrectionPrompts[i]]
       );
       unchecked {
         i++;
@@ -121,7 +121,7 @@ contract BossMonsterMchYoshka is
   function getBossExtension()
     external
     view
-    returns (IBossMonster.BossExtension memory bossExtension)
+    returns (IPromptMonstersExtension.MonsterExtension memory bossExtension)
   {
     uint256 length = _boss.skills.length;
     uint32[] memory skillTypes = new uint32[](length);
@@ -131,7 +131,7 @@ contract BossMonsterMchYoshka is
         i++;
       }
     }
-    bossExtension = IBossMonster.BossExtension(
+    bossExtension = IPromptMonstersExtension.MonsterExtension(
       _boss.feature,
       _boss.name,
       _boss.flavor,
@@ -143,7 +143,8 @@ contract BossMonsterMchYoshka is
       _boss.inte,
       _boss.mgr,
       _boss.agl,
-      skillTypes
+      skillTypes,
+      address(0)
     );
   }
 
@@ -162,10 +163,11 @@ contract BossMonsterMchYoshka is
     for (uint i; i < length; ) {
       oldState[i] = IBossMonster.MonsterAdj(
         _fieldAdjs[resurrectionPrompts[i]],
-        _specialAdjs[resurrectionPrompts[i]]
+        _weaknessFeatureAdjs[resurrectionPrompts[i]]
       );
       _fieldAdjs[resurrectionPrompts[i]] = monsterAdjs[i].fieldAdj;
-      _specialAdjs[resurrectionPrompts[i]] = monsterAdjs[i].specialAdj;
+      _weaknessFeatureAdjs[resurrectionPrompts[i]] = monsterAdjs[i]
+        .weaknessFeatureAdj;
       unchecked {
         i++;
       }
@@ -177,15 +179,6 @@ contract BossMonsterMchYoshka is
       oldState,
       monsterAdjs
     );
-  }
-
-  /// @dev Set bossStatus
-  /// @param bossStatus boss status
-  function setBoss(Boss memory bossStatus) external onlyRole(GAME_ROLE) {
-    Boss memory oldValue = _boss;
-    _boss = bossStatus;
-
-    emit SetBoss(_msgSender(), oldValue, _boss);
   }
 
   // --------------------------------------------------------------------------------
