@@ -22,7 +22,10 @@ contract Distributor is
   // --------------------------------------------------------------------------------
 
   using SafeERC20 for IERC20;
+
   bytes32 private DISTRIBUTOR_ROLE;
+
+  address private ERC20_ADDRESS;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -44,36 +47,62 @@ contract Distributor is
   }
 
   // --------------------------------------------------------------------------------
+  // Getter
+  // --------------------------------------------------------------------------------
+
+  /// @dev Get ERC20 address
+  /// @return erc20Address ERC20 token address
+  function getERC20Address() external view returns (address erc20Address) {
+    erc20Address = ERC20_ADDRESS;
+  }
+
+  // --------------------------------------------------------------------------------
+  // Setter
+  // --------------------------------------------------------------------------------
+
+  /// @dev Set ERC20 address
+  /// @param erc20Address ERC20 token address
+  function setERC20Address(address erc20Address) external returns () onlyRole(DISTRIBUTOR_ROLE) {
+    ERC20_ADDRESS = erc20Address;
+    emit SetERC20Address(erc20Address);
+  }
+
+  // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @dev distribute presents and rewards by admin
+  /// @dev distribute native token for presents and rewards by DISTRIBUTOR_ROLE
   /// @param to wallet address to be distributed
-  /// @param isOAS If true, distribute OAS as native token. If false, distribute MCHC as ERC20
-  /// @param amount distributed OAS amount
-  function distribute(
+  function distributeNativeToken(
+    address to
+  ) external payable onlyRole(DISTRIBUTOR_ROLE) {
+    require(
+      msg.value <= balanceOf(msg.sender), //こんなこと出来たっけ？
+      "Distributor: insufficient msg.value"
+    );
+    (bool success, ) = payable(to).call{value: msg.value}("");
+    require(success, "Distributor: Failed to send native token");
+
+    emit DistributedNativeToken(msg.sender, to, msg.value);
+  }
+
+  /// @dev distribute ERC20 for presents and rewards by DISTRIBUTOR_ROLE
+  /// @param to wallet address to be distributed
+  /// @param amount distributed ERC20 amount
+  function distributeERC20(
     address to,
-    bool isOAS,
     uint256 amount
   ) external payable onlyRole(DISTRIBUTOR_ROLE) {
-    if (isOAS) {
-      require(
-        msg.value == amount,
-        "Distributor: amount and msg.value are not same value"
-      );
-      (bool success, ) = payable(to).call{value: msg.value}("");
-      require(success, "Distributor: Failed to send native token");
-    } else {
-      require(msg.value == 0, "Distributor: msg.value has to be 0");
-      address token = 0x5B1CC635E524cAbb63a581c050C895534755F297; //MCHC contract address
-      uint beforeBalance = IERC20(token).balanceOf(to);
-      IERC20(token).safeTransfer(to, amount);
-      uint afterBalance = IERC20(token).balanceOf(to);
+    require(msg.value == 0, "Distributor: msg.value has to be 0");
 
-      uint acutualAmount = afterBalance - beforeBalance;
-      require(acutualAmount != 0, "Distributor: Failed to send ERC20 token");
-    }
-    emit Distributed(msg.sender, to, isOAS, amount);
+    uint beforeBalance = IERC20(ERC20_ADDRESS).balanceOf(to);
+    IERC20(ERC20_ADDRESS).safeTransfer(to, amount);
+    uint afterBalance = IERC20(ERC20_ADDRESS).balanceOf(to);
+
+    uint acutualAmount = afterBalance - beforeBalance;
+    require(acutualAmount != 0, "Distributor: Failed to send ERC20 token");
+
+    emit DistributedERC20(msg.sender, to, amount);
   }
 
   // --------------------------------------------------------------------------------

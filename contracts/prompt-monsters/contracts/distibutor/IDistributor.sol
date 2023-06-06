@@ -12,10 +12,17 @@ interface IDistributor {
   // Event
   // --------------------------------------------------------------------------------
 
-  event Distributed(
+  event setERC20Address(address indexed erc20Address);
+
+  event DistributedNativeToken(
     address indexed from,
     address indexed to,
-    bool isOAS,
+    uint256 indexed amount
+  );
+
+  event DistributedERC20(
+    address indexed from,
+    address indexed to,
     uint256 indexed amount
   );
 
@@ -27,12 +34,31 @@ interface IDistributor {
   function initialize() external;
 
   // --------------------------------------------------------------------------------
+  // Getter
+  // --------------------------------------------------------------------------------
+
+  /// @dev Get ERC20 address
+  /// @return erc20Address ERC20 token address
+  function getERC20Address() external view returns (address erc20Address) {}
+
+  // --------------------------------------------------------------------------------
+  // Setter
+  // --------------------------------------------------------------------------------
+
+  /// @dev Set ERC20 address by DISTRIBUTOR_ROLE
+  /// @param erc20Address ERC20 token address
+  function setERC20Address(address erc20Address) external returns () {}
+
+  // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  /// @dev distribute presents and rewards by admin
+  /// @dev distribute native token for presents and rewards by DISTRIBUTOR_ROLE
   /// @param to wallet address to be distributed
-  /// @param isOAS If true, distribute OAS as native token. If false, distribute MCHC as ERC20
-  /// @param amount distributed OAS amount
-  function distribute(address to, bool isOAS, uint amount) external payable;
+  function distributeNativeToken(address to) external payable;
+
+  /// @dev distribute ERC20 for presents and rewards by DISTRIBUTOR_ROLE
+  /// @param to wallet address to be distributed
+  /// @param amount distributed ERC20 amount
+  function distributeERC20(address to, uint256 amount) external payable;
 }
