@@ -10,6 +10,7 @@ const {
   PRIVATE_KEY,
   DEV_PRIVATE_KEY,
   LOCAL_PRIVATE_KEY,
+  DISTRIBUTOR_PRIVATE_KEY,
   POLYGONSCAN_API,
 } = process.env;
 
@@ -26,7 +27,7 @@ const config: HardhatUserConfig = {
   networks: {
     mumbai: {
       url: POLYGON_MUMBAI_ALCHEMY_KEY,
-      accounts: [DEV_PRIVATE_KEY as string],
+      accounts: [DEV_PRIVATE_KEY as string, DISTRIBUTOR_PRIVATE_KEY as string],
     },
     linea: {
       url: "https://rpc.goerli.linea.build/",

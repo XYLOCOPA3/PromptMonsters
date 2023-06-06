@@ -39,6 +39,16 @@ export const BATTLE_S1_PROXY_ADDRESS = IS_PRODUCTION
 // : "0xc79BB7EA1c8523779091C4c233665137461a3047"; // mchTestnet
 
 // --------------------------------------------------
+// Distributor
+// --------------------------------------------------
+
+export const DISTRIBUTOR_PROXY_ADDRESS = IS_PRODUCTION
+  ? "0x0000000000000000000000000000000000000000" // mchMainnet
+  : IS_DEMO_MUMBAI
+  ? "0xfDc3b7751FC17DFF7aa4966EF051b7483211be24" //"0x4C66cb216cB56fAFECFfEE5640e1AD89944AEC1a" // mumbai
+  : "0x0000000000000000000000000000000000000000"; // sandverse
+
+// --------------------------------------------------
 // PromptMonsters
 // --------------------------------------------------
 
