@@ -30,7 +30,7 @@ export async function main() {
   for (var i = 0; i < totalSupply; i++) {
     const distribution = await distributor //.connect(addr1).を使ってdistributor用のウォレットで関数を実行する
       .connect(from)
-      .distribute(owners[i][1], true, ethers.utils.parseEther("0.01"), {
+      .distributeNativeToken(owners[i][1], {
         value: ethers.utils.parseEther("0.01"),
       });
     await distribution.wait();

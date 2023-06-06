@@ -62,9 +62,11 @@ contract Distributor is
 
   /// @dev Set ERC20 address
   /// @param erc20Address ERC20 token address
-  function setERC20Address(address erc20Address) external returns () onlyRole(DISTRIBUTOR_ROLE) {
+  function setERC20Address(
+    address erc20Address
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     ERC20_ADDRESS = erc20Address;
-    emit SetERC20Address(erc20Address);
+    emit SetERC20TokenAddress(msg.sender, ERC20_ADDRESS, erc20Address);
   }
 
   // --------------------------------------------------------------------------------
@@ -76,10 +78,7 @@ contract Distributor is
   function distributeNativeToken(
     address to
   ) external payable onlyRole(DISTRIBUTOR_ROLE) {
-    require(
-      msg.value <= balanceOf(msg.sender), //こんなこと出来たっけ？
-      "Distributor: insufficient msg.value"
-    );
+    require(0 < msg.value, "Distributor: msg.value is zero");
     (bool success, ) = payable(to).call{value: msg.value}("");
     require(success, "Distributor: Failed to send native token");
 

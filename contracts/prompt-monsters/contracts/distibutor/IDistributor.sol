@@ -12,7 +12,11 @@ interface IDistributor {
   // Event
   // --------------------------------------------------------------------------------
 
-  event setERC20Address(address indexed erc20Address);
+  event SetERC20TokenAddress(
+    address indexed admin,
+    address indexed recentERC20Address,
+    address indexed updatedERC20Address
+  );
 
   event DistributedNativeToken(
     address indexed from,
@@ -39,7 +43,7 @@ interface IDistributor {
 
   /// @dev Get ERC20 address
   /// @return erc20Address ERC20 token address
-  function getERC20Address() external view returns (address erc20Address) {}
+  function getERC20Address() external view returns (address erc20Address);
 
   // --------------------------------------------------------------------------------
   // Setter
@@ -47,7 +51,7 @@ interface IDistributor {
 
   /// @dev Set ERC20 address by DISTRIBUTOR_ROLE
   /// @param erc20Address ERC20 token address
-  function setERC20Address(address erc20Address) external returns () {}
+  function setERC20Address(address erc20Address) external;
 
   // --------------------------------------------------------------------------------
   // Main Logic
