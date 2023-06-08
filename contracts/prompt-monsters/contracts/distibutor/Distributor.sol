@@ -65,8 +65,9 @@ contract Distributor is
   function setERC20Address(
     address erc20Address
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    address oldValue = ERC20_ADDRESS;
     ERC20_ADDRESS = erc20Address;
-    emit SetERC20TokenAddress(msg.sender, ERC20_ADDRESS, erc20Address);
+    emit SetERC20TokenAddress(msg.sender, oldValue, erc20Address);
   }
 
   // --------------------------------------------------------------------------------

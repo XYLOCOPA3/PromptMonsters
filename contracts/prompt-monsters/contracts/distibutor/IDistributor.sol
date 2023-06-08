@@ -14,8 +14,8 @@ interface IDistributor {
 
   event SetERC20TokenAddress(
     address indexed admin,
-    address indexed recentERC20Address,
-    address indexed updatedERC20Address
+    address indexed oldValue,
+    address indexed newValue
   );
 
   event DistributedNativeToken(
