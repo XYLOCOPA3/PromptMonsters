@@ -5,7 +5,6 @@ import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptM
 import { calcStaminaFromMonsterId } from "@/features/stamina/utils/calcStamina";
 import { getFightPrompt } from "@/lib/prompt";
 import { RPC_URL } from "@/lib/wallet";
-import { IPromptMonsters } from "@/typechain/PromptMonsters";
 import console from "console";
 import { Configuration, OpenAIApi } from "openai";
 
@@ -32,22 +31,19 @@ export default async function handler(
   const language = req.body.language;
   const resurrectionPrompt = req.body.resurrectionPrompt;
 
+  console.log(monsterId);
+
   const enemyId = await _getRandomEnemyId(monsterId);
   const promptMonsters = PromptMonstersContract.instance(RPC_URL.mchVerse);
-  let monsters: IPromptMonsters.MonsterStructOutput[] = [];
-  console.log(monsterId);
-  if (monsterId === "") {
-    const results = await Promise.all([
-      promptMonsters.getMonsterHistory(resurrectionPrompt),
-      promptMonsters.getMonsters([enemyId]),
-    ]);
-    monsters.push(results[0]);
-    monsters.push(results[1][0]);
-  } else {
-    monsters = await promptMonsters.getMonsters([monsterId, enemyId]);
-  }
-  const monster = monsters[0];
-  const enemy = monsters[1];
+  const enemyResurrectionPrompt = await promptMonsters.getResurrectionPrompts([
+    enemyId,
+  ]);
+  const monsterExtensions = await promptMonsters.getMonsterExtensions([
+    resurrectionPrompt,
+    enemyResurrectionPrompt,
+  ]);
+  const monster = monsterExtensions[0];
+  const enemy = monsterExtensions[1];
   const fightPrompt = getFightPrompt(
     monsterId,
     monster,

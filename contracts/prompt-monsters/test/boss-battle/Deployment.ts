@@ -10,7 +10,7 @@ export const deploy = async (
   deployer: SignerWithAddress,
   promptMonstersWallet: SignerWithAddress,
 ) => {
-  const { erc20 } = await deployErc20(deployer);
+  const { erc20 } = await deployErc20();
 
   const { promptMonsters } = await deployPromptMonsters(
     deployer,
@@ -24,11 +24,11 @@ export const deploy = async (
 
   const { bossMonsterMchYoshka } = await deployBossMonsterMchYoshka(deployer);
 
-  await (
-    await bossBattle
-      .connect(deployer)
-      .setPromptMonstersAddress(promptMonsters.address)
-  ).wait();
+  // await (
+  //   await bossBattle
+  //     .connect(deployer)
+  //     .setPromptMonstersAddress(promptMonsters.address)
+  // ).wait();
 
   await (
     await bossBattle
@@ -36,19 +36,19 @@ export const deploy = async (
       .grantRole(ethers.utils.id("GAME_ROLE"), promptMonsters.address)
   ).wait();
 
-  await (
-    await bossBattle
-      .connect(deployer)
-      .addBossBattleEventAddress(bossBattleMch1.address)
-  ).wait();
+  // await (
+  //   await bossBattle
+  //     .connect(deployer)
+  //     .addBossBattleEventAddress(bossBattleMch1.address)
+  // ).wait();
 
-  await (await bossBattle.connect(deployer).setIsBossBattleActive(true)).wait();
+  // await (await bossBattle.connect(deployer).setIsBossBattleActive(true)).wait();
 
-  await (
-    await bossBattleMch1
-      .connect(deployer)
-      .setPromptMonstersAddress(promptMonsters.address)
-  ).wait();
+  // await (
+  //   await bossBattleMch1
+  //     .connect(deployer)
+  //     .setPromptMonstersAddress(promptMonsters.address)
+  // ).wait();
 
   await (
     await bossBattleMch1
@@ -56,15 +56,15 @@ export const deploy = async (
       .grantRole(ethers.utils.id("GAME_ROLE"), bossBattle.address)
   ).wait();
 
-  await (
-    await bossBattleMch1
-      .connect(deployer)
-      .setBossMonsterAddress(bossMonsterMchYoshka.address)
-  ).wait();
+  // await (
+  //   await bossBattleMch1
+  //     .connect(deployer)
+  //     .setBossMonsterAddress(bossMonsterMchYoshka.address)
+  // ).wait();
 
-  await (
-    await bossBattleMch1.connect(deployer).setIsBossBattleEventActive(true)
-  ).wait();
+  // await (
+  //   await bossBattleMch1.connect(deployer).setIsBossBattleEventActive(true)
+  // ).wait();
 
   return {
     promptMonsters,

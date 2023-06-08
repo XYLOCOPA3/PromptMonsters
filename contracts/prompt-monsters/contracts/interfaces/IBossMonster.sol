@@ -8,11 +8,10 @@ import {IPromptMonstersExtension} from "../prompt-monsters-extension/IPromptMons
 /// @dev This is an interface of BossMonster.
 interface IBossMonster {
   // --------------------------------------------------------------------------------
-  // State
+  // Struct
   // --------------------------------------------------------------------------------
 
   struct MonsterAdj {
-    uint32 fieldAdj;
     uint32 weaknessFeatureAdj;
   }
 
@@ -20,10 +19,17 @@ interface IBossMonster {
   // Event
   // --------------------------------------------------------------------------------
 
-  event SetPromptMonsters(
+  event AddedLanguage(
     address indexed publisher,
-    address indexed oldValue,
-    address indexed newValue
+    uint256 index,
+    string language
+  );
+
+  event SetLanguage(
+    address indexed publisher,
+    uint256 indexed index,
+    string oldValue,
+    string newValue
   );
 
   event SetBoss(
@@ -38,11 +44,11 @@ interface IBossMonster {
     uint32[] newValue
   );
 
-  event SetMonsterAdjs(
+  event SetMonsterAdj(
     address indexed publisher,
-    address[] indexed resurrectionPrompts,
-    MonsterAdj[] oldValue,
-    MonsterAdj[] newValue
+    address indexed resurrectionPrompts,
+    MonsterAdj oldValue,
+    MonsterAdj newValue
   );
 
   // --------------------------------------------------------------------------------
@@ -56,48 +62,65 @@ interface IBossMonster {
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @dev Get _promptMonsters
-  /// @return returnState _promptMonsters
-  function getPromptMonsters()
+  /// @dev Get _languages
+  /// @return returnValue _languages
+  function getLanguages() external view returns (string[] memory returnValue);
+
+  /// @dev Get monster adj
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return monsterAdj monster adj
+  function getMonsterAdj(
+    address resurrectionPrompt
+  ) external view returns (MonsterAdj memory monsterAdj);
+
+  /// @dev Get boss extension
+  /// @param language language
+  /// @return bossExtension boss extension
+  function getBossExtension(
+    string memory language
+  )
     external
     view
-    returns (IPromptMonsters returnState);
+    returns (IPromptMonstersExtension.MonsterExtension memory bossExtension);
 
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
 
-  /// @dev Set promptMonstersAddress
-  /// @param promptMonstersAddress address of promptMonsters
-  function setPromptMonsters(address promptMonstersAddress) external;
+  /// @dev Add language
+  /// @param language language
+  function addLanguage(string memory language) external;
 
-  /// @dev Set bossStatus
-  /// @param _bossStatus boss status
-  function setBossStatus(IPromptMonsters.Monster memory _bossStatus) external;
+  /// @dev Set _languages
+  /// @param index index
+  /// @param language language
+  function setLanguage(uint256 index, string memory language) external;
+
+  /// @dev Set boss
+  /// @param language language
+  /// @param boss boss
+  function setBoss(
+    string memory language,
+    IPromptMonsters.Monster memory boss
+  ) external;
+
+  /// @dev Set _skillTypes
+  /// @param skills skills
+  /// @param skillTypes skillTypes
+  function setSkillTypes(
+    string[] memory skills,
+    uint32[] memory skillTypes
+  ) external;
+
+  /// @dev Set monster adj for this boss monster
+  /// @param resurrectionPrompt resurrection prompt
+  /// @param monsterAdj monster adj
+  function setMonsterAdj(
+    address resurrectionPrompt,
+    MonsterAdj memory monsterAdj
+  ) external;
 
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
-
-  /// @dev Get monster adjs
-  /// @param resurrectionPrompts resurrection prompts
-  /// @return monsterAdjs monster adjs
-  function getMonsterAdjs(
-    address[] memory resurrectionPrompts
-  ) external view returns (MonsterAdj[] memory monsterAdjs);
-
-  // /// @dev Get boss extension
-  // /// @return bossExtension boss extension
-  // function getBossExtension()
-  //   external
-  //   view
-  //   returns (BossExtension memory bossExtension);
-
-  /// @dev Set monster adjs for this boss monster
-  /// @param resurrectionPrompts resurrection prompt
-  /// @param monsterAdjs monster adjs
-  function setMonsterAdjs(
-    address[] memory resurrectionPrompts,
-    MonsterAdj[] memory monsterAdjs
-  ) external;
 }

@@ -1,9 +1,6 @@
 import { ClientWallet } from "@/lib/wallet/client";
 import { PromptMonsters, PromptMonsters__factory } from "@/typechain";
-import {
-  IPromptMonsters,
-  IPromptMonstersExtension,
-} from "@/typechain/PromptMonsters";
+import { IPromptMonstersExtension } from "@/typechain/PromptMonsters";
 import { MonsterId } from "@/types/MonsterId";
 import { ethers } from "ethers";
 
@@ -37,7 +34,7 @@ export class ClientPromptMonsters {
    * @return {Promise<ethers.BigNumber>} mint price
    */
   getMintPrice = async (): Promise<ethers.BigNumber> => {
-    return await this._reader.mintPrice();
+    return await this._reader.getMintPrice();
   };
 
   /**
@@ -47,28 +44,6 @@ export class ClientPromptMonsters {
    */
   getOwnerToTokenIds = async (userId: string): Promise<ethers.BigNumber[]> => {
     return await this._reader.getOwnerToTokenIds(userId);
-  };
-
-  /**
-   * getMonsters
-   * @param monsterIds monster ids
-   * @return {Promise<IPromptMonsters.MonsterStructOutput[]>} monsters struct output
-   */
-  getMonsters = async (
-    monsterIds: string[],
-  ): Promise<IPromptMonsters.MonsterStructOutput[]> => {
-    return await this._reader.getMonsters(monsterIds);
-  };
-
-  /**
-   * getMonsterHistory
-   * @param resurrectionPrompt resurrection prompt
-   * @return {Promise<IPromptMonsters.MonsterStructOutput>} monster struct output
-   */
-  getMonsterHistory = async (
-    resurrectionPrompt: string,
-  ): Promise<IPromptMonsters.MonsterStructOutput> => {
-    return await this._reader.getMonsterHistory(resurrectionPrompt);
   };
 
   /**

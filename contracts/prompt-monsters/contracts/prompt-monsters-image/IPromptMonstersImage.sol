@@ -8,6 +8,10 @@ import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
 /// @dev This is an interface of PromptMonstersImage.
 interface IPromptMonstersImage {
   // --------------------------------------------------------------------------------
+  // Struct
+  // --------------------------------------------------------------------------------
+
+  // --------------------------------------------------------------------------------
   // Event
   // --------------------------------------------------------------------------------
 
@@ -34,6 +38,19 @@ interface IPromptMonstersImage {
   // --------------------------------------------------------------------------------
   // Getter
   // --------------------------------------------------------------------------------
+
+  /// @dev Get _promptMonsters
+  /// @return returnValue _promptMonsters
+  function getPromptMonsters()
+    external
+    view
+    returns (IPromptMonsters returnValue);
+
+  /// @dev Get image URL
+  /// @return returnValue image URL
+  function getImageURL(
+    uint256 tokenId
+  ) external view returns (string memory returnValue);
 
   // --------------------------------------------------------------------------------
   // Setter

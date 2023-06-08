@@ -19,15 +19,21 @@ contract BossMonsterMchYoshka is
   // State
   // --------------------------------------------------------------------------------
 
+  /// @custom:oz-renamed-from GAME_ROLE
   bytes32 private GAME_ROLE;
 
-  mapping(address => uint32) private _fieldAdjs;
+  /// @custom:oz-renamed-from _languages
+  string[] private _languages;
 
-  mapping(address => uint32) private _weaknessFeatureAdjs;
+  // key -> language
+  /// @custom:oz-renamed-from _bossMap
+  mapping(string => IPromptMonsters.Monster) private _bossMap;
 
-  IPromptMonsters.Monster private _boss;
-
+  /// @custom:oz-renamed-from _skillTypes
   mapping(string => uint32) private _skillTypes;
+
+  /// @custom:oz-renamed-from _weaknessFeatureAdjs
+  mapping(address => uint32) private _weaknessFeatureAdjs;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -51,22 +57,124 @@ contract BossMonsterMchYoshka is
   }
 
   // --------------------------------------------------------------------------------
+  // Modifier
+  // --------------------------------------------------------------------------------
+
+  // --------------------------------------------------------------------------------
   // Getter
   // --------------------------------------------------------------------------------
+
+  /// @dev Get _languages
+  /// @return returnValue _languages
+  function getLanguages() external view returns (string[] memory returnValue) {
+    returnValue = _languages;
+  }
+
+  /// @dev Get monster adj
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return monsterAdj monster adj
+  function getMonsterAdj(
+    address resurrectionPrompt
+  ) public view returns (IBossMonster.MonsterAdj memory monsterAdj) {
+    monsterAdj = IBossMonster.MonsterAdj(
+      _weaknessFeatureAdjs[resurrectionPrompt]
+    );
+  }
+
+  /// @dev Get boss extension
+  /// @param language language
+  /// @return bossExtension boss extension
+  function getBossExtension(
+    string memory language
+  )
+    external
+    view
+    returns (IPromptMonstersExtension.MonsterExtension memory bossExtension)
+  {
+    IPromptMonsters.Monster memory boss = _bossMap[language];
+
+    uint256 length = boss.skills.length;
+    uint32[] memory skillTypes = new uint32[](length);
+    for (uint i; i < length; ) {
+      skillTypes[i] = _skillTypes[boss.skills[i]];
+      unchecked {
+        i++;
+      }
+    }
+
+    bossExtension = IPromptMonstersExtension.MonsterExtension(
+      boss.feature,
+      boss.name,
+      boss.flavor,
+      boss.skills,
+      boss.lv,
+      boss.hp,
+      boss.atk,
+      boss.def,
+      boss.inte,
+      boss.mgr,
+      boss.agl,
+      skillTypes,
+      address(0)
+    );
+  }
 
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
 
+  /// @dev Add language
+  /// @param language language
+  function addLanguage(
+    string memory language
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _languages.push(language);
+
+    emit AddedLanguage(_msgSender(), _languages.length, language);
+  }
+
+  /// @dev Set _languages
+  /// @param index index
+  /// @param language language
+  function setLanguage(
+    uint256 index,
+    string memory language
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    require(
+      index < _languages.length,
+      "BossMonsterMchYoshka: index out of range"
+    );
+    string memory oldValue = _languages[index];
+    _languages[index] = language;
+
+    emit SetLanguage(_msgSender(), index, oldValue, language);
+  }
+
   /// @dev Set boss
+  /// @param language language
   /// @param boss boss
   function setBoss(
+    string memory language,
     IPromptMonsters.Monster memory boss
-  ) external onlyRole(GAME_ROLE) {
-    IPromptMonsters.Monster memory oldValue = _boss;
-    _boss = boss;
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    bool included;
+    for (uint i; i < _languages.length; ) {
+      if (
+        keccak256(abi.encodePacked(_languages[i])) ==
+        keccak256(abi.encodePacked(language))
+      ) {
+        included = true;
+        break;
+      }
+      unchecked {
+        i++;
+      }
+    }
+    require(included, "BossMonsterMchYoshka: language not included");
+    IPromptMonsters.Monster memory oldValue = _bossMap[language];
+    _bossMap[language] = boss;
 
-    emit SetBoss(_msgSender(), oldValue, _boss);
+    emit SetBoss(_msgSender(), oldValue, boss);
   }
 
   /// @dev Set _skillTypes
@@ -75,7 +183,7 @@ contract BossMonsterMchYoshka is
   function setSkillTypes(
     string[] memory skills,
     uint32[] memory skillTypes
-  ) external onlyRole(GAME_ROLE) {
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     uint256 length = skills.length;
     require(
       length == skillTypes.length,
@@ -93,93 +201,22 @@ contract BossMonsterMchYoshka is
     emit SetSkillTypes(_msgSender(), oldValue, skillTypes);
   }
 
+  /// @dev Set monster adj for this boss monster
+  /// @param resurrectionPrompt resurrection prompt
+  /// @param monsterAdj monster adj
+  function setMonsterAdj(
+    address resurrectionPrompt,
+    IBossMonster.MonsterAdj memory monsterAdj
+  ) external onlyRole(GAME_ROLE) {
+    IBossMonster.MonsterAdj memory oldValue = getMonsterAdj(resurrectionPrompt);
+    _weaknessFeatureAdjs[resurrectionPrompt] = monsterAdj.weaknessFeatureAdj;
+
+    emit SetMonsterAdj(_msgSender(), resurrectionPrompt, oldValue, monsterAdj);
+  }
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
-
-  /// @dev Get monster adjs
-  /// @param resurrectionPrompts resurrection prompts
-  /// @return monsterAdjs monster adjs
-  function getMonsterAdjs(
-    address[] memory resurrectionPrompts
-  ) external view returns (IBossMonster.MonsterAdj[] memory monsterAdjs) {
-    uint256 length = resurrectionPrompts.length;
-    monsterAdjs = new IBossMonster.MonsterAdj[](length);
-    for (uint i; i < length; ) {
-      monsterAdjs[i] = IBossMonster.MonsterAdj(
-        _fieldAdjs[resurrectionPrompts[i]],
-        _weaknessFeatureAdjs[resurrectionPrompts[i]]
-      );
-      unchecked {
-        i++;
-      }
-    }
-  }
-
-  /// @dev Get boss extension
-  /// @return bossExtension boss extension
-  function getBossExtension()
-    external
-    view
-    returns (IPromptMonstersExtension.MonsterExtension memory bossExtension)
-  {
-    uint256 length = _boss.skills.length;
-    uint32[] memory skillTypes = new uint32[](length);
-    for (uint i; i < length; ) {
-      skillTypes[i] = _skillTypes[_boss.skills[i]];
-      unchecked {
-        i++;
-      }
-    }
-    bossExtension = IPromptMonstersExtension.MonsterExtension(
-      _boss.feature,
-      _boss.name,
-      _boss.flavor,
-      _boss.skills,
-      _boss.lv,
-      _boss.hp,
-      _boss.atk,
-      _boss.def,
-      _boss.inte,
-      _boss.mgr,
-      _boss.agl,
-      skillTypes,
-      address(0)
-    );
-  }
-
-  /// @dev Set monster adjs for this boss monster
-  /// @param resurrectionPrompts resurrection prompt
-  /// @param monsterAdjs monster adjs
-  function setMonsterAdjs(
-    address[] memory resurrectionPrompts,
-    IBossMonster.MonsterAdj[] memory monsterAdjs
-  ) external onlyRole(GAME_ROLE) {
-    uint256 length = resurrectionPrompts.length;
-    require(length == monsterAdjs.length, "Invalid length");
-    IBossMonster.MonsterAdj[] memory oldState = new IBossMonster.MonsterAdj[](
-      length
-    );
-    for (uint i; i < length; ) {
-      oldState[i] = IBossMonster.MonsterAdj(
-        _fieldAdjs[resurrectionPrompts[i]],
-        _weaknessFeatureAdjs[resurrectionPrompts[i]]
-      );
-      _fieldAdjs[resurrectionPrompts[i]] = monsterAdjs[i].fieldAdj;
-      _weaknessFeatureAdjs[resurrectionPrompts[i]] = monsterAdjs[i]
-        .weaknessFeatureAdj;
-      unchecked {
-        i++;
-      }
-    }
-
-    emit SetMonsterAdjs(
-      _msgSender(),
-      resurrectionPrompts,
-      oldState,
-      monsterAdjs
-    );
-  }
 
   // --------------------------------------------------------------------------------
   // Internal

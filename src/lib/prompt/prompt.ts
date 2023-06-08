@@ -1,5 +1,5 @@
 import { LANGUAGES } from "@/const/language";
-import { IPromptMonsters } from "@/typechain/PromptMonsters";
+import { IPromptMonstersExtension } from "@/typechain/PromptMonsters";
 
 /**
  * Get generating monster prompt
@@ -64,9 +64,9 @@ feature="${feature}":`;
  */
 export const getFightPrompt = (
   monsterId: string,
-  monster: IPromptMonsters.MonsterStructOutput,
+  monster: IPromptMonstersExtension.MonsterExtensionStructOutput,
   enemyId: string,
-  enemy: IPromptMonsters.MonsterStructOutput,
+  enemy: IPromptMonstersExtension.MonsterExtensionStructOutput,
   language: string = "English",
 ): string => {
   switch (language) {
@@ -156,20 +156,4 @@ Skills: ["Punch","Fire","Soul Renewal","Joke"]
 
 Skills: ${skillPrompt}
 ->`;
-  //   return `Please tell me the type of skill based on the skill name.
-
-  // - Please choose the skill type from the following options.
-  // - It is allowed to actively use "other".
-
-  // Skill types:
-  // ["Physical Attack","Special Attack","Healing","Other"]
-
-  // Example
-  // """
-  // Skills: ["Punch","Fire","Soul Renewal","Joke"]
-  // ->["Physical Attack","Special Attack","Healing","Other"]
-  // """
-
-  // Skills: ${skillPrompt}
-  // ->`;
 };

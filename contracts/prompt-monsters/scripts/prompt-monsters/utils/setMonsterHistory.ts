@@ -11,11 +11,15 @@ async function main() {
   // const monsterId = 23;
   // const monsterId = 24;
   const monsterId = 25;
-  const resurrectionPrompt = await promptMonsters.monsterIdToResurrectionPrompt(
+  const resurrectionPrompts = await promptMonsters.getResurrectionPrompts([
     monsterId,
-  );
+  ]);
 
-  const before = await promptMonsters.getMonsterHistory(resurrectionPrompt);
+  const results = await Promise.all([
+    promptMonsters.getMonsterExtensions(resurrectionPrompts),
+    promptMonsters.getMonsters([monsterId]),
+  ]);
+  const before = results[0][0];
   console.log("Before: ", before);
   if (before.name !== "") {
     console.log(
@@ -23,12 +27,13 @@ async function main() {
     );
     return;
   }
+  const monster = results[1][0];
   await (
-    await promptMonsters.setMonsterHistory(monsterId, resurrectionPrompt)
+    await promptMonsters.setMonsterHistory(resurrectionPrompts[0], monster)
   ).wait();
   console.log(
     "After : ",
-    await promptMonsters.getMonsterHistory(resurrectionPrompt),
+    (await promptMonsters.getMonsterExtensions(resurrectionPrompts))[0],
   );
   console.log("DONE!!!");
 }

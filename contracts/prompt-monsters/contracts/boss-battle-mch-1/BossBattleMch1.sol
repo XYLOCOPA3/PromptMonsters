@@ -5,8 +5,7 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
-import {IBossBattleEvent} from "../interfaces/IBossBattleEvent.sol";
-import {IBossMonster} from "../interfaces/IBossMonster.sol";
+import {IBossBattleEvent, IBossMonster} from "../interfaces/IBossBattleEvent.sol";
 import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
 
 /// @title BossBattleMch1
@@ -21,22 +20,50 @@ contract BossBattleMch1 is
   // State
   // --------------------------------------------------------------------------------
 
+  /// @custom:oz-renamed-from GAME_ROLE
   bytes32 private GAME_ROLE;
 
+  /// @custom:oz-renamed-from _bossMonster
   IBossMonster private _bossMonster;
 
-  IPromptMonsters private _promptMonsters;
+  /// @custom:oz-renamed-from _highScoreMap
+  mapping(address => uint32) private _highScoreMap;
 
-  bool private _bossBattleEventActivated;
+  /// @custom:oz-renamed-from _bossBattleStartedMap
+  mapping(address => bool) private _bossBattleStartedMap;
 
-  // TODO: 名前変える
-  mapping(address => bool) private _isMonsterInBossBattle;
+  /// @custom:oz-renamed-from _bossBattleContinuedMap
+  mapping(address => bool) private _bossBattleContinuedMap;
 
-  IBossBattleEvent.BBState private _initialIBBState;
+  /// @custom:oz-renamed-from _lpMap
+  mapping(address => uint32) private _lpMap;
 
-  mapping(address => uint256) private _highScores;
+  /// @custom:oz-renamed-from _turnMap
+  mapping(address => uint32) private _turnMap;
 
-  mapping(address => IBossBattleEvent.BBState) private _bbStates;
+  /// @custom:oz-renamed-from _scoreMap
+  mapping(address => uint32) private _scoreMap;
+
+  /// @custom:oz-renamed-from _monsterAdjMap
+  mapping(address => uint32) private _monsterAdjMap;
+
+  /// @custom:oz-renamed-from _bossAdjMap
+  mapping(address => uint32) private _bossAdjMap;
+
+  /// @custom:oz-renamed-from _bossSignMap
+  mapping(address => uint32) private _bossSignMap;
+
+  /// @custom:oz-renamed-from _hasHealItemMap
+  mapping(address => bool) private _hasHealItemMap;
+
+  /// @custom:oz-renamed-from _hasBuffItemMap
+  mapping(address => bool) private _hasBuffItemMap;
+
+  /// @custom:oz-renamed-from _hasDebuffItemMap
+  mapping(address => bool) private _hasDebuffItemMap;
+
+  /// @custom:oz-renamed-from _hasEscapeItemMap
+  mapping(address => bool) private _hasEscapeItemMap;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -57,19 +84,48 @@ contract BossBattleMch1 is
 
     _grantRole(GAME_ROLE, msg.sender);
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-
-    _initialIBBState = IBossBattleEvent.BBState(400, 0, 0, 100, 100);
   }
 
   // --------------------------------------------------------------------------------
   // Modifier
   // --------------------------------------------------------------------------------
 
-  /// @dev check if the monster is in boss battle
-  modifier onlyMonsterInBossBattle(address resurrectionPrompt) {
+  /// @dev Modifier for only started boss battle
+  /// @param resurrectionPrompt resurrectionPrompt
+  modifier onlyStarted(address resurrectionPrompt) {
     require(
-      _isMonsterInBossBattle[resurrectionPrompt],
-      "BossBattle: not started"
+      _bossBattleStartedMap[resurrectionPrompt],
+      "BossBattleEvent: monster has not started boss battle"
+    );
+    _;
+  }
+
+  /// @dev Modifier for only not started boss battle
+  /// @param resurrectionPrompt resurrectionPrompt
+  modifier onlyNotStarted(address resurrectionPrompt) {
+    require(
+      !_bossBattleStartedMap[resurrectionPrompt],
+      "BossBattleEvent: monster has already started boss battle"
+    );
+    _;
+  }
+
+  /// @dev Modifier for only continued boss battle
+  /// @param resurrectionPrompt resurrectionPrompt
+  modifier onlyContinued(address resurrectionPrompt) {
+    require(
+      _bossBattleContinuedMap[resurrectionPrompt],
+      "BossBattleEvent: monster has not continued boss battle"
+    );
+    _;
+  }
+
+  /// @dev Modifier for only not continued boss battle
+  /// @param resurrectionPrompt resurrectionPrompt
+  modifier onlyNotContinued(address resurrectionPrompt) {
+    require(
+      !_bossBattleContinuedMap[resurrectionPrompt],
+      "BossBattleEvent: monster has already continued boss battle"
     );
     _;
   }
@@ -78,280 +134,197 @@ contract BossBattleMch1 is
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @dev Get GAME_ROLE
-  /// @return returnState GAME_ROLE
-  function getGameRole() external view returns (bytes32 returnState) {
-    returnState = GAME_ROLE;
-  }
-
   /// @dev Get _bossMonster
   /// @return returnState _bossMonster
-  function getBossMonsterAddress() external view returns (address returnState) {
-    returnState = address(_bossMonster);
-  }
-
-  /// @dev Get _promptMonsters
-  /// @return returnState _promptMonsters
-  function getPromptMonstersAddress()
-    external
-    view
-    returns (address returnState)
-  {
-    returnState = address(_promptMonsters);
-  }
-
-  /// @dev Get _bossBattleEventActivated
-  /// @return returnState _bossBattleEventActivated
-  function getBossBattleEventActivated()
-    external
-    view
-    returns (bool returnState)
-  {
-    returnState = _bossBattleEventActivated;
-  }
-
-  /// @dev Get batch _isMonsterInBossBattle
-  /// @param rps_ resurrection prompts
-  /// @return returnState _isMonsterInBossBattle
-  function getBatchIsMonsterInBossBattle(
-    address[] memory rps_
-  ) external view returns (bool[] memory returnState) {
-    uint256 length = rps_.length;
-    returnState = new bool[](length);
-    for (uint256 i; i < length; ) {
-      returnState[i] = _isMonsterInBossBattle[rps_[i]];
-      unchecked {
-        ++i;
-      }
-    }
-  }
-
-  /// @dev Get _initialIBBState
-  /// @return returnState _initialIBBState
-  function getInitialBBState()
-    external
-    view
-    returns (IBossBattleEvent.BBState memory returnState)
-  {
-    returnState = _initialIBBState;
-  }
-
-  /// @dev Get batch _highScores
-  /// @param rps_ resurrection prompts
-  /// @return returnState _highScores
-  function getBatchHighScores(
-    address[] memory rps_
-  ) external view returns (uint256[] memory returnState) {
-    uint256 length = rps_.length;
-    returnState = new uint256[](length);
-    for (uint256 i; i < length; ) {
-      returnState[i] = _highScores[rps_[i]];
-      unchecked {
-        ++i;
-      }
-    }
-  }
-
-  /// @dev Get batch _bbStates
-  /// @param rps_ resurrection prompts
-  /// @return returnState _bbStates
-  function getBatchBbStates(
-    address[] memory rps_
-  ) external view returns (IBossBattleEvent.BBState[] memory returnState) {
-    uint256 length = rps_.length;
-    returnState = new IBossBattleEvent.BBState[](length);
-    for (uint256 i; i < length; ) {
-      returnState[i] = _bbStates[rps_[i]];
-      unchecked {
-        ++i;
-      }
-    }
+  function getBossMonster() external view returns (IBossMonster returnState) {
+    returnState = _bossMonster;
   }
 
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
 
-  /// @dev Set bossMonsterAddress
-  /// @param bossMonsterAddress_ address of bossMonster
-  function setBossMonsterAddress(
-    address bossMonsterAddress_
+  /// @dev Set _bossMonster
+  /// @param bossMonsterAddress bossMonster address
+  function setBossMonster(
+    address bossMonsterAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    address oldState = address(_bossMonster);
-    _bossMonster = IBossMonster(bossMonsterAddress_);
+    IBossMonster oldValue = _bossMonster;
+    _bossMonster = IBossMonster(bossMonsterAddress);
 
-    emit SetBossMonsterAddress(_msgSender(), oldState, bossMonsterAddress_);
-  }
-
-  /// @dev Set promptMonstersAddress
-  /// @param promptMonstersAddress_ address of promptMonsters
-  function setPromptMonstersAddress(
-    address promptMonstersAddress_
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    address oldState = address(_promptMonsters);
-    _promptMonsters = IPromptMonsters(promptMonstersAddress_);
-
-    emit SetPromptMonstersAddress(
-      _msgSender(),
-      oldState,
-      promptMonstersAddress_
-    );
-  }
-
-  /// @dev Set bossBattleEventActivated
-  /// @param bossBattleEventActivated_ bossBattleEventActivated
-  function setBossBattleEventActivated(
-    bool bossBattleEventActivated_
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    bool oldState = _bossBattleEventActivated;
-    _bossBattleEventActivated = bossBattleEventActivated_;
-
-    emit SetBossBattleEventActivated(
-      _msgSender(),
-      oldState,
-      _bossBattleEventActivated
-    );
-  }
-
-  /// @dev Set batch isMonsterInBossBattle
-  /// @param rps_ resurrection prompts
-  /// @param isMonsterInBossBattles_ isMonsterInBossBattles
-  function setBatchIsMonsterInBossBattle(
-    address[] memory rps_,
-    bool[] memory isMonsterInBossBattles_
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    uint256 length = rps_.length;
-    require(
-      length == isMonsterInBossBattles_.length,
-      "BossBattleEvent: mismatch length"
-    );
-    bool[] memory oldState = new bool[](length);
-    for (uint256 i; i < length; ) {
-      oldState[i] = _isMonsterInBossBattle[rps_[i]];
-      _isMonsterInBossBattle[rps_[i]] = isMonsterInBossBattles_[i];
-      unchecked {
-        ++i;
-      }
-    }
-
-    emit SetBatchIsMonsterInBossBattle(
-      _msgSender(),
-      oldState,
-      isMonsterInBossBattles_
-    );
-  }
-
-  /// @dev Set initialIBBState
-  /// @param initialIBBState_ initialIBBState
-  function setInitialIBBState(
-    IBossBattleEvent.BBState memory initialIBBState_
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    IBossBattleEvent.BBState memory oldState = _initialIBBState;
-    _initialIBBState = initialIBBState_;
-
-    emit SetInitialIBBState(_msgSender(), oldState, _initialIBBState);
-  }
-
-  /// @dev Set batch highScores
-  /// @param rps_ resurrection prompts
-  /// @param highScores_ highScores
-  function setBatchHighScores(
-    address[] memory rps_,
-    uint256[] memory highScores_
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    uint256 length = rps_.length;
-    require(length == highScores_.length, "BossBattleEvent: mismatch length");
-    uint256[] memory oldState = new uint256[](length);
-    for (uint256 i; i < length; ) {
-      oldState[i] = _highScores[rps_[i]];
-      _highScores[rps_[i]] = highScores_[i];
-      unchecked {
-        ++i;
-      }
-    }
-
-    emit SetBatchHighScores(_msgSender(), oldState, highScores_);
-  }
-
-  /// @dev Set batch bbStates
-  /// @param rps_ resurrection prompts
-  /// @param bbStates_ bbStates
-  function setBatchBbStates(
-    address[] memory rps_,
-    IBossBattleEvent.BBState[] memory bbStates_
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    uint256 length = rps_.length;
-    require(length == bbStates_.length, "BossBattleEvent: mismatch length");
-    IBossBattleEvent.BBState[] memory oldState = new IBossBattleEvent.BBState[](
-      length
-    );
-    for (uint256 i; i < length; ) {
-      oldState[i] = _bbStates[rps_[i]];
-      _bbStates[rps_[i]] = bbStates_[i];
-      unchecked {
-        ++i;
-      }
-    }
-
-    emit SetBatchBbStates(_msgSender(), oldState, bbStates_);
+    emit SetBossMonster(_msgSender(), oldValue, _bossMonster);
   }
 
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
 
+  /// @dev Get BBState
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return bbState BBState
+  function getBBState(
+    address resurrectionPrompt
+  ) public view returns (IBossBattleEvent.BBState memory bbState) {
+    bbState = IBossBattleEvent.BBState(
+      _bossBattleStartedMap[resurrectionPrompt],
+      _bossBattleContinuedMap[resurrectionPrompt],
+      _lpMap[resurrectionPrompt],
+      _turnMap[resurrectionPrompt],
+      _scoreMap[resurrectionPrompt],
+      _monsterAdjMap[resurrectionPrompt],
+      _bossAdjMap[resurrectionPrompt],
+      _bossSignMap[resurrectionPrompt],
+      _hasHealItemMap[resurrectionPrompt],
+      _hasBuffItemMap[resurrectionPrompt],
+      _hasDebuffItemMap[resurrectionPrompt],
+      _hasEscapeItemMap[resurrectionPrompt]
+    );
+  }
+
   /// @dev Start boss battle
   /// @param resurrectionPrompt resurrection prompt
+  /// @param monsterAdj monster adj
+  /// @param bossSign boss sign
   function startBossBattle(
-    address resurrectionPrompt
-  ) external onlyRole(GAME_ROLE) {
-    require(_bossBattleEventActivated, "BossBattle: not active");
-    require(
-      !_isMonsterInBossBattle[resurrectionPrompt],
-      "BossBattle: already started"
-    );
-    _bbStates[resurrectionPrompt] = _initialIBBState;
-    _isMonsterInBossBattle[resurrectionPrompt] = true;
+    address resurrectionPrompt,
+    uint32 monsterAdj,
+    uint32 bossSign
+  ) external onlyRole(GAME_ROLE) onlyNotStarted(resurrectionPrompt) {
+    _initBBState(resurrectionPrompt, monsterAdj, bossSign);
+
+    IBossBattleEvent.BBState memory bbState = getBBState(resurrectionPrompt);
+    emit StartedBossBattle(_msgSender(), resurrectionPrompt, bbState);
   }
 
-  /// @dev recordBossBattle
+  /// @dev updateBossBattleResult
   /// @param resurrectionPrompt resurrection prompt
   /// @param bbState bbState to update
-  function recordBossBattle(
+  function updateBossBattleResult(
     address resurrectionPrompt,
     IBossBattleEvent.BBState memory bbState
-  ) external onlyRole(GAME_ROLE) onlyMonsterInBossBattle(resurrectionPrompt) {
-    _bbStates[resurrectionPrompt] = bbState;
+  )
+    external
+    onlyRole(GAME_ROLE)
+    onlyStarted(resurrectionPrompt)
+    onlyContinued(resurrectionPrompt)
+  {
+    IBossBattleEvent.BBState memory oldValue = getBBState(resurrectionPrompt);
+
+    _bossBattleContinuedMap[resurrectionPrompt] = false;
+    _lpMap[resurrectionPrompt] = bbState.lp;
+    _scoreMap[resurrectionPrompt] = bbState.score;
+    _monsterAdjMap[resurrectionPrompt] = bbState.monsterAdj;
+    _bossAdjMap[resurrectionPrompt] = bbState.bossAdj;
+    _hasHealItemMap[resurrectionPrompt] = bbState.hasHealItem;
+    _hasBuffItemMap[resurrectionPrompt] = bbState.hasBuffItem;
+    _hasDebuffItemMap[resurrectionPrompt] = bbState.hasDebuffItem;
+    _hasEscapeItemMap[resurrectionPrompt] = bbState.hasEscapeItem;
+
+    IBossBattleEvent.BBState memory newBbState = getBBState(resurrectionPrompt);
+
+    emit UpdatedBossBattleResult(
+      _msgSender(),
+      resurrectionPrompt,
+      oldValue,
+      newBbState
+    );
   }
 
-  /// @dev End boss battle with win
+  /// @dev Continue boss battle
   /// @param resurrectionPrompt resurrection prompt
-  function endBossBattleWithWin(
-    address resurrectionPrompt
-  ) public onlyRole(GAME_ROLE) onlyMonsterInBossBattle(resurrectionPrompt) {
-    require(_bbStates[resurrectionPrompt].hp > 0, "BossBattle: you lose");
-    uint256 score = _bbStates[resurrectionPrompt].score;
-    if (score > _highScores[resurrectionPrompt]) {
-      _highScores[resurrectionPrompt] = score;
-    }
-    endBossBattle(resurrectionPrompt);
+  /// @param bossSign boss sign
+  function continueBossBattle(
+    address resurrectionPrompt,
+    uint32 bossSign
+  )
+    external
+    onlyRole(GAME_ROLE)
+    onlyStarted(resurrectionPrompt)
+    onlyNotContinued(resurrectionPrompt)
+  {
+    require(
+      _lpMap[resurrectionPrompt] > 0,
+      "BossBattleEvent: You have already lost all LP"
+    );
+    IBossBattleEvent.BBState memory oldValue = getBBState(resurrectionPrompt);
+
+    _bossBattleContinuedMap[resurrectionPrompt] = true;
+    _turnMap[resurrectionPrompt] = _turnMap[resurrectionPrompt] + 1;
+    _bossSignMap[resurrectionPrompt] = bossSign;
+
+    IBossBattleEvent.BBState memory bbState = getBBState(resurrectionPrompt);
+
+    emit ContinuedBossBattle(
+      _msgSender(),
+      resurrectionPrompt,
+      oldValue,
+      bbState
+    );
   }
 
   /// @dev End boss battle
   /// @param resurrectionPrompt resurrection prompt
   function endBossBattle(
     address resurrectionPrompt
-  ) public onlyRole(GAME_ROLE) onlyMonsterInBossBattle(resurrectionPrompt) {
-    _bbStates[resurrectionPrompt] = _initialIBBState;
-    _isMonsterInBossBattle[resurrectionPrompt] = false;
+  )
+    external
+    onlyRole(GAME_ROLE)
+    onlyStarted(resurrectionPrompt)
+    onlyNotContinued(resurrectionPrompt)
+  {
+    IBossBattleEvent.BBState memory oldValue = getBBState(resurrectionPrompt);
+
+    _bossBattleStartedMap[resurrectionPrompt] = false;
+    _updateHighScore(resurrectionPrompt);
+
+    IBossBattleEvent.BBState memory bbState = getBBState(resurrectionPrompt);
+    emit EndedBossBattle(_msgSender(), resurrectionPrompt, oldValue, bbState);
   }
 
   // --------------------------------------------------------------------------------
   // Internal
   // --------------------------------------------------------------------------------
 
-  /// @dev initialize bbStates
+  /// @dev Init BBState
   /// @param resurrectionPrompt resurrection prompt
+  /// @param monsterAdj monster adj
+  /// @param bossSign boss sign
+  function _initBBState(
+    address resurrectionPrompt,
+    uint32 monsterAdj,
+    uint32 bossSign
+  ) internal onlyRole(GAME_ROLE) {
+    _bossBattleStartedMap[resurrectionPrompt] = true;
+    _bossBattleContinuedMap[resurrectionPrompt] = true;
+    _lpMap[resurrectionPrompt] = 400;
+    _turnMap[resurrectionPrompt] = 1;
+    _scoreMap[resurrectionPrompt] = 0;
+    _monsterAdjMap[resurrectionPrompt] = monsterAdj;
+    _bossAdjMap[resurrectionPrompt] = 100;
+    _bossSignMap[resurrectionPrompt] = bossSign;
+    _hasHealItemMap[resurrectionPrompt] = false;
+    _hasBuffItemMap[resurrectionPrompt] = false;
+    _hasDebuffItemMap[resurrectionPrompt] = false;
+    _hasEscapeItemMap[resurrectionPrompt] = false;
+  }
+
+  /// @dev Update high score
+  /// @param resurrectionPrompt resurrection prompt
+  function _updateHighScore(
+    address resurrectionPrompt
+  ) internal onlyRole(GAME_ROLE) {
+    if (_lpMap[resurrectionPrompt] == 0) return;
+    if (_highScoreMap[resurrectionPrompt] >= _scoreMap[resurrectionPrompt])
+      return;
+    uint32 oldValue = _highScoreMap[resurrectionPrompt];
+    _highScoreMap[resurrectionPrompt] = _scoreMap[resurrectionPrompt];
+    emit UpdatedHighScore(
+      _msgSender(),
+      resurrectionPrompt,
+      oldValue,
+      _highScoreMap[resurrectionPrompt]
+    );
+  }
 
   /// @dev Authorize upgrade
   /// @param newImplementation new implementation address

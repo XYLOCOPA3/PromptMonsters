@@ -1,65 +1,72 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
+import {IBossMonster} from "../interfaces/IBossMonster.sol";
+
 /// @title IBossBattleEvent
 /// @dev This is an interface of BossBattleEvent.
 interface IBossBattleEvent {
   // --------------------------------------------------------------------------------
-  // State
+  // Struct
   // --------------------------------------------------------------------------------
 
   struct BBState {
-    uint32 hp;
+    bool bossBattleStarted;
+    bool bossBattleContinued;
+    uint32 lp;
     uint32 turn;
     uint32 score;
     uint32 monsterAdj;
     uint32 bossAdj;
+    uint32 bossSign;
+    bool hasHealItem;
+    bool hasBuffItem;
+    bool hasDebuffItem;
+    bool hasEscapeItem;
   }
 
   // --------------------------------------------------------------------------------
   // Event
   // --------------------------------------------------------------------------------
 
-  event SetBossMonsterAddress(
+  event SetBossMonster(
     address indexed publisher,
-    address indexed oldState,
-    address indexed newState
+    IBossMonster oldValue,
+    IBossMonster newValue
   );
 
-  event SetPromptMonstersAddress(
+  event StartedBossBattle(
     address indexed publisher,
-    address indexed oldState,
-    address indexed newState
+    address indexed resurrectionPrompt,
+    BBState bbState
   );
 
-  event SetBossBattleEventActivated(
+  event UpdatedBossBattleResult(
     address indexed publisher,
-    bool indexed oldState,
-    bool indexed newState
+    address indexed resurrectionPrompt,
+    BBState oldValue,
+    BBState newValue
   );
 
-  event SetBatchIsMonsterInBossBattle(
+  event ContinuedBossBattle(
     address indexed publisher,
-    bool[] indexed oldState,
-    bool[] indexed newState
+    address indexed resurrectionPrompt,
+    BBState oldValue,
+    BBState newValue
   );
 
-  event SetInitialIBBState(
+  event EndedBossBattle(
     address indexed publisher,
-    BBState indexed oldState,
-    BBState indexed newState
+    address indexed resurrectionPrompt,
+    BBState oldValue,
+    BBState newValue
   );
 
-  event SetBatchHighScores(
+  event UpdatedHighScore(
     address indexed publisher,
-    uint256[] indexed oldState,
-    uint256[] indexed newState
-  );
-
-  event SetBatchBbStates(
-    address indexed publisher,
-    BBState[] indexed oldState,
-    BBState[] indexed newState
+    address indexed resurrectionPrompt,
+    uint32 oldValue,
+    uint32 newValue
   );
 
   // --------------------------------------------------------------------------------
@@ -73,44 +80,54 @@ interface IBossBattleEvent {
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @dev Get bossMonsterAddress
-  function getBossMonsterAddress() external view returns (address);
+  /// @dev Get _bossMonster
+  /// @return returnState _bossMonster
+  function getBossMonster() external view returns (IBossMonster returnState);
 
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
 
-  /// @dev Set bossMonsterAddress
-  /// @param bossMonsterAddress address of bossMonster
-  function setBossMonsterAddress(address bossMonsterAddress) external;
-
-  /// @dev Set promptMonstersAddress
-  /// @param promptMonstersAddress address of promptMonsters
-  function setPromptMonstersAddress(address promptMonstersAddress) external;
-
-  /// @dev Set isBossBattleEventActive
-  /// @param _isBossBattleEventActive isBossBattleEventActive
-  function setBossBattleEventActivated(bool _isBossBattleEventActive) external;
+  /// @dev Set _bossMonster
+  /// @param bossMonsterAddress bossMonster address
+  function setBossMonster(address bossMonsterAddress) external;
 
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
 
+  /// @dev Get BBState
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return bbState BBState
+  function getBBState(
+    address resurrectionPrompt
+  ) external view returns (BBState memory bbState);
+
   /// @dev Start boss battle
   /// @param resurrectionPrompt resurrection prompt
-  function startBossBattle(address resurrectionPrompt) external;
+  /// @param monsterAdj monster adj
+  /// @param bossSign boss sign
+  function startBossBattle(
+    address resurrectionPrompt,
+    uint32 monsterAdj,
+    uint32 bossSign
+  ) external;
 
-  /// @dev recordBossBattle
+  /// @dev updateBossBattleResult
   /// @param resurrectionPrompt resurrection prompt
   /// @param bbState bbState to update
-  function recordBossBattle(
+  function updateBossBattleResult(
     address resurrectionPrompt,
     BBState memory bbState
   ) external;
 
-  /// @dev End boss battle with win
+  /// @dev Continue boss battle
   /// @param resurrectionPrompt resurrection prompt
-  function endBossBattleWithWin(address resurrectionPrompt) external;
+  /// @param bossSign boss sign
+  function continueBossBattle(
+    address resurrectionPrompt,
+    uint32 bossSign
+  ) external;
 
   /// @dev End boss battle
   /// @param resurrectionPrompt resurrection prompt

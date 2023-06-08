@@ -8,7 +8,7 @@ import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
 /// @dev This is an interface of PromptMonstersExtension.
 interface IPromptMonstersExtension {
   // --------------------------------------------------------------------------------
-  // State
+  // Struct
   // --------------------------------------------------------------------------------
 
   struct MonsterExtension {
@@ -37,12 +37,6 @@ interface IPromptMonstersExtension {
     string[][] indexed skills,
     uint32[][] oldState,
     uint32[][] newState
-  );
-
-  event SetPromptMonsters(
-    address indexed publisher,
-    address oldState,
-    address newState
   );
 
   // --------------------------------------------------------------------------------
@@ -90,8 +84,5 @@ interface IPromptMonstersExtension {
   function getMonsterExtension(
     address resurrectionPrompt_,
     IPromptMonsters.Monster memory monster_
-  )
-    external
-    view
-    returns (IPromptMonstersExtension.MonsterExtension memory monsterExtension);
+  ) external view returns (MonsterExtension memory monsterExtension);
 }

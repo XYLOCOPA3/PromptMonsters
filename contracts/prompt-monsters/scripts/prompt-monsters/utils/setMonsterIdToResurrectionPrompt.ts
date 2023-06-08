@@ -8,9 +8,9 @@ async function main() {
 
   const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
   const promptMonsters = PromptMonsters.attach(PROMPT_MONSTERS_PROXY_ADDRESS);
-  const beforeRp = await promptMonsters.monsterIdToResurrectionPrompt(
-    monsterId,
-  );
+  const beforeRp = (
+    await promptMonsters.getResurrectionPrompts([monsterId])
+  )[0];
   console.log("Before: ", beforeRp);
   if (beforeRp !== ethers.constants.AddressZero) {
     console.log(
@@ -19,14 +19,14 @@ async function main() {
     return;
   }
   await (
-    await promptMonsters.setMonsterIdToResurrectionPrompt(
+    await promptMonsters.setTokenIdToResurrectionPromptMap(
       monsterId,
       resurrectionPrompt,
     )
   ).wait();
   console.log(
     "After : ",
-    await promptMonsters.monsterIdToResurrectionPrompt(monsterId),
+    (await promptMonsters.getResurrectionPrompts([monsterId]))[0],
   );
   console.log("DONE!!!");
 }

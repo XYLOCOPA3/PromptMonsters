@@ -8,9 +8,9 @@ export async function main() {
   const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
   const promptMonsters = PromptMonsters.attach(PROMPT_MONSTERS_PROXY_ADDRESS);
 
-  console.log(`Before: ${await promptMonsters.mintPrice()}`);
+  console.log(`Before: ${await promptMonsters.getMintPrice()}`);
   await (await promptMonsters.setMintPrice(MINT_PRICE)).wait();
-  console.log(`After : ${await promptMonsters.mintPrice()}`);
+  console.log(`After : ${await promptMonsters.getMintPrice()}`);
 }
 
 main().catch((error) => {

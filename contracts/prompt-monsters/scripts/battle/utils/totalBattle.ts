@@ -44,7 +44,12 @@ export async function main() {
   console.log(`totalMonsterCount: ${totalMonsterCount}`);
 
   // 全モンスター情報を取得
-  const monsters = await promptMonsters.getMonsters(monsterIds);
+  const resurrectionPrompts = await promptMonsters.getResurrectionPrompts(
+    monsterIds,
+  );
+  const monsters = await promptMonsters.getMonsterExtensions(
+    resurrectionPrompts,
+  );
 
   // 各モンスターの総マッチ数、勝ち数を取得
   const battleResults = await Promise.all([

@@ -5,10 +5,7 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
-import {IBossBattle} from "./IBossBattle.sol";
-import {IBossBattleEvent} from "../interfaces/IBossBattleEvent.sol";
-import {IBossMonster} from "../interfaces/IBossMonster.sol";
-import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
+import {IBossBattle, IBossBattleEvent, IBossMonster, IPromptMonstersExtension} from "./IBossBattle.sol";
 
 /// @title BossBattle
 /// @dev This is a contract of BossBattle.
@@ -22,13 +19,14 @@ contract BossBattle is
   // State
   // --------------------------------------------------------------------------------
 
-  bytes32 public GAME_ROLE;
+  /// @custom:oz-renamed-from GAME_ROLE
+  bytes32 private GAME_ROLE;
 
-  bool public isBossBattleActive;
+  /// @custom:oz-renamed-from _eventKeys
+  string[] private _eventKeys;
 
-  IPromptMonsters public promptMonsters;
-
-  address[] private _bossBattleEvents;
+  /// @custom:oz-renamed-from _bossBattleEventMap
+  mapping(string => address[]) private _bossBattleEventMap;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -52,191 +50,270 @@ contract BossBattle is
   }
 
   // --------------------------------------------------------------------------------
+  // Modifier
+  // --------------------------------------------------------------------------------
+
+  // --------------------------------------------------------------------------------
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @dev Get addresses of bossBattleEvent
-  /// @param bbeIds_ IDs of bossBattleEvent
-  /// @return bossBattleEvents addresses of bossBattleEvent
-  function getBossBattleEvents(
-    uint256[] memory bbeIds_
-  ) external view returns (address[] memory bossBattleEvents) {
-    uint256 length = bbeIds_.length;
-    bossBattleEvents = new address[](length);
-    for (uint i; i < length; ) {
-      bossBattleEvents[i] = _bossBattleEvents[bbeIds_[i]];
+  /// @dev Get _eventKeys
+  /// @return returnValue _eventKeys
+  function getEventKeys() external view returns (string[] memory returnValue) {
+    returnValue = _eventKeys;
+  }
+
+  /// @dev Get _bossBattleEventMap
+  /// @return returnValue _bossBattleEventMap
+  function getBossBattleEvents()
+    external
+    view
+    returns (address[][] memory returnValue)
+  {
+    uint256 length = _eventKeys.length;
+    returnValue = new address[][](length);
+    for (uint256 i; i < length; ) {
+      returnValue[i] = _bossBattleEventMap[_eventKeys[i]];
       unchecked {
         ++i;
       }
     }
   }
 
-  /// @dev Get bossBattleEventAddress
-  /// @return length addresses of bossBattleEvent
-  function getBossBattleEventsLength() external view returns (uint256 length) {
-    length = _bossBattleEvents.length;
-  }
-
-  // /// @dev Get monster adjs for the boss battle
-  // /// @param bbeId_ ID of bossBattleEvent
-  // /// @param rps_ array of resurrection prompt
-  // /// @return monsterAdjs monster adjs for the boss battle
-  // function getMonsterAdjsForBossBattle(
-  //   uint256 bbeId_,
-  //   address[] rps_
-  // ) public view returns (IBossMonster.MonsterAdj[] memory monsterAdjs) {
-  //   require(bbeId_ < _bossBattleEvents.length, "BossBattle: Invalid bbeId");
-  //   address bossMonsterAddress = address(
-  //     IBossBattleEvent(_bossBattleEvents[bbeId_]).getBossMonsterAddress()
-  //   );
-  //   monsterAdjs = new IBossMonster.MonsterAdj[](rps_.length);
-  //   return
-  //     IBossMonster(bossMonsterAddress).getMonsterAdjs(
-  //       resurrectionPrompt
-  //     );
-  // }
-
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
 
-  // /// @dev Add bossBattleEventAddress
-  // /// @param bossBattleEventAddress address of bossBattleEvent
-  // function addBossBattleEventAddress(
-  //   address bossBattleEventAddress
-  // ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-  //   _bossBattleEventsAddress.push(bossBattleEventAddress);
-
-  //   emit AddBossBattleEventAddress(_msgSender(), bossBattleEventAddress);
-  // }
-
-  /// @dev Set promptMonstersAddress
-  /// @param promptMonstersAddress address of promptMonsters
-  function setPromptMonstersAddress(
-    address promptMonstersAddress
+  /// @dev Set _eventKeys
+  /// @param index index
+  /// @param eventKey eventKey
+  function setEventKey(
+    uint256 index,
+    string memory eventKey
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    address oldValue = address(promptMonsters);
-    promptMonsters = IPromptMonsters(promptMonstersAddress);
-
-    emit SetPromptMonstersAddress(
-      _msgSender(),
-      oldValue,
-      promptMonstersAddress
+    require(
+      index < _eventKeys.length,
+      "BossMonsterMchYoshka: index out of range"
     );
+    string memory oldValue = _eventKeys[index];
+    _eventKeys[index] = eventKey;
+
+    emit SetEventKey(_msgSender(), index, oldValue, eventKey);
   }
 
-  /// @dev Set isBossBattleActive
-  /// @param _isBossBattleActive isBossBattleActive
-  function setIsBossBattleActive(
-    bool _isBossBattleActive
+  /// @dev Set bossBattleEvent
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param bossBattleEvent address of bossBattleEvent
+  function setBossBattleEvent(
+    string memory eventKey,
+    uint256 bbeId,
+    address bossBattleEvent
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    bool oldValue = isBossBattleActive;
-    isBossBattleActive = _isBossBattleActive;
+    bool included;
+    for (uint i; i < _eventKeys.length; ) {
+      if (
+        keccak256(abi.encodePacked(_eventKeys[i])) ==
+        keccak256(abi.encodePacked(eventKey))
+      ) {
+        included = true;
+        break;
+      }
+      unchecked {
+        i++;
+      }
+    }
+    require(included, "BossBattle: eventKey not included");
+    address oldValue = _bossBattleEventMap[eventKey][bbeId];
+    _bossBattleEventMap[eventKey][bbeId] = bossBattleEvent;
 
-    emit SetIsBossBattleActive(_msgSender(), oldValue, _isBossBattleActive);
+    emit SetBossBattleEvent(
+      _msgSender(),
+      eventKey,
+      bbeId,
+      oldValue,
+      bossBattleEvent
+    );
   }
 
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  // /// @dev get boss battle data to calculate battle result
-  // /// @param bossBattleEventAddress BossBattleEvent contract address
-  // /// @param resurrectionPrompt resurrection prompt
-  // /// @return bossBattleData
-  // function getBossBattleData(
-  //   address bossBattleEventAddress,
-  //   address resurrectionPrompt
-  // ) external view returns (BossBattleData memory) {
-  //   IPromptMonsters.MonsterwithSkillTypes memory monster = promptMonsters
-  //     .getMonsterWithSkillTypes(resurrectionPrompt);
+  /// @dev Add event key
+  /// @param eventKey event key
+  function addEventKey(
+    string memory eventKey
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _eventKeys.push(eventKey);
 
-  //   IBossMonster.MonsterAdj memory monsterAdjs = getMonsterAdjsForBossBattle(
-  //     bossBattleEventAddress,
-  //     resurrectionPrompt
-  //   );
+    emit AddedEventKey(_msgSender(), _eventKeys.length, eventKey);
+  }
 
-  //   return
-  //     BossBattleData({
-  //       name: monster.name,
-  //       skills: monster.skills,
-  //       skillsTypes: monster.skillsTypes,
-  //       atk: monster.atk,
-  //       def: monster.def,
-  //       inte: monster.inte,
-  //       mgr: monster.mgr,
-  //       fieldAdj: monsterAdjs.fieldAdj,
-  //       specialBuff: monsterAdjs.specialBuff
-  //     });
-  // }
+  /// @dev Add bossBattleEvent
+  /// @param eventKey event key
+  /// @param bossBattleEvent address of bossBattleEvent
+  function addBossBattleEvent(
+    string memory eventKey,
+    address bossBattleEvent
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    bool included;
+    for (uint i; i < _eventKeys.length; ) {
+      if (
+        keccak256(abi.encodePacked(_eventKeys[i])) ==
+        keccak256(abi.encodePacked(eventKey))
+      ) {
+        included = true;
+        break;
+      }
+      unchecked {
+        i++;
+      }
+    }
+    require(included, "BossBattle: eventKey not included");
 
-  // /// @dev Start boss battle of the event
-  // /// @param bossBattleEventAddress BossBattleEvent contract address
-  // /// @param resurrectionPrompt resurrection prompt
-  // function startBossBattle(
-  //   address bossBattleEventAddress,
-  //   address resurrectionPrompt
-  // ) external onlyRole(GAME_ROLE) {
-  //   uint32[] memory skillsTypes = promptMonsters
-  //     .getMonsterWithSkillTypes(resurrectionPrompt)
-  //     .skillsTypes;
-  //   require(skillsTypes[0] != 0, "no skills");
+    _bossBattleEventMap[eventKey].push(bossBattleEvent);
 
-  //   IBossMonster.MonsterAdj memory monsterAdjs = getMonsterAdjsForBossBattle(
-  //     bossBattleEventAddress,
-  //     resurrectionPrompt
-  //   );
-  //   require(monsterAdjs.fieldAdj != 0, "no fieldAdj");
+    emit AddedBossBattleEvent(_msgSender(), eventKey, bossBattleEvent);
+  }
 
-  //   require(isBossBattleActive, "boss battle is not active");
+  /// @dev get boss battle data to calculate battle result
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return monsterAdj monster adj
+  function getMonsterAdj(
+    string memory eventKey,
+    uint256 bbeId,
+    address resurrectionPrompt
+  ) external view returns (IBossMonster.MonsterAdj memory monsterAdj) {
+    IBossMonster bossMonster = IBossBattleEvent(
+      _bossBattleEventMap[eventKey][bbeId]
+    ).getBossMonster();
+    monsterAdj = bossMonster.getMonsterAdj(resurrectionPrompt);
+  }
 
-  //   IBossBattleEvent(bossBattleEventAddress).startBossBattle(
-  //     resurrectionPrompt
-  //   );
-  // }
+  /// @dev Set monsterAdj
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param resurrectionPrompt resurrection prompt
+  /// @param monsterAdj monster adj
+  function setMonsterAdj(
+    string memory eventKey,
+    uint256 bbeId,
+    address resurrectionPrompt,
+    IBossMonster.MonsterAdj memory monsterAdj
+  ) external onlyRole(GAME_ROLE) {
+    IBossMonster bossMonster = IBossBattleEvent(
+      _bossBattleEventMap[eventKey][bbeId]
+    ).getBossMonster();
+    bossMonster.setMonsterAdj(resurrectionPrompt, monsterAdj);
+  }
 
-  /// @dev Record battle result with boss of the event
-  /// @param bossBattleEventAddress BossBattleEvent contract address
+  /// @dev get boss battle state
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return bbState boss battle state
+  function getBBState(
+    string memory eventKey,
+    uint256 bbeId,
+    address resurrectionPrompt
+  ) public view returns (IBossBattleEvent.BBState memory bbState) {
+    bbState = IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId]).getBBState(
+        resurrectionPrompt
+      );
+  }
+
+  /// @dev get boss battle data to calculate battle result
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param language language
+  /// @return monsterExtension monster extension
+  function getBossExtension(
+    string memory eventKey,
+    uint256 bbeId,
+    string memory language
+  )
+    external
+    view
+    returns (IPromptMonstersExtension.MonsterExtension memory monsterExtension)
+  {
+    IBossMonster bossMonster = IBossBattleEvent(
+      _bossBattleEventMap[eventKey][bbeId]
+    ).getBossMonster();
+    monsterExtension = bossMonster.getBossExtension(language);
+  }
+
+  /// @dev Start boss battle of the event
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param resurrectionPrompt resurrection prompt
+  /// @param monsterAdj monster adj
+  /// @param bossSign boss sign
+  function startBossBattle(
+    string memory eventKey,
+    uint256 bbeId,
+    address resurrectionPrompt,
+    uint32 monsterAdj,
+    uint32 bossSign
+  ) external onlyRole(GAME_ROLE) {
+    IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId]).startBossBattle(
+      resurrectionPrompt,
+      monsterAdj,
+      bossSign
+    );
+  }
+
+  /// @dev updateBossBattleResult
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
   /// @param resurrectionPrompt resurrection prompt
   /// @param bbState bbState to update
-  function recordBossBattle(
-    address bossBattleEventAddress,
+  function updateBossBattleResult(
+    string memory eventKey,
+    uint256 bbeId,
     address resurrectionPrompt,
     IBossBattleEvent.BBState memory bbState
   ) external onlyRole(GAME_ROLE) {
-    IBossBattleEvent(bossBattleEventAddress).recordBossBattle(
+    IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId])
+      .updateBossBattleResult(resurrectionPrompt, bbState);
+  }
+
+  /// @dev Continue boss battle
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param resurrectionPrompt resurrection prompt
+  /// @param bossSign boss sign
+  function continueBossBattle(
+    string memory eventKey,
+    uint256 bbeId,
+    address resurrectionPrompt,
+    uint32 bossSign
+  ) external onlyRole(GAME_ROLE) {
+    IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId]).continueBossBattle(
       resurrectionPrompt,
-      bbState
+      bossSign
     );
   }
 
-  /// @dev End boss battle of the event with win
-  /// @param bossBattleEventAddress BossBattleEvent contract address
+  /// @dev End boss battle
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
   /// @param resurrectionPrompt resurrection prompt
-  function endBossBattleWithWin(
-    address bossBattleEventAddress,
+  function endBossBattle(
+    string memory eventKey,
+    uint256 bbeId,
     address resurrectionPrompt
   ) external onlyRole(GAME_ROLE) {
-    IBossBattleEvent(bossBattleEventAddress).endBossBattleWithWin(
+    IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId]).endBossBattle(
       resurrectionPrompt
     );
-  }
-
-  /// @dev End boss battle of the event with lose
-  /// @param bossBattleEventAddress BossBattleEvent contract address
-  function endBossBattleWithLose(
-    address bossBattleEventAddress,
-    address resurrectionPrompt
-  ) external onlyRole(GAME_ROLE) {
-    IBossBattleEvent(bossBattleEventAddress).endBossBattle(resurrectionPrompt);
   }
 
   // --------------------------------------------------------------------------------
   // Internal
   // --------------------------------------------------------------------------------
-
-  /// @dev Initialize initial status for BossBattleMzDao
-  function _initializeBBStatus() internal onlyRole(DEFAULT_ADMIN_ROLE) {}
 
   /// @dev Authorize upgrade
   /// @param newImplementation new implementation address

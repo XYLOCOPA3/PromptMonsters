@@ -1,8 +1,8 @@
-import { ethers } from "hardhat";
+import { ethers, upgrades } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
-  console.log("--- Start Erc20 Coin Deploy -----------------");
+  console.log("--- Start Erc20 Deploy ----------------------");
   console.log("---------------------------------------------");
   console.log("");
 
@@ -14,19 +14,21 @@ async function main() {
   console.log("Deploying contracts with account: ", deployer.address);
 
   const Erc20 = await ethers.getContractFactory("Erc20");
-  const erc20 = await Erc20.deploy();
-  await erc20.deployed();
-  console.log("Deployed Erc20 address: ", erc20.address);
+  const erc20Proxy = await upgrades.deployProxy(Erc20, [], {
+    kind: "uups",
+    initializer: "initialize",
+  });
+  await erc20Proxy.deployed();
+  console.log("Deployed Erc20 address: ", erc20Proxy.address);
+  console.log(
+    "Erc20 implementation deployed to:",
+    await upgrades.erc1967.getImplementationAddress(erc20Proxy.address),
+  );
 
   console.log("Completed deployment");
 
-  // Wait 10 seconds before verification, because it fails if it is done immediately after deployment
-  // console.log("Waiting for 10 seconds before verification...");
-  // await new Promise((resolve) => setTimeout(resolve, 10000));
-
   console.log("---------------------------------------------");
-  ("---------------------------------------------");
-  console.log("--- End Erc20 Deploy -----9999999999---------");
+  console.log("--- End Erc20 Deploy ------------------------");
   console.log("---------------------------------------------");
 }
 

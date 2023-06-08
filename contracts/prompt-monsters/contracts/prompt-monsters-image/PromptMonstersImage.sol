@@ -23,9 +23,11 @@ contract PromptMonstersImage is
   // State
   // --------------------------------------------------------------------------------
 
-  IPromptMonsters public promptMonsters;
+  /// @custom:oz-renamed-from promptMonsters
+  IPromptMonsters private _promptMonsters;
 
-  mapping(uint256 => string) public imageURL;
+  /// @custom:oz-renamed-from imageURL
+  mapping(uint256 => string) private _imageURLMap;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -44,12 +46,34 @@ contract PromptMonstersImage is
     __UUPSUpgradeable_init();
 
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-    promptMonsters = IPromptMonsters(promptMonstersAddress_);
+    _promptMonsters = IPromptMonsters(promptMonstersAddress_);
   }
+
+  // --------------------------------------------------------------------------------
+  // Modifier
+  // --------------------------------------------------------------------------------
 
   // --------------------------------------------------------------------------------
   // Getter
   // --------------------------------------------------------------------------------
+
+  /// @dev Get _promptMonsters
+  /// @return returnValue _promptMonsters
+  function getPromptMonsters()
+    external
+    view
+    returns (IPromptMonsters returnValue)
+  {
+    returnValue = _promptMonsters;
+  }
+
+  /// @dev Get image URL
+  /// @return returnValue image URL
+  function getImageURL(
+    uint256 tokenId
+  ) external view returns (string memory returnValue) {
+    returnValue = _imageURLMap[tokenId];
+  }
 
   // --------------------------------------------------------------------------------
   // Setter
@@ -62,8 +86,9 @@ contract PromptMonstersImage is
     uint256 tokenId_,
     string memory newState_
   ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-    string memory oldState = imageURL[tokenId_];
-    imageURL[tokenId_] = newState_;
+    _promptMonsters.checkMonsterId(tokenId_);
+    string memory oldState = _imageURLMap[tokenId_];
+    _imageURLMap[tokenId_] = newState_;
     emit SetImageURL(_msgSender(), oldState, newState_);
   }
 
@@ -75,8 +100,11 @@ contract PromptMonstersImage is
     string[] memory newStates_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     require(tokenIds_.length == newStates_.length, "Invalid length");
-    for (uint256 i; i < tokenIds_.length; i++) {
+    for (uint256 i; i < tokenIds_.length; ) {
       setImageURL(tokenIds_[i], newStates_[i]);
+      unchecked {
+        i++;
+      }
     }
   }
 
@@ -85,8 +113,8 @@ contract PromptMonstersImage is
   function setPromptMonsters(
     address newState_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    address oldState = address(promptMonsters);
-    promptMonsters = IPromptMonsters(newState_);
+    address oldState = address(_promptMonsters);
+    _promptMonsters = IPromptMonsters(newState_);
     emit SetPromptMonsters(_msgSender(), oldState, newState_);
   }
 
@@ -102,7 +130,7 @@ contract PromptMonstersImage is
     uint256 tokenId_,
     IPromptMonsters.Monster memory monster_
   ) external view returns (string memory uri) {
-    string memory imageURL_ = imageURL[tokenId_];
+    string memory imageURL_ = _imageURLMap[tokenId_];
     if (bytes(imageURL_).length == 0) {
       string memory svg = _getSvg(monster_);
       imageURL_ = string.concat(
