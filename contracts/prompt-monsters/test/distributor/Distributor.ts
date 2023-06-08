@@ -1,4 +1,3 @@
-import { distributor } from "../../typechain-types/contracts";
 import { deploy } from "./Deployment/Deployment";
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
