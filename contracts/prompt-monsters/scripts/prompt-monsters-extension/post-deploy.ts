@@ -1,7 +1,4 @@
-import {
-  PROMPT_MONSTERS_EXTENSION_PROXY_ADDRESS,
-  PROMPT_MONSTERS_PROXY_ADDRESS,
-} from "../const";
+import { PROMPT_MONSTERS_EXTENSION_PROXY_ADDRESS } from "../const";
 import { ethers } from "hardhat";
 
 async function main() {
@@ -21,14 +18,6 @@ async function main() {
     "PromptMonstersExtension",
   );
   const promptMonstersExtension = PromptMonstersExtension.attach(addr);
-
-  console.log("- Set PromptMonstersExtension address");
-  await (
-    await promptMonstersExtension.setPromptMonsters(
-      PROMPT_MONSTERS_PROXY_ADDRESS,
-    )
-  ).wait();
-  console.log("DONE!!!");
 
   console.log("");
   console.log("---------------------------------------------");

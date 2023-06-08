@@ -28,6 +28,11 @@ export const ITEMS = {
       desc: "ボスのステータスが減少する。",
       result: "bossName のステータスが減少した。",
     },
+    {
+      name: "コンパス",
+      desc: "戦闘から逃げ出すことができる。",
+      result: "monsterName は戦闘から逃げ出した。",
+    },
   ],
   English: [
     {
@@ -44,6 +49,11 @@ export const ITEMS = {
       name: "SCROLL",
       desc: "Boss's stats decrease.",
       result: "bossName's stats decreased.",
+    },
+    {
+      name: "COMPASS",
+      desc: "You can escape from the battle.",
+      result: "monsterName escaped from the battle.",
     },
   ],
 };

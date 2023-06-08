@@ -1,4 +1,4 @@
-import { MOCK_ERC20_ADDRESS, STAMINA_PROXY_ADDRESS } from "../../const";
+import { STAMINA_PROXY_ADDRESS, STAMINA_WALLET } from "../../const";
 import { ethers } from "hardhat";
 
 export async function main() {
@@ -8,7 +8,7 @@ export async function main() {
 
   console.log("setErc20");
   console.log(`Before: ${await stamina.erc20()}`);
-  await (await stamina.setErc20(MOCK_ERC20_ADDRESS)).wait();
+  await (await stamina.setErc20(STAMINA_WALLET)).wait();
   console.log(`After : ${await stamina.erc20()}`);
 }
 

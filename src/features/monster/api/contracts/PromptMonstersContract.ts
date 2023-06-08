@@ -4,7 +4,6 @@ import {
   IPromptMonsters,
   IPromptMonstersExtension,
 } from "@/typechain/PromptMonsters";
-import { UserId } from "@/types/UserId";
 import { ethers } from "ethers";
 
 export class PromptMonstersContract {
@@ -76,32 +75,6 @@ export class PromptMonstersContract {
   };
 
   /**
-   * Get monsters
-   * @param monsterId monster id
-   * @return {Promise<IPromptMonsters.MonsterStructOutput[]>} monster struct output
-   */
-  getMonsters = async (
-    monsterIds: string[],
-  ): Promise<IPromptMonsters.MonsterStructOutput[]> => {
-    const tokenIds: ethers.BigNumber[] = [];
-    for (let i = 0; i < monsterIds.length; i++) {
-      tokenIds.push(ethers.BigNumber.from(monsterIds[i]));
-    }
-    return await this._promptMonsters.getMonsters(tokenIds);
-  };
-
-  /**
-   * Get monster history
-   * @param userId user id
-   * @return {Promise<IPromptMonsters.MonsterStructOutput>} monster struct output
-   */
-  getMonsterHistory = async (
-    userId: UserId,
-  ): Promise<IPromptMonsters.MonsterStructOutput> => {
-    return await this._promptMonsters.getMonsterHistory(userId);
-  };
-
-  /**
    * Get monsters total supply
    * @return {Promise<number>} monsters total supply
    */
@@ -125,6 +98,18 @@ export class PromptMonstersContract {
    * @return {Promise<number>} monster mint price
    */
   getMintPrice = async (): Promise<number> => {
-    return Number(await this._promptMonsters.mintPrice());
+    return Number(await this._promptMonsters.getMintPrice());
+  };
+
+  /**
+   * getResurrectionPrompts
+   * @return {Promise<string[]>} resurrectionPrompts
+   */
+  getResurrectionPrompts = async (monsterIds: string[]): Promise<string[]> => {
+    const monsterIdsBN: ethers.BigNumber[] = [];
+    for (let i = 0; i < monsterIds.length; i++) {
+      monsterIdsBN.push(ethers.BigNumber.from(monsterIds[i]));
+    }
+    return await this._promptMonsters.getResurrectionPrompts(monsterIdsBN);
   };
 }

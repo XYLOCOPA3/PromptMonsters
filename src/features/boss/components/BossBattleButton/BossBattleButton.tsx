@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { Button } from "@/components/elements/Button";
 import { useBossBattleController } from "@/hooks/useBossBattle";
-import { useMonsterValue } from "@/hooks/useMonster";
+import { useMonsterState } from "@/hooks/useMonster";
 import { disableState } from "@/stores/disableState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
@@ -17,7 +17,7 @@ export type BossBattleButtonProps = BaseProps;
  * @param className Style from parent element
  */
 export const BossBattleButton = ({ className }: BossBattleButtonProps) => {
-  const monster = useMonsterValue();
+  const [monster, monsterController] = useMonsterState();
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
   const bossBattleController = useBossBattleController();
@@ -30,10 +30,21 @@ export const BossBattleButton = ({ className }: BossBattleButtonProps) => {
   const handleClick = async () => {
     setDisable(true);
     setLoading(true);
-    await bossBattleController.init(monster.id);
-    push("/boss/battle");
+    try {
+      const skillTypes = await bossBattleController.init(monster);
+      monsterController.set(monster.copyWith({ skillTypes }));
+    } catch (error) {
+      setLoading(false);
+      setDisable(false);
+      console.error(error);
+      // TODO: エラー文考える
+      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
+      else alert("Error");
+      return;
+    }
     setDisable(false);
     setLoading(false);
+    push("/boss/battle");
   };
 
   if (monster.name === "") return <></>;

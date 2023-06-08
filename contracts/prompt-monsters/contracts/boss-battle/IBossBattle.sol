@@ -3,45 +3,44 @@ pragma solidity ^0.8.18;
 
 import {IBossBattleEvent} from "../interfaces/IBossBattleEvent.sol";
 import {IBossMonster} from "../interfaces/IBossMonster.sol";
+import {IPromptMonstersExtension} from "../prompt-monsters-extension/IPromptMonstersExtension.sol";
 
 /// @title IBossBattle
 /// @dev This is an interface of BossBattle.
 interface IBossBattle {
   // --------------------------------------------------------------------------------
-  // State
+  // Struct
   // --------------------------------------------------------------------------------
-
-  struct BossBattleData {
-    string name;
-    string[] skills;
-    uint32[] skillsTypes;
-    uint32 atk;
-    uint32 def;
-    uint32 inte; // INT
-    uint32 mgr;
-    uint256 fieldAdj;
-    uint256 specialBuff;
-  }
 
   // --------------------------------------------------------------------------------
   // Event
   // --------------------------------------------------------------------------------
 
-  event AddBossBattleEventAddress(
+  event SetEventKey(
     address indexed publisher,
-    address indexed bossBattleEventAddress
+    uint256 indexed index,
+    string oldValue,
+    string newValue
   );
 
-  event SetPromptMonstersAddress(
+  event SetBossBattleEvent(
     address indexed publisher,
-    address indexed oldValue,
-    address indexed newValue
+    string indexed eventKey,
+    uint256 indexed bbeId,
+    address oldValue,
+    address newValue
   );
 
-  event SetIsBossBattleActive(
+  event AddedEventKey(
     address indexed publisher,
-    bool indexed oldValue,
-    bool indexed newValue
+    uint256 indexed index,
+    string eventKey
+  );
+
+  event AddedBossBattleEvent(
+    address indexed publisher,
+    string indexed eventKey,
+    address bossBattleEvent
   );
 
   // --------------------------------------------------------------------------------
@@ -55,85 +54,140 @@ interface IBossBattle {
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @dev Get addresses of bossBattleEvent
-  /// @param bbeIds_ IDs of bossBattleEvent
-  /// @return bossBattleEvents addresses of bossBattleEvent
-  function getBossBattleEvents(
-    uint256[] memory bbeIds_
-  ) external view returns (address[] memory bossBattleEvents);
+  /// @dev Get _eventKeys
+  /// @return returnValue _eventKeys
+  function getEventKeys() external view returns (string[] memory returnValue);
 
-  /// @dev Get bossBattleEventAddress
-  /// @return length addresses of bossBattleEvent
-  function getBossBattleEventsLength() external view returns (uint256 length);
-
-  // /// @dev Get monster adjs for the boss battle
-  // /// @param bossBattleEventAddress address of bossBattleEvent
-  // /// @param resurrectionPrompt resurrection prompt
-  // /// @return monsterAdjs monster adjs for the boss battle
-  // function getMonsterAdjsForBossBattle(
-  //   address bossBattleEventAddress,
-  //   address resurrectionPrompt
-  // ) external view returns (IBossMonster.MonsterAdj memory);
+  /// @dev Get _bossBattleEventMap
+  /// @return returnValue _bossBattleEventMap
+  function getBossBattleEvents()
+    external
+    view
+    returns (address[][] memory returnValue);
 
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
 
-  // /// @dev Add bossBattleEventAddress
-  // /// @param bossBattleEventAddress address of bossBattleEvent
-  // function addBossBattleEventAddress(address bossBattleEventAddress) external;
-
-  /// @dev Set promptMonstersAddress
-  /// @param promptMonstersAddress address of promptMonsters
-  function setPromptMonstersAddress(address promptMonstersAddress) external;
-
-  /// @dev Set isBossBattleActive
-  /// @param _isBossBattleActive isBossBattleActive
-  function setIsBossBattleActive(bool _isBossBattleActive) external;
+  /// @dev Set bossBattleEvent
+  /// @param eventKey ID of event
+  /// @param bbeId ID of bossBattleEvent
+  /// @param bossBattleEvent address of bossBattleEvent
+  function setBossBattleEvent(
+    string memory eventKey,
+    uint256 bbeId,
+    address bossBattleEvent
+  ) external;
 
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
 
-  // /// @dev get boss battle data to calculate battle result
-  // /// @param bossBattleEventAddress BossBattleEvent contract address
-  // /// @param resurrectionPrompt resurrection prompt
-  // /// @return bossBattleData
-  // function getBossBattleData(
-  //   address bossBattleEventAddress,
-  //   address resurrectionPrompt
-  // ) external view returns (BossBattleData memory);
+  /// @dev Add event key
+  /// @param eventKey event key
+  function addEventKey(string memory eventKey) external;
 
-  // /// @dev Start boss battle of the event
-  // /// @param bossBattleEventAddress BossBattleEvent contract address
-  // /// @param resurrectionPrompt resurrection prompt
-  // function startBossBattle(
-  //   address bossBattleEventAddress,
-  //   address resurrectionPrompt
-  // ) external;
+  /// @dev Add bossBattleEvent
+  /// @param eventKey ID of event
+  /// @param bossBattleEvent address of bossBattleEvent
+  function addBossBattleEvent(
+    string memory eventKey,
+    address bossBattleEvent
+  ) external;
 
-  /// @dev Record battle result with boss of the event
-  /// @param bossBattleEventAddress BossBattleEvent contract address
+  /// @dev get boss battle data to calculate battle result
+  /// @param eventKey ID of event
+  /// @param bbeId ID of bossBattleEvent
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return monsterAdj monster adj
+  function getMonsterAdj(
+    string memory eventKey,
+    uint256 bbeId,
+    address resurrectionPrompt
+  ) external view returns (IBossMonster.MonsterAdj memory monsterAdj);
+
+  /// @dev Set monsterAdj
+  /// @param eventKey ID of event
+  /// @param bbeId ID of bossBattleEvent
+  /// @param resurrectionPrompt resurrection prompt
+  /// @param monsterAdj monster adj
+  function setMonsterAdj(
+    string memory eventKey,
+    uint256 bbeId,
+    address resurrectionPrompt,
+    IBossMonster.MonsterAdj memory monsterAdj
+  ) external;
+
+  /// @dev get boss battle state
+  /// @param eventKey ID of event
+  /// @param bbeId ID of bossBattleEvent
+  /// @param resurrectionPrompt resurrection prompt
+  /// @return bbState boss battle state
+  function getBBState(
+    string memory eventKey,
+    uint256 bbeId,
+    address resurrectionPrompt
+  ) external view returns (IBossBattleEvent.BBState memory bbState);
+
+  /// @dev get boss battle data to calculate battle result
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param language language
+  /// @return monsterExtension monster extension
+  function getBossExtension(
+    string memory eventKey,
+    uint256 bbeId,
+    string memory language
+  )
+    external
+    view
+    returns (IPromptMonstersExtension.MonsterExtension memory monsterExtension);
+
+  /// @dev Start boss battle of the event
+  /// @param eventKey ID of event
+  /// @param bbeId ID of bossBattleEvent
+  /// @param resurrectionPrompt resurrection prompt
+  /// @param monsterAdj monster adj
+  /// @param bossSign boss sign
+  function startBossBattle(
+    string memory eventKey,
+    uint256 bbeId,
+    address resurrectionPrompt,
+    uint32 monsterAdj,
+    uint32 bossSign
+  ) external;
+
+  /// @dev updateBossBattleResult
+  /// @param eventKey ID of event
+  /// @param bbeId ID of bossBattleEvent
   /// @param resurrectionPrompt resurrection prompt
   /// @param bbState bbState to update
-  function recordBossBattle(
-    address bossBattleEventAddress,
+  function updateBossBattleResult(
+    string memory eventKey,
+    uint256 bbeId,
     address resurrectionPrompt,
     IBossBattleEvent.BBState memory bbState
   ) external;
 
-  /// @dev End boss battle of the event with win
-  /// @param bossBattleEventAddress BossBattleEvent contract address
+  /// @dev Continue boss battle
+  /// @param eventKey ID of event
+  /// @param bbeId ID of bossBattleEvent
   /// @param resurrectionPrompt resurrection prompt
-  function endBossBattleWithWin(
-    address bossBattleEventAddress,
-    address resurrectionPrompt
+  /// @param bossSign boss sign
+  function continueBossBattle(
+    string memory eventKey,
+    uint256 bbeId,
+    address resurrectionPrompt,
+    uint32 bossSign
   ) external;
 
-  /// @dev End boss battle of the event with lose
-  /// @param bossBattleEventAddress BossBattleEvent contract address
-  function endBossBattleWithLose(
-    address bossBattleEventAddress,
+  /// @dev End boss battle
+  /// @param eventKey ID of event
+  /// @param bbeId ID of bossBattleEvent
+  /// @param resurrectionPrompt resurrection prompt
+  function endBossBattle(
+    string memory eventKey,
+    uint256 bbeId,
     address resurrectionPrompt
   ) external;
 }

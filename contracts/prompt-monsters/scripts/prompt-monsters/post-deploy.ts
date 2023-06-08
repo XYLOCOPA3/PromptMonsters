@@ -1,4 +1,5 @@
 import {
+  ERC20_ADDRESS,
   PROMPT_MONSTERS_EXTENSION_PROXY_ADDRESS,
   PROMPT_MONSTERS_IMAGE_PROXY_ADDRESS,
   PROMPT_MONSTERS_PROXY_ADDRESS,
@@ -19,20 +20,30 @@ async function main() {
   const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
   const promptMonsters = PromptMonsters.attach(PROMPT_MONSTERS_PROXY_ADDRESS);
 
+  console.log("Set Erc20 address -------------");
+  console.log(`Before: ${await promptMonsters.getErc20()}`);
+  await (await promptMonsters.setErc20(ERC20_ADDRESS)).wait();
+  console.log(`After : ${await promptMonsters.getErc20()}`);
+  console.log("DONE!!!");
+
   console.log("Set PromptMonstersImage address -------------");
+  console.log(`Before: ${await promptMonsters.getPromptMonstersImage()}`);
   await (
     await promptMonsters.setPromptMonstersImage(
       PROMPT_MONSTERS_IMAGE_PROXY_ADDRESS,
     )
   ).wait();
+  console.log(`After : ${await promptMonsters.getPromptMonstersImage()}`);
   console.log("DONE!!!");
 
   console.log("Set PromptMonstersExtension address ---------");
+  console.log(`Before: ${await promptMonsters.getPromptMonstersExtension()}`);
   await (
     await promptMonsters.setPromptMonstersExtension(
       PROMPT_MONSTERS_EXTENSION_PROXY_ADDRESS,
     )
   ).wait();
+  console.log(`After : ${await promptMonsters.getPromptMonstersExtension()}`);
   console.log("DONE!!!");
 
   console.log("");

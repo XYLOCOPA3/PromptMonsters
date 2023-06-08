@@ -4,13 +4,18 @@ import { SkillType } from "@/types/SkillType";
 
 export const hasUnknownSkill = (skillTypes: number[]): boolean => {
   for (let i = 0; i < skillTypes.length; i++) {
-    if (skillTypes[i] === EnumSkillType.other) continue;
-    if (skillTypes[i] === EnumSkillType.physicalAttack) continue;
-    if (skillTypes[i] === EnumSkillType.specialAttack) continue;
-    if (skillTypes[i] === EnumSkillType.healing) continue;
+    if (!isUnknownSkill(skillTypes[i])) continue;
     return true;
   }
   return false;
+};
+
+export const isUnknownSkill = (skillType: number): boolean => {
+  if (skillType === EnumSkillType.other) return false;
+  if (skillType === EnumSkillType.physicalAttack) return false;
+  if (skillType === EnumSkillType.specialAttack) return false;
+  if (skillType === EnumSkillType.healing) return false;
+  return true;
 };
 
 export const getSkillTypesFromStr = (skillTypesStr: SkillType[]): number[] => {

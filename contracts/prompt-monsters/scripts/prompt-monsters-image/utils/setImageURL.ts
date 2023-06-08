@@ -22,7 +22,7 @@ export async function main() {
   const promptMonstersImage = PromptMonstersImage.attach(
     PROMPT_MONSTERS_IMAGE_PROXY_ADDRESS,
   );
-  const befImageURL = await promptMonstersImage.imageURL(monsterId);
+  const befImageURL = await promptMonstersImage.getImageURL(monsterId);
   console.log("Before: ", befImageURL);
   if (befImageURL !== "") {
     console.log(
@@ -31,7 +31,7 @@ export async function main() {
     return;
   }
   await (await promptMonstersImage.setImageURL(monsterId, imageURL)).wait();
-  console.log("After : ", await promptMonstersImage.imageURL(monsterId));
+  console.log("After : ", await promptMonstersImage.getImageURL(monsterId));
 }
 
 main().catch((error) => {

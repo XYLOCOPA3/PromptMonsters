@@ -29,19 +29,31 @@ export const BossBattleMenuFight = ({
   const language = useLanguageValue();
 
   const handleSkill1Click = async () => {
-    await bossBattleController.attack(monster.skills[0]);
+    await bossBattleController.attack(
+      monster.resurrectionPrompt,
+      monster.skills[0],
+    );
   };
 
   const handleSkill2Click = async () => {
-    await bossBattleController.attack(monster.skills[1]);
+    await bossBattleController.attack(
+      monster.resurrectionPrompt,
+      monster.skills[1],
+    );
   };
 
   const handleSkill3Click = async () => {
-    await bossBattleController.attack(monster.skills[2]);
+    await bossBattleController.attack(
+      monster.resurrectionPrompt,
+      monster.skills[2],
+    );
   };
 
   const handleSkill4Click = async () => {
-    await bossBattleController.attack(monster.skills[3]);
+    await bossBattleController.attack(
+      monster.resurrectionPrompt,
+      monster.skills[3],
+    );
   };
 
   useLayoutEffectOfSSR(() => {

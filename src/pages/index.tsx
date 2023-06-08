@@ -12,6 +12,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
  * @keit0728
  */
 export default function Home() {
+  console.log(process.env.NEXT_PUBLIC_BATTLE_CONTRACT);
   return (
     <>
       <Head>

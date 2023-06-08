@@ -7,8 +7,7 @@ import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgrad
 import {StringsUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import {Base64Upgradeable} from "@openzeppelin/contracts-upgradeable/utils/Base64Upgradeable.sol";
 
-import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
-import {IPromptMonstersExtension} from "./IPromptMonstersExtension.sol";
+import {IPromptMonstersExtension, IPromptMonsters} from "./IPromptMonstersExtension.sol";
 
 /// @title PromptMonstersExtension
 /// @author keit (@keitEngineer)
@@ -23,13 +22,15 @@ contract PromptMonstersExtension is
   // State
   // --------------------------------------------------------------------------------
 
-  IPromptMonsters private _promptMonsters;
+  /// @custom:oz-renamed-from GAME_ROLE
+  bytes32 private GAME_ROLE;
 
-  // 0 → Unknown
   // 1 → Other
   // 100 → Physical Attack
   // 101 → Special Attack
   // 200 → Healing
+  // other → Unknown
+  /// @custom:oz-renamed-from _skillTypes
   mapping(address => mapping(string => uint32)) private _skillTypes;
 
   // --------------------------------------------------------------------------------
@@ -47,8 +48,15 @@ contract PromptMonstersExtension is
     __AccessControlEnumerable_init();
     __UUPSUpgradeable_init();
 
+    GAME_ROLE = keccak256("GAME_ROLE");
+
+    _grantRole(GAME_ROLE, msg.sender);
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
   }
+
+  // --------------------------------------------------------------------------------
+  // Modifier
+  // --------------------------------------------------------------------------------
 
   // --------------------------------------------------------------------------------
   // Getter
@@ -93,7 +101,7 @@ contract PromptMonstersExtension is
     address[] memory rps_,
     string[][] memory skills_,
     uint32[][] memory skillTypes_
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  ) external onlyRole(GAME_ROLE) {
     uint256 rpsLength = rps_.length;
     require(
       rpsLength == skills_.length,
@@ -120,16 +128,6 @@ contract PromptMonstersExtension is
     }
 
     emit SetBatchSkillTypes(_msgSender(), rps_, skills_, oldState, skillTypes_);
-  }
-
-  /// @dev Set prompt monsters
-  /// @param newState_ new state
-  function setPromptMonsters(
-    address newState_
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    address oldState = address(_promptMonsters);
-    _promptMonsters = IPromptMonsters(newState_);
-    emit SetPromptMonsters(_msgSender(), oldState, newState_);
   }
 
   // --------------------------------------------------------------------------------
@@ -169,7 +167,8 @@ contract PromptMonstersExtension is
       inte: monster_.inte,
       mgr: monster_.mgr,
       agl: monster_.agl,
-      skillTypes: skillTypes
+      skillTypes: skillTypes,
+      resurrectionPrompt: resurrectionPrompt_
     });
   }
 

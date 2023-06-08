@@ -1,3 +1,4 @@
+import { ClientPromptMonsters } from "@/features/monster/api/contracts/ClientPromptMonsters";
 import { calcStamina } from "@/features/stamina/utils/calcStamina";
 import { RPC_URL } from "@/lib/wallet";
 import { MonsterModel } from "@/models/MonsterModel";
@@ -5,13 +6,13 @@ import {
   OwnedMonstersState,
   ownedMonstersState,
 } from "@/stores/ownedMonstersState";
-import { PromptMonsters__factory, Stamina__factory } from "@/typechain";
+import { Stamina__factory } from "@/typechain";
 import { UserId } from "@/types/UserId";
 import { ethers } from "ethers";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export interface OwnedMonsterIdsController {
-  init: (userId: UserId, monster: MonsterModel) => Promise<void>;
+  init: (userId: UserId) => Promise<void>;
   reset: () => void;
   add: (newMonster: MonsterModel) => void;
   updateAfterMinted: (newMonster: MonsterModel) => void;
@@ -30,25 +31,26 @@ export const useOwnedMonstersController = (): OwnedMonsterIdsController => {
    * @param userId user id
    * @param monster monster
    */
-  const init = async (userId: UserId, monster: MonsterModel): Promise<void> => {
+  const init = async (userId: UserId): Promise<void> => {
     const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
-    const promptMonsters = PromptMonsters__factory.connect(
-      process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
-      provider,
-    );
+    const promptMonsters = ClientPromptMonsters.instance();
     const stamina = Stamina__factory.connect(
       process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
       provider,
     );
     const monsterIdsNum = await promptMonsters.getOwnerToTokenIds(userId);
     if (monsterIdsNum.length === 0) return;
+    const monsterIds = monsterIdsNum.map((monsterId) => monsterId.toString());
+    const resurrectionPrompts = await promptMonsters.getResurrectionPrompts(
+      monsterIds,
+    );
     const results = await Promise.all([
-      promptMonsters.getMonsters(monsterIdsNum),
+      promptMonsters.getMonsterExtensions(resurrectionPrompts),
       stamina.getTimeStds(monsterIdsNum),
       stamina.staminaLimit(),
       stamina.staminaRecoveryTime(),
     ]);
-    const monsterStructs = results[0];
+    const monsterExtensionStructs = results[0];
     const timeStds = results[1];
     const staminaLimit = results[2];
     const staminaRecoveryTime = results[3];
@@ -56,16 +58,15 @@ export const useOwnedMonstersController = (): OwnedMonsterIdsController => {
       return calcStamina(timeStd, staminaLimit, staminaRecoveryTime);
     });
     const monsters: OwnedMonstersState = [];
-    for (let i = 0; i < monsterStructs.length; i++) {
+    for (let i = 0; i < monsterExtensionStructs.length; i++) {
       monsters.push(
         MonsterModel.fromContract(
-          monsterIdsNum[i].toString(),
-          monsterStructs[i],
+          monsterIds[i],
+          monsterExtensionStructs[i],
           monsterStaminas[i],
         ),
       );
     }
-    if (monster.id === "" && monster.name !== "") monsters.push(monster);
     setOwnedMonsters(monsters);
   };
 

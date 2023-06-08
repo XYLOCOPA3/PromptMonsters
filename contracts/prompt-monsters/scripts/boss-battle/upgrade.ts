@@ -1,11 +1,13 @@
-import { BATTLE_OFF_SEASON_PROXY_ADDRESS } from "../const";
+import { BOSS_BATTLE_PROXY_ADDRESS } from "../const";
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
   console.log("---------------------------------------------");
-  console.log("--- Start BattleOffSeason Upgrade -----------");
+  console.log("--- Start BossBattle Upgrade ----------------");
   console.log("---------------------------------------------");
   console.log("");
+
+  const addr = BOSS_BATTLE_PROXY_ADDRESS;
 
   console.log("--- Upgrade ---------------------------------");
 
@@ -13,29 +15,21 @@ async function main() {
 
   const [deployer] = await ethers.getSigners();
   console.log("Upgrading contracts with account: ", deployer.address);
-  console.log(
-    "Upgrade BattleOffSeasonProxy address: ",
-    BATTLE_OFF_SEASON_PROXY_ADDRESS,
-  );
+  console.log("Upgrade BossBattleProxy address: ", addr);
 
-  const BattleOffSeason = await ethers.getContractFactory("BattleOffSeason");
-  const battleOffSeasonProxy = await upgrades.upgradeProxy(
-    BATTLE_OFF_SEASON_PROXY_ADDRESS,
-    BattleOffSeason,
-  );
-  await battleOffSeasonProxy.deployed();
+  const BossBattle = await ethers.getContractFactory("BossBattle");
+  const bossBattleProxy = await upgrades.upgradeProxy(addr, BossBattle);
+  await bossBattleProxy.deployed();
   console.log(
-    "Upgraded BattleOffSeason implementation:",
-    await upgrades.erc1967.getImplementationAddress(
-      BATTLE_OFF_SEASON_PROXY_ADDRESS,
-    ),
+    "Upgraded BossBattle implementation:",
+    await upgrades.erc1967.getImplementationAddress(addr),
   );
 
   console.log("Completed upgrade");
 
   console.log("");
   console.log("---------------------------------------------");
-  console.log("--- End BattleOffSeason Upgrade -------------");
+  console.log("--- End BossBattle Upgrade ------------------");
   console.log("---------------------------------------------");
 }
 

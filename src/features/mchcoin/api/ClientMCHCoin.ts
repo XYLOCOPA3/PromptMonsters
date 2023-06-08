@@ -19,7 +19,7 @@ export class ClientMCHCoin {
     if (!this._instance) {
       const wallet = ClientWallet.instance();
       const reader = MCHCoin__factory.connect(
-        process.env.NEXT_PUBLIC_MCHCOIN_CONTRACT!,
+        process.env.NEXT_PUBLIC_ERC20_CONTRACT!,
         wallet.provider,
       );
       this._instance = new ClientMCHCoin(wallet, reader);

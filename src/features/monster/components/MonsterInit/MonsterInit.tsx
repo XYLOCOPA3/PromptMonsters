@@ -19,7 +19,15 @@ export const MonsterInit = ({ children }: MonsterInitProps) => {
 
   const init = async () => {
     if (user.id === "") return;
-    await monsterController.init();
+    try {
+      await monsterController.init();
+    } catch (error) {
+      console.error(error);
+      // TODO: エラー文考える
+      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
+      else alert("Error");
+      return;
+    }
     setMonstersInit(true);
   };
 

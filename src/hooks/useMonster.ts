@@ -134,7 +134,7 @@ export const useMonsterController = (): MonsterController => {
     const monsterId = monsterIds[monsterIds.length - 1].toString();
     const stamina = ClientStamina.instance();
     const results2 = await Promise.all([
-      promptMonsters.getMonsters([monsterId]),
+      promptMonsters.getMonsterExtensions([resurrectionPrompt]),
       stamina.getStaminaLimit(),
     ]);
     const monsterContract = results2[0][0];
@@ -207,17 +207,16 @@ export const useMonsterController = (): MonsterController => {
     const promptMonsters = ClientPromptMonsters.instance();
     const stamina = ClientStamina.instance();
     const results = await Promise.all([
-      promptMonsters.getMonsterHistory(resurrectionPrompt),
+      promptMonsters.getMonsterExtensions([resurrectionPrompt]),
       stamina.getStaminaLimit(),
     ]);
-    const resurrectedMonster = results[0];
+    const resurrectedMonster = results[0][0];
     const staminaLimit = results[1];
     if (resurrectedMonster.name === "") throw new Error("Monster not found.");
     const newMonster = MonsterModel.fromContract(
       "",
       resurrectedMonster,
       Number(staminaLimit),
-      resurrectionPrompt,
     );
     setMonster(newMonster);
     return newMonster;
@@ -276,9 +275,14 @@ export const useMonsterController = (): MonsterController => {
     if (selectedMonsterId === "" || selectedMonsterId === undefined) return;
 
     const promptMonsters = ClientPromptMonsters.instance();
+    const resurrectionPrompt = (
+      await promptMonsters.getResurrectionPrompts([
+        selectedMonsterId!.toString(),
+      ])
+    )[0];
     const stamina = ClientStamina.instance();
     const results = await Promise.all([
-      promptMonsters.getMonsters([selectedMonsterId!.toString()]),
+      promptMonsters.getMonsterExtensions([resurrectionPrompt]),
       stamina.getStaminaLimit(),
     ]);
     const monster = results[0][0];
