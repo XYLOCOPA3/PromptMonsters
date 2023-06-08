@@ -33,7 +33,7 @@ jobs:
         run: zip release.zip ./* .next -qr -x contracts/\* .git/\* .github/\* .next/cache/\*
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: node-app
           path: release.zip
@@ -53,7 +53,7 @@ jobs:
 
       - name: "Deploy to Azure Web App"
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
+        uses: azure/webapps-deploy@v2
         with:
           app-name: "prompt-monsters-develop"
           slot-name: "Production"
