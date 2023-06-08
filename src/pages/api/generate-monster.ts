@@ -1,5 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { LANGUAGES } from "@/const/language";
 import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
 import { getGeneratingPrompt } from "@/lib/prompt";
 import { RPC_URL } from "@/lib/wallet";
@@ -172,7 +173,7 @@ const _correctMaxStatus = (monster: any): any => {
 const _replaceLanguage = (content: any, language: string): string => {
   let newContent = content;
   switch (language) {
-    case "Japanese":
+    case LANGUAGES[1]:
       newContent = newContent.replace("名前", "name");
       newContent = newContent.replace("説明", "flavor");
       newContent = newContent.replace("状態", "status");

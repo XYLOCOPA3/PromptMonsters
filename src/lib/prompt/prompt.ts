@@ -1,4 +1,5 @@
-import { IPromptMonsters } from "@/typechain/PromptMonsters";
+import { LANGUAGES } from "@/const/language";
+import { IPromptMonstersExtension } from "@/typechain/PromptMonsters";
 
 /**
  * Get generating monster prompt
@@ -11,7 +12,7 @@ export const getGeneratingPrompt = (
   language: string,
 ): string => {
   switch (language) {
-    case "English":
+    case LANGUAGES[0]:
       return `Create a JSON fictional monster:
 - Non-litigious words
 - Unique "name"
@@ -29,7 +30,7 @@ feature="A yellow bear that loves honey":
 {"language":"English","name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":12,"ATK":2,"DEF":4,"INT":6,"MGR":4,"AGL":4},"skills":["Honey Attack","Hug","Healing Song"],"isFiction":true,"isExisting":true}
 
 feature="${feature}":`;
-    case "Japanese":
+    case LANGUAGES[1]:
       return `架空のモンスターのJSONを作成する:
 - 訴訟に関連する単語を使用しない
 - "name"はユニークである
@@ -63,13 +64,13 @@ feature="${feature}":`;
  */
 export const getFightPrompt = (
   monsterId: string,
-  monster: IPromptMonsters.MonsterStructOutput,
+  monster: IPromptMonstersExtension.MonsterExtensionStructOutput,
   enemyId: string,
-  enemy: IPromptMonsters.MonsterStructOutput,
+  enemy: IPromptMonstersExtension.MonsterExtensionStructOutput,
   language: string = "English",
 ): string => {
   switch (language) {
-    case "English":
+    case LANGUAGES[0]:
       return `MonsterA: id:${monsterId === "" ? "dummyID" : monsterId} name:${
         monster.name
       } flavor:${monster.flavor} status: HP:${monster.hp} ATK:${
@@ -89,7 +90,7 @@ Output in JSON format->{"battleAnalysis": "[Determine advantage in <50 chars usi
 
 ${monster.name} vs ${enemy.name}:
 Output in JSON format->`;
-    case "Japanese":
+    case LANGUAGES[1]:
       return `
 MonsterA: id:${monsterId === "" ? "dummyID" : monsterId} name:${
         monster.name
@@ -116,3 +117,43 @@ JSON形式で出力->`;
 };
 
 // HP->❤️,ATK->💥,DEF->🛡️,INT->🧠,MGR->🛡️✨,AGL->💨
+
+/**
+ * Get skill description prompt
+ * @param skills skills
+ * @return {string} skill description prompt
+ */
+export const getSkillDescPrompt = (skills: string[]): string => {
+  if (skills.length === 0) return "";
+  let skillPrompt = "";
+  switch (skills.length) {
+    case 1:
+      skillPrompt = `["${skills[0]}"]`;
+      break;
+    case 2:
+      skillPrompt = `["${skills[0]}","${skills[1]}"]`;
+      break;
+    case 3:
+      skillPrompt = `["${skills[0]}","${skills[1]}","${skills[2]}"]`;
+      break;
+    default:
+      skillPrompt = `["${skills[0]}","${skills[1]}","${skills[2]}","${skills[3]}"]`;
+      break;
+  }
+  return `Please tell me the type of skill based on the skill name.
+
+- Please choose the skill type from the following options.
+- Please avoid using "Other" whenever possible.
+
+Skill types:
+["Physical Attack","Special Attack","Healing","Other"]
+
+Example
+"""
+Skills: ["Punch","Fire","Soul Renewal","Joke"]
+->["Physical Attack","Special Attack","Healing","Other"]
+"""
+
+Skills: ${skillPrompt}
+->`;
+};

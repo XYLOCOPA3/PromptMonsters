@@ -37,7 +37,7 @@ export const Warning = ({ className, hintText }: WarningProps) => {
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <div className="absolute z-10 p-1 text-sm font-medium text-white bg-gray-900 rounded w-[300px]">
+        <div className="absolute z-10 p-[10px] text-sm font-medium text-white bg-gray-900 rounded w-[300px] text-justify">
           {lines.map((line, index) => {
             if (line === "") return <br />;
             return <div key={index}>{line}</div>;

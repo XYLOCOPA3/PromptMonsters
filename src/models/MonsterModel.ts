@@ -1,5 +1,5 @@
 import { BaseModel } from "@/models/BaseModel";
-import { IPromptMonsters } from "@/typechain/PromptMonsters";
+import { IPromptMonstersExtension } from "@/typechain/PromptMonsters";
 import { MonsterId } from "@/types/MonsterId";
 import { Status } from "@/types/Status";
 
@@ -18,8 +18,10 @@ export class MonsterModel extends BaseModel<MonsterId> {
    * @param status status
    * @param stamina stamina
    * @param resurrectionPrompt resurrection prompt
+   * @param imageURL image URL
+   * @param skillTypes skill types
    */
-  private constructor(
+  constructor(
     public readonly feature: string = "",
     public readonly name: string = "",
     public readonly flavor: string = "",
@@ -35,6 +37,8 @@ export class MonsterModel extends BaseModel<MonsterId> {
     },
     public readonly stamina: number = 0,
     public readonly resurrectionPrompt: string = "",
+    public readonly imageURL: string = "",
+    public readonly skillTypes: number[] = [],
   ) {
     super("");
   }
@@ -53,32 +57,32 @@ export class MonsterModel extends BaseModel<MonsterId> {
   /**
    * fromContract
    * @param monsterId monster id
-   * @param monsterStruct monster struct
+   * @param monsterExtensionStruct monster extension struct
    * @return {MonsterModel} MonsterModel
    */
   public static fromContract(
     monsterId: string,
-    monsterStruct: IPromptMonsters.MonsterStructOutput,
+    monsterExtensionStruct: IPromptMonstersExtension.MonsterExtensionStructOutput,
     stamina: number,
-    resurrectionPrompt: string = "",
   ): MonsterModel {
     return MonsterModel.create({
       id: monsterId,
-      feature: monsterStruct.feature,
-      name: monsterStruct.name,
-      flavor: monsterStruct.flavor,
-      skills: monsterStruct.skills,
-      lv: Number(monsterStruct.lv),
+      feature: monsterExtensionStruct.feature,
+      name: monsterExtensionStruct.name,
+      flavor: monsterExtensionStruct.flavor,
+      skills: monsterExtensionStruct.skills,
+      lv: Number(monsterExtensionStruct.lv),
       status: {
-        HP: Number(monsterStruct.hp),
-        ATK: Number(monsterStruct.atk),
-        DEF: Number(monsterStruct.def),
-        INT: Number(monsterStruct.inte),
-        MGR: Number(monsterStruct.mgr),
-        AGL: Number(monsterStruct.agl),
+        HP: Number(monsterExtensionStruct.hp),
+        ATK: Number(monsterExtensionStruct.atk),
+        DEF: Number(monsterExtensionStruct.def),
+        INT: Number(monsterExtensionStruct.inte),
+        MGR: Number(monsterExtensionStruct.mgr),
+        AGL: Number(monsterExtensionStruct.agl),
       },
       stamina: stamina,
-      resurrectionPrompt: resurrectionPrompt,
+      resurrectionPrompt: monsterExtensionStruct.resurrectionPrompt,
+      skillTypes: monsterExtensionStruct.skillTypes,
     });
   }
 

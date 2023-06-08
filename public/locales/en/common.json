@@ -1,0 +1,5 @@
+{
+  "generate": "BATTLE",
+  "boss": "BOSS",
+  "hint": "What is the 'Resurrection Prompt'?\n\nIt's an ID assigned to a monster when it's generated. Unminted monsters can be resurrected at any time by entering this ID."
+}
