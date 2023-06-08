@@ -17,7 +17,7 @@ describe("Distributor", function () {
     expect(
       await erc20
         .connect(deployer)
-        .transfer(user1.address, ethers.utils.parseEther("10000")),
+        .transfer(deployer.address, ethers.utils.parseEther("10000")),
     ).not.to.be.reverted;
     return {
       distributor,
@@ -32,7 +32,7 @@ describe("Distributor", function () {
 
   describe("Deployment", function () {
     it("deploy", async function () {
-      const { distributor, deployer, user1 } = await loadFixture(init);
+      const { distributor } = await loadFixture(init);
       expect(distributor.address).to.not.equal(
         ethers.constants.AddressZero,
         "zero address",
@@ -40,80 +40,42 @@ describe("Distributor", function () {
     });
   });
 
-  // describe("Set ERC20 token address", function () {
-  //   it("setERC20Address", async function () {
-  //     const { distributor, deployer, user1 } = await loadFixture(init);
-  //     expect(distributor.address).to.not.equal(
-  //       ethers.constants.AddressZero,
-  //       "zero address",
-  //     );
-  //   });
-  // });
+  describe("Set ERC20 token address", function () {
+    it("setERC20Address", async function () {
+      const { distributor, deployer, erc20 } = await loadFixture(init);
+      expect(await distributor.getERC20Address()).to.equal(
+        "0x0000000000000000000000000000000000000000",
+      );
+      await expect(distributor.connect(deployer).setERC20Address(erc20.address))
+        .not.to.be.reverted;
+      expect(await distributor.getERC20Address()).to.equal(erc20.address);
+    });
+  });
 
-  // describe("Check distributor", function () {
-  //   it("calculateStamina", async function () {
-  //     const {
-  //       distributor,
-  //       promptMonsters,
-  //       erc20,
-  //       deployer,
-  //       user1,
-  //       resurrectionPrompt1,
-  //       resurrectionPrompt2,
-  //     } = await loadFixture(init);
+  describe("distribute Native Token", function () {
+    it("distributeNativeToken", async function () {
+      const { distributor, deployer } = await loadFixture(init);
+      await expect(
+        distributor
+          .connect(deployer)
+          .distributeNativeToken("0x4833C2fB6F00787c7F5f60a7F1a8aD9e191648C8", {
+            value: ethers.utils.parseEther("0.01"),
+          }),
+      ).not.to.be.reverted;
+    });
+  });
 
-  //     await expect(
-  //       promptMonsters
-  //         .connect(deployer)
-  //         .generateMonster(resurrectionPrompt1.address, FireMonsterDetails),
-  //     ).not.to.be.reverted;
-
-  //     await expect(
-  //       erc20
-  //         .connect(user1)
-  //         .increaseAllowance(
-  //           promptMonsters.address,
-  //           ethers.utils.parseEther("100"),
-  //         ),
-  //     ).not.to.be.reverted;
-
-  //     await expect(
-  //       promptMonsters.connect(user1).mint(resurrectionPrompt1.address),
-  //     ).not.to.be.reverted;
-
-  //     await expect(
-  //       promptMonsters
-  //         .connect(deployer)
-  //         .generateMonster(resurrectionPrompt2.address, WaterMonsterDetails),
-  //     ).not.to.be.reverted;
-
-  //     await expect(
-  //       erc20
-  //         .connect(user1)
-  //         .increaseAllowance(
-  //           promptMonsters.address,
-  //           ethers.utils.parseEther("100"),
-  //         ),
-  //     ).not.to.be.reverted;
-
-  //     await expect(
-  //       promptMonsters.connect(user1).mint(resurrectionPrompt2.address),
-  //     ).not.to.be.reverted;
-
-  //     expect(await stamina.getTimeStd(0)).to.equal(0);
-  //     expect(await stamina.getTimeStd(1)).to.equal(0);
-
-  //     expect(await stamina.calculateStamina(0)).to.equal(initialStamina);
-  //     expect(await stamina.calculateStamina(1)).to.equal(initialStamina);
-
-  //     expect(await stamina.connect(deployer).consumeStamina(0, 1)).not.to.be
-  //       .reverted;
-
-  //     expect(await stamina.connect(deployer).consumeStamina(1, 1)).not.to.be
-  //       .reverted;
-
-  //     expect(await stamina.calculateStamina(2)).to.equal(initialStamina);
-  //     expect(await stamina.calculateStamina(2)).to.equal(initialStamina);
-  //   });
-  // });
+  describe("distribute ERC20", function () {
+    it("distributeERC20", async function () {
+      const { distributor, deployer } = await loadFixture(init);
+      await expect(
+        distributor
+          .connect(deployer)
+          .distributeERC20(
+            "0x4833C2fB6F00787c7F5f60a7F1a8aD9e191648C8",
+            ethers.utils.parseEther("1"),
+          ),
+      ).not.to.be.reverted;
+    });
+  });
 });
