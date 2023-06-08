@@ -9,7 +9,7 @@ import {
   getMonsterSkillsLimit4,
   getSkillTypesFromStr,
   hasUnknownSkill,
-} from "@/utils/monsterUtil";
+} from "@/utils/monsterUtils";
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({

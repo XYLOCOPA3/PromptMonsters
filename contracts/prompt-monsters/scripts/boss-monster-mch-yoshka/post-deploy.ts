@@ -1,5 +1,8 @@
 import { IPromptMonsters } from "../../typechain-types";
-import { BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS } from "../const";
+import {
+  BOSS_BATTLE_PROXY_ADDRESS,
+  BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS,
+} from "../const";
 import { ethers } from "hardhat";
 
 async function main() {
@@ -228,6 +231,12 @@ async function main() {
   console.log(
     `After : ${await bossMonsterMchYoshkaProxy.getBossExtension(languageJp)}`,
   );
+
+  console.log("Set GAME_ROLE -----------------------------");
+  const role = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("GAME_ROLE"));
+  await (
+    await bossMonsterMchYoshkaProxy.grantRole(role, BOSS_BATTLE_PROXY_ADDRESS)
+  ).wait();
 
   console.log("");
   console.log("---------------------------------------------");

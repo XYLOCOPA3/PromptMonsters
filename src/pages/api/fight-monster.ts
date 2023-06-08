@@ -35,9 +35,9 @@ export default async function handler(
 
   const enemyId = await _getRandomEnemyId(monsterId);
   const promptMonsters = PromptMonstersContract.instance(RPC_URL.mchVerse);
-  const enemyResurrectionPrompt = await promptMonsters.getResurrectionPrompts([
-    enemyId,
-  ]);
+  const enemyResurrectionPrompt = (
+    await promptMonsters.getResurrectionPrompts([enemyId])
+  )[0];
   const monsterExtensions = await promptMonsters.getMonsterExtensions([
     resurrectionPrompt,
     enemyResurrectionPrompt,
