@@ -3,6 +3,7 @@ import { EnumSkillType } from "@/types/EnumSkillType";
 import { SkillType } from "@/types/SkillType";
 
 export const hasUnknownSkill = (skillTypes: number[]): boolean => {
+  if (skillTypes.length === 0) return true;
   for (let i = 0; i < skillTypes.length; i++) {
     if (!isUnknownSkill(skillTypes[i])) continue;
     return true;

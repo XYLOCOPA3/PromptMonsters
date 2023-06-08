@@ -1,5 +1,9 @@
 export const MAX_LIFE_POINT = 400;
 
+export const BOSS_WEAKNESS_FEATURES = {
+  mch: "MCH|mch|My Crypto Heroes|MyCryptoHeroes|Heroes|Hero|マイクリプトヒーローズ|マイクリ|ヒーロー|ゲーム専務|みかん|Orange",
+};
+
 export const BOSS_NEXT_ACTION_SIGNS = {
   mch: {
     日本語: [

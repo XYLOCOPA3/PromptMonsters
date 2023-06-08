@@ -3,7 +3,10 @@ import { MonsterModel } from "@/models/MonsterModel";
 import { BossBattleState, bossBattleState } from "@/stores/bossBattleState";
 import { BossBattlePhase } from "@/types/BossBattlePhase";
 import { EnumItem } from "@/types/EnumItem";
-import { hasUnknownSkill } from "@/utils/monsterUtil";
+import {
+  generateMonsterAdjIfNotSet,
+  generateSkillTypesIfNotSet,
+} from "@/utils/bossBattleUtils";
 import axios from "axios";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
@@ -39,31 +42,24 @@ export const useBossBattleController = (): BossBattleController => {
    * Init bossBattle
    */
   const init = async (monster: MonsterModel): Promise<number[]> => {
-    let skillTypes: number[] = [];
-    if (hasUnknownSkill(monster.skillTypes)) {
-      let res: any;
-      try {
-        res = await axios.post("/api/boss/generate-skill-desc", {
-          resurrectionPrompt: monster.resurrectionPrompt,
-        });
-      } catch (e) {
-        if (axios.isAxiosError(e)) {
-          if (e.response!.status === 500) return e.response!.data.battleResult;
-          throw new Error(e.response!.data.message);
-        }
-        console.error(e);
-        throw new Error("Unknown Error");
-      }
-      skillTypes = res.data.skillTypes;
-    } else {
-      console.log("Your monster has no unknown skill.");
-      skillTypes = monster.skillTypes;
-    }
+    const results = await Promise.all([
+      generateSkillTypesIfNotSet(monster),
+      generateMonsterAdjIfNotSet(monster.resurrectionPrompt),
+    ]);
+    const skillTypes = results[0];
+    const monsterAdj = results[1];
+    console.log(skillTypes);
+    console.log(monsterAdj);
+
+    // TODO: ボスバトル開始処理
+
     usedBossSkill = "";
     bossDamaged = 0;
     droppedItemId = -1;
     bossNextActionSignIndex = 0;
-    setBossBattle(BossBattleModel.create({}));
+    setBossBattle(
+      BossBattleModel.create({ monsterAdj: monsterAdj.weaknessFeatureAdj }),
+    );
     return skillTypes;
   };
 

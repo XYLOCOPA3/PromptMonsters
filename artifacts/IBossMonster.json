@@ -1,0 +1,557 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IBossMonster",
+  "sourceName": "contracts/interfaces/IBossMonster.sol",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "publisher",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "language",
+          "type": "string"
+        }
+      ],
+      "name": "AddedLanguage",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "publisher",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "feature",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "flavor",
+              "type": "string"
+            },
+            {
+              "internalType": "string[]",
+              "name": "skills",
+              "type": "string[]"
+            },
+            {
+              "internalType": "uint32",
+              "name": "lv",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "hp",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "atk",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "def",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "inte",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "mgr",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "agl",
+              "type": "uint32"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IPromptMonsters.Monster",
+          "name": "oldValue",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "feature",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "flavor",
+              "type": "string"
+            },
+            {
+              "internalType": "string[]",
+              "name": "skills",
+              "type": "string[]"
+            },
+            {
+              "internalType": "uint32",
+              "name": "lv",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "hp",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "atk",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "def",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "inte",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "mgr",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "agl",
+              "type": "uint32"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IPromptMonsters.Monster",
+          "name": "newValue",
+          "type": "tuple"
+        }
+      ],
+      "name": "SetBoss",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "publisher",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "oldValue",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "newValue",
+          "type": "string"
+        }
+      ],
+      "name": "SetLanguage",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "publisher",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "resurrectionPrompts",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "weaknessFeatureAdj",
+              "type": "uint32"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IBossMonster.MonsterAdj",
+          "name": "oldValue",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "weaknessFeatureAdj",
+              "type": "uint32"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IBossMonster.MonsterAdj",
+          "name": "newValue",
+          "type": "tuple"
+        }
+      ],
+      "name": "SetMonsterAdj",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "publisher",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint32[]",
+          "name": "oldValue",
+          "type": "uint32[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint32[]",
+          "name": "newValue",
+          "type": "uint32[]"
+        }
+      ],
+      "name": "SetSkillTypes",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "language",
+          "type": "string"
+        }
+      ],
+      "name": "addLanguage",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "language",
+          "type": "string"
+        }
+      ],
+      "name": "getBossExtension",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "feature",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "flavor",
+              "type": "string"
+            },
+            {
+              "internalType": "string[]",
+              "name": "skills",
+              "type": "string[]"
+            },
+            {
+              "internalType": "uint32",
+              "name": "lv",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "hp",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "atk",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "def",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "inte",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "mgr",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "agl",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "skillTypes",
+              "type": "uint32[]"
+            },
+            {
+              "internalType": "address",
+              "name": "resurrectionPrompt",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct IPromptMonstersExtension.MonsterExtension",
+          "name": "bossExtension",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getLanguages",
+      "outputs": [
+        {
+          "internalType": "string[]",
+          "name": "returnValue",
+          "type": "string[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "resurrectionPrompt",
+          "type": "address"
+        }
+      ],
+      "name": "getMonsterAdj",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "weaknessFeatureAdj",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct IBossMonster.MonsterAdj",
+          "name": "monsterAdj",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "initialize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "language",
+          "type": "string"
+        },
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "feature",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "flavor",
+              "type": "string"
+            },
+            {
+              "internalType": "string[]",
+              "name": "skills",
+              "type": "string[]"
+            },
+            {
+              "internalType": "uint32",
+              "name": "lv",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "hp",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "atk",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "def",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "inte",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "mgr",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "agl",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct IPromptMonsters.Monster",
+          "name": "boss",
+          "type": "tuple"
+        }
+      ],
+      "name": "setBoss",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "language",
+          "type": "string"
+        }
+      ],
+      "name": "setLanguage",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "resurrectionPrompt",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "weaknessFeatureAdj",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct IBossMonster.MonsterAdj",
+          "name": "monsterAdj",
+          "type": "tuple"
+        }
+      ],
+      "name": "setMonsterAdj",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string[]",
+          "name": "skills",
+          "type": "string[]"
+        },
+        {
+          "internalType": "uint32[]",
+          "name": "skillTypes",
+          "type": "uint32[]"
+        }
+      ],
+      "name": "setSkillTypes",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

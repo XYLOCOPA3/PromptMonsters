@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { NOT_FOUND_SKILL } from "@/const/monster";
 import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
 import { RPC_URL } from "@/lib/wallet";
-import { getMonsterSkillsLimit4, isUnknownSkill } from "@/utils/monsterUtil";
+import { getMonsterSkillsLimit4, isUnknownSkill } from "@/utils/monsterUtils";
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
