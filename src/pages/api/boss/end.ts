@@ -1,14 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ServerBossBattle } from "@/features/boss/api/contracts/ServerBossBattle";
-import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { RPC_URL } from "@/lib/wallet";
 import { EventKey } from "@/types/EventKey";
-import { MonsterAdj } from "@/types/MonsterAdj";
-import {
-  hasBossWeaknessFeatures,
-  isInvalidMonsterAdj,
-} from "@/utils/bossBattleUtils";
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,27 +23,8 @@ export default async function handler(
 
   try {
     const bossBattle = ServerBossBattle.instance(RPC_URL.mchVerse);
-    const monsterAdj = await bossBattle.getMonsterAdj(
-      eventKey!,
-      bbeId,
-      resurrectionPrompt,
-    );
-    if (!isInvalidMonsterAdj(monsterAdj))
-      return res.status(200).json({ monsterAdj });
-    const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
-    const monsterExtension = (
-      await promptMonsters.getMonsterExtensions([resurrectionPrompt])
-    )[0];
-    let newMonsterAdj: MonsterAdj = { weaknessFeatureAdj: 100 };
-    if (hasBossWeaknessFeatures(monsterExtension, eventKey))
-      newMonsterAdj.weaknessFeatureAdj = 120;
-    await bossBattle.setMonsterAdj(
-      eventKey,
-      bbeId,
-      resurrectionPrompt,
-      newMonsterAdj,
-    );
-    return res.status(200).json({ monsterAdj });
+    await bossBattle.deleteBBState(eventKey!, bbeId, resurrectionPrompt);
+    return res.status(200).json({ message: "OK" });
   } catch (error) {
     if (error instanceof Error) {
       console.error(error.message);

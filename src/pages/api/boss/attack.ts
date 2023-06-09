@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { NOT_FOUND_SKILL } from "@/const/monster";
-import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
+import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { RPC_URL } from "@/lib/wallet";
 import { getMonsterSkillsLimit4, isUnknownSkill } from "@/utils/monsterUtils";
 import { Configuration, OpenAIApi } from "openai";
@@ -38,7 +38,7 @@ export default async function handler(
   let monsterDamaged = 50;
 
   try {
-    const promptMonsters = PromptMonstersContract.instance(RPC_URL.mchVerse);
+    const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
     const monsterExtension = (
       await promptMonsters.getMonsterExtensions([resurrectionPrompt])
     )[0];
