@@ -1,6 +1,9 @@
 import { ClientWallet } from "@/lib/wallet/client";
 import { BossBattle, BossBattle__factory } from "@/typechain";
-import { IBossBattleEvent } from "@/typechain/BossBattle";
+import {
+  IBossBattleEvent,
+  IPromptMonstersExtension,
+} from "@/typechain/BossBattle";
 import { BBState } from "@/types/BBState";
 import { MonsterAdj } from "@/types/MonsterAdj";
 import axios from "axios";
@@ -44,6 +47,20 @@ export class ClientBossBattle {
       this._eventKey,
       this._bbeId,
       resurrectionPrompt,
+    );
+  };
+
+  /**
+   * getBossExtension
+   * @return {Promise<MonsterAdj>} monsterAdj
+   */
+  getBossExtension = async (
+    language: string,
+  ): Promise<IPromptMonstersExtension.MonsterExtensionStructOutput> => {
+    return await this._reader.getBossExtension(
+      this._eventKey,
+      this._bbeId,
+      language,
     );
   };
 
