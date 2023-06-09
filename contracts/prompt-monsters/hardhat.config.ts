@@ -44,12 +44,12 @@ const config: HardhatUserConfig = {
       accounts: [PRIVATE_KEY as string],
       gasPrice: 0,
     },
-    mchTestnet: {
-      url: "https://rpc.oasys.sand.mchdfgh.xyz/",
-      chainId: 420,
-      accounts: [DEV_PRIVATE_KEY as string],
-      gasPrice: 0,
-    },
+    // mchTestnet: {
+    //   url: "https://rpc.oasys.sand.mchdfgh.xyz/",
+    //   chainId: 420,
+    //   accounts: [DEV_PRIVATE_KEY as string],
+    //   gasPrice: 0,
+    // },
     local: {
       url: "http://localhost:8545",
       accounts: [LOCAL_PRIVATE_KEY as string],

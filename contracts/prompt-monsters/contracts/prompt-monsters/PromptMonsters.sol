@@ -195,7 +195,7 @@ contract PromptMonsters is
     view
     returns (address returnValue)
   {
-    returnValue = _promptMonstersWallet;
+    returnValue = address(_promptMonstersImage);
   }
 
   /// @dev Get _paused
@@ -349,7 +349,7 @@ contract PromptMonsters is
     emit GeneratedMonsterV2(resurrectionPrompt_, monster_);
   }
 
-  /// @dev Mint monster by admin
+  /// @dev Mint monster by user
   /// @param resurrectionPrompt resurrection prompt
   function mint(address resurrectionPrompt) external whenNotPaused {
     require(
