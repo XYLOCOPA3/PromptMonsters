@@ -53,7 +53,7 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
         <TurnAndScore turn={bossBattle.turn} score={bossBattle.score} />
         <MonsterNameAndUserLifePoint
           name={monster.name}
-          lifePoint={bossBattle.lifePoint}
+          lifePoint={bossBattle.lp}
         />
         <Menu phase={bossBattle.phase} />
       </div>
@@ -143,7 +143,7 @@ const TurnAndScore = ({ turn, score }: any) => {
           "w-1/3",
         )}
       >
-        {tBossBattle("turn")}: {turn + 1}
+        {tBossBattle("turn")}: {turn}
       </div>
       <div className={clsx("w-1/3", "mr-[10px]")}></div>
       <div

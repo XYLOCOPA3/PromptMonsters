@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { LANGUAGES } from "@/const/language";
-import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
+import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { getGeneratingPrompt } from "@/lib/prompt";
 import { RPC_URL } from "@/lib/wallet";
 import { FeatureErrorType } from "@/types/FeatureErrorType";
@@ -74,7 +74,7 @@ export default async function handler(
     console.log(completion.data.choices);
     console.log(completion.data.usage);
 
-    const promptMonsters = PromptMonstersContract.instance(RPC_URL.mchVerse);
+    const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
     const monster = _getMonster(
       completion.data.choices[0].message!.content,
       language,

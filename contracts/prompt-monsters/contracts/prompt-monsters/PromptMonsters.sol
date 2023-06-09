@@ -496,7 +496,7 @@ contract PromptMonsters is
     address newImplementation
   ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 
-  // 後で消す -------------------
+  // TODO: 後で消す -------------------
 
   /// @dev Set _monsterHistoryMap
   /// @param resurrectionPrompt resurrection prompt

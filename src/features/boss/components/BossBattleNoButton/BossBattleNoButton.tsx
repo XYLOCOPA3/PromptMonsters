@@ -16,7 +16,7 @@ export const BossBattleNoButton = ({ className }: BossBattleNoButtonProps) => {
   const { t: tBossBattle } = useTranslation("boss-battle");
 
   const handleClick = async () => {
-    await bossBattleController.moveEnd(bossBattle.lifePoint);
+    await bossBattleController.moveEnd(bossBattle.lp);
   };
 
   return (

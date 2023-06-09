@@ -1,3 +1,4 @@
+import { ClientBossBattle } from "@/features/boss/api/contracts/ClientBossBattle";
 import { BossBattleModel } from "@/models/BossBattleModel";
 import { MonsterModel } from "@/models/MonsterModel";
 import { BossBattleState, bossBattleState } from "@/stores/bossBattleState";
@@ -6,6 +7,7 @@ import { EnumItem } from "@/types/EnumItem";
 import {
   generateMonsterAdjIfNotSet,
   generateSkillTypesIfNotSet,
+  startBossBattle,
 } from "@/utils/bossBattleUtils";
 import axios from "axios";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -45,20 +47,36 @@ export const useBossBattleController = (): BossBattleController => {
     const results = await Promise.all([
       generateSkillTypesIfNotSet(monster),
       generateMonsterAdjIfNotSet(monster.resurrectionPrompt),
+      ClientBossBattle.instance(),
     ]);
     const skillTypes = results[0];
-    const monsterAdj = results[1];
-    console.log(skillTypes);
-    console.log(monsterAdj);
-
-    // TODO: ボスバトル開始処理
+    const bbState = await startBossBattle(monster.resurrectionPrompt);
 
     usedBossSkill = "";
     bossDamaged = 0;
     droppedItemId = -1;
     bossNextActionSignIndex = 0;
+
+    console.log(bbState);
+
     setBossBattle(
-      BossBattleModel.create({ monsterAdj: monsterAdj.weaknessFeatureAdj }),
+      BossBattleModel.create({
+        bossBattleStarted: bbState.bossBattleStarted,
+        bossBattleContinued: bbState.bossBattleContinued,
+        lp: bbState.lp,
+        turn: bbState.turn,
+        score: bbState.score,
+        monsterAdj: bbState.monsterAdj,
+        bossAdj: bbState.bossAdj,
+        bossSign: bbState.bossSign,
+        hasHealItem: bbState.hasHealItem,
+        hasBuffItem: bbState.hasBuffItem,
+        hasDebuffItem: bbState.hasDebuffItem,
+        hasEscapeItem: bbState.hasEscapeItem,
+        phase: bbState.bossBattleContinued
+          ? BossBattlePhase.start
+          : BossBattlePhase.continue,
+      }),
     );
     return skillTypes;
   };
@@ -124,10 +142,7 @@ export const useBossBattleController = (): BossBattleController => {
         phase: BossBattlePhase.bossActionResult,
         usedBossSkill,
         currentBossDamaged: bossDamaged,
-        lifePoint:
-          prevState.lifePoint - bossDamaged < 0
-            ? 0
-            : prevState.lifePoint - bossDamaged,
+        lp: prevState.lp - bossDamaged < 0 ? 0 : prevState.lp - bossDamaged,
         itemIds:
           droppedItemId === -1
             ? prevState.itemIds
@@ -144,7 +159,7 @@ export const useBossBattleController = (): BossBattleController => {
     setBossBattle((prevState) => {
       return prevState.copyWith({
         phase: BossBattlePhase.continue,
-        bossNextActionSignIndex,
+        bossSign: bossNextActionSignIndex,
       });
     });
   };
@@ -271,7 +286,7 @@ export const useBossBattleController = (): BossBattleController => {
         setBossBattle((prevState) => {
           return prevState.copyWith({
             phase: BossBattlePhase.itemResult,
-            lifePoint: result.lifePoint,
+            lp: result.lifePoint,
             setItemId: -1,
             itemIds: prevState.itemIds.filter((id) => id !== itemId),
             usedItemId: itemId,
