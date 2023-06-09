@@ -258,7 +258,7 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @return uri contract URI
   function contractURI() external view returns (string memory uri);
 
-  // 後で消す -------------------
+  // TODO: 後で消す -------------------
 
   /// @dev Set _monsterHistoryMap
   /// @param resurrectionPrompt resurrection prompt

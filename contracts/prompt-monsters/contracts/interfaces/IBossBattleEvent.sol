@@ -132,4 +132,9 @@ interface IBossBattleEvent {
   /// @dev End boss battle
   /// @param resurrectionPrompt resurrection prompt
   function endBossBattle(address resurrectionPrompt) external;
+
+  // TODO: 後で消す(開発用) ------------
+  /// @dev Delete BBState
+  /// @param resurrectionPrompt resurrection prompt
+  function deleteBBState(address resurrectionPrompt) external;
 }

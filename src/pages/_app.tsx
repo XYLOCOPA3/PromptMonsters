@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { Drawer } from "@/components/elements/Drawer";
 import { mchVerse } from "@/const/chainParams";
+import { DevButton } from "@/dev/DevButton";
 import { AutoLogin } from "@/features/auth";
 import { BossInit } from "@/features/boss";
 import { TwitterIcon } from "@/features/lp";
@@ -287,6 +288,8 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <OwnedMonstersInit>
                   <BossInit>
                     <MonsterInit>
+                      {/* TODO: 後で消す */}
+                      <DevButton />
                       <TwitterIcon />
                       <Drawer />
                       <Component {...pageProps} />

@@ -1,5 +1,7 @@
 import { ServerWallet } from "@/lib/wallet";
 import { BossBattle, BossBattle__factory } from "@/typechain";
+import { IBossBattleEvent } from "@/typechain/BossBattle";
+import { BBState } from "@/types/BBState";
 import { MonsterAdj } from "@/types/MonsterAdj";
 import { ethers } from "ethers";
 
@@ -42,7 +44,7 @@ export class ServerBossBattle {
   };
 
   /**
-   * mint
+   * setMonsterAdj
    * @param resurrectionPrompt resurrection prompt
    * @return {Promise<ethers.ContractReceipt>} contract receipt
    */
@@ -59,6 +61,80 @@ export class ServerBossBattle {
         resurrectionPrompt,
         monsterAdj,
       )
+    ).wait();
+  };
+
+  /**
+   * startBossBattle
+   * @param resurrectionPrompt resurrection prompt
+   * @return {Promise<ethers.ContractReceipt>} contract receipt
+   */
+  startBossBattle = async (
+    eventKey: string,
+    bbeId: number,
+    resurrectionPrompt: string,
+    monsterAdj: number,
+    bossSign: number,
+  ): Promise<ethers.ContractReceipt> => {
+    return await (
+      await this._contract.startBossBattle(
+        eventKey,
+        bbeId,
+        resurrectionPrompt,
+        monsterAdj,
+        bossSign,
+      )
+    ).wait();
+  };
+
+  /**
+   * getBBState
+   * @return {Promise<BBState>} bbState
+   */
+  getBBState = async (
+    eventKey: string,
+    bbeId: number,
+    resurrectionPrompt: string,
+  ): Promise<BBState> => {
+    return this.toBBState(
+      await this._contract.getBBState(eventKey, bbeId, resurrectionPrompt),
+    );
+  };
+
+  /**
+   * toBBState
+   * @return {BBState} bbState
+   */
+  toBBState = (data: IBossBattleEvent.BBStateStructOutput): BBState => {
+    return {
+      bossBattleStarted: data.bossBattleStarted,
+      bossBattleContinued: data.bossBattleContinued,
+      lp: data.lp,
+      turn: data.turn,
+      score: data.score,
+      monsterAdj: data.monsterAdj,
+      bossAdj: data.bossAdj,
+      bossSign: data.bossSign,
+      hasHealItem: data.hasHealItem,
+      hasBuffItem: data.hasBuffItem,
+      hasDebuffItem: data.hasDebuffItem,
+      hasEscapeItem: data.hasEscapeItem,
+    };
+  };
+
+  // TODO: 後で消す（開発用）
+  /**
+   * deleteBBState
+   * @param resurrectionPrompt resurrection prompt
+   * @return {Promise<ethers.ContractReceipt>} contract receipt
+   */
+  deleteBBState = async (
+    eventKey: string,
+    bbeId: number,
+    resurrectionPrompt: string,
+  ): Promise<ethers.ContractReceipt> => {
+    return await (
+      await this._contract.deleteBBState(eventKey, bbeId, resurrectionPrompt)
     ).wait();
   };
 }

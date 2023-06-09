@@ -95,7 +95,7 @@ export const BossBattleMenuStart = ({
           <></>
         )}
         {getBossNextActionSignMsg(
-          bossBattle.bossNextActionSignIndex,
+          bossBattle.bossSign,
           language as "日本語" | "English",
           boss.name,
         )}

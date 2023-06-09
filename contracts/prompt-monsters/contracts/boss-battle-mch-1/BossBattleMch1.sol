@@ -331,4 +331,24 @@ contract BossBattleMch1 is
   function _authorizeUpgrade(
     address newImplementation
   ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
+
+  // TODO: 後で消す(開発用) ------------
+  /// @dev Delete BBState
+  /// @param resurrectionPrompt resurrection prompt
+  function deleteBBState(
+    address resurrectionPrompt
+  ) external onlyRole(GAME_ROLE) {
+    delete _bossBattleStartedMap[resurrectionPrompt];
+    delete _bossBattleContinuedMap[resurrectionPrompt];
+    delete _lpMap[resurrectionPrompt];
+    delete _turnMap[resurrectionPrompt];
+    delete _scoreMap[resurrectionPrompt];
+    delete _monsterAdjMap[resurrectionPrompt];
+    delete _bossAdjMap[resurrectionPrompt];
+    delete _bossSignMap[resurrectionPrompt];
+    delete _hasHealItemMap[resurrectionPrompt];
+    delete _hasBuffItemMap[resurrectionPrompt];
+    delete _hasDebuffItemMap[resurrectionPrompt];
+    delete _hasEscapeItemMap[resurrectionPrompt];
+  }
 }

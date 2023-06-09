@@ -1,5 +1,7 @@
 import { ClientWallet } from "@/lib/wallet/client";
 import { BossBattle, BossBattle__factory } from "@/typechain";
+import { IBossBattleEvent } from "@/typechain/BossBattle";
+import { BBState } from "@/types/BBState";
 import { MonsterAdj } from "@/types/MonsterAdj";
 import axios from "axios";
 
@@ -43,6 +45,41 @@ export class ClientBossBattle {
       this._bbeId,
       resurrectionPrompt,
     );
+  };
+
+  /**
+   * getBBState
+   * @return {Promise<BBState>} bbState
+   */
+  getBBState = async (resurrectionPrompt: string): Promise<BBState> => {
+    return this.toBBState(
+      await this._reader.getBBState(
+        this._eventKey,
+        this._bbeId,
+        resurrectionPrompt,
+      ),
+    );
+  };
+
+  /**
+   * toBBState
+   * @return {BBState} bbState
+   */
+  toBBState = (data: IBossBattleEvent.BBStateStructOutput): BBState => {
+    return {
+      bossBattleStarted: data.bossBattleStarted,
+      bossBattleContinued: data.bossBattleContinued,
+      lp: data.lp,
+      turn: data.turn,
+      score: data.score,
+      monsterAdj: data.monsterAdj,
+      bossAdj: data.bossAdj,
+      bossSign: data.bossSign,
+      hasHealItem: data.hasHealItem,
+      hasBuffItem: data.hasBuffItem,
+      hasDebuffItem: data.hasDebuffItem,
+      hasEscapeItem: data.hasEscapeItem,
+    };
   };
 
   /**
