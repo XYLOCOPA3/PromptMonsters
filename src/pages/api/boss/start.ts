@@ -4,7 +4,11 @@ import { ServerBossBattle } from "@/features/boss/api/contracts/ServerBossBattle
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { RPC_URL } from "@/lib/wallet";
 import { EventKey } from "@/types/EventKey";
-import { calcMonsterAdj, isInvalidMonsterAdj } from "@/utils/bossBattleUtils";
+import {
+  calcMonsterAdj,
+  getBossSign,
+  isInvalidMonsterAdj,
+} from "@/utils/bossBattleUtils";
 import { hasUnknownSkill } from "@/utils/monsterUtils";
 
 export default async function handler(
@@ -21,6 +25,7 @@ export default async function handler(
       message: "Unknown monster",
     });
   }
+
   const eventKey = process.env.EVENT_KEY as EventKey;
   const bbeId = Number(process.env.BBE_ID);
 
@@ -56,8 +61,7 @@ export default async function handler(
 
     // スタート処理
     const calculatedMonsterAdj = calcMonsterAdj(monsterAdj);
-    // TODO: ボス前兆計算
-    const bossSign = 0;
+    const bossSign = getBossSign();
     await bossBattle.startBossBattle(
       eventKey!,
       bbeId,

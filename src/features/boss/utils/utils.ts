@@ -62,13 +62,14 @@ export const getDroppedItemMsg = (
 };
 
 export const getBossNextActionSignMsg = (
-  bossNextActionSignIndex: number,
+  bossSign: number,
   language: "日本語" | "English",
   bossName: string,
 ): string => {
-  return BOSS_NEXT_ACTION_SIGNS["mch"][language][
-    bossNextActionSignIndex
-  ].replace("bossName", bossName);
+  return BOSS_NEXT_ACTION_SIGNS["mch"][language][bossSign].replace(
+    "bossName",
+    bossName,
+  );
 };
 
 export const getUsedItemMsg = (
