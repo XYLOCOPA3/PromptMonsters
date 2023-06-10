@@ -55,9 +55,9 @@ export const BossBattleMenuBossActionResult = ({
           <br />
           {getBossDamagedMsg(
             boss.name,
-            bossBattle.currentBossDamaged,
+            bossBattle.currentMonsterDamage,
             monster.name,
-            tBossBattle("bossDamaged"),
+            tBossBattle("monsterDamage"),
           )}
           <br />
           <br />

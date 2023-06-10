@@ -1,5 +1,7 @@
 export enum EnumItem {
-  potion,
-  elixir,
-  scroll,
+  none = -1,
+  buff,
+  debuff,
+  healing,
+  escape,
 }

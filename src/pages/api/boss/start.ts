@@ -5,8 +5,8 @@ import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPro
 import { RPC_URL } from "@/lib/wallet";
 import { EventKey } from "@/types/EventKey";
 import {
-  calcMonsterAdj,
   getBossSign,
+  initMonsterAdj,
   isInvalidMonsterAdj,
 } from "@/utils/bossBattleUtils";
 import { hasUnknownSkill } from "@/utils/monsterUtils";
@@ -60,7 +60,7 @@ export default async function handler(
       });
 
     // スタート処理
-    const calculatedMonsterAdj = calcMonsterAdj(monsterAdj);
+    const calculatedMonsterAdj = initMonsterAdj(monsterAdj);
     const bossSign = getBossSign();
     await bossBattle.startBossBattle(
       eventKey!,

@@ -2,7 +2,7 @@ export const MAX_LIFE_POINT = 400;
 export const BOSS_BATTLE_START = 1;
 
 export const BOSS_WEAKNESS_FEATURES = {
-  mch: "MCH|mch|My Crypto Heroes|MyCryptoHeroes|Heroes|Hero|マイクリプトヒーローズ|マイクリ|ヒーロー|ゲーム専務|みかん|Orange",
+  mch: "MCH|MyCryptoHeroes|マイクリプトヒーローズ|マイクリ|ゲーム専務|みかん|Orange",
 };
 
 export const BOSS_NEXT_ACTION_SIGNS = {
@@ -73,7 +73,7 @@ export const BOSS_NEXT_ACTION_SIGNS = {
       "情報は強さよ、それでもあたしを傷つけるの？😢💻🔐",
       "データの流れを感じて…ちょっと心が痛いわ💔🌐🛡️",
       "ほらほら、おちびちゃん、あたしにも心があるのよ😭🎭🔒",
-      "あんたの攻撃、あたしをこんなにさせるの…😔💔🏰",
+      "あんたの攻撃、あたしには効かないわ！🏄‍♀️🏰",
       "あーん、なんであたしだけこんな目に😢💢🔮",
       "あんたの攻撃、ちょっと痛いわよ💔🏄‍♀️🛡️",
       "あーん、デジタルハートが痛いわ…😭💖🔒",
@@ -145,7 +145,7 @@ export const BOSS_NEXT_ACTION_SIGNS = {
       "Information is power, but are you hurting me? 😢💻🔐",
       "I can sense the flow of data... It hurts my heart a little. 💔🌐🛡️",
       "Hey, hey, little one, I have a heart too. 😭🎭🔒",
-      "Your attacks are causing me to feel like this... 😔💔🏰",
+      "Impressive, but your attack doesn't affect me! 🏄‍♀️🏰",
       "Aww, why am I the only one suffering like this? 😢💢🔮",
       "Your attacks are a bit painful, you know. 💔🏄‍♀️🛡️",
       "Aww, my digital heart is in pain... 😭💖🔒",
@@ -157,44 +157,44 @@ export const BOSS_NEXT_ACTION_SIGNS = {
 export const ITEMS = {
   日本語: [
     {
-      name: "ポーション",
-      desc: "LPが全回復する。",
-      result: "LPが全回復した。",
-    },
-    {
-      name: "エリクサー",
+      name: "バフプロンプト",
       desc: "ステータスが上昇する。",
       result: "ステータスが上昇した。",
     },
     {
-      name: "まきもの",
+      name: "デバフプロンプト",
       desc: "ボスのステータスが減少する。",
       result: "bossName のステータスが減少した。",
     },
     {
-      name: "コンパス",
+      name: "回復プロンプト",
+      desc: "LPが全回復する。",
+      result: "LPが全回復した。",
+    },
+    {
+      name: "脱出プロンプト",
       desc: "戦闘から逃げ出すことができる。",
       result: "monsterName は戦闘から逃げ出した。",
     },
   ],
   English: [
     {
-      name: "POTION",
-      desc: "LP is fully restored.",
-      result: "LP was fully restored.",
-    },
-    {
-      name: "ELIXIR",
+      name: "BUFF PROMPT",
       desc: "Monster's stats increase.",
       result: "monsterName's stats increased.",
     },
     {
-      name: "SCROLL",
+      name: "DEBUFF PROMPT",
       desc: "Boss's stats decrease.",
       result: "bossName's stats decreased.",
     },
     {
-      name: "COMPASS",
+      name: "HEALING PROMPT",
+      desc: "LP is fully restored.",
+      result: "LP was fully restored.",
+    },
+    {
+      name: "ESCAPE PROMPT",
       desc: "You can escape from the battle.",
       result: "monsterName escaped from the battle.",
     },

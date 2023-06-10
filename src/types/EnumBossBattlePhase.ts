@@ -1,6 +1,7 @@
-export enum BossBattlePhase {
+export enum EnumBossBattlePhase {
   none,
   start,
+  result,
   fightSelect,
   fightResult,
   defenseResult,
