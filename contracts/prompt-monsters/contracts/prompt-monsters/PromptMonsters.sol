@@ -415,7 +415,7 @@ contract PromptMonsters is
       address rp = resurrectionPrompts_[i];
       monsterExtensions[i] = _promptMonstersExtension.getMonsterExtension(
         rp,
-        _monsterHistoryMap[resurrectionPrompts_[i]]
+        _monsterHistoryMap[rp]
       );
       unchecked {
         ++i;
@@ -508,6 +508,7 @@ contract PromptMonsters is
     IPromptMonsters.Monster memory oldState = _monsterHistoryMap[
       resurrectionPrompt
     ];
+    require(oldState.lv == 0, "PromptMonsters: monster is already generated");
     _monsterHistoryMap[resurrectionPrompt] = newState_;
     emit SetMonsterHistory(_msgSender(), oldState, newState_);
   }
@@ -520,6 +521,10 @@ contract PromptMonsters is
     address resurrectionPrompt
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     address oldState = _tokenIdToResurrectionPromptMap[tokenId];
+    require(
+      oldState == address(0),
+      "PromptMonsters: monster is already minted"
+    );
     _tokenIdToResurrectionPromptMap[tokenId] = resurrectionPrompt;
     emit SetTokenIdToResurrectionPromptMap(
       _msgSender(),

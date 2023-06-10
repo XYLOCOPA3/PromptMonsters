@@ -120,7 +120,7 @@ contract BossBattle is
         break;
       }
       unchecked {
-        i++;
+        ++i;
       }
     }
     require(included, "BossBattle: eventKey not included");
@@ -167,7 +167,7 @@ contract BossBattle is
         break;
       }
       unchecked {
-        i++;
+        ++i;
       }
     }
     require(included, "BossBattle: eventKey not included");

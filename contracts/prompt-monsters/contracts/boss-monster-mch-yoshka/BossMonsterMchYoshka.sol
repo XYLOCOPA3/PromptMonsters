@@ -98,7 +98,7 @@ contract BossMonsterMchYoshka is
     for (uint i; i < length; ) {
       skillTypes[i] = _skillTypes[boss.skills[i]];
       unchecked {
-        i++;
+        ++i;
       }
     }
 
@@ -167,7 +167,7 @@ contract BossMonsterMchYoshka is
         break;
       }
       unchecked {
-        i++;
+        ++i;
       }
     }
     require(included, "BossMonsterMchYoshka: language not included");
@@ -194,7 +194,7 @@ contract BossMonsterMchYoshka is
       oldValue[i] = _skillTypes[skills[i]];
       _skillTypes[skills[i]] = skillTypes[i];
       unchecked {
-        i++;
+        ++i;
       }
     }
 
