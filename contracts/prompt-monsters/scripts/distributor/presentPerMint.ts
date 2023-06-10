@@ -19,7 +19,8 @@ export async function main() {
   const createLogsTmp = await promptMonsters.queryFilter(
     promptMonsters.filters.MintedMonster(null, null, null),
     startBlockHeight,
-    startBlockHeight + 1200000,
+    startBlockHeight + 1200000, //for 本番 on mchMainnet
+    // startBlockHeight + 16200000, //for test on mumbai
   );
 
   if (createLogsTmp.length === 0) return;
@@ -59,7 +60,7 @@ export async function main() {
 
   console.log("");
   console.log(
-    "---------------------------------- Done! ----------------------------------",
+    "---------------------------------- Done! ----------------------------------------------------------------------",
   );
 }
 

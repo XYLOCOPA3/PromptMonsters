@@ -1,0 +1,19 @@
+export const FIRST_PRIZE = 0;
+export const SECOND_PRIZE = 1;
+export const THIRD_PRIZE = 2;
+export const FOURTH_PRIZE = 3;
+export const SIXTH_PRIZE = 5;
+export const SEVENTH_PRIZE = 6;
+export const TENTH_PRIZE = 9;
+export const ELEVENTH_PRIZE = 10;
+export const FIFTIETH_PRIZE = 49;
+export const FIFTY_FIRST_PRIZE = 50;
+export const HUNDREDTH_PRIZE = 99;
+
+export const FIRST_PRIZE_REWARD = "1000";
+export const SECOND_PRIZE_REWARD = "500";
+export const THIRD_PRIZE_REWARD = "500";
+export const FROM_4TH_TO_6TH_PRIZE_REWARD = "200";
+export const FROM_7TH_TO_10TH_PRIZE_REWARD = "100";
+export const FROM_11TH_TO_50TH_PRIZE_REWARD = "50";
+export const FROM_51TH_TO_100TH_PRIZE_REWARD = "10";
