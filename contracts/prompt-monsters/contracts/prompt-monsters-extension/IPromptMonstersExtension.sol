@@ -55,8 +55,8 @@ interface IPromptMonstersExtension {
   /// @param skills_ skills each monster
   /// @return returnState skillTypes
   function getBatchSkillTypes(
-    address[] memory rps_,
-    string[][] memory skills_
+    address[] calldata rps_,
+    string[][] calldata skills_
   ) external view returns (uint32[][] memory returnState);
 
   // --------------------------------------------------------------------------------
@@ -68,9 +68,9 @@ interface IPromptMonstersExtension {
   /// @param skills_ skills
   /// @param skillTypes_ skillTypes
   function setBatchSkillTypes(
-    address[] memory rps_,
-    string[][] memory skills_,
-    uint32[][] memory skillTypes_
+    address[] calldata rps_,
+    string[][] calldata skills_,
+    uint32[][] calldata skillTypes_
   ) external;
 
   // --------------------------------------------------------------------------------

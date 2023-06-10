@@ -176,7 +176,7 @@ contract PromptMonsters is
   /// @param resurrectionPrompts resurrection prompts
   /// @return returnValue resurrection prompts
   function getTokenIds(
-    address[] memory resurrectionPrompts
+    address[] calldata resurrectionPrompts
   ) external view returns (uint256[] memory returnValue) {
     uint256 resurrectionPromptsLength = resurrectionPrompts.length;
     returnValue = new uint256[](resurrectionPromptsLength);
@@ -193,9 +193,9 @@ contract PromptMonsters is
   function getPromptMonstersImage()
     external
     view
-    returns (address returnValue)
+    returns (IPromptMonstersImage returnValue)
   {
-    returnValue = address(_promptMonstersImage);
+    returnValue = _promptMonstersImage;
   }
 
   /// @dev Get _paused
@@ -208,7 +208,7 @@ contract PromptMonsters is
   /// @param resurrectionPrompts resurrection prompts
   /// @return returnValue minteds
   function getMinteds(
-    address[] memory resurrectionPrompts
+    address[] calldata resurrectionPrompts
   ) external view returns (bool[] memory returnValue) {
     uint256 resurrectionPromptsLength = resurrectionPrompts.length;
     returnValue = new bool[](resurrectionPromptsLength);
@@ -224,7 +224,7 @@ contract PromptMonsters is
   /// @param monsterIds_ monster IDs
   /// @return returnValue resurrection prompts
   function getResurrectionPrompts(
-    uint256[] memory monsterIds_
+    uint256[] calldata monsterIds_
   ) external view returns (address[] memory returnValue) {
     uint256 monsterIdsLength = monsterIds_.length;
     returnValue = new address[](monsterIdsLength);
@@ -401,7 +401,7 @@ contract PromptMonsters is
   /// @param resurrectionPrompts_ resurrection prompts
   /// @return monsterExtensions monster extensions
   function getMonsterExtensions(
-    address[] memory resurrectionPrompts_
+    address[] calldata resurrectionPrompts_
   )
     external
     view
@@ -537,7 +537,7 @@ contract PromptMonsters is
   /// @param tokenIds token IDs
   /// @return monsters monsters
   function getMonsters(
-    uint256[] memory tokenIds
+    uint256[] calldata tokenIds
   ) external view returns (IPromptMonsters.Monster[] memory monsters) {
     uint256 length = tokenIds.length;
     monsters = new IPromptMonsters.Monster[](length);
