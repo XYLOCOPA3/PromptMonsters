@@ -6,7 +6,6 @@ import { useBossBattleState } from "@/hooks/useBossBattle";
 import { useLanguageValue } from "@/hooks/useLanguage";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
-import { useTranslation } from "react-i18next";
 
 export type BossBattleMenuItemProps = BaseProps;
 
@@ -19,7 +18,6 @@ export const BossBattleMenuItem = ({ className }: BossBattleMenuItemProps) => {
   const language = useLanguageValue();
   const boss = useBossValue();
   const [bossBattle, bossBattleController] = useBossBattleState();
-  const { t: tBossBattle } = useTranslation("boss-battle");
 
   if (boss.name === "" || bossBattle.itemIds.length === 0 || language === "")
     return <></>;

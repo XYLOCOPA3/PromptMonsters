@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/elements/Button";
 import { SKILL_TYPE_NAME } from "@/const/monster";
 import { BossBattlePrevButton } from "@/features/boss/components/BossBattlePrevButton";
@@ -6,11 +7,12 @@ import { useBossBattleController } from "@/hooks/useBossBattle";
 import { useLanguageValue } from "@/hooks/useLanguage";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
+import { disableState } from "@/stores/disableState";
 import { monsterInitState } from "@/stores/monsterInitState";
 import { BaseProps } from "@/types/BaseProps";
-import { BossBattlePhase } from "@/types/BossBattlePhase";
+import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
 import clsx from "clsx";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 export type BossBattleMenuFightProps = BaseProps;
 
@@ -25,41 +27,91 @@ export const BossBattleMenuFight = ({
   const boss = useBossValue();
   const monster = useMonsterValue();
   const monsterInit = useRecoilValue(monsterInitState);
+  const [loading, setLoading] = useState(false);
+  const [disable, setDisable] = useRecoilState(disableState);
   const bossBattleController = useBossBattleController();
   const language = useLanguageValue();
 
   const handleSkill1Click = async () => {
-    await bossBattleController.attack(
-      monster.resurrectionPrompt,
-      monster.skills[0],
-    );
+    setDisable(true);
+    setLoading(true);
+    try {
+      await bossBattleController.useSkill(
+        monster.resurrectionPrompt,
+        monster.skills[0],
+        boss.skills,
+      );
+    } catch (error) {
+      console.error(error);
+      // TODO: エラー文考える
+      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
+      else alert("Error");
+    }
+    setDisable(false);
+    setLoading(false);
   };
 
   const handleSkill2Click = async () => {
-    await bossBattleController.attack(
-      monster.resurrectionPrompt,
-      monster.skills[1],
-    );
+    setDisable(true);
+    setLoading(true);
+    try {
+      await bossBattleController.useSkill(
+        monster.resurrectionPrompt,
+        monster.skills[1],
+        boss.skills,
+      );
+    } catch (error) {
+      console.error(error);
+      // TODO: エラー文考える
+      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
+      else alert("Error");
+    }
+    setDisable(false);
+    setLoading(false);
   };
 
   const handleSkill3Click = async () => {
-    await bossBattleController.attack(
-      monster.resurrectionPrompt,
-      monster.skills[2],
-    );
+    setDisable(true);
+    setLoading(true);
+    try {
+      await bossBattleController.useSkill(
+        monster.resurrectionPrompt,
+        monster.skills[2],
+        boss.skills,
+      );
+    } catch (error) {
+      console.error(error);
+      // TODO: エラー文考える
+      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
+      else alert("Error");
+    }
+    setDisable(false);
+    setLoading(false);
   };
 
   const handleSkill4Click = async () => {
-    await bossBattleController.attack(
-      monster.resurrectionPrompt,
-      monster.skills[3],
-    );
+    setDisable(true);
+    setLoading(true);
+    try {
+      await bossBattleController.useSkill(
+        monster.resurrectionPrompt,
+        monster.skills[3],
+        boss.skills,
+      );
+    } catch (error) {
+      console.error(error);
+      // TODO: エラー文考える
+      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
+      else alert("Error");
+    }
+    setDisable(false);
+    setLoading(false);
   };
 
   useLayoutEffectOfSSR(() => {
     if (!monsterInit) return;
     if (monster.name !== "" && monster.skills.length === 0) {
-      bossBattleController.changePhase(BossBattlePhase.fightResult);
+      bossBattleController.changePhase(EnumBossBattlePhase.fightResult);
       return;
     }
   }, [monsterInit]);
@@ -78,6 +130,8 @@ export const BossBattleMenuFight = ({
               skillName={monster.skills[0]}
               skillType={monster.skillTypes[0]}
               language={language}
+              loading={loading}
+              disable={disable}
             />
           ) : (
             <div className={clsx("w-1/2", "mr-[5px]")}></div>
@@ -89,6 +143,8 @@ export const BossBattleMenuFight = ({
               skillName={monster.skills[1]}
               skillType={monster.skillTypes[1]}
               language={language}
+              loading={loading}
+              disable={disable}
             />
           ) : (
             <div className={clsx("w-1/2", "ml-[5px]")}></div>
@@ -102,6 +158,8 @@ export const BossBattleMenuFight = ({
               skillName={monster.skills[2]}
               skillType={monster.skillTypes[2]}
               language={language}
+              loading={loading}
+              disable={disable}
             />
           ) : (
             <div className={clsx("w-1/2", "mr-[5px]")}></div>
@@ -113,6 +171,8 @@ export const BossBattleMenuFight = ({
               skillName={monster.skills[3]}
               skillType={monster.skillTypes[3]}
               language={language}
+              loading={loading}
+              disable={disable}
             />
           ) : (
             <div className={clsx("w-1/2", "ml-[5px]")}></div>
@@ -128,7 +188,15 @@ export const BossBattleMenuFight = ({
  * Boss battle score
  * @param score score
  */
-const Skill = ({ className, onClick, skillName, skillType, language }: any) => {
+const Skill = ({
+  className,
+  onClick,
+  skillName,
+  skillType,
+  language,
+  loading,
+  disable,
+}: any) => {
   return (
     <div
       className={clsx(
@@ -147,6 +215,8 @@ const Skill = ({ className, onClick, skillName, skillType, language }: any) => {
         variant="bossBattle"
         className={clsx("py-[10px]", "w-[100%]", "h-[100%]")}
         onClick={onClick}
+        loading={loading}
+        disabled={disable}
       >
         {skillName}
       </Button>

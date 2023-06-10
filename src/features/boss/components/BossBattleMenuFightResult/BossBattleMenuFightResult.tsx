@@ -1,6 +1,6 @@
 import { BossBattleNextButton } from "@/features/boss";
 import {
-  getMonsterDamagedMsg,
+  getBossDamageMsg,
   getMonsterUsedSkillMsg,
 } from "@/features/boss/utils/utils";
 import { useBossValue } from "@/hooks/useBoss";
@@ -50,11 +50,11 @@ export const BossBattleMenuFightResult = ({
             tBossBattle("monsterUsedSkill"),
           )}
           <br />
-          {getMonsterDamagedMsg(
+          {getBossDamageMsg(
             monster.name,
-            bossBattle.currentMonsterDamaged,
+            bossBattle.currentBossDamage,
             boss.name,
-            tBossBattle("monsterDamaged"),
+            tBossBattle("bossDamage"),
           )}
         </div>
       </div>
