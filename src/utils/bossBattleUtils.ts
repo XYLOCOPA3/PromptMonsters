@@ -1002,6 +1002,27 @@ export const isHealMonster = (prevResultMsgId: number): boolean => {
   return false;
 };
 
+export const getInitialBBState = (
+  monsterAdj: number,
+  bossSign: number,
+): BBState => {
+  const newBBState: BBState = {
+    bossBattleStarted: true,
+    bossBattleContinued: true,
+    lp: MAX_LIFE_POINT,
+    turn: 1,
+    score: 0,
+    monsterAdj: monsterAdj,
+    bossAdj: 100,
+    bossSign: bossSign,
+    hasHealItem: false,
+    hasBuffItem: false,
+    hasDebuffItem: false,
+    hasEscapeItem: false,
+  };
+  return newBBState;
+};
+
 /*
 
 # 優先度
