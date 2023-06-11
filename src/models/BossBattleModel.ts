@@ -16,8 +16,6 @@ export class BossBattleModel extends BaseModel<string> {
    * ```
    */
   private constructor(
-    public readonly bossBattleStarted: boolean = false,
-    public readonly bossBattleContinued: boolean = false,
     public readonly lp: number = 400,
     public readonly turn: number = 0,
     public readonly score: number = 0,

@@ -1008,7 +1008,7 @@ export const decideDroppedItem = (
   if (random < 9 && !hasBuffItem) return EnumItem.buff;
   if (9 <= random && random < 18 && !hasDebuffItem) return EnumItem.debuff;
   if (18 <= random && random < 27 && !hasHealItem) return EnumItem.healing;
-  if (27 <= random && random < 100 && !hasEscapeItem) return EnumItem.escape;
+  if (27 <= random && random < 30 && !hasEscapeItem) return EnumItem.escape;
   return EnumItem.none;
 };
 
