@@ -5,7 +5,7 @@ import { ethers, upgrades } from "hardhat";
 export async function deployStamina() {
   const { promptMonsters, erc20 } = await loadFixture(deployPromptMonsters);
 
-  const Stamina = await ethers.getContractFactory("Stamina");
+  const Stamina = await ethers.getContractFactory("TestS");
   const staminaProxy = await upgrades.deployProxy(
     Stamina,
     [promptMonsters.address],

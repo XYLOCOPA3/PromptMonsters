@@ -67,8 +67,8 @@ export async function main() {
     console.log(await promptMonsters.getRoleMember(role, i));
   }
 
-  console.log("Stamina");
-  const Stamina = await ethers.getContractFactory("Stamina");
+  console.log("TestS");
+  const Stamina = await ethers.getContractFactory("TestS");
   const stamina = Stamina.attach(STAMINA_PROXY_ADDRESS);
   for (let i = 0; i < Number(await stamina.getRoleMemberCount(role)); i++) {
     console.log(await stamina.getRoleMember(role, i));

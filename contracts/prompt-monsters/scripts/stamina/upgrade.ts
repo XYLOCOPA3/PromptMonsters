@@ -15,7 +15,7 @@ async function main() {
   console.log("Upgrading contracts with account: ", deployer.address);
   console.log("Upgrade StaminaProxy address: ", STAMINA_PROXY_ADDRESS);
 
-  const Stamina = await ethers.getContractFactory("Stamina");
+  const Stamina = await ethers.getContractFactory("TestS");
   const staminaProxy = await upgrades.upgradeProxy(
     STAMINA_PROXY_ADDRESS,
     Stamina,

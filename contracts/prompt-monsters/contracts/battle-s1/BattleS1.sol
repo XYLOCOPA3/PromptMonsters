@@ -5,14 +5,14 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
-import {IBattleSeason} from "../interfaces/IBattleSeason.sol";
-import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
+import {ITestBS} from "../interfaces/IBattleSeason.sol";
+import {ITestPM} from "../prompt-monsters/IPromptMonsters.sol";
 
 /// @title BattleS1
 /// @dev This is a contract of BattleS1.
 contract BattleS1 is
   Initializable,
-  IBattleSeason,
+  ITestBS,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
 {
@@ -20,7 +20,7 @@ contract BattleS1 is
   // State
   // --------------------------------------------------------------------------------
 
-  IPromptMonsters public promptMonsters;
+  ITestPM public promptMonsters;
 
   bytes32 public GAME_ROLE;
 
@@ -50,7 +50,7 @@ contract BattleS1 is
 
     GAME_ROLE = keccak256("GAME_ROLE");
 
-    promptMonsters = IPromptMonsters(promptMonstersAddress);
+    promptMonsters = ITestPM(promptMonstersAddress);
 
     _grantRole(GAME_ROLE, msg.sender);
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -157,7 +157,7 @@ contract BattleS1 is
   function setPromptMonstersAddress(
     address promptMonstersAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    promptMonsters = IPromptMonsters(promptMonstersAddress);
+    promptMonsters = ITestPM(promptMonstersAddress);
   }
 
   // --------------------------------------------------------------------------------

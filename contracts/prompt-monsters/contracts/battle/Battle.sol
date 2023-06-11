@@ -6,9 +6,9 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
 import {IBattle} from "./IBattle.sol";
-import {IBattleSeason} from "../interfaces/IBattleSeason.sol";
-import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
-import {IStamina} from "../stamina/IStamina.sol";
+import {ITestBS} from "../interfaces/IBattleSeason.sol";
+import {ITestPM} from "../prompt-monsters/IPromptMonsters.sol";
+import {ITestS} from "../stamina/IStamina.sol";
 
 /// @title Battle
 /// @dev This is a contract of Battle.
@@ -22,9 +22,9 @@ contract Battle is
   // State
   // --------------------------------------------------------------------------------
 
-  IPromptMonsters public promptMonsters;
+  ITestPM public promptMonsters;
 
-  IStamina public stamina;
+  ITestS public stamina;
 
   address[] private _battleSeasonsAddress;
 
@@ -50,8 +50,8 @@ contract Battle is
     __AccessControlEnumerable_init();
     __UUPSUpgradeable_init();
 
-    promptMonsters = IPromptMonsters(promptMonstersAddress);
-    stamina = IStamina(staminaAddress);
+    promptMonsters = ITestPM(promptMonstersAddress);
+    stamina = ITestS(staminaAddress);
     battleStamina = 1;
 
     _grantRole(DEFAULT_ADMIN_ROLE, address(this));
@@ -83,8 +83,7 @@ contract Battle is
     uint256 seasonId,
     uint256 monsterId
   ) external view returns (uint256) {
-    return
-      IBattleSeason(_battleSeasonsAddress[seasonId]).getMatchCount(monsterId);
+    return ITestBS(_battleSeasonsAddress[seasonId]).getMatchCount(monsterId);
   }
 
   /// @dev Get batch total match count of the monster
@@ -96,9 +95,7 @@ contract Battle is
     uint256[] memory monsterIds
   ) external view returns (uint256[] memory) {
     return
-      IBattleSeason(_battleSeasonsAddress[seasonId]).getBatchMatchCount(
-        monsterIds
-      );
+      ITestBS(_battleSeasonsAddress[seasonId]).getBatchMatchCount(monsterIds);
   }
 
   /// @dev Get total win count of the monster
@@ -109,8 +106,7 @@ contract Battle is
     uint256 seasonId,
     uint256 monsterId
   ) external view returns (uint256) {
-    return
-      IBattleSeason(_battleSeasonsAddress[seasonId]).getWinCount(monsterId);
+    return ITestBS(_battleSeasonsAddress[seasonId]).getWinCount(monsterId);
   }
 
   /// @dev Get total win count of the monster
@@ -122,9 +118,7 @@ contract Battle is
     uint256[] memory monsterIds
   ) external view returns (uint256[] memory) {
     return
-      IBattleSeason(_battleSeasonsAddress[seasonId]).getBatchWinCount(
-        monsterIds
-      );
+      ITestBS(_battleSeasonsAddress[seasonId]).getBatchWinCount(monsterIds);
   }
 
   /// @dev Get season battleIdList
@@ -135,8 +129,7 @@ contract Battle is
     uint256 seasonId,
     uint256 monsterId
   ) external view returns (uint256[] memory) {
-    return
-      IBattleSeason(_battleSeasonsAddress[seasonId]).getBattleIdList(monsterId);
+    return ITestBS(_battleSeasonsAddress[seasonId]).getBattleIdList(monsterId);
   }
 
   /// @dev Get _battleSeasonsAddress length
@@ -150,8 +143,8 @@ contract Battle is
   /// @return season battle data
   function getSeasonBattleData(
     uint256 seasonId
-  ) external view returns (IBattleSeason.BattleData[] memory) {
-    return IBattleSeason(_battleSeasonsAddress[seasonId]).getBattleData();
+  ) external view returns (ITestBS.BattleData[] memory) {
+    return ITestBS(_battleSeasonsAddress[seasonId]).getBattleData();
   }
 
   /// @dev Get season battle data by monster ID
@@ -161,9 +154,9 @@ contract Battle is
   function getSeasonBattleDataByMonsterId(
     uint256 seasonId,
     uint256 monsterId
-  ) external view returns (IBattleSeason.BattleData[] memory) {
+  ) external view returns (ITestBS.BattleData[] memory) {
     return
-      IBattleSeason(_battleSeasonsAddress[seasonId]).getBattleDataByMonsterId(
+      ITestBS(_battleSeasonsAddress[seasonId]).getBattleDataByMonsterId(
         monsterId
       );
   }
@@ -205,7 +198,7 @@ contract Battle is
   function setPromptMonstersAddress(
     address promptMonstersAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    promptMonsters = IPromptMonsters(promptMonstersAddress);
+    promptMonsters = ITestPM(promptMonstersAddress);
 
     emit SetPromptMonstersAddress(msg.sender, promptMonstersAddress);
   }
@@ -215,7 +208,7 @@ contract Battle is
   function setStaminaAddress(
     address staminaAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    stamina = IStamina(staminaAddress);
+    stamina = ITestS(staminaAddress);
 
     emit SetStaminaAddress(msg.sender, staminaAddress);
   }
@@ -249,7 +242,7 @@ contract Battle is
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     promptMonsters.checkMonsterId(winMonsterId);
     promptMonsters.checkMonsterId(loseMonsterId);
-    IBattleSeason(_battleSeasonsAddress[seasonId]).addBattleData(
+    ITestBS(_battleSeasonsAddress[seasonId]).addBattleData(
       winMonsterId,
       loseMonsterId,
       battleLog

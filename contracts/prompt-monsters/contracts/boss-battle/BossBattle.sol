@@ -5,13 +5,13 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
-import {IBossBattle, IBossBattleEvent, IBossMonster, IPromptMonstersExtension} from "./IBossBattle.sol";
+import {ITestBB, ITestBBE, ITestBM, ITestPME} from "./IBossBattle.sol";
 
 /// @title BossBattle
 /// @dev This is a contract of BossBattle.
 contract BossBattle is
   Initializable,
-  IBossBattle,
+  ITestBB,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
 {
@@ -186,10 +186,9 @@ contract BossBattle is
     string memory eventKey,
     uint256 bbeId,
     address resurrectionPrompt
-  ) external view returns (IBossMonster.MonsterAdj memory monsterAdj) {
-    IBossMonster bossMonster = IBossBattleEvent(
-      _bossBattleEventMap[eventKey][bbeId]
-    ).getBossMonster();
+  ) external view returns (ITestBM.MonsterAdj memory monsterAdj) {
+    ITestBM bossMonster = ITestBBE(_bossBattleEventMap[eventKey][bbeId])
+      .getBossMonster();
     monsterAdj = bossMonster.getMonsterAdj(resurrectionPrompt);
   }
 
@@ -202,11 +201,10 @@ contract BossBattle is
     string memory eventKey,
     uint256 bbeId,
     address resurrectionPrompt,
-    IBossMonster.MonsterAdj memory monsterAdj
+    ITestBM.MonsterAdj memory monsterAdj
   ) external onlyRole(GAME_ROLE) {
-    IBossMonster bossMonster = IBossBattleEvent(
-      _bossBattleEventMap[eventKey][bbeId]
-    ).getBossMonster();
+    ITestBM bossMonster = ITestBBE(_bossBattleEventMap[eventKey][bbeId])
+      .getBossMonster();
     bossMonster.setMonsterAdj(resurrectionPrompt, monsterAdj);
   }
 
@@ -219,10 +217,10 @@ contract BossBattle is
     string memory eventKey,
     uint256 bbeId,
     address resurrectionPrompt
-  ) public view returns (IBossBattleEvent.BBState memory bbState) {
-    bbState = IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId]).getBBState(
-        resurrectionPrompt
-      );
+  ) public view returns (ITestBBE.BBState memory bbState) {
+    bbState = ITestBBE(_bossBattleEventMap[eventKey][bbeId]).getBBState(
+      resurrectionPrompt
+    );
   }
 
   /// @dev get boss battle data to calculate battle result
@@ -234,14 +232,9 @@ contract BossBattle is
     string memory eventKey,
     uint256 bbeId,
     string memory language
-  )
-    external
-    view
-    returns (IPromptMonstersExtension.MonsterExtension memory monsterExtension)
-  {
-    IBossMonster bossMonster = IBossBattleEvent(
-      _bossBattleEventMap[eventKey][bbeId]
-    ).getBossMonster();
+  ) external view returns (ITestPME.MonsterExtension memory monsterExtension) {
+    ITestBM bossMonster = ITestBBE(_bossBattleEventMap[eventKey][bbeId])
+      .getBossMonster();
     monsterExtension = bossMonster.getBossExtension(language);
   }
 
@@ -258,7 +251,7 @@ contract BossBattle is
     uint32 monsterAdj,
     uint32 bossSign
   ) external onlyRole(GAME_ROLE) {
-    IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId]).startBossBattle(
+    ITestBBE(_bossBattleEventMap[eventKey][bbeId]).startBossBattle(
       resurrectionPrompt,
       monsterAdj,
       bossSign
@@ -274,10 +267,12 @@ contract BossBattle is
     string memory eventKey,
     uint256 bbeId,
     address resurrectionPrompt,
-    IBossBattleEvent.BBState memory bbState
+    ITestBBE.BBState memory bbState
   ) external onlyRole(GAME_ROLE) {
-    IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId])
-      .updateBossBattleResult(resurrectionPrompt, bbState);
+    ITestBBE(_bossBattleEventMap[eventKey][bbeId]).updateBossBattleResult(
+      resurrectionPrompt,
+      bbState
+    );
   }
 
   /// @dev Continue boss battle
@@ -291,7 +286,7 @@ contract BossBattle is
     address resurrectionPrompt,
     uint32 bossSign
   ) external onlyRole(GAME_ROLE) {
-    IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId]).continueBossBattle(
+    ITestBBE(_bossBattleEventMap[eventKey][bbeId]).continueBossBattle(
       resurrectionPrompt,
       bossSign
     );
@@ -306,7 +301,7 @@ contract BossBattle is
     uint256 bbeId,
     address resurrectionPrompt
   ) external onlyRole(GAME_ROLE) {
-    IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId]).endBossBattle(
+    ITestBBE(_bossBattleEventMap[eventKey][bbeId]).endBossBattle(
       resurrectionPrompt
     );
   }
@@ -329,7 +324,7 @@ contract BossBattle is
     uint256 bbeId,
     address resurrectionPrompt
   ) external onlyRole(GAME_ROLE) {
-    IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId]).deleteBBState(
+    ITestBBE(_bossBattleEventMap[eventKey][bbeId]).deleteBBState(
       resurrectionPrompt
     );
   }

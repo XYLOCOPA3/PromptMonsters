@@ -5,7 +5,7 @@ export const deployStamina = async (
   deployer: SignerWithAddress,
   promptMonstersAddress: string,
 ) => {
-  const Stamina = await ethers.getContractFactory("Stamina");
+  const Stamina = await ethers.getContractFactory("TestS");
   const staminaProxy = await upgrades.deployProxy(
     Stamina,
     [promptMonstersAddress],

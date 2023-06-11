@@ -7,14 +7,14 @@ import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgrad
 import {StringsUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import {Base64Upgradeable} from "@openzeppelin/contracts-upgradeable/utils/Base64Upgradeable.sol";
 
-import {IPromptMonstersExtension, IPromptMonsters} from "./IPromptMonstersExtension.sol";
+import {ITestPME, ITestPM} from "./IPromptMonstersExtension.sol";
 
 /// @title PromptMonstersExtension
 /// @author keit (@keitEngineer)
 /// @dev This is a contract of PromptMonstersExtension.
 contract PromptMonstersExtension is
   Initializable,
-  IPromptMonstersExtension,
+  ITestPME,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
 {
@@ -140,12 +140,8 @@ contract PromptMonstersExtension is
   /// @return monsterExtension monster extensions
   function getMonsterExtension(
     address resurrectionPrompt_,
-    IPromptMonsters.Monster memory monster_
-  )
-    external
-    view
-    returns (IPromptMonstersExtension.MonsterExtension memory monsterExtension)
-  {
+    ITestPM.Monster memory monster_
+  ) external view returns (ITestPME.MonsterExtension memory monsterExtension) {
     uint256 skillsLength = monster_.skills.length;
     if (skillsLength > 4) skillsLength = 4;
     uint32[] memory skillTypes = new uint32[](skillsLength);
@@ -155,7 +151,7 @@ contract PromptMonstersExtension is
         ++i;
       }
     }
-    monsterExtension = IPromptMonstersExtension.MonsterExtension({
+    monsterExtension = ITestPME.MonsterExtension({
       feature: monster_.feature,
       name: monster_.name,
       flavor: monster_.flavor,

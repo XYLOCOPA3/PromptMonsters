@@ -5,13 +5,13 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
-import {IBossMonster, IPromptMonsters, IPromptMonstersExtension} from "../interfaces/IBossMonster.sol";
+import {ITestBM, ITestPM, ITestPME} from "../interfaces/IBossMonster.sol";
 
 /// @title BossMonsterMchYoshka
 /// @dev This is a contract of BossMonsterMchYoshka.
 contract BossMonsterMchYoshka is
   Initializable,
-  IBossMonster,
+  ITestBM,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
 {
@@ -27,7 +27,7 @@ contract BossMonsterMchYoshka is
 
   // key -> language
   /// @custom:oz-renamed-from _bossMap
-  mapping(string => IPromptMonsters.Monster) private _bossMap;
+  mapping(string => ITestPM.Monster) private _bossMap;
 
   /// @custom:oz-renamed-from _skillTypes
   mapping(string => uint32) private _skillTypes;
@@ -75,10 +75,8 @@ contract BossMonsterMchYoshka is
   /// @return monsterAdj monster adj
   function getMonsterAdj(
     address resurrectionPrompt
-  ) public view returns (IBossMonster.MonsterAdj memory monsterAdj) {
-    monsterAdj = IBossMonster.MonsterAdj(
-      _weaknessFeatureAdjs[resurrectionPrompt]
-    );
+  ) public view returns (ITestBM.MonsterAdj memory monsterAdj) {
+    monsterAdj = ITestBM.MonsterAdj(_weaknessFeatureAdjs[resurrectionPrompt]);
   }
 
   /// @dev Get boss extension
@@ -86,12 +84,8 @@ contract BossMonsterMchYoshka is
   /// @return bossExtension boss extension
   function getBossExtension(
     string memory language
-  )
-    external
-    view
-    returns (IPromptMonstersExtension.MonsterExtension memory bossExtension)
-  {
-    IPromptMonsters.Monster memory boss = _bossMap[language];
+  ) external view returns (ITestPME.MonsterExtension memory bossExtension) {
+    ITestPM.Monster memory boss = _bossMap[language];
 
     uint256 length = boss.skills.length;
     uint32[] memory skillTypes = new uint32[](length);
@@ -102,7 +96,7 @@ contract BossMonsterMchYoshka is
       }
     }
 
-    bossExtension = IPromptMonstersExtension.MonsterExtension(
+    bossExtension = ITestPME.MonsterExtension(
       boss.feature,
       boss.name,
       boss.flavor,
@@ -155,7 +149,7 @@ contract BossMonsterMchYoshka is
   /// @param boss boss
   function setBoss(
     string memory language,
-    IPromptMonsters.Monster memory boss
+    ITestPM.Monster memory boss
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     bool included;
     for (uint i; i < _languages.length; ) {
@@ -171,7 +165,7 @@ contract BossMonsterMchYoshka is
       }
     }
     require(included, "BossMonsterMchYoshka: language not included");
-    IPromptMonsters.Monster memory oldValue = _bossMap[language];
+    ITestPM.Monster memory oldValue = _bossMap[language];
     _bossMap[language] = boss;
 
     emit SetBoss(_msgSender(), oldValue, boss);
@@ -206,9 +200,9 @@ contract BossMonsterMchYoshka is
   /// @param monsterAdj monster adj
   function setMonsterAdj(
     address resurrectionPrompt,
-    IBossMonster.MonsterAdj memory monsterAdj
+    ITestBM.MonsterAdj memory monsterAdj
   ) external onlyRole(GAME_ROLE) {
-    IBossMonster.MonsterAdj memory oldValue = getMonsterAdj(resurrectionPrompt);
+    ITestBM.MonsterAdj memory oldValue = getMonsterAdj(resurrectionPrompt);
     _weaknessFeatureAdjs[resurrectionPrompt] = monsterAdj.weaknessFeatureAdj;
 
     emit SetMonsterAdj(_msgSender(), resurrectionPrompt, oldValue, monsterAdj);

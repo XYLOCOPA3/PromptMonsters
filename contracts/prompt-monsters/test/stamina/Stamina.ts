@@ -8,7 +8,7 @@ import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-describe("Stamina", function () {
+describe("TestS", function () {
   async function init() {
     const { stamina, promptMonsters, erc20 } = await loadFixture(deploy);
 

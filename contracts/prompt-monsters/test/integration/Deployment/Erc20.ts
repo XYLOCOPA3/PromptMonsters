@@ -6,5 +6,7 @@ export const deployErc20 = async (deployer: SignerWithAddress) => {
   const erc20 = await Erc20.connect(deployer).deploy();
   await erc20.deployed();
 
+  await(await erc20.mint(deployer.address, ethers.utils.parseEther("1000000000"))).wait();
+
   return { erc20 };
 };

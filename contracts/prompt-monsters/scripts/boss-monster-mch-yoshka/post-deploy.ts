@@ -1,4 +1,4 @@
-import { IPromptMonsters } from "../../typechain-types";
+import { ITestPM } from "../../typechain-types";
 import {
   BOSS_BATTLE_PROXY_ADDRESS,
   BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS,
@@ -13,7 +13,7 @@ async function main() {
 
   const languageEn = "English";
   const languageJp = "日本語";
-  const bossEn: IPromptMonsters.MonsterStruct = {
+  const bossEn: ITestPM.MonsterStruct = {
     feature: "MCH, Raid, Enemy",
     name: "Yoshka",
     flavor:
@@ -98,7 +98,7 @@ async function main() {
     mgr: 10,
     agl: 10,
   };
-  const bossJp: IPromptMonsters.MonsterStruct = {
+  const bossJp: ITestPM.MonsterStruct = {
     feature: "MCH, Raid, Enemy",
     name: "ヨシュカ",
     flavor:

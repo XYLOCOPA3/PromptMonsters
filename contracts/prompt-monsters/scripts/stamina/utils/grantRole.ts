@@ -2,7 +2,7 @@ import { BATTLE_PROXY_ADDRESS, STAMINA_PROXY_ADDRESS } from "../../const";
 import { ethers } from "hardhat";
 
 export async function main() {
-  const Stamina = await ethers.getContractFactory("Stamina");
+  const Stamina = await ethers.getContractFactory("TestS");
 
   const stamina = Stamina.attach(STAMINA_PROXY_ADDRESS);
 

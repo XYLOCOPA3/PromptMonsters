@@ -7,7 +7,7 @@ import {
 import { ethers } from "hardhat";
 
 export async function main() {
-  const Stamina = await ethers.getContractFactory("Stamina");
+  const Stamina = await ethers.getContractFactory("TestS");
   const stamina = Stamina.attach(STAMINA_PROXY_ADDRESS);
   const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
   const promptMonsters = PromptMonsters.attach(PROMPT_MONSTERS_PROXY_ADDRESS);

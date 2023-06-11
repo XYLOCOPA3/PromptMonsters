@@ -4,13 +4,13 @@ pragma solidity ^0.8.18;
 import {IERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
 import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import {IPromptMonstersExtension} from "../prompt-monsters-extension/IPromptMonstersExtension.sol";
-import {IPromptMonstersImage} from "../prompt-monsters-image/IPromptMonstersImage.sol";
+import {ITestPME} from "../prompt-monsters-extension/IPromptMonstersExtension.sol";
+import {ITestPMI} from "../prompt-monsters-image/IPromptMonstersImage.sol";
 
 /// @title IPromptMonsters
 /// @author keit (@keitEngineer)
 /// @dev This is an interface of PromptMonsters.
-interface IPromptMonsters is IERC721Upgradeable {
+interface ITestPM is IERC721Upgradeable {
   // --------------------------------------------------------------------------------
   // Struct
   // --------------------------------------------------------------------------------
@@ -55,8 +55,8 @@ interface IPromptMonsters is IERC721Upgradeable {
 
   event SetPromptMonstersImage(
     address indexed publisher,
-    IPromptMonstersImage oldValue,
-    IPromptMonstersImage newValue
+    ITestPMI oldValue,
+    ITestPMI newValue
   );
 
   event Paused(address account);
@@ -65,8 +65,8 @@ interface IPromptMonsters is IERC721Upgradeable {
 
   event SetPromptMonstersExtension(
     address indexed publisher,
-    IPromptMonstersExtension oldValue,
-    IPromptMonstersExtension newValue
+    ITestPME oldValue,
+    ITestPME newValue
   );
 
   event GeneratedMonsterV2(address indexed resurrectionPrompt, Monster monster);
@@ -153,7 +153,10 @@ interface IPromptMonsters is IERC721Upgradeable {
 
   /// @dev Get _promptMonstersImage
   /// @return returnValue _promptMonstersImage
-  function getPromptMonstersImage() external view returns (IPromptMonstersImage returnValue);
+  function getPromptMonstersImage()
+    external
+    view
+    returns (ITestPMI returnValue);
 
   /// @dev Get _paused
   /// @return returnValue _paused
@@ -178,7 +181,7 @@ interface IPromptMonsters is IERC721Upgradeable {
   function getPromptMonstersExtension()
     external
     view
-    returns (IPromptMonstersExtension returnValue);
+    returns (ITestPME returnValue);
 
   // --------------------------------------------------------------------------------
   // Setter
@@ -250,9 +253,7 @@ interface IPromptMonsters is IERC721Upgradeable {
   )
     external
     view
-    returns (
-      IPromptMonstersExtension.MonsterExtension[] memory monsterExtensions
-    );
+    returns (ITestPME.MonsterExtension[] memory monsterExtensions);
 
   /// @dev Get contract URI
   /// @return uri contract URI
@@ -273,5 +274,5 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @return monsters monsters
   function getMonsters(
     uint256[] memory tokenIds
-  ) external view returns (IPromptMonsters.Monster[] memory monsters);
+  ) external view returns (ITestPM.Monster[] memory monsters);
 }

@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
-import {IPromptMonstersExtension} from "../prompt-monsters-extension/IPromptMonstersExtension.sol";
+import {ITestPM} from "../prompt-monsters/IPromptMonsters.sol";
+import {ITestPME} from "../prompt-monsters-extension/IPromptMonstersExtension.sol";
 
 /// @title IBossMonster
 /// @dev This is an interface of BossMonster.
-interface IBossMonster {
+interface ITestBM {
   // --------------------------------------------------------------------------------
   // Struct
   // --------------------------------------------------------------------------------
@@ -34,8 +34,8 @@ interface IBossMonster {
 
   event SetBoss(
     address indexed publisher,
-    IPromptMonsters.Monster oldValue,
-    IPromptMonsters.Monster newValue
+    ITestPM.Monster oldValue,
+    ITestPM.Monster newValue
   );
 
   event SetSkillTypes(
@@ -78,10 +78,7 @@ interface IBossMonster {
   /// @return bossExtension boss extension
   function getBossExtension(
     string memory language
-  )
-    external
-    view
-    returns (IPromptMonstersExtension.MonsterExtension memory bossExtension);
+  ) external view returns (ITestPME.MonsterExtension memory bossExtension);
 
   // --------------------------------------------------------------------------------
   // Setter
@@ -101,7 +98,7 @@ interface IBossMonster {
   /// @param boss boss
   function setBoss(
     string memory language,
-    IPromptMonsters.Monster memory boss
+    ITestPM.Monster memory boss
   ) external;
 
   /// @dev Set _skillTypes

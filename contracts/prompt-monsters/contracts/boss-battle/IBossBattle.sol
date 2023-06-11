@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-import {IBossBattleEvent} from "../interfaces/IBossBattleEvent.sol";
-import {IBossMonster} from "../interfaces/IBossMonster.sol";
-import {IPromptMonstersExtension} from "../prompt-monsters-extension/IPromptMonstersExtension.sol";
+import {ITestBBE} from "../interfaces/IBossBattleEvent.sol";
+import {ITestBM} from "../interfaces/IBossMonster.sol";
+import {ITestPME} from "../prompt-monsters-extension/IPromptMonstersExtension.sol";
 
 /// @title IBossBattle
 /// @dev This is an interface of BossBattle.
-interface IBossBattle {
+interface ITestBB {
   // --------------------------------------------------------------------------------
   // Struct
   // --------------------------------------------------------------------------------
@@ -104,7 +104,7 @@ interface IBossBattle {
     string memory eventKey,
     uint256 bbeId,
     address resurrectionPrompt
-  ) external view returns (IBossMonster.MonsterAdj memory monsterAdj);
+  ) external view returns (ITestBM.MonsterAdj memory monsterAdj);
 
   /// @dev Set monsterAdj
   /// @param eventKey ID of event
@@ -115,7 +115,7 @@ interface IBossBattle {
     string memory eventKey,
     uint256 bbeId,
     address resurrectionPrompt,
-    IBossMonster.MonsterAdj memory monsterAdj
+    ITestBM.MonsterAdj memory monsterAdj
   ) external;
 
   /// @dev get boss battle state
@@ -127,7 +127,7 @@ interface IBossBattle {
     string memory eventKey,
     uint256 bbeId,
     address resurrectionPrompt
-  ) external view returns (IBossBattleEvent.BBState memory bbState);
+  ) external view returns (ITestBBE.BBState memory bbState);
 
   /// @dev get boss battle data to calculate battle result
   /// @param eventKey event key
@@ -138,10 +138,7 @@ interface IBossBattle {
     string memory eventKey,
     uint256 bbeId,
     string memory language
-  )
-    external
-    view
-    returns (IPromptMonstersExtension.MonsterExtension memory monsterExtension);
+  ) external view returns (ITestPME.MonsterExtension memory monsterExtension);
 
   /// @dev Start boss battle of the event
   /// @param eventKey ID of event
@@ -166,7 +163,7 @@ interface IBossBattle {
     string memory eventKey,
     uint256 bbeId,
     address resurrectionPrompt,
-    IBossBattleEvent.BBState memory bbState
+    ITestBBE.BBState memory bbState
   ) external;
 
   /// @dev Continue boss battle
