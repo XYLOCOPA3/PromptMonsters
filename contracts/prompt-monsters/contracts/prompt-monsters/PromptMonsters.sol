@@ -92,7 +92,7 @@ contract TestPM is
     uint256 mintPrice_,
     address promptMonstersWallet_
   ) public initializer {
-    __ERC721_init("Prompt Monsters", "MON");
+    __ERC721_init("TestPM", "TestM");
     __AccessControlEnumerable_init();
     __UUPSUpgradeable_init();
     __ReentrancyGuard_init();
