@@ -436,7 +436,9 @@ export const useBossBattleController = (): BossBattleController => {
       if (newLp > MAX_LIFE_POINT) newLp = MAX_LIFE_POINT;
       return prevState.copyWith({
         phase:
-          newResultMsgIds.length === 0
+          newLp === 0
+            ? EnumBossBattlePhase.end
+            : newResultMsgIds.length === 0
             ? EnumBossBattlePhase.continue
             : prevState.phase,
         resultMsgIds: newResultMsgIds,
@@ -444,6 +446,7 @@ export const useBossBattleController = (): BossBattleController => {
           ? prevState.score + gCurrentBossDamage
           : prevState.score,
         lp: newLp,
+        defeated: newLp === 0,
       });
       // TODO: 脱出アイテムの仕様次第でこっち使う
       // return prevState.copyWith({
