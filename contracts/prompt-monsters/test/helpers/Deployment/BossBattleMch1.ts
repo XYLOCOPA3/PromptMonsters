@@ -2,7 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers, upgrades } from "hardhat";
 
 export const deployBossBattleMch1 = async (deployer: SignerWithAddress) => {
-  const BossBattleMch1 = await ethers.getContractFactory("BossBattleMch1");
+  const BossBattleMch1 = await ethers.getContractFactory("TestBBM1");
   const bossBattleMch1Proxy = await upgrades.deployProxy(BossBattleMch1, [], {
     kind: "uups",
     initializer: "initialize",

@@ -6,7 +6,7 @@ export const deployBattle = async (
   promptMonstersAddress: string,
   staminaAddress: string,
 ) => {
-  const Battle = await ethers.getContractFactory("Battle");
+  const Battle = await ethers.getContractFactory("TestB");
   const battleProxy = await upgrades.deployProxy(
     Battle,
     [promptMonstersAddress, staminaAddress],

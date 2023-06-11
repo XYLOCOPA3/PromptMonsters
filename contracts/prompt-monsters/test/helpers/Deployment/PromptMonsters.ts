@@ -9,7 +9,7 @@ export const deployPromptMonsters = async (
   erc20: Erc20,
   promptMonstersWallet: SignerWithAddress,
 ) => {
-  const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
+  const PromptMonsters = await ethers.getContractFactory("TestPM");
   const promptMonstersProxy = await upgrades.deployProxy(
     PromptMonsters,
     [

@@ -8,7 +8,7 @@ import {
 import { ethers } from "hardhat";
 
 export async function main() {
-  // const Battle = await ethers.getContractFactory("Battle");
+  // const Battle = await ethers.getContractFactory("TestB");
 
   // const battleOffSeason = Battle.attach(BATTLE_OFF_SEASON_PROXY_ADDRESS);
 
@@ -29,15 +29,15 @@ export async function main() {
 
   const role = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("GAME_ROLE"));
 
-  console.log("Battle");
-  const Battle = await ethers.getContractFactory("Battle");
+  console.log("TestB");
+  const Battle = await ethers.getContractFactory("TestB");
   const battle = Battle.attach(BATTLE_PROXY_ADDRESS);
   for (let i = 0; i < Number(await battle.getRoleMemberCount(role)); i++) {
     console.log(await battle.getRoleMember(role, i));
   }
 
-  console.log("BattleOffSeason");
-  const BattleOffSeason = await ethers.getContractFactory("BattleOffSeason");
+  console.log("TestBOS");
+  const BattleOffSeason = await ethers.getContractFactory("TestBOS");
   const battleOffSeason = BattleOffSeason.attach(
     BATTLE_OFF_SEASON_PROXY_ADDRESS,
   );
@@ -49,15 +49,15 @@ export async function main() {
     console.log(await battleOffSeason.getRoleMember(role, i));
   }
 
-  console.log("BattleS1");
-  const BattleS1 = await ethers.getContractFactory("BattleS1");
+  console.log("TestBS1");
+  const BattleS1 = await ethers.getContractFactory("TestBS1");
   const battleS1 = BattleS1.attach(BATTLE_S1_PROXY_ADDRESS);
   for (let i = 0; i < Number(await battleS1.getRoleMemberCount(role)); i++) {
     console.log(await battleS1.getRoleMember(role, i));
   }
 
-  console.log("PromptMonsters");
-  const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
+  console.log("TestPM");
+  const PromptMonsters = await ethers.getContractFactory("TestPM");
   const promptMonsters = PromptMonsters.attach(PROMPT_MONSTERS_PROXY_ADDRESS);
   for (
     let i = 0;

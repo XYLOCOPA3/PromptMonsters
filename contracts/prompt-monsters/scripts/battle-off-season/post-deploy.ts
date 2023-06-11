@@ -16,7 +16,7 @@ async function main() {
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const BattleOffSeason = await ethers.getContractFactory("BattleOffSeason");
+  const BattleOffSeason = await ethers.getContractFactory("TestBOS");
   const battleOffSeason = BattleOffSeason.attach(
     BATTLE_OFF_SEASON_PROXY_ADDRESS,
   );

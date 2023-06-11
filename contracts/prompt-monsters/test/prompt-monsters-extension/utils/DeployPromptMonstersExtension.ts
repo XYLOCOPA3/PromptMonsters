@@ -3,7 +3,7 @@ import { ethers, upgrades } from "hardhat";
 
 export async function deployPromptMonstersExtension() {
   const PromptMonstersExtension = await ethers.getContractFactory(
-    "PromptMonstersExtension",
+    "TestPME",
   );
   const promptMonstersExtensionProxy = await upgrades.deployProxy(
     PromptMonstersExtension,

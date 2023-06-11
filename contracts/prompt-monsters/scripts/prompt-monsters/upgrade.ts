@@ -18,7 +18,7 @@ async function main() {
     PROMPT_MONSTERS_PROXY_ADDRESS,
   );
 
-  const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
+  const PromptMonsters = await ethers.getContractFactory("TestPM");
   const promptMonstersProxy = await upgrades.upgradeProxy(
     PROMPT_MONSTERS_PROXY_ADDRESS,
     PromptMonsters,

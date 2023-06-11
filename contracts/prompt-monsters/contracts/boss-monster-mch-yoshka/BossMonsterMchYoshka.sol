@@ -9,7 +9,7 @@ import {ITestBM, ITestPM, ITestPME} from "../interfaces/IBossMonster.sol";
 
 /// @title BossMonsterMchYoshka
 /// @dev This is a contract of BossMonsterMchYoshka.
-contract BossMonsterMchYoshka is
+contract TestBMMY is
   Initializable,
   ITestBM,
   AccessControlEnumerableUpgradeable,

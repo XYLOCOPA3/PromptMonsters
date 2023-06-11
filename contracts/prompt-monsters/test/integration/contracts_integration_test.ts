@@ -58,7 +58,7 @@ describe("Integration Test", function () {
     });
   });
 
-  describe("PromptMonsters", function () {
+  describe("TestPM", function () {
     describe("Main logic", function () {
       // it("Deployer generate resurrectionPrompt1", async function () {
       // let generatedMonster1 = await promptMonsters.getMonsterHistory(

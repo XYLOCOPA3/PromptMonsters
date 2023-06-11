@@ -8,7 +8,7 @@ async function dummy() {
   console.log("Deploying contracts with account: ", deployer.address);
 
   const PromptMonstersExtension = await ethers.getContractFactory(
-    "PromptMonstersExtension",
+    "TestPME",
   );
   const promptMonstersExtension = PromptMonstersExtension.attach(
     PROMPT_MONSTERS_EXTENSION_PROXY_ADDRESS,

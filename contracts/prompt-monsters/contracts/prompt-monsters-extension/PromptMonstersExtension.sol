@@ -12,7 +12,7 @@ import {ITestPME, ITestPM} from "./IPromptMonstersExtension.sol";
 /// @title PromptMonstersExtension
 /// @author keit (@keitEngineer)
 /// @dev This is a contract of PromptMonstersExtension.
-contract PromptMonstersExtension is
+contract TestPME is
   Initializable,
   ITestPME,
   AccessControlEnumerableUpgradeable,

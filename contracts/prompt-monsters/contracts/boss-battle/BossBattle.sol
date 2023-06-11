@@ -9,7 +9,7 @@ import {ITestBB, ITestBBE, ITestBM, ITestPME} from "./IBossBattle.sol";
 
 /// @title BossBattle
 /// @dev This is a contract of BossBattle.
-contract BossBattle is
+contract TestBB is
   Initializable,
   ITestBB,
   AccessControlEnumerableUpgradeable,

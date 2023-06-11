@@ -18,7 +18,7 @@ async function main() {
     BATTLE_OFF_SEASON_PROXY_ADDRESS,
   );
 
-  const BattleOffSeason = await ethers.getContractFactory("BattleOffSeason");
+  const BattleOffSeason = await ethers.getContractFactory("TestBOS");
   const battleOffSeasonProxy = await upgrades.upgradeProxy(
     BATTLE_OFF_SEASON_PROXY_ADDRESS,
     BattleOffSeason,

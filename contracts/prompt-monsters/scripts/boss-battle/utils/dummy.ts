@@ -7,7 +7,7 @@ async function dummy() {
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const BossBattle = await ethers.getContractFactory("BossBattle");
+  const BossBattle = await ethers.getContractFactory("TestBB");
   const bossBattleProxy = BossBattle.attach(BOSS_BATTLE_PROXY_ADDRESS);
 }
 

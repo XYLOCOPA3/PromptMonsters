@@ -12,7 +12,7 @@ import {ITestS} from "../stamina/IStamina.sol";
 
 /// @title Battle
 /// @dev This is a contract of Battle.
-contract Battle is
+contract TestB is
   Initializable,
   IBattle,
   AccessControlEnumerableUpgradeable,

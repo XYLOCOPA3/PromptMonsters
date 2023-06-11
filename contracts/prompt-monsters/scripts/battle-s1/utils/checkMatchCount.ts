@@ -2,7 +2,7 @@ import { BATTLE_S1_PROXY_ADDRESS } from "../../const";
 import { ethers } from "hardhat";
 
 export async function main() {
-  const BattleS1 = await ethers.getContractFactory("BattleS1");
+  const BattleS1 = await ethers.getContractFactory("TestBS1");
   const battles1 = BattleS1.attach(BATTLE_S1_PROXY_ADDRESS);
 
   const startBlockHeight = 21342240;

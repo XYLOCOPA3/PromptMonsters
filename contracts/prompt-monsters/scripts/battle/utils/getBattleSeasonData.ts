@@ -2,7 +2,7 @@ import { BATTLE_PROXY_ADDRESS } from "../../const";
 import { ethers } from "hardhat";
 
 export async function getSeasonBattleDataByMonsterId() {
-  const Battle = await ethers.getContractFactory("Battle");
+  const Battle = await ethers.getContractFactory("TestB");
 
   const battle = Battle.attach(BATTLE_PROXY_ADDRESS);
 

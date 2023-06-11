@@ -18,7 +18,7 @@ async function main() {
   console.log("Upgrade PromptMonstersExtensionProxy address: ", addr);
 
   const PromptMonstersExtension = await ethers.getContractFactory(
-    "PromptMonstersExtension",
+    "TestPME",
   );
   const promptMonstersExtensionProxy = await upgrades.upgradeProxy(
     addr,

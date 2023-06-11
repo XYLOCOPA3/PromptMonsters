@@ -6,7 +6,7 @@ async function main() {
   const monsterId = 25;
   const resurrectionPrompt = ethers.Wallet.createRandom().address;
 
-  const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
+  const PromptMonsters = await ethers.getContractFactory("TestPM");
   const promptMonsters = PromptMonsters.attach(PROMPT_MONSTERS_PROXY_ADDRESS);
   const beforeRp = (
     await promptMonsters.getResurrectionPrompts([monsterId])

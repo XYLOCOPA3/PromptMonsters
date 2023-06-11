@@ -6,7 +6,7 @@ import { ethers } from "hardhat";
 
 export async function main() {
   console.log("setPromptMonstersImage: ", PROMPT_MONSTERS_IMAGE_PROXY_ADDRESS);
-  const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
+  const PromptMonsters = await ethers.getContractFactory("TestPM");
   const promptMonsters = PromptMonsters.attach(PROMPT_MONSTERS_PROXY_ADDRESS);
   console.log("Before: ", await promptMonsters.getPromptMonstersImage());
   await (

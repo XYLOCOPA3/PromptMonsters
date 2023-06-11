@@ -10,7 +10,7 @@ import {ITestPM} from "../prompt-monsters/IPromptMonsters.sol";
 
 /// @title BattleOffSeason
 /// @dev This is a contract of BattleOffSeason.
-contract BattleOffSeason is
+contract TestBOS is
   Initializable,
   ITestBS,
   AccessControlEnumerableUpgradeable,

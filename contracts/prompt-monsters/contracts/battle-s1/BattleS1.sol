@@ -10,7 +10,7 @@ import {ITestPM} from "../prompt-monsters/IPromptMonsters.sol";
 
 /// @title BattleS1
 /// @dev This is a contract of BattleS1.
-contract BattleS1 is
+contract TestBS1 is
   Initializable,
   ITestBS,
   AccessControlEnumerableUpgradeable,

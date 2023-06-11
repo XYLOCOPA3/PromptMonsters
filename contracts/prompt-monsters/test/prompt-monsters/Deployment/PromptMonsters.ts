@@ -16,7 +16,7 @@ export async function deployPromptMonsters() {
     promptMonstersWallet: promptMonstersWallet.address,
   };
 
-  const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
+  const PromptMonsters = await ethers.getContractFactory("TestPM");
   const promptMonstersProxy = await upgrades.deployProxy(
     PromptMonsters,
     [

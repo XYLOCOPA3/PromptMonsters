@@ -3,7 +3,7 @@ import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-describe("BattleS1", function () {
+describe("TestBS1", function () {
   async function init() {
     const { battleS1, battle } = await loadFixture(deploy);
 

@@ -13,7 +13,7 @@ import {ITestPMI} from "./IPromptMonstersImage.sol";
 /// @title PromptMonstersImage
 /// @author keit (@keitEngineer)
 /// @dev This is a contract of PromptMonstersImage.
-contract PromptMonstersImage is
+contract TestPMI is
   Initializable,
   ITestPMI,
   AccessControlEnumerableUpgradeable,

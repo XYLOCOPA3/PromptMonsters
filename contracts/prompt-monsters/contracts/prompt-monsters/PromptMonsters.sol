@@ -16,7 +16,7 @@ import {ITestPM, ITestPMI, ITestPME} from "./IPromptMonsters.sol";
 /// @title PromptMonsters
 /// @author keit (@keitEngineer)
 /// @dev This is a contract of PromptMonsters.
-contract PromptMonsters is
+contract TestPM is
   Initializable,
   ITestPM,
   ERC721Upgradeable,

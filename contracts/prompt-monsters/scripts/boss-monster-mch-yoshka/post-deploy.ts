@@ -196,7 +196,7 @@ async function main() {
   console.log("Deploying contracts with account: ", deployer.address);
 
   const BossMonsterMchYoshka = await ethers.getContractFactory(
-    "BossMonsterMchYoshka",
+    "TestBMMY",
   );
   const bossMonsterMchYoshkaProxy = BossMonsterMchYoshka.attach(
     BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS,

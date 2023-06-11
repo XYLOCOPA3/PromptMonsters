@@ -39,7 +39,7 @@ async function main() {
 
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
+  const PromptMonsters = await ethers.getContractFactory("TestPM");
   const promptMonstersProxy = await upgrades.deployProxy(
     PromptMonsters,
     [
@@ -83,7 +83,7 @@ async function main() {
 
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const Battle = await ethers.getContractFactory("Battle");
+  const Battle = await ethers.getContractFactory("TestB");
   const battleProxy = await upgrades.deployProxy(Battle, [], {
     kind: "uups",
     initializer: "initialize",
@@ -112,7 +112,7 @@ async function main() {
 
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const BattleS1 = await ethers.getContractFactory("BattleS1");
+  const BattleS1 = await ethers.getContractFactory("TestBS1");
   const battleS1Proxy = await upgrades.deployProxy(
     BattleS1,
     [battleProxy.address],
