@@ -303,6 +303,11 @@ export const calcBossDamage = (
   turn: number,
 ): number => {
   if (!monsterHit) return 0;
+  if (
+    usedSkillType === EnumSkillType.none &&
+    otherSkillAction === EnumOtherSkillAction.none
+  )
+    return 0;
   if (usedSkillType === EnumSkillType.healing) return 0;
   if (otherSkillAction === EnumOtherSkillAction.absoluteDefense) return 0;
   if (otherSkillAction === EnumOtherSkillAction.fullHealing) return 0;

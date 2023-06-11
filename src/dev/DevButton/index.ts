@@ -1,1 +1,1 @@
-export * from "./DevButton";
+export * from "./DevBBResetButton";
