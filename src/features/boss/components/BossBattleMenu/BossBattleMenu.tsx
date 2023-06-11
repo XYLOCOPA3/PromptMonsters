@@ -85,17 +85,19 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                 <Dialog.Panel className="m-6 w-full max-w-2xl transform overflow-hidden rounded-2xl bg-[#272727] p-6 text-left align-middle shadow-xl transition-all border-[1px]">
                   <div className={clsx("w-[100%]", "h-[100%]", "relative")}>
                     <div className={clsx("font-bold", "text-[32px]")}>
-                      {tBossBattle("score")}
+                      {bossBattle.defeated ? <></> : tBossBattle("score")}
                     </div>
                     <div
                       className={clsx(
                         "font-bold",
-                        "text-[96px]",
-                        "text-[#79FF63]",
+                        bossBattle.defeated ? "text-[48px]" : "text-[96px]",
+                        bossBattle.defeated ? "" : "text-[#79FF63]",
                         "text-center",
                       )}
                     >
-                      {bossBattle.score}
+                      {bossBattle.defeated
+                        ? tBossBattle("lose")
+                        : bossBattle.score}
                     </div>
                     <div
                       className={clsx(
@@ -104,11 +106,19 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                         "items-center",
                       )}
                     >
-                      <div
-                        className={clsx("font-bold", "text-[32px]", "text-end")}
-                      >
-                        {tBossBattle("updatedHighScore")}
-                      </div>
+                      {bossBattle.defeated ? (
+                        <div className={clsx()}></div>
+                      ) : (
+                        <div
+                          className={clsx(
+                            "font-bold",
+                            "text-[32px]",
+                            "text-end",
+                          )}
+                        >
+                          {tBossBattle("updatedHighScore")}
+                        </div>
+                      )}
                       <BossBattleOKButton
                         className={clsx("px-[30px]", "text-[20px]")}
                         onClick={closeModal}

@@ -19,6 +19,7 @@
   "defensed": "monsterName は ぼうぎょ している。",
   "score": "スコア",
   "turn": "ターン",
+  "lose": "まけ...",
   "updatedHighScore": "ハイスコア更新！",
   "monsterHeal": "monsterName は healing 回復した。",
   "monsterOtherPhysicalAttack": "bossName に向かって突進した！",

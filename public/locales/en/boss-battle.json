@@ -19,6 +19,7 @@
   "defensed": "monsterName is defensing.",
   "score": "SCORE",
   "turn": "TURN",
+  "lose": "You lose...",
   "updatedHighScore": "New high score!",
   "monsterHeal": "monsterName has recovered with healing!",
   "monsterOtherPhysicalAttack": "monsterName charged towards bossName!",
