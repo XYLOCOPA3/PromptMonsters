@@ -148,12 +148,12 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @param resurrectionPrompts resurrection prompts
   /// @return returnValue resurrection prompts
   function getTokenIds(
-    address[] memory resurrectionPrompts
+    address[] calldata resurrectionPrompts
   ) external view returns (uint256[] memory returnValue);
 
   /// @dev Get _promptMonstersImage
   /// @return returnValue _promptMonstersImage
-  function getPromptMonstersImage() external view returns (address returnValue);
+  function getPromptMonstersImage() external view returns (IPromptMonstersImage returnValue);
 
   /// @dev Get _paused
   /// @return returnValue _paused
@@ -170,7 +170,7 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @param monsterIds_ monster IDs
   /// @return returnValue resurrection prompts
   function getResurrectionPrompts(
-    uint256[] memory monsterIds_
+    uint256[] calldata monsterIds_
   ) external view returns (address[] memory returnValue);
 
   /// @dev Get _promptMonstersExtension
@@ -246,7 +246,7 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @param resurrectionPrompts_ resurrection prompts
   /// @return monsterExtensions monster extensions
   function getMonsterExtensions(
-    address[] memory resurrectionPrompts_
+    address[] calldata resurrectionPrompts_
   )
     external
     view
@@ -272,6 +272,6 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @param tokenIds token IDs
   /// @return monsters monsters
   function getMonsters(
-    uint256[] memory tokenIds
+    uint256[] calldata tokenIds
   ) external view returns (IPromptMonsters.Monster[] memory monsters);
 }

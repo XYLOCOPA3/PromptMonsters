@@ -176,7 +176,7 @@ contract PromptMonsters is
   /// @param resurrectionPrompts resurrection prompts
   /// @return returnValue resurrection prompts
   function getTokenIds(
-    address[] memory resurrectionPrompts
+    address[] calldata resurrectionPrompts
   ) external view returns (uint256[] memory returnValue) {
     uint256 resurrectionPromptsLength = resurrectionPrompts.length;
     returnValue = new uint256[](resurrectionPromptsLength);
@@ -193,9 +193,9 @@ contract PromptMonsters is
   function getPromptMonstersImage()
     external
     view
-    returns (address returnValue)
+    returns (IPromptMonstersImage returnValue)
   {
-    returnValue = _promptMonstersWallet;
+    returnValue = _promptMonstersImage;
   }
 
   /// @dev Get _paused
@@ -208,7 +208,7 @@ contract PromptMonsters is
   /// @param resurrectionPrompts resurrection prompts
   /// @return returnValue minteds
   function getMinteds(
-    address[] memory resurrectionPrompts
+    address[] calldata resurrectionPrompts
   ) external view returns (bool[] memory returnValue) {
     uint256 resurrectionPromptsLength = resurrectionPrompts.length;
     returnValue = new bool[](resurrectionPromptsLength);
@@ -224,7 +224,7 @@ contract PromptMonsters is
   /// @param monsterIds_ monster IDs
   /// @return returnValue resurrection prompts
   function getResurrectionPrompts(
-    uint256[] memory monsterIds_
+    uint256[] calldata monsterIds_
   ) external view returns (address[] memory returnValue) {
     uint256 monsterIdsLength = monsterIds_.length;
     returnValue = new address[](monsterIdsLength);
@@ -349,7 +349,7 @@ contract PromptMonsters is
     emit GeneratedMonsterV2(resurrectionPrompt_, monster_);
   }
 
-  /// @dev Mint monster by admin
+  /// @dev Mint monster by user
   /// @param resurrectionPrompt resurrection prompt
   function mint(address resurrectionPrompt) external whenNotPaused {
     require(
@@ -401,7 +401,7 @@ contract PromptMonsters is
   /// @param resurrectionPrompts_ resurrection prompts
   /// @return monsterExtensions monster extensions
   function getMonsterExtensions(
-    address[] memory resurrectionPrompts_
+    address[] calldata resurrectionPrompts_
   )
     external
     view
@@ -415,7 +415,7 @@ contract PromptMonsters is
       address rp = resurrectionPrompts_[i];
       monsterExtensions[i] = _promptMonstersExtension.getMonsterExtension(
         rp,
-        _monsterHistoryMap[resurrectionPrompts_[i]]
+        _monsterHistoryMap[rp]
       );
       unchecked {
         ++i;
@@ -508,6 +508,7 @@ contract PromptMonsters is
     IPromptMonsters.Monster memory oldState = _monsterHistoryMap[
       resurrectionPrompt
     ];
+    require(oldState.lv == 0, "PromptMonsters: monster is already generated");
     _monsterHistoryMap[resurrectionPrompt] = newState_;
     emit SetMonsterHistory(_msgSender(), oldState, newState_);
   }
@@ -520,6 +521,10 @@ contract PromptMonsters is
     address resurrectionPrompt
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     address oldState = _tokenIdToResurrectionPromptMap[tokenId];
+    require(
+      oldState == address(0),
+      "PromptMonsters: monster is already minted"
+    );
     _tokenIdToResurrectionPromptMap[tokenId] = resurrectionPrompt;
     emit SetTokenIdToResurrectionPromptMap(
       _msgSender(),
@@ -532,7 +537,7 @@ contract PromptMonsters is
   /// @param tokenIds token IDs
   /// @return monsters monsters
   function getMonsters(
-    uint256[] memory tokenIds
+    uint256[] calldata tokenIds
   ) external view returns (IPromptMonsters.Monster[] memory monsters) {
     uint256 length = tokenIds.length;
     monsters = new IPromptMonsters.Monster[](length);

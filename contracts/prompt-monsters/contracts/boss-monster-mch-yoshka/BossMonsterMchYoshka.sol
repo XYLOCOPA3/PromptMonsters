@@ -98,7 +98,7 @@ contract BossMonsterMchYoshka is
     for (uint i; i < length; ) {
       skillTypes[i] = _skillTypes[boss.skills[i]];
       unchecked {
-        i++;
+        ++i;
       }
     }
 
@@ -167,7 +167,7 @@ contract BossMonsterMchYoshka is
         break;
       }
       unchecked {
-        i++;
+        ++i;
       }
     }
     require(included, "BossMonsterMchYoshka: language not included");
@@ -181,8 +181,8 @@ contract BossMonsterMchYoshka is
   /// @param skills skills
   /// @param skillTypes skillTypes
   function setSkillTypes(
-    string[] memory skills,
-    uint32[] memory skillTypes
+    string[] calldata skills,
+    uint32[] calldata skillTypes
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     uint256 length = skills.length;
     require(
@@ -194,7 +194,7 @@ contract BossMonsterMchYoshka is
       oldValue[i] = _skillTypes[skills[i]];
       _skillTypes[skills[i]] = skillTypes[i];
       unchecked {
-        i++;
+        ++i;
       }
     }
 

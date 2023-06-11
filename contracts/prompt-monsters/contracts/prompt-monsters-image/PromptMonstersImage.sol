@@ -96,8 +96,8 @@ contract PromptMonstersImage is
   /// @param tokenIds_ token ID
   /// @param newStates_ new state
   function setBatchImageURL(
-    uint256[] memory tokenIds_,
-    string[] memory newStates_
+    uint256[] calldata tokenIds_,
+    string[] calldata newStates_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     require(tokenIds_.length == newStates_.length, "Invalid length");
     for (uint256 i; i < tokenIds_.length; ) {
