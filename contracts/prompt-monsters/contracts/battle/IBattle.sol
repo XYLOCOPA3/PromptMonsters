@@ -5,7 +5,7 @@ import {ITestBS} from "../interfaces/IBattleSeason.sol";
 
 /// @title IBattle
 /// @dev This is an interface of Battle.
-interface IBattle {
+interface ITestB {
   // --------------------------------------------------------------------------------
   // Struct
   // --------------------------------------------------------------------------------

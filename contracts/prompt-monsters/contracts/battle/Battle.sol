@@ -5,7 +5,7 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
-import {IBattle} from "./IBattle.sol";
+import {ITestB} from "./IBattle.sol";
 import {ITestBS} from "../interfaces/IBattleSeason.sol";
 import {ITestPM} from "../prompt-monsters/IPromptMonsters.sol";
 import {ITestS} from "../stamina/IStamina.sol";
@@ -14,7 +14,7 @@ import {ITestS} from "../stamina/IStamina.sol";
 /// @dev This is a contract of Battle.
 contract TestB is
   Initializable,
-  IBattle,
+  ITestB,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
 {
