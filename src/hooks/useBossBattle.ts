@@ -4,6 +4,7 @@ import { BossBattleModel } from "@/models/BossBattleModel";
 import { MonsterModel } from "@/models/MonsterModel";
 import { BossBattleState, bossBattleState } from "@/stores/bossBattleState";
 import { BBState } from "@/types/BBState";
+import { EnumBossBattleMsg } from "@/types/EnumBossBattleMsg";
 import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
 import { EnumItem } from "@/types/EnumItem";
 import {
@@ -42,8 +43,12 @@ export interface BossBattleController {
     bossSkills: string[],
   ) => Promise<void>;
   defense: (resurrectionPrompt: string, bossSkills: string[]) => Promise<void>;
+  useItem: (
+    resurrectionPrompt: string,
+    usedItemId: number,
+    bossSkills: string[],
+  ) => Promise<void>;
   setItemId: (itemId: number) => Promise<void>;
-  useItem: (itemId: number) => Promise<void>;
   nextResultMsg: () => Promise<void>;
   continueBossBattle: (resurrectionPrompt: string) => Promise<void>;
 }
@@ -237,16 +242,36 @@ export const useBossBattleController = (): BossBattleController => {
     const bossDamage = res.data.bossDamage;
     const bossSign = res.data.bossSign;
     const usedSkillType = res.data.usedSkillType;
+    const droppedItemId = res.data.droppedItemId;
     const defensed = false;
 
     gCurrentMonsterDamage = monsterDamage;
     gCurrentBossDamage = bossDamage;
     gCurrentHealing = healing;
 
-    // TODO: アイテムドロップ判定
-    gDroppedItemId = 0;
+    let newResultMsgIds = getResultMsgIds(
+      EnumItem.none,
+      bossAction,
+      usedSkillType,
+      otherSkillAction,
+      defensed,
+    );
+    if (droppedItemId !== EnumItem.none)
+      newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
 
     setBossBattle((prevState) => {
+      let newResultMsgIds = getResultMsgIds(
+        EnumItem.none,
+        bossAction,
+        usedSkillType,
+        otherSkillAction,
+        defensed,
+      );
+      let newItemIds = prevState.itemIds;
+      if (droppedItemId !== EnumItem.none) {
+        newItemIds = [...newItemIds, droppedItemId];
+        newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
+      }
       return prevState.copyWith({
         phase: EnumBossBattlePhase.result,
         usedMonsterSkill: skill,
@@ -256,14 +281,9 @@ export const useBossBattleController = (): BossBattleController => {
         currentHealing: healing,
         currentMonsterHit: monsterHit,
         currentBossHit: bossHit,
-        resultMsgIds: getResultMsgIds(
-          EnumItem.none,
-          bossAction,
-          usedSkillType,
-          otherSkillAction,
-          defensed,
-        ),
-        droppedItemId: gDroppedItemId,
+        resultMsgIds: newResultMsgIds,
+        droppedItemId: droppedItemId,
+        itemIds: newItemIds,
       });
     });
   };
@@ -298,6 +318,7 @@ export const useBossBattleController = (): BossBattleController => {
     const bossDamage = res.data.bossDamage;
     const bossSign = res.data.bossSign;
     const usedSkillType = res.data.usedSkillType;
+    const droppedItemId = res.data.droppedItemId;
     const defensed = true;
 
     gUsedBossSkill = usedSkillType;
@@ -306,6 +327,18 @@ export const useBossBattleController = (): BossBattleController => {
     gCurrentHealing = healing;
 
     setBossBattle((prevState) => {
+      let newResultMsgIds = getResultMsgIds(
+        EnumItem.none,
+        bossAction,
+        usedSkillType,
+        otherSkillAction,
+        defensed,
+      );
+      let newItemIds = prevState.itemIds;
+      if (droppedItemId !== EnumItem.none) {
+        newItemIds = [...newItemIds, droppedItemId];
+        newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
+      }
       return prevState.copyWith({
         phase: EnumBossBattlePhase.result,
         usedMonsterSkill: "",
@@ -315,15 +348,84 @@ export const useBossBattleController = (): BossBattleController => {
         currentHealing: healing,
         currentMonsterHit: monsterHit,
         currentBossHit: bossHit,
-        resultMsgIds: getResultMsgIds(
-          EnumItem.none,
-          bossAction,
-          usedSkillType,
-          otherSkillAction,
-          defensed,
-        ),
-        droppedItemId: gDroppedItemId,
+        resultMsgIds: newResultMsgIds,
+        droppedItemId: droppedItemId,
         defensed: defensed,
+        itemIds: newItemIds,
+      });
+    });
+  };
+
+  /**
+   * useItem
+   * @param usedItemId itemId
+   */
+  const useItem = async (
+    resurrectionPrompt: string,
+    usedItemId: number,
+    bossSkills: string[],
+  ): Promise<void> => {
+    let res: any;
+    try {
+      res = await axios.post("/api/boss/use-item", {
+        resurrectionPrompt,
+        usedItemId,
+      });
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.response!.status === 500) return e.response!.data.battleResult;
+        throw new Error(e.response!.data.message);
+      }
+      console.error(e);
+      throw new Error("Unknown Error");
+    }
+
+    const bossAction = res.data.bossAction;
+    const otherSkillAction = res.data.otherSkillAction;
+    const monsterHit = res.data.monsterHit;
+    const bossHit = res.data.bossHit;
+    const healing = res.data.healing;
+    const monsterDamage = res.data.monsterDamage;
+    const bossDamage = res.data.bossDamage;
+    const bossSign = res.data.bossSign;
+    const usedSkillType = res.data.usedSkillType;
+    const droppedItemId = res.data.droppedItemId;
+    const defensed = false;
+
+    gUsedBossSkill = usedSkillType;
+    gCurrentMonsterDamage = monsterDamage;
+    gCurrentBossDamage = bossDamage;
+    gCurrentHealing = healing;
+
+    setBossBattle((prevState) => {
+      let newResultMsgIds = getResultMsgIds(
+        usedItemId,
+        bossAction,
+        usedSkillType,
+        otherSkillAction,
+        defensed,
+      );
+      let newItemIds = prevState.itemIds.filter(
+        (itemId) => itemId !== usedItemId,
+      );
+      if (droppedItemId !== EnumItem.none) {
+        newItemIds = [...newItemIds, droppedItemId];
+        newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
+      }
+      return prevState.copyWith({
+        phase: EnumBossBattlePhase.result,
+        usedMonsterSkill: "",
+        usedBossSkill: getBossSkill(bossSkills, bossSign, bossAction),
+        currentMonsterDamage: monsterDamage,
+        currentBossDamage: bossDamage,
+        currentHealing: healing,
+        currentMonsterHit: monsterHit,
+        currentBossHit: bossHit,
+        resultMsgIds: newResultMsgIds,
+        droppedItemId: droppedItemId,
+        defensed: defensed,
+        itemIds: newItemIds,
+        usedItemId: usedItemId,
       });
     });
   };
@@ -338,51 +440,6 @@ export const useBossBattleController = (): BossBattleController => {
         setItemId: itemId,
       });
     });
-  };
-
-  /**
-   * useItem
-   * @param itemId itemId
-   */
-  const useItem = async (itemId: number): Promise<void> => {
-    // TODO: アイテム使用リクエスト
-    const result = { lifePoint: 400 };
-
-    const results = await _getBossActionResult();
-    gUsedBossSkill = results.usedBossSkill;
-    gCurrentMonsterDamage = results.monsterDamage;
-    gDroppedItemId = results.droppedItemId;
-    gBossSign = results.bossNextActionSignIndex;
-
-    switch (itemId) {
-      case EnumItem.buff:
-        // TODO: アイテム効果反映
-        setBossBattle((prevState) => {
-          return prevState.copyWith({
-            setItemId: -1,
-          });
-        });
-        break;
-      case EnumItem.debuff:
-        // TODO: アイテム効果反映
-        break;
-      case EnumItem.healing:
-        setBossBattle((prevState) => {
-          return prevState.copyWith({
-            phase: EnumBossBattlePhase.itemResult,
-            lp: result.lifePoint,
-            setItemId: -1,
-            itemIds: prevState.itemIds.filter((id) => id !== itemId),
-            usedItemId: itemId,
-          });
-        });
-        break;
-      case EnumItem.escape:
-        // TODO: アイテム効果反映
-        break;
-      default:
-        break;
-    }
   };
 
   /**
@@ -411,6 +468,20 @@ export const useBossBattleController = (): BossBattleController => {
           : prevState.score,
         lp: newLp,
       });
+      // TODO: 脱出アイテムの仕様次第でこっち使う
+      // return prevState.copyWith({
+      //   phase:
+      //     newResultMsgIds.length === 0
+      //       ? prevState.usedItemId === EnumItem.escape
+      //         ? EnumBossBattlePhase.end
+      //         : EnumBossBattlePhase.continue
+      //       : prevState.phase,
+      //   resultMsgIds: newResultMsgIds,
+      //   score: isDamageBoss(prevResultMsgId)
+      //     ? prevState.score + gCurrentBossDamage
+      //     : prevState.score,
+      //   lp: newLp,
+      // });
     });
     return;
   };
@@ -451,6 +522,7 @@ export const useBossBattleController = (): BossBattleController => {
         currentMonsterHit: false,
         currentBossHit: false,
         defensed: false,
+        setItemId: EnumItem.none,
       });
     });
   };
@@ -467,8 +539,8 @@ export const useBossBattleController = (): BossBattleController => {
     changePhase,
     useSkill,
     defense,
-    setItemId,
     useItem,
+    setItemId,
     nextResultMsg,
     continueBossBattle,
   };
