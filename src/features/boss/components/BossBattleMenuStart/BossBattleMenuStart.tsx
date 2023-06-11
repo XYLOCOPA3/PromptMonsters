@@ -1,4 +1,5 @@
 import { Button } from "@/components/elements/Button";
+import { BOSS_BATTLE_START } from "@/const/bossBattle";
 import {
   getBossAppearedMsg,
   getBossNextActionSignMsg,
@@ -85,7 +86,7 @@ export const BossBattleMenuStart = ({
           "border-[1px]",
         )}
       >
-        {bossBattle.turn === 0 ? (
+        {bossBattle.turn === BOSS_BATTLE_START ? (
           <>
             {getBossAppearedMsg(boss.name, tBossBattle("bossAppeared"))}
             <br />

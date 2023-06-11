@@ -9,6 +9,7 @@ import {
   BossBattleMenuFightResult,
   BossBattleMenuItem,
   BossBattleMenuItemResult,
+  BossBattleMenuResult,
   BossBattleMenuStart,
   BossBattleOKButton,
 } from "@/features/boss";
@@ -17,7 +18,7 @@ import { useBossBattleValue } from "@/hooks/useBossBattle";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { BaseProps } from "@/types/BaseProps";
-import { BossBattlePhase } from "@/types/BossBattlePhase";
+import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
 import { Dialog, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
@@ -43,7 +44,7 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
   };
 
   useLayoutEffectOfSSR(() => {
-    if (bossBattle.phase === BossBattlePhase.end) setIsOpen(true);
+    if (bossBattle.phase === EnumBossBattlePhase.end) setIsOpen(true);
   }, [bossBattle.phase]);
 
   if (boss.name === "" || boss.flavor === "") return <></>;
@@ -208,21 +209,23 @@ const MonsterNameAndUserLifePoint = ({ name, lifePoint }: any) => {
  */
 const Menu = ({ phase }: any) => {
   switch (phase) {
-    case BossBattlePhase.start:
+    case EnumBossBattlePhase.start:
       return <BossBattleMenuStart />;
-    case BossBattlePhase.fightSelect:
+    case EnumBossBattlePhase.fightSelect:
       return <BossBattleMenuFight />;
-    case BossBattlePhase.fightResult:
+    case EnumBossBattlePhase.result:
+      return <BossBattleMenuResult />;
+    case EnumBossBattlePhase.fightResult:
       return <BossBattleMenuFightResult />;
-    case BossBattlePhase.defenseResult:
+    case EnumBossBattlePhase.defenseResult:
       return <BossBattleMenuDefenseResult />;
-    case BossBattlePhase.itemSelect:
+    case EnumBossBattlePhase.itemSelect:
       return <BossBattleMenuItem />;
-    case BossBattlePhase.itemResult:
+    case EnumBossBattlePhase.itemResult:
       return <BossBattleMenuItemResult />;
-    case BossBattlePhase.bossActionResult:
+    case EnumBossBattlePhase.bossActionResult:
       return <BossBattleMenuBossActionResult />;
-    case BossBattlePhase.continue:
+    case EnumBossBattlePhase.continue:
       return <BossBattleMenuContinue />;
     default:
       return <></>;

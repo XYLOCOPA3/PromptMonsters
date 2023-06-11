@@ -17,16 +17,50 @@ export const getMonsterUsedSkillMsg = (
     .replace("skillName", skillName);
 };
 
-export const getMonsterDamagedMsg = (
+export const getMonsterOtherHealMsg = (
   monsterName: string,
-  monsterDamaged: number,
+  msg: string,
+): string => {
+  return msg.replace("monsterName", monsterName);
+};
+
+export const getMonsterOtherPhysicalAttack = (
+  monsterName: string,
+  bossName: string,
+  monsterOtherPhysicalAttackMsg: string,
+): string => {
+  return monsterOtherPhysicalAttackMsg
+    .replace("monsterName", monsterName)
+    .replace("bossName", bossName);
+};
+
+export const getMonsterOtherPowerPhysicalAttack = (
+  monsterName: string,
+  monsterOtherPowerPhysicalAttackMsg: string,
+): string => {
+  return monsterOtherPowerPhysicalAttackMsg.replace("monsterName", monsterName);
+};
+
+export const getBossDamageMsg = (
+  monsterName: string,
+  bossDamage: number,
   bossName: string,
   monsterDamagedMsg: string,
 ): string => {
   return monsterDamagedMsg
     .replace("monsterName", monsterName)
-    .replace("monsterDamaged", monsterDamaged.toString())
+    .replace("bossDamage", bossDamage.toString())
     .replace("bossName", bossName);
+};
+
+export const getMonsterHealMsg = (
+  monsterName: string,
+  healing: number,
+  monsterHealMsg: string,
+): string => {
+  return monsterHealMsg
+    .replace("monsterName", monsterName)
+    .replace("healing", healing.toString());
 };
 
 export const getBossUsedSkillMsg = (
@@ -39,16 +73,38 @@ export const getBossUsedSkillMsg = (
     .replace("bossSkillName", bossSkillName);
 };
 
+export const getBossPreCounterAttackMsg = (
+  bossName: string,
+  bossPreCounterAttackMsg: string,
+): string => {
+  return bossPreCounterAttackMsg.replace("bossName", bossName);
+};
+
 export const getBossDamagedMsg = (
   bossName: string,
-  bossDamaged: number,
+  monsterDamage: number,
   monsterName: string,
-  bossDamagedMsg: string,
+  monsterDamageMsg: string,
 ): string => {
-  return bossDamagedMsg
+  return monsterDamageMsg
     .replace("bossName", bossName)
-    .replace("bossDamaged", bossDamaged.toString())
+    .replace("monsterDamage", monsterDamage.toString())
     .replace("monsterName", monsterName);
+};
+
+export const getBossBuffMsg = (bossName: string, msg: string): string => {
+  return msg.replace("bossName", bossName);
+};
+
+export const getBossDebuffMsg = (monsterName: string, msg: string): string => {
+  return msg.replace("monsterName", monsterName);
+};
+
+export const getBuffDebuffBossMissMsg = (
+  bossName: string,
+  bossBuffDebuffMissMsg: string,
+): string => {
+  return bossBuffDebuffMissMsg.replace("bossName", bossName);
 };
 
 export const getDroppedItemMsg = (
@@ -62,13 +118,14 @@ export const getDroppedItemMsg = (
 };
 
 export const getBossNextActionSignMsg = (
-  bossNextActionSignIndex: number,
+  bossSign: number,
   language: "日本語" | "English",
   bossName: string,
 ): string => {
-  return BOSS_NEXT_ACTION_SIGNS["mch"][language][
-    bossNextActionSignIndex
-  ].replace("bossName", bossName);
+  return BOSS_NEXT_ACTION_SIGNS["mch"][language][bossSign].replace(
+    "bossName",
+    bossName,
+  );
 };
 
 export const getUsedItemMsg = (
@@ -96,4 +153,8 @@ export const getDefensedMsg = (
   defensedMsg: string,
 ): string => {
   return defensedMsg.replace("monsterName", monsterName);
+};
+
+export const getBossDefensedMsg = (bossName: string, msg: string): string => {
+  return msg.replace("bossName", bossName);
 };

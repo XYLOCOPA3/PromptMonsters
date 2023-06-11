@@ -1,6 +1,9 @@
 import { ServerWallet } from "@/lib/wallet";
 import { BossBattle, BossBattle__factory } from "@/typechain";
-import { IBossBattleEvent } from "@/typechain/BossBattle";
+import {
+  IBossBattleEvent,
+  IPromptMonstersExtension,
+} from "@/typechain/BossBattle";
 import { BBState } from "@/types/BBState";
 import { MonsterAdj } from "@/types/MonsterAdj";
 import { ethers } from "ethers";
@@ -85,6 +88,60 @@ export class ServerBossBattle {
         bossSign,
       )
     ).wait();
+  };
+
+  /**
+   * updateBossBattleResult
+   * @param resurrectionPrompt resurrection prompt
+   * @return {Promise<ethers.ContractReceipt>} contract receipt
+   */
+  updateBossBattleResult = async (
+    eventKey: string,
+    bbeId: number,
+    resurrectionPrompt: string,
+    bbState: BBState,
+  ): Promise<ethers.ContractReceipt> => {
+    return await (
+      await this._contract.updateBossBattleResult(
+        eventKey,
+        bbeId,
+        resurrectionPrompt,
+        bbState,
+      )
+    ).wait();
+  };
+
+  /**
+   * continueBossBattle
+   * @param resurrectionPrompt resurrection prompt
+   * @return {Promise<ethers.ContractReceipt>} contract receipt
+   */
+  continueBossBattle = async (
+    eventKey: string,
+    bbeId: number,
+    resurrectionPrompt: string,
+    bossSign: number,
+  ): Promise<ethers.ContractReceipt> => {
+    return await (
+      await this._contract.continueBossBattle(
+        eventKey,
+        bbeId,
+        resurrectionPrompt,
+        bossSign,
+      )
+    ).wait();
+  };
+
+  /**
+   * getBossExtension
+   * @return {Promise<MonsterAdj>} monsterAdj
+   */
+  getBossExtension = async (
+    eventKey: string,
+    bbeId: number,
+    language: string,
+  ): Promise<IPromptMonstersExtension.MonsterExtensionStructOutput> => {
+    return await this._contract.getBossExtension(eventKey, bbeId, language);
   };
 
   /**
