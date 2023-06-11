@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Link from "next/link";
 import { GenerateButton } from "@/features/monster";
 import { LanguageSwitch } from "@/features/note/components/LanguageSwitch";
 import { useMintPriceValue } from "@/hooks/useMintPrice";
@@ -76,31 +75,9 @@ export const PlayNote = ({ className }: PlayNoteProps) => {
       </div>
       <div className={clsx("mb-2")}>
         {language === "EN"
-          ? `Converting to an NFT allows you to save the monster's battle record and participate in campaigns.`
-          : `NFTに変換すると、モンスターの戦績を保存したり、キャンペーンに参加することができます。`}
+          ? `Converting to an NFT allows you to save the monster's battle record.`
+          : `NFTに変換すると、モンスターの戦績を保存することができます。`}
       </div>
-      <br />
-      <div className={clsx("mb-2", "font-bold")}>
-        {language === "EN"
-          ? `Details of the 10 OAS per mint giveaway and the 5,300 OAS season ranking campaign can be found below ↓`
-          : `1ミントあたり10 OAS貰えるキャンペーンや、総額5,300 OASのランキングキャンペーンの詳細はこちら↓`}
-      </div>
-      <Link
-        className={clsx(
-          "mb-2",
-          "text-blue-500",
-          "hover:underline",
-          "font-bold",
-        )}
-        href={
-          language === "EN"
-            ? "https://promptmonsters.substack.com/p/ai-powered-blockchain-game-prompt"
-            : "https://prtimes.jp/main/html/rd/p/000000009.000107796.html"
-        }
-      >
-        {language === "EN" ? "Campaign details" : "キャンペーン詳細"}
-      </Link>
-      <br />
       <br />
       <div className={clsx("mb-2")}>
         {language === "EN"
