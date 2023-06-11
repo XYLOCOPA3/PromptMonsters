@@ -6,6 +6,7 @@ import { RPC_URL } from "@/lib/wallet";
 import { EventKey } from "@/types/EventKey";
 import {
   getBossSign,
+  getInitialBBState,
   initMonsterAdj,
   isInvalidMonsterAdj,
 } from "@/utils/bossBattleUtils";
@@ -37,31 +38,44 @@ export default async function handler(
       bossBattle.getMonsterAdj(eventKey!, bbeId, resurrectionPrompt),
       bossBattle.getBBState(eventKey!, bbeId, resurrectionPrompt),
     ]);
+    const monsterExtension = results[0][0];
+    const monsterAdj = results[1];
+    const bbState = results[2];
+    console.log("monsterExtension: ", monsterExtension);
+    console.log("monsterAdj: ", monsterAdj);
+    console.log("bbState: ", bbState);
 
     // スキルタイプチェック
-    const monsterExtension = results[0][0];
     if (hasUnknownSkill(monsterExtension.skillTypes))
       return res.status(400).json({
         message: "This monster has unknown skill",
       });
 
     // 補正値チェック
-    const monsterAdj = results[1];
     if (isInvalidMonsterAdj(monsterAdj))
       return res.status(400).json({
         message: "This monster has no monsterAdj",
       });
 
     // BBStateチェック
-    const bbState = results[2];
     if (bbState.bossBattleStarted)
       return res.status(400).json({
         message: "Boss battle has already started",
       });
 
-    // スタート処理
+    // モンスター補正値計算
     const calculatedMonsterAdj = initMonsterAdj(monsterAdj);
-    const bossSign = getBossSign();
+    console.log("calculatedMonsterAdj: ", calculatedMonsterAdj);
+
+    // ボス前兆確定
+    let bossSign = 0;
+    while (true) {
+      bossSign = getBossSign();
+      if (bossSign >= 10) break;
+    }
+    console.log("bossSign: ", bossSign);
+
+    // ボスバトル開始
     await bossBattle.startBossBattle(
       eventKey!,
       bbeId,
@@ -70,11 +84,10 @@ export default async function handler(
       bossSign,
     );
 
-    const newBBState = await bossBattle.getBBState(
-      eventKey!,
-      bbeId,
-      resurrectionPrompt,
-    );
+    // BBState取得
+    const newBBState = getInitialBBState(calculatedMonsterAdj, bossSign);
+    console.log("newBBState: ", newBBState);
+
     return res.status(200).json({ newBBState });
   } catch (error) {
     if (error instanceof Error) {

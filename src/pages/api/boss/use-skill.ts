@@ -175,7 +175,7 @@ export default async function handler(
     console.log("newBossAdj: ", newBossAdj);
 
     // BBState更新
-    const newBbState: BBState = {
+    const newBBState: BBState = {
       bossBattleStarted: bbState.bossBattleStarted,
       bossBattleContinued: bbState.bossBattleContinued,
       lp: lp,
@@ -193,12 +193,13 @@ export default async function handler(
       eventKey,
       bbeId,
       resurrectionPrompt,
-      newBbState,
+      newBBState,
     );
-    console.log("newBbState: ", newBbState);
+    console.log("newBBState: ", newBBState);
 
+    // TODO: newBBStateだけを渡すよう統一する
     return res.status(200).json({
-      newBbState,
+      newBBState,
       bossAction,
       otherSkillAction,
       monsterHit,
@@ -206,7 +207,7 @@ export default async function handler(
       healing,
       monsterDamage,
       bossDamage,
-      bossSign: newBbState.bossSign,
+      bossSign: newBBState.bossSign,
       usedSkillType,
     });
   } catch (error) {

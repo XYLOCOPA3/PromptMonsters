@@ -110,6 +110,28 @@ export class ServerBossBattle {
       )
     ).wait();
   };
+
+  /**
+   * continueBossBattle
+   * @param resurrectionPrompt resurrection prompt
+   * @return {Promise<ethers.ContractReceipt>} contract receipt
+   */
+  continueBossBattle = async (
+    eventKey: string,
+    bbeId: number,
+    resurrectionPrompt: string,
+    bossSign: number,
+  ): Promise<ethers.ContractReceipt> => {
+    return await (
+      await this._contract.continueBossBattle(
+        eventKey,
+        bbeId,
+        resurrectionPrompt,
+        bossSign,
+      )
+    ).wait();
+  };
+
   /**
    * getBossExtension
    * @return {Promise<MonsterAdj>} monsterAdj
