@@ -35,7 +35,6 @@ export interface BossBattleController {
   moveUserActionResult: () => Promise<void>;
   moveBossActionResult: () => Promise<void>;
   moveContinue: () => Promise<void>;
-  moveEnd: (lifePoint: number) => Promise<void>;
   changePhase: (phase: EnumBossBattlePhase) => Promise<void>;
   useSkill: (
     resurrectionPrompt: string,
@@ -51,6 +50,7 @@ export interface BossBattleController {
   setItemId: (itemId: number) => Promise<void>;
   nextResultMsg: () => Promise<void>;
   continueBossBattle: (resurrectionPrompt: string) => Promise<void>;
+  end: (resurrectionPrompt: string) => Promise<void>;
 }
 
 export const useBossBattleValue = (): BossBattleState => {
@@ -72,17 +72,10 @@ export const useBossBattleController = (): BossBattleController => {
     const skillTypes = results[0];
     const bbState = await startBossBattle(monster.resurrectionPrompt);
 
-    gUsedBossSkill = "";
-    gCurrentMonsterDamage = 0;
-    gCurrentBossDamage = 0;
-    gCurrentHealing = 0;
-    gDroppedItemId = -1;
-    gBossSign = 0;
+    _initGlobalParam();
 
     setBossBattle(
       BossBattleModel.create({
-        bossBattleStarted: bbState.bossBattleStarted,
-        bossBattleContinued: bbState.bossBattleContinued,
         lp: bbState.lp,
         turn: bbState.turn,
         score: bbState.score,
@@ -181,22 +174,6 @@ export const useBossBattleController = (): BossBattleController => {
         bossSign: gBossSign,
       });
     });
-  };
-
-  /**
-   * moveEnd
-   */
-  const moveEnd = async (lifePoint: number): Promise<void> => {
-    if (lifePoint > 0) {
-      // TODO: スコア更新リクエスト
-    }
-    setBossBattle((prevState) => {
-      return prevState.copyWith({
-        phase: EnumBossBattlePhase.end,
-        defeated: lifePoint > 0 ? false : true,
-      });
-    });
-    return;
   };
 
   /**
@@ -512,7 +489,6 @@ export const useBossBattleController = (): BossBattleController => {
     setBossBattle((prevState) => {
       return prevState.copyWith({
         phase: EnumBossBattlePhase.start,
-        bossBattleContinued: newBBState.bossBattleContinued,
         turn: newBBState.turn,
         bossSign: newBBState.bossSign,
         usedMonsterSkill: "",
@@ -527,6 +503,32 @@ export const useBossBattleController = (): BossBattleController => {
     });
   };
 
+  /**
+   * end
+   */
+  const end = async (resurrectionPrompt: string): Promise<void> => {
+    let res: any;
+    try {
+      res = await axios.post("/api/boss/end", {
+        resurrectionPrompt,
+      });
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.response!.status === 500) return e.response!.data.battleResult;
+        throw new Error(e.response!.data.message);
+      }
+      console.error(e);
+      throw new Error("Unknown Error");
+    }
+    _initGlobalParam();
+    setBossBattle((prevState) => {
+      return prevState.copyWith({
+        phase: EnumBossBattlePhase.end,
+      });
+    });
+    return;
+  };
+
   const controller: BossBattleController = {
     init,
     moveStart,
@@ -535,7 +537,6 @@ export const useBossBattleController = (): BossBattleController => {
     moveUserActionResult,
     moveBossActionResult,
     moveContinue,
-    moveEnd,
     changePhase,
     useSkill,
     defense,
@@ -543,6 +544,7 @@ export const useBossBattleController = (): BossBattleController => {
     setItemId,
     nextResultMsg,
     continueBossBattle,
+    end,
   };
   return controller;
 };

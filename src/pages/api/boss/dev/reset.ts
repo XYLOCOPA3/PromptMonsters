@@ -13,6 +13,13 @@ export default async function handler(
       message: "Only POST",
     });
 
+  const stage = process.env.STAGE || "";
+  if (stage !== "develop") {
+    return res.status(400).json({
+      message: "Develop only",
+    });
+  }
+
   const resurrectionPrompt = req.body.resurrectionPrompt || "";
   if (resurrectionPrompt === "") {
     return res.status(400).json({
@@ -25,7 +32,7 @@ export default async function handler(
 
   try {
     const bossBattle = ServerBossBattle.instance(RPC_URL.mchVerse);
-    await bossBattle.endBossBattle(eventKey!, bbeId, resurrectionPrompt);
+    await bossBattle.deleteBBState(eventKey!, bbeId, resurrectionPrompt);
     return res.status(200).json({ message: "OK" });
   } catch (error) {
     if (error instanceof Error) {

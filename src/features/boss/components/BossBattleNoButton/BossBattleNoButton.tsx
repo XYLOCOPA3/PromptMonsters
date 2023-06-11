@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
-import { useBossBattleState } from "@/hooks/useBossBattle";
+import { useBossBattleController } from "@/hooks/useBossBattle";
+import { useMonsterValue } from "@/hooks/useMonster";
 import { disableState } from "@/stores/disableState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
@@ -15,7 +16,8 @@ export type BossBattleNoButtonProps = BaseProps;
  * @param className Style from parent element
  */
 export const BossBattleNoButton = ({ className }: BossBattleNoButtonProps) => {
-  const [bossBattle, bossBattleController] = useBossBattleState();
+  const monster = useMonsterValue();
+  const bossBattleController = useBossBattleController();
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
   const { t: tBossBattle } = useTranslation("boss-battle");
@@ -24,7 +26,7 @@ export const BossBattleNoButton = ({ className }: BossBattleNoButtonProps) => {
     setDisable(true);
     setLoading(true);
     try {
-      await bossBattleController.moveEnd(bossBattle.lp);
+      await bossBattleController.end(monster.resurrectionPrompt);
     } catch (error) {
       console.error(error);
       // TODO: エラー文考える
