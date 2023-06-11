@@ -34,6 +34,7 @@ export class BossBattleModel extends BaseModel<string> {
     public readonly currentMonsterHit: boolean = false,
     public readonly currentBossHit: boolean = false,
     public readonly resultMsgIds: EnumBossBattleMsg[] = [],
+    public readonly defensed: boolean = false,
 
     // TODO: 要検討
     public readonly itemIds: number[] = [],
@@ -42,7 +43,6 @@ export class BossBattleModel extends BaseModel<string> {
     public readonly usedItemId: number = -1,
     public readonly usedBossSkill: string = "",
     public readonly defeated: boolean = false,
-    public readonly defensed: boolean = false,
   ) {
     super("");
   }

@@ -41,7 +41,7 @@ export interface BossBattleController {
     skill: string,
     bossSkills: string[],
   ) => Promise<void>;
-  defense: () => Promise<void>;
+  defense: (resurrectionPrompt: string, bossSkills: string[]) => Promise<void>;
   setItemId: (itemId: number) => Promise<void>;
   useItem: (itemId: number) => Promise<void>;
   nextResultMsg: () => Promise<void>;
@@ -237,6 +237,7 @@ export const useBossBattleController = (): BossBattleController => {
     const bossDamage = res.data.bossDamage;
     const bossSign = res.data.bossSign;
     const usedSkillType = res.data.usedSkillType;
+    const defensed = false;
 
     gCurrentMonsterDamage = monsterDamage;
     gCurrentBossDamage = bossDamage;
@@ -244,8 +245,6 @@ export const useBossBattleController = (): BossBattleController => {
 
     // TODO: アイテムドロップ判定
     gDroppedItemId = 0;
-
-    console.log(otherSkillAction);
 
     setBossBattle((prevState) => {
       return prevState.copyWith({
@@ -262,7 +261,7 @@ export const useBossBattleController = (): BossBattleController => {
           bossAction,
           usedSkillType,
           otherSkillAction,
-          false,
+          defensed,
         ),
         droppedItemId: gDroppedItemId,
       });
@@ -272,19 +271,59 @@ export const useBossBattleController = (): BossBattleController => {
   /**
    * defense
    */
-  const defense = async (): Promise<void> => {
-    // TODO: ぼうぎょリクエスト
+  const defense = async (
+    resurrectionPrompt: string,
+    bossSkills: string[],
+  ): Promise<void> => {
+    let res: any;
+    try {
+      res = await axios.post("/api/boss/defense", {
+        resurrectionPrompt,
+      });
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.response!.status === 500) return e.response!.data.battleResult;
+        throw new Error(e.response!.data.message);
+      }
+      console.error(e);
+      throw new Error("Unknown Error");
+    }
 
-    const results = await _getBossActionResult();
-    gUsedBossSkill = results.usedBossSkill;
-    gCurrentMonsterDamage = results.monsterDamage;
-    gDroppedItemId = results.droppedItemId;
-    gBossSign = results.bossNextActionSignIndex;
+    const bossAction = res.data.bossAction;
+    const otherSkillAction = res.data.otherSkillAction;
+    const monsterHit = res.data.monsterHit;
+    const bossHit = res.data.bossHit;
+    const healing = res.data.healing;
+    const monsterDamage = res.data.monsterDamage;
+    const bossDamage = res.data.bossDamage;
+    const bossSign = res.data.bossSign;
+    const usedSkillType = res.data.usedSkillType;
+    const defensed = true;
+
+    gUsedBossSkill = usedSkillType;
+    gCurrentMonsterDamage = monsterDamage;
+    gCurrentBossDamage = bossDamage;
+    gCurrentHealing = healing;
 
     setBossBattle((prevState) => {
       return prevState.copyWith({
-        phase: EnumBossBattlePhase.defenseResult,
-        defensed: true,
+        phase: EnumBossBattlePhase.result,
+        usedMonsterSkill: "",
+        usedBossSkill: getBossSkill(bossSkills, bossSign, bossAction),
+        currentMonsterDamage: monsterDamage,
+        currentBossDamage: bossDamage,
+        currentHealing: healing,
+        currentMonsterHit: monsterHit,
+        currentBossHit: bossHit,
+        resultMsgIds: getResultMsgIds(
+          EnumItem.none,
+          bossAction,
+          usedSkillType,
+          otherSkillAction,
+          defensed,
+        ),
+        droppedItemId: gDroppedItemId,
+        defensed: defensed,
       });
     });
   };
@@ -411,6 +450,7 @@ export const useBossBattleController = (): BossBattleController => {
         currentHealing: gCurrentHealing,
         currentMonsterHit: false,
         currentBossHit: false,
+        defensed: false,
       });
     });
   };

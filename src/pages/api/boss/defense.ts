@@ -1,6 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { NOT_FOUND_SKILL } from "@/const/monster";
 import { ServerBossBattle } from "@/features/boss/api/contracts/ServerBossBattle";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { RPC_URL } from "@/lib/wallet";
@@ -11,17 +10,12 @@ import { EnumSkillType } from "@/types/EnumSkillType";
 import { EventKey } from "@/types/EventKey";
 import {
   buffBoss,
-  calcBossDamage,
-  calcHealing,
   calcLifePoint,
   calcMonsterDamage,
   debuffMonster,
   decideAction as decideBossAction,
-  decideOtherSkillType,
   judgeBossSkillHit,
-  judgeSkillHit,
 } from "@/utils/bossBattleUtils";
-import { getMonsterSkillsLimit4, isUnknownSkill } from "@/utils/monsterUtils";
 
 export default async function handler(
   req: NextApiRequest,
@@ -36,12 +30,6 @@ export default async function handler(
   if (resurrectionPrompt === "")
     return res.status(400).json({
       message: "Unknown monster",
-    });
-
-  const skill = req.body.skill || "";
-  if (skill === "")
-    return res.status(400).json({
-      message: "Unknown skill",
     });
 
   const eventKey = process.env.EVENT_KEY as EventKey;
@@ -62,6 +50,9 @@ export default async function handler(
     console.log("monsterExtension: ", monsterExtension);
     console.log("boss: ", boss);
 
+    const usedSkillType = EnumSkillType.none;
+    const otherSkillAction = EnumOtherSkillAction.none;
+
     // 戦闘開始チェック
     if (!bbState.bossBattleStarted)
       return res.status(400).json({
@@ -80,59 +71,25 @@ export default async function handler(
         message: "Monster has already been defeated",
       });
 
-    // スキルチェック
-    const skillsLimit4 = getMonsterSkillsLimit4(monsterExtension.skills);
-    const skillIndex = skillsLimit4.indexOf(skill);
-    if (skillIndex === NOT_FOUND_SKILL)
-      return res.status(400).json({
-        message: "Not found skill",
-      });
-    const usedSkillType = monsterExtension.skillTypes[skillIndex];
-    if (isUnknownSkill(usedSkillType))
-      return res.status(400).json({
-        message: "Unknown skillType",
-      });
-
     // ボス行動確定
     const bossAction = decideBossAction(bbState.bossSign);
     console.log("bossAction: ", bossAction);
 
-    // Otherスキル行動確定
-    let otherSkillAction = EnumOtherSkillAction.none;
-    if (usedSkillType === EnumSkillType.other)
-      otherSkillAction = decideOtherSkillType(
-        monsterExtension.atk,
-        monsterExtension.inte,
-      );
-    console.log("otherSkillAction: ", otherSkillAction);
-
     // 命中判定
-    const monsterHit = judgeSkillHit(usedSkillType);
+    const monsterHit = true;
     const bossHit = judgeBossSkillHit(
       bossAction,
       usedSkillType,
       otherSkillAction,
       monsterHit,
-      false,
+      true,
       false,
     );
     console.log("monsterHit: ", monsterHit);
     console.log("bossHit: ", bossHit);
 
     // ダメージ計算
-    const bossDamage = calcBossDamage(
-      monsterHit,
-      usedSkillType,
-      otherSkillAction,
-      bossAction,
-      monsterExtension.atk,
-      monsterExtension.inte,
-      boss.def,
-      boss.mgr,
-      bbState.monsterAdj,
-      bbState.bossAdj,
-      bbState.turn,
-    );
+    const bossDamage = 0;
     console.log("bossDamage: ", bossDamage);
 
     const monsterDamage = calcMonsterDamage(
@@ -147,17 +104,12 @@ export default async function handler(
       bbState.monsterAdj,
       bbState.bossAdj,
       bbState.turn,
-      false,
+      true,
     );
     console.log("monsterDamage: ", monsterDamage);
 
     // 回復計算
-    const healing = calcHealing(
-      usedSkillType,
-      otherSkillAction,
-      monsterExtension.inte,
-      bbState.monsterAdj,
-    );
+    const healing = 0;
     console.log("healing: ", healing);
 
     // lp計算
