@@ -140,6 +140,25 @@ contract BossBattleMch1 is
     returnState = _bossMonster;
   }
 
+  /// @dev Get _highScores
+  /// @param rps_ resurrection prompts
+  /// @return highScores high scores
+  function getHighScores(address[] memory rps_)
+    external
+    view
+    returns (uint32[] memory highScores)
+  {
+    uint256 rpsLength = rps_.length;
+    highScores = new uint32[](rpsLength);
+    
+    for (uint256 i = 0; i < rpsLength; ) {
+      highScores[i] = _highScoreMap[rps_[i]];
+      unchecked {
+        ++i;
+      }
+    }
+  }
+
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
