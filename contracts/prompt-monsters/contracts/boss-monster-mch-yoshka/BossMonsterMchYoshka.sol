@@ -181,8 +181,8 @@ contract BossMonsterMchYoshka is
   /// @param skills skills
   /// @param skillTypes skillTypes
   function setSkillTypes(
-    string[] calldata skills,
-    uint32[] calldata skillTypes
+    string[] memory skills,
+    uint32[] memory skillTypes
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     uint256 length = skills.length;
     require(

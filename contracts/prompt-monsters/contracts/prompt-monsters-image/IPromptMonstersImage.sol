@@ -65,8 +65,8 @@ interface IPromptMonstersImage {
   /// @param tokenIds_ token ID
   /// @param newStates_ new state
   function setBatchImageURL(
-    uint256[] calldata tokenIds_,
-    string[] calldata newStates_
+    uint256[] memory tokenIds_,
+    string[] memory newStates_
   ) external;
 
   /// @dev Set Prompt Monsters

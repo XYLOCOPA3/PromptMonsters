@@ -143,7 +143,7 @@ contract BossBattleMch1 is
   /// @dev Get _highScores
   /// @param rps_ resurrection prompts
   /// @return highScores high scores
-  function getHighScores(address[] calldata rps_)
+  function getHighScores(address[] memory rps_)
     external
     view
     returns (uint32[] memory highScores)

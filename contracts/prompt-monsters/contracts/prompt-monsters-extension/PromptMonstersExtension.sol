@@ -67,8 +67,8 @@ contract PromptMonstersExtension is
   /// @param skills_ skills each monster
   /// @return returnState skillTypes
   function getBatchSkillTypes(
-    address[] calldata rps_,
-    string[][] calldata skills_
+    address[] memory rps_,
+    string[][] memory skills_
   ) external view returns (uint32[][] memory returnState) {
     uint256 rpsLength = rps_.length;
     returnState = new uint32[][](rpsLength);
@@ -98,9 +98,9 @@ contract PromptMonstersExtension is
   /// @param skills_ skills
   /// @param skillTypes_ skillTypes
   function setBatchSkillTypes(
-    address[] calldata rps_,
-    string[][] calldata skills_,
-    uint32[][] calldata skillTypes_
+    address[] memory rps_,
+    string[][] memory skills_,
+    uint32[][] memory skillTypes_
   ) external onlyRole(GAME_ROLE) {
     uint256 rpsLength = rps_.length;
     require(

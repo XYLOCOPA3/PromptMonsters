@@ -108,8 +108,8 @@ interface IBossMonster {
   /// @param skills skills
   /// @param skillTypes skillTypes
   function setSkillTypes(
-    string[] calldata skills,
-    uint32[] calldata skillTypes
+    string[] memory skills,
+    uint32[] memory skillTypes
   ) external;
 
   /// @dev Set monster adj for this boss monster
