@@ -236,6 +236,14 @@ export const judgeSkillHit = (skillType: number): boolean => {
   return true;
 };
 
+export const hasItem = (usedItemId: number, bbState: BBState): boolean => {
+  if (usedItemId === EnumItem.buff && bbState.hasBuffItem) return true;
+  if (usedItemId === EnumItem.debuff && bbState.hasDebuffItem) return true;
+  if (usedItemId === EnumItem.healing && bbState.hasHealItem) return true;
+  if (usedItemId === EnumItem.escape && bbState.hasEscapeItem) return true;
+  return false;
+};
+
 export const judgeBossSkillHit = (
   bossAction: EnumBossAction,
   skillType: number,
@@ -430,11 +438,13 @@ export const calcMonsterDamage = (
 export const calcHealing = (
   usedSkillType: number,
   otherSkillAction: EnumOtherSkillAction,
+  usedItemId: number,
   monsterInt: number,
   monsterAdj: number,
 ): number => {
   if (otherSkillAction === EnumOtherSkillAction.fullHealing)
     return MAX_LIFE_POINT;
+  if (usedItemId === EnumItem.healing) return MAX_LIFE_POINT;
   if (usedSkillType !== EnumSkillType.healing) return 0;
 
   // TODO: kは要調整!!!
@@ -465,23 +475,23 @@ export const buffMonster = (monsterAdj: number): number => {
 
 export const debuffMonster = (monsterAdj: number): number => {
   // TODO: kは要調整!!!
-  const kMonsterDebuff = 0.8;
+  const kMonsterDebuff = 0.75;
 
   return Math.floor(kMonsterDebuff * monsterAdj);
 };
 
-export const buffBoss = (monsterAdj: number): number => {
+export const buffBoss = (bossAdj: number): number => {
   // TODO: kは要調整!!!
   const kBossBuff = 1.5;
 
-  return Math.floor(kBossBuff * monsterAdj);
+  return Math.floor(kBossBuff * bossAdj);
 };
 
-export const debuffBoss = (monsterAdj: number): number => {
+export const debuffBoss = (bossAdj: number): number => {
   // TODO: kは要調整!!!
-  const kBossDebuff = 0.75;
+  const kBossDebuff = 0.8;
 
-  return Math.floor(kBossDebuff * monsterAdj);
+  return Math.floor(kBossDebuff * bossAdj);
 };
 
 export const getBossSkill = (
@@ -986,6 +996,20 @@ export const isDamageMonster = (prevResultMsgId: number): boolean => {
   if (prevResultMsgId === EnumBossBattleMsg.bossPowerAttack) return true;
   if (prevResultMsgId === EnumBossBattleMsg.bossCounterAttack) return true;
   return false;
+};
+
+export const decideDroppedItem = (
+  hasBuffItem: boolean,
+  hasDebuffItem: boolean,
+  hasHealItem: boolean,
+  hasEscapeItem: boolean,
+): EnumItem => {
+  const random = Math.floor(Math.random() * 100);
+  if (random < 9 && !hasBuffItem) return EnumItem.buff;
+  if (9 <= random && random < 18 && !hasDebuffItem) return EnumItem.debuff;
+  if (18 <= random && random < 27 && !hasHealItem) return EnumItem.healing;
+  if (27 <= random && random < 100 && !hasEscapeItem) return EnumItem.escape;
+  return EnumItem.none;
 };
 
 export const isDamageBoss = (prevResultMsgId: number): boolean => {

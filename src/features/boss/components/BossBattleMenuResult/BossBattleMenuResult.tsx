@@ -135,6 +135,8 @@ const ResultMsg = () => {
       return <BossDebuffMsg />;
     case EnumBossBattleMsg.bossDefense:
       return <BossDefenseMsg />;
+    case EnumBossBattleMsg.droppedItem:
+      return <DroppedItemMsg />;
     default:
       return <></>;
   }
@@ -386,18 +388,6 @@ const BossOneHitKillMsg = () => {
             tBossBattle("monsterDamage"),
           )
         : tBossBattle("bossMiss")}
-      <br />
-      <br />
-      {bossBattle.droppedItemId === -1 ? (
-        <></>
-      ) : (
-        getDroppedItemMsg(
-          boss.name,
-          ITEMS[language as "日本語" | "English"][bossBattle.droppedItemId]
-            .name,
-          tBossBattle("droppedItem"),
-        )
-      )}
     </>
   );
 };
@@ -424,18 +414,6 @@ const BossAttackMsg = () => {
             tBossBattle("monsterDamage"),
           )
         : tBossBattle("bossMiss")}
-      <br />
-      <br />
-      {bossBattle.droppedItemId === -1 ? (
-        <></>
-      ) : (
-        getDroppedItemMsg(
-          boss.name,
-          ITEMS[language as "日本語" | "English"][bossBattle.droppedItemId]
-            .name,
-          tBossBattle("droppedItem"),
-        )
-      )}
     </>
   );
 };
@@ -475,18 +453,6 @@ const BossCounterAttackMsg = () => {
             tBossBattle("monsterDamage"),
           )
         : tBossBattle("bossMiss")}
-      <br />
-      <br />
-      {bossBattle.droppedItemId === -1 ? (
-        <></>
-      ) : (
-        getDroppedItemMsg(
-          boss.name,
-          ITEMS[language as "日本語" | "English"][bossBattle.droppedItemId]
-            .name,
-          tBossBattle("droppedItem"),
-        )
-      )}
     </>
   );
 };
@@ -510,18 +476,6 @@ const BossBuffMsg = () => {
         </>
       ) : (
         getBuffDebuffBossMissMsg(boss.name, tBossBattle("bossBuffDebuffMiss"))
-      )}
-      <br />
-      <br />
-      {bossBattle.droppedItemId === -1 ? (
-        <></>
-      ) : (
-        getDroppedItemMsg(
-          boss.name,
-          ITEMS[language as "日本語" | "English"][bossBattle.droppedItemId]
-            .name,
-          tBossBattle("droppedItem"),
-        )
       )}
     </>
   );
@@ -548,18 +502,6 @@ const BossDebuffMsg = () => {
       ) : (
         getBuffDebuffBossMissMsg(boss.name, tBossBattle("bossBuffDebuffMiss"))
       )}
-      <br />
-      <br />
-      {bossBattle.droppedItemId === -1 ? (
-        <></>
-      ) : (
-        getDroppedItemMsg(
-          boss.name,
-          ITEMS[language as "日本語" | "English"][bossBattle.droppedItemId]
-            .name,
-          tBossBattle("droppedItem"),
-        )
-      )}
     </>
   );
 };
@@ -569,20 +511,22 @@ const BossDefenseMsg = () => {
   const bossBattle = useBossBattleValue();
   const language = useLanguageValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+  return <>{getBossDefensedMsg(boss.name, tBossBattle("bossDefensed"))}</>;
+};
+
+const DroppedItemMsg = () => {
+  const boss = useBossValue();
+  const bossBattle = useBossBattleValue();
+  const language = useLanguageValue();
+  const { t: tBossBattle } = useTranslation("boss-battle");
+
+  if (bossBattle.droppedItemId === -1) return <></>;
   return (
     <>
-      {getBossDefensedMsg(boss.name, tBossBattle("bossDefensed"))}
-      <br />
-      <br />
-      {bossBattle.droppedItemId === -1 ? (
-        <></>
-      ) : (
-        getDroppedItemMsg(
-          boss.name,
-          ITEMS[language as "日本語" | "English"][bossBattle.droppedItemId]
-            .name,
-          tBossBattle("droppedItem"),
-        )
+      {getDroppedItemMsg(
+        boss.name,
+        ITEMS[language as "日本語" | "English"][bossBattle.droppedItemId].name,
+        tBossBattle("droppedItem"),
       )}
     </>
   );

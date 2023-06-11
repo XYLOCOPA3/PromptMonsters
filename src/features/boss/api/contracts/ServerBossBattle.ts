@@ -133,6 +133,21 @@ export class ServerBossBattle {
   };
 
   /**
+   * endBossBattle
+   * @param resurrectionPrompt resurrection prompt
+   * @return {Promise<ethers.ContractReceipt>} contract receipt
+   */
+  endBossBattle = async (
+    eventKey: string,
+    bbeId: number,
+    resurrectionPrompt: string,
+  ): Promise<ethers.ContractReceipt> => {
+    return await (
+      await this._contract.endBossBattle(eventKey, bbeId, resurrectionPrompt)
+    ).wait();
+  };
+
+  /**
    * getBossExtension
    * @return {Promise<MonsterAdj>} monsterAdj
    */

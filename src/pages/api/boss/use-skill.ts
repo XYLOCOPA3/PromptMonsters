@@ -6,6 +6,7 @@ import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPro
 import { RPC_URL } from "@/lib/wallet";
 import { BBState } from "@/types/BBState";
 import { EnumBossAction } from "@/types/EnumBossAction";
+import { EnumItem } from "@/types/EnumItem";
 import { EnumOtherSkillAction } from "@/types/EnumOtherSkillAction";
 import { EnumSkillType } from "@/types/EnumSkillType";
 import { EventKey } from "@/types/EventKey";
@@ -17,6 +18,7 @@ import {
   calcMonsterDamage,
   debuffMonster,
   decideAction as decideBossAction,
+  decideDroppedItem,
   decideOtherSkillType,
   judgeBossSkillHit,
   judgeSkillHit,
@@ -61,6 +63,8 @@ export default async function handler(
     console.log("bbState: ", bbState);
     console.log("monsterExtension: ", monsterExtension);
     console.log("boss: ", boss);
+
+    const usedItemId = EnumItem.none;
 
     // 戦闘開始チェック
     if (!bbState.bossBattleStarted)
@@ -155,6 +159,7 @@ export default async function handler(
     const healing = calcHealing(
       usedSkillType,
       otherSkillAction,
+      usedItemId,
       monsterExtension.inte,
       bbState.monsterAdj,
     );
@@ -174,20 +179,37 @@ export default async function handler(
     console.log("newMonsterAdj: ", newMonsterAdj);
     console.log("newBossAdj: ", newBossAdj);
 
+    // アイテムドロップ判定
+    let newHasBuffItem = bbState.hasBuffItem;
+    let newHasDebuffItem = bbState.hasDebuffItem;
+    let newHasHealItem = bbState.hasHealItem;
+    let newHasEscapeItem = bbState.hasEscapeItem;
+    const droppedItemId = decideDroppedItem(
+      newHasBuffItem,
+      newHasDebuffItem,
+      newHasHealItem,
+      newHasEscapeItem,
+    );
+    console.log("droppedItemId: ", droppedItemId);
+    if (droppedItemId === EnumItem.buff) newHasBuffItem = true;
+    if (droppedItemId === EnumItem.debuff) newHasDebuffItem = true;
+    if (droppedItemId === EnumItem.healing) newHasHealItem = true;
+    if (droppedItemId === EnumItem.escape) newHasEscapeItem = true;
+
     // BBState更新
     const newBBState: BBState = {
       bossBattleStarted: bbState.bossBattleStarted,
-      bossBattleContinued: bbState.bossBattleContinued,
+      bossBattleContinued: false,
       lp: lp,
       turn: bbState.turn,
       score: bbState.score + bossDamage,
       monsterAdj: newMonsterAdj,
       bossAdj: newBossAdj,
       bossSign: bbState.bossSign,
-      hasHealItem: bbState.hasHealItem,
-      hasBuffItem: bbState.hasBuffItem,
-      hasDebuffItem: bbState.hasDebuffItem,
-      hasEscapeItem: bbState.hasEscapeItem,
+      hasHealItem: newHasHealItem,
+      hasBuffItem: newHasBuffItem,
+      hasDebuffItem: newHasDebuffItem,
+      hasEscapeItem: newHasEscapeItem,
     };
     await bossBattle.updateBossBattleResult(
       eventKey,
@@ -207,6 +229,7 @@ export default async function handler(
       bossDamage,
       bossSign: newBBState.bossSign,
       usedSkillType,
+      droppedItemId,
     });
   } catch (error) {
     if (error instanceof Error) {
