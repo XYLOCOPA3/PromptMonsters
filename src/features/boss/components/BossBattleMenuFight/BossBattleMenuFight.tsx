@@ -10,7 +10,6 @@ import { useMonsterValue } from "@/hooks/useMonster";
 import { disableState } from "@/stores/disableState";
 import { monsterInitState } from "@/stores/monsterInitState";
 import { BaseProps } from "@/types/BaseProps";
-import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
 import clsx from "clsx";
 import { useRecoilState, useRecoilValue } from "recoil";
 
@@ -111,7 +110,7 @@ export const BossBattleMenuFight = ({
   useLayoutEffectOfSSR(() => {
     if (!monsterInit) return;
     if (monster.name !== "" && monster.skills.length === 0) {
-      bossBattleController.changePhase(EnumBossBattlePhase.fightResult);
+      // TODO: スキルが1つもない場合の処理を書く
       return;
     }
   }, [monsterInit]);
