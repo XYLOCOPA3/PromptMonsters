@@ -25,9 +25,12 @@ async function main() {
     },
   );
   await staminaProxy.deployed();
+
+  const staminaImplementationAddress = await upgrades.erc1967.getImplementationAddress(staminaProxy.address);
   
   try {
-    recordContractsData("StaminaProxy", staminaProxy.address);
+    recordContractsData("StaminaProxy", staminaProxy.address, deployer.address);
+    recordContractsData("StaminaImplementation", staminaImplementationAddress, deployer.address);
     console.log("Recorded contract data");
   } catch (e) {
     console.log(e);
@@ -36,7 +39,7 @@ async function main() {
   console.log("Deployed StaminaProxy address: ", staminaProxy.address);
   console.log(
     "Stamina implementation deployed to:",
-    await upgrades.erc1967.getImplementationAddress(staminaProxy.address),
+    staminaImplementationAddress,
   );
 
   console.log("Completed deployment");

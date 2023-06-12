@@ -26,9 +26,14 @@ async function main() {
     },
   );
   await promptMonstersExtensionProxy.deployed();
+
+  const promptMonstersExtensionImplementationAddress = await upgrades.erc1967.getImplementationAddress(
+    promptMonstersExtensionProxy.address,
+  )
   
   try {
-    recordContractsData("PromptMonstersExtensionProxy", promptMonstersExtensionProxy.address);
+    recordContractsData("PromptMonstersExtensionProxy", promptMonstersExtensionProxy.address, deployer.address);
+    recordContractsData("PromptMonstersExtensionImplementation", promptMonstersExtensionImplementationAddress, deployer.address);
     console.log("Recorded contract data");
   } catch (e) {
     console.log(e);
@@ -40,9 +45,7 @@ async function main() {
   );
   console.log(
     "PromptMonstersExtension implementation deployed to:",
-    await upgrades.erc1967.getImplementationAddress(
-      promptMonstersExtensionProxy.address,
-    ),
+    promptMonstersExtensionImplementationAddress,
   );
 
   console.log("Completed deployment");
