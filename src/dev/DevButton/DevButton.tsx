@@ -30,7 +30,7 @@ export const DevButton = ({ className }: DevButtonProps) => {
     setIsDev(process.env.NEXT_PUBLIC_IS_PRODUCTION === "false");
   }, []);
 
-  if (!isDev) return <></>;
+  // if (!isDev) return <></>;
   return (
     <Button
       className={clsx(

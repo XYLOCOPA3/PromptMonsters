@@ -1,6 +1,6 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "IBossMonster",
+  "contractName": "ITestBM",
   "sourceName": "contracts/interfaces/IBossMonster.sol",
   "abi": [
     {
@@ -96,7 +96,7 @@
             }
           ],
           "indexed": false,
-          "internalType": "struct IPromptMonsters.Monster",
+          "internalType": "struct ITestPM.Monster",
           "name": "oldValue",
           "type": "tuple"
         },
@@ -159,7 +159,7 @@
             }
           ],
           "indexed": false,
-          "internalType": "struct IPromptMonsters.Monster",
+          "internalType": "struct ITestPM.Monster",
           "name": "newValue",
           "type": "tuple"
         }
@@ -222,7 +222,7 @@
             }
           ],
           "indexed": false,
-          "internalType": "struct IBossMonster.MonsterAdj",
+          "internalType": "struct ITestBM.MonsterAdj",
           "name": "oldValue",
           "type": "tuple"
         },
@@ -235,7 +235,7 @@
             }
           ],
           "indexed": false,
-          "internalType": "struct IBossMonster.MonsterAdj",
+          "internalType": "struct ITestBM.MonsterAdj",
           "name": "newValue",
           "type": "tuple"
         }
@@ -359,7 +359,7 @@
               "type": "address"
             }
           ],
-          "internalType": "struct IPromptMonstersExtension.MonsterExtension",
+          "internalType": "struct ITestPME.MonsterExtension",
           "name": "bossExtension",
           "type": "tuple"
         }
@@ -398,7 +398,7 @@
               "type": "uint32"
             }
           ],
-          "internalType": "struct IBossMonster.MonsterAdj",
+          "internalType": "struct ITestBM.MonsterAdj",
           "name": "monsterAdj",
           "type": "tuple"
         }
@@ -478,7 +478,7 @@
               "type": "uint32"
             }
           ],
-          "internalType": "struct IPromptMonsters.Monster",
+          "internalType": "struct ITestPM.Monster",
           "name": "boss",
           "type": "tuple"
         }
@@ -521,7 +521,7 @@
               "type": "uint32"
             }
           ],
-          "internalType": "struct IBossMonster.MonsterAdj",
+          "internalType": "struct ITestBM.MonsterAdj",
           "name": "monsterAdj",
           "type": "tuple"
         }
