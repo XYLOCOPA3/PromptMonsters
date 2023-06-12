@@ -1,9 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { RPC_URL } from "@/const/chainParams";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { ServerPromptMonstersExtension } from "@/features/monster/api/contracts/ServerPromptMonstersExtension";
 import { getSkillDescPrompt as getSkillTypePrompt } from "@/lib/prompt";
-import { RPC_URL } from "@/lib/wallet";
 import { SkillType } from "@/types/SkillType";
 import {
   getMonsterSkillsLimit4,

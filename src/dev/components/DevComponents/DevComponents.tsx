@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { DevBBMonsterButton } from "@/dev/components/DevBBMonsterButton";
+import { DevBBParamAdj } from "@/dev/components/DevBBParamAdj";
 import { DevBBResetButton } from "@/dev/components/DevBBResetButton";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { BaseProps } from "@/types/BaseProps";
@@ -36,6 +37,7 @@ export const DevComponents = ({ className }: DevComponentsProps) => {
     >
       <DevBBResetButton />
       <DevBBMonsterButton />
+      <DevBBParamAdj />
     </div>
   );
 };

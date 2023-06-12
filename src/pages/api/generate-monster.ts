@@ -1,9 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { RPC_URL } from "@/const/chainParams";
 import { LANGUAGES } from "@/const/language";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { getGeneratingPrompt } from "@/lib/prompt";
-import { RPC_URL } from "@/lib/wallet";
 import { FeatureErrorType } from "@/types/FeatureErrorType";
 import { checkFeature } from "@/utils/validation";
 import { ethers } from "ethers";

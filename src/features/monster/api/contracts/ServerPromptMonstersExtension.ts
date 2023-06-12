@@ -1,4 +1,4 @@
-import { ServerWallet } from "@/lib/wallet";
+import { ServerWallet } from "@/lib/wallet/ServerWallet";
 import {
   PromptMonstersExtension,
   PromptMonstersExtension__factory,

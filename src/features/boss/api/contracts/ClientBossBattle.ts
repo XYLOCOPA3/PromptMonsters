@@ -1,4 +1,4 @@
-import { ClientWallet } from "@/lib/wallet/client";
+import { ClientWallet } from "@/lib/wallet/ClientWallet";
 import { BossBattle, BossBattle__factory } from "@/typechain";
 import {
   IBossBattleEvent,

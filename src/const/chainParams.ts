@@ -70,3 +70,15 @@ export const mchVerse =
   process.env.NEXT_PUBLIC_IS_PRODUCTION === "true"
     ? mchVerseMainnet
     : mchVerseTestnet;
+
+const mchVerseRpc =
+  process.env.NEXT_PUBLIC_IS_PRODUCTION === "true"
+    ? "https://rpc.oasys.mycryptoheroes.net/"
+    : "https://rpc.oasys.sand.mchdfgh.xyz/";
+
+export const RPC_URL = {
+  mumbai: "https://rpc-mumbai.maticvigil.com/",
+  linea: "https://rpc.goerli.linea.build",
+  sandverse: "https://rpc.sandverse.oasys.games/",
+  mchVerse: mchVerseRpc,
+};

@@ -1,10 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { RPC_URL } from "@/const/chainParams";
 import { BattleContract } from "@/features/battle/api/contracts/BattleContract";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { calcStaminaFromMonsterId } from "@/features/stamina/utils/calcStamina";
 import { getFightPrompt } from "@/lib/prompt";
-import { RPC_URL } from "@/lib/wallet";
 import console from "console";
 import { Configuration, OpenAIApi } from "openai";
 

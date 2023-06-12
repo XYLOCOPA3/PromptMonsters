@@ -1,8 +1,8 @@
+import { RPC_URL } from "@/const/chainParams";
 import { MAX_STAMINA } from "@/const/monster";
 import { ClientMCHCoin } from "@/features/mchcoin/api/ClientMCHCoin";
 import { ClientPromptMonsters } from "@/features/monster/api/contracts/ClientPromptMonsters";
 import { ClientStamina } from "@/features/stamina/api/ClientStamina";
-import { RPC_URL } from "@/lib/wallet";
 import { MonsterModel } from "@/models/MonsterModel";
 import { MonsterState, monsterState } from "@/stores/monsterState";
 import { MonsterId } from "@/types/MonsterId";

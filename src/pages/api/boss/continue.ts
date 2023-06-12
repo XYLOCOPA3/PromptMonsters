@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { RPC_URL } from "@/const/chainParams";
 import { ServerBossBattle } from "@/features/boss/api/contracts/ServerBossBattle";
-import { RPC_URL } from "@/lib/wallet";
 import { BBState } from "@/types/BBState";
 import { EventKey } from "@/types/EventKey";
 import { getBossSign } from "@/utils/bossBattleUtils";
