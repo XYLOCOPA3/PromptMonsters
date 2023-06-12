@@ -36,5 +36,6 @@
   "bossBuffDebuffMiss": "bossName はひるんで動けない。",
   "monsterMiss": "しかし当たらなかった...",
   "bossDefensed": "bossName は ぼうぎょ している。",
-  "ok": "OK"
+  "ok": "OK",
+  "invalidStarted": "「たたかう」を押して始めてください。"
 }

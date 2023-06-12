@@ -44,6 +44,7 @@ export interface BossBattleController {
   nextResultMsg: () => Promise<void>;
   continueBossBattle: (resurrectionPrompt: string) => Promise<void>;
   end: (resurrectionPrompt: string) => Promise<void>;
+  reset: () => void;
 }
 
 export const useBossBattleValue = (): BossBattleState => {
@@ -71,6 +72,7 @@ export const useBossBattleController = (): BossBattleController => {
 
     setBossBattle(
       BossBattleModel.create({
+        bossBattleStarted: bbState.bossBattleStarted,
         lp: bbState.lp,
         turn: bbState.turn,
         score: bbState.score,
@@ -459,9 +461,18 @@ export const useBossBattleController = (): BossBattleController => {
     setBossBattle((prevState) => {
       return prevState.copyWith({
         phase: EnumBossBattlePhase.end,
+        defeated: prevState.lp === 0,
       });
     });
     return;
+  };
+
+  /**
+   * reset
+   */
+  const reset = async (): Promise<void> => {
+    _initGlobalParam();
+    setBossBattle(BossBattleModel.create({}));
   };
 
   const controller: BossBattleController = {
@@ -476,6 +487,7 @@ export const useBossBattleController = (): BossBattleController => {
     nextResultMsg,
     continueBossBattle,
     end,
+    reset,
   };
   return controller;
 };
