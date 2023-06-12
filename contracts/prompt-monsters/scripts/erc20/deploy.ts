@@ -24,7 +24,7 @@ async function main() {
   const erc20ImplementationAddress = await upgrades.erc1967.getImplementationAddress(erc20Proxy.address);
   
   try {
-    recordContractsData("Erc20", erc20Proxy.address, deployer.address);
+    recordContractsData("Erc20Proxy", erc20Proxy.address, deployer.address);
     recordContractsData("Erc20Implementation", erc20ImplementationAddress, deployer.address);
     console.log("Recorded contract data");
   } catch (e) {
