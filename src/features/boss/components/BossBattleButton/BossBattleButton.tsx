@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { Button } from "@/components/elements/Button";
 import { useBossBattleController } from "@/hooks/useBossBattle";
 import { useMonsterState } from "@/hooks/useMonster";
+import { useOwnedMonstersController } from "@/hooks/useOwnedMonsters";
 import { disableState } from "@/stores/disableState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
@@ -17,10 +18,11 @@ export type BossBattleButtonProps = BaseProps;
  * @param className Style from parent element
  */
 export const BossBattleButton = ({ className }: BossBattleButtonProps) => {
+  const ownedMonstersController = useOwnedMonstersController();
+  const bossBattleController = useBossBattleController();
   const [monster, monsterController] = useMonsterState();
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
-  const bossBattleController = useBossBattleController();
   const { t: tBoss } = useTranslation("boss");
   const { push } = useRouter();
 
@@ -32,7 +34,12 @@ export const BossBattleButton = ({ className }: BossBattleButtonProps) => {
     setLoading(true);
     try {
       const skillTypes = await bossBattleController.init(monster);
-      monsterController.set(monster.copyWith({ skillTypes }));
+      const newMonster = monster.copyWith({ skillTypes });
+      monsterController.set(newMonster);
+      ownedMonstersController.updateUsingRp(
+        monster.resurrectionPrompt,
+        newMonster,
+      );
     } catch (error) {
       setLoading(false);
       setDisable(false);
