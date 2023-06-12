@@ -1,6 +1,5 @@
 import { MAX_LIFE_POINT } from "@/const/bossBattle";
 import { devBBkParamState } from "@/dev/stores/devBBkParamState";
-import { ClientBossBattle } from "@/features/boss/api/contracts/ClientBossBattle";
 import { BossBattleModel } from "@/models/BossBattleModel";
 import { MonsterModel } from "@/models/MonsterModel";
 import { BossBattleState, bossBattleState } from "@/stores/bossBattleState";
@@ -33,10 +32,6 @@ export interface BossBattleController {
   moveStart: () => Promise<void>;
   moveFightSelector: () => Promise<void>;
   moveItemSelector: () => Promise<void>;
-  moveUserActionResult: () => Promise<void>;
-  moveBossActionResult: () => Promise<void>;
-  moveContinue: () => Promise<void>;
-  changePhase: (phase: EnumBossBattlePhase) => Promise<void>;
   useSkill: (
     resurrectionPrompt: string,
     skill: string,
@@ -68,12 +63,8 @@ export const useBossBattleController = (): BossBattleController => {
    * Init bossBattle
    */
   const init = async (monster: MonsterModel): Promise<number[]> => {
-    const results = await Promise.all([
-      generateSkillTypesIfNotSet(monster),
-      generateMonsterAdjIfNotSet(monster.resurrectionPrompt),
-      ClientBossBattle.instance(),
-    ]);
-    const skillTypes = results[0];
+    const skillTypes = await generateSkillTypesIfNotSet(monster);
+    await generateMonsterAdjIfNotSet(monster.resurrectionPrompt);
     const bbState = await startBossBattle(
       monster.resurrectionPrompt,
       devBBkParam,
@@ -136,60 +127,6 @@ export const useBossBattleController = (): BossBattleController => {
   const moveItemSelector = async (): Promise<void> => {
     setBossBattle((prevState) => {
       return prevState.copyWith({ phase: EnumBossBattlePhase.itemSelect });
-    });
-  };
-
-  /**
-   * moveUserActionResult
-   */
-  const moveUserActionResult = async (): Promise<void> => {
-    setBossBattle((prevState) => {
-      return prevState.copyWith({ phase: EnumBossBattlePhase.fightResult });
-    });
-  };
-
-  /**
-   * moveBossActionResult
-   */
-  const moveBossActionResult = async (): Promise<void> => {
-    setBossBattle((prevState) => {
-      if (prevState.itemIds.includes(gDroppedItemId)) gDroppedItemId = -1;
-      return prevState.copyWith({
-        phase: EnumBossBattlePhase.bossActionResult,
-        usedBossSkill: gUsedBossSkill,
-        currentMonsterDamage: gCurrentMonsterDamage,
-        lp:
-          prevState.lp - gCurrentMonsterDamage < 0
-            ? 0
-            : prevState.lp - gCurrentMonsterDamage,
-        itemIds:
-          gDroppedItemId === -1
-            ? prevState.itemIds
-            : [...prevState.itemIds, gDroppedItemId],
-        droppedItemId: gDroppedItemId,
-      });
-    });
-  };
-
-  /**
-   * moveContinue
-   */
-  const moveContinue = async (): Promise<void> => {
-    setBossBattle((prevState) => {
-      return prevState.copyWith({
-        phase: EnumBossBattlePhase.continue,
-        bossSign: gBossSign,
-      });
-    });
-  };
-
-  /**
-   * changePhase
-   * @param phase phase
-   */
-  const changePhase = async (phase: EnumBossBattlePhase): Promise<void> => {
-    setBossBattle((prevState) => {
-      return prevState.copyWith({ phase });
     });
   };
 
@@ -547,10 +484,6 @@ export const useBossBattleController = (): BossBattleController => {
     moveStart,
     moveFightSelector,
     moveItemSelector,
-    moveUserActionResult,
-    moveBossActionResult,
-    moveContinue,
-    changePhase,
     useSkill,
     defense,
     useItem,
