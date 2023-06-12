@@ -1,5 +1,5 @@
 import { Button } from "@/components/elements/Button";
-import { ITEMS } from "@/const/bossBattle";
+import { ITEMS, MAX_LIFE_POINT } from "@/const/bossBattle";
 import { BossBattlePrevButton, BossBattleUseButton } from "@/features/boss";
 import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleState } from "@/hooks/useBossBattle";
@@ -23,17 +23,29 @@ export const BossBattleMenuItem = ({ className }: BossBattleMenuItemProps) => {
     return <></>;
   return (
     <>
-      <div className={clsx(className, "flex", "mb-[10px]", "h-[250px]")}>
+      <div
+        className={clsx(
+          className,
+          "flex",
+          "mb-[10px]",
+          "h-[190px]",
+          "md:h-[250px]",
+        )}
+      >
         <div
           className={clsx(
             "w-1/3",
             "font-bold",
-            "bg-[#272727]",
-            "p-[10px]",
+            "bg-[#272727]/80",
+            "py-[10px]",
+            "px-[4px]",
             "rounded-lg",
             "border-[1px]",
             "text-center",
             "mr-[10px]",
+            bossBattle.lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
+            "overflow-y-scroll",
+            "md:p-[10px]",
           )}
         >
           <div className={clsx("flex", "flex-col")}>
@@ -42,15 +54,23 @@ export const BossBattleMenuItem = ({ className }: BossBattleMenuItemProps) => {
                 await bossBattleController.setItemId(itemId);
               };
               return (
-                <Button
-                  key={index}
-                  variant="bossBattle"
-                  className={clsx("my-[5px]", "py-[10px]")}
-                  holdDown={itemId === bossBattle.setItemId}
-                  onClick={handleClick}
-                >
-                  {ITEMS[language as "日本語" | "English"][itemId].name}
-                </Button>
+                <>
+                  <Button
+                    key={index}
+                    variant="bossBattle"
+                    className={clsx(
+                      "my-[2px]",
+                      "py-[5px]",
+                      "text-[11px]",
+                      "md:py-[10px]",
+                      "md:text-[16px]",
+                    )}
+                    holdDown={itemId === bossBattle.setItemId}
+                    onClick={handleClick}
+                  >
+                    {ITEMS[language as "日本語" | "English"][itemId].name}
+                  </Button>
+                </>
               );
             })}
           </div>
@@ -59,10 +79,12 @@ export const BossBattleMenuItem = ({ className }: BossBattleMenuItemProps) => {
           className={clsx(
             "w-2/3",
             "font-bold",
-            "bg-[#272727]",
+            "bg-[#272727]/80",
             "p-[10px]",
             "rounded-lg",
             "border-[1px]",
+            bossBattle.lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
+            "overflow-y-scroll",
           )}
         >
           {bossBattle.itemIds.includes(bossBattle.setItemId) ? (

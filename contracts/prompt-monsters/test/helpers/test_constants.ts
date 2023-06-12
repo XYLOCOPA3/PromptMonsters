@@ -43,7 +43,7 @@ export type BBState = {
   hasBuffItem: boolean;
   hasDebuffItem: boolean;
   hasEscapeItem: boolean;
-}
+};
 
 export const transformMonsterDetails = (monsterDetails: MonsterDetails) => {
   return {
@@ -78,7 +78,9 @@ export const transformBBState = (bbState: BBState) => {
   };
 };
 
-export const transformMonsterExtensionDetails = (monsterExtensionDetails: MonsterExtensionDetails) => {
+export const transformMonsterExtensionDetails = (
+  monsterExtensionDetails: MonsterExtensionDetails,
+) => {
   return {
     feature: monsterExtensionDetails.feature,
     name: monsterExtensionDetails.name,
@@ -152,7 +154,7 @@ export const FireMonsterNoExtensionDetails = {
   inte: 10,
   mgr: 10,
   agl: 10,
-  skillTypes: [0,0,0],
+  skillTypes: [0, 0, 0],
   resurrectionPrompt: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
 };
 
@@ -219,8 +221,8 @@ export const YoshkaExtensionDetails = {
 };
 
 export const monsterAdjForRp1 = {
-  weaknessFeatureAdj: 100
-}
+  weaknessFeatureAdj: 100,
+};
 
 export const defaultBBState = {
   bossBattleStarted: false,
@@ -235,7 +237,7 @@ export const defaultBBState = {
   hasBuffItem: false,
   hasDebuffItem: false,
   hasEscapeItem: false,
-}
+};
 
 export const initialBBState = {
   bossBattleStarted: true,
@@ -250,7 +252,7 @@ export const initialBBState = {
   hasBuffItem: false,
   hasDebuffItem: false,
   hasEscapeItem: false,
-}
+};
 
 export const Rp1Turn1BBState = {
   bossBattleStarted: true,
@@ -265,7 +267,7 @@ export const Rp1Turn1BBState = {
   hasBuffItem: false,
   hasDebuffItem: false,
   hasEscapeItem: false,
-}
+};
 
 export const Rp1Turn2BBState = {
   bossBattleStarted: true,
@@ -280,7 +282,7 @@ export const Rp1Turn2BBState = {
   hasBuffItem: false,
   hasDebuffItem: false,
   hasEscapeItem: false,
-}
+};
 
 export const firstMonsterAdjForRp1 = 100;
 export const secondMonsterAdjForRp1 = 200;

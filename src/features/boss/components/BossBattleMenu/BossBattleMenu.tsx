@@ -8,6 +8,7 @@ import {
   BossBattleMenuResult,
   BossBattleMenuStart,
   BossBattleOKButton,
+  BossBattleTweetButton,
 } from "@/features/boss";
 import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleValue } from "@/hooks/useBossBattle";
@@ -33,6 +34,8 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { push } = useRouter();
   const { t: tBossBattle } = useTranslation("boss-battle");
+  // TODO: ハイスコア取得
+  const highScore = -1;
 
   const closeModal = () => {
     setIsOpen(false);
@@ -46,8 +49,20 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
   if (boss.name === "" || boss.flavor === "") return <></>;
   return (
     <>
-      <div className={clsx(className)}>
-        <TurnAndScore turn={bossBattle.turn} score={bossBattle.score} />
+      <div
+        className={clsx(
+          className,
+          bossBattle.lp < MAX_LIFE_POINT / 4 ? "text-[#FCA7A4]" : "",
+          "text-[14px]",
+          "md:text-[16px]",
+        )}
+      >
+        <HighScore />
+        <TurnAndScore
+          turn={bossBattle.turn}
+          score={bossBattle.score}
+          lp={bossBattle.lp}
+        />
         <MonsterNameAndUserLifePoint
           name={monster.name}
           lifePoint={bossBattle.lp}
@@ -78,17 +93,35 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="m-6 w-full max-w-2xl transform overflow-hidden rounded-2xl bg-[#272727] p-6 text-left align-middle shadow-xl transition-all border-[1px]">
+                <Dialog.Panel className="m-6 w-full max-w-2xl transform overflow-hidden rounded-2xl bg-[#272727]/100 p-6 text-left align-middle shadow-xl transition-all border-[1px]">
                   <div className={clsx("w-[100%]", "h-[100%]", "relative")}>
-                    <div className={clsx("font-bold", "text-[32px]")}>
-                      {bossBattle.defeated ? <></> : tBossBattle("score")}
+                    <div className={clsx("flex", "justify-between")}>
+                      <div
+                        className={clsx(
+                          "font-bold",
+                          bossBattle.defeated ? "text-[20px]" : "text-[72px]",
+                          bossBattle.defeated
+                            ? "md:text-[32px]"
+                            : "md:text-[32px]",
+                        )}
+                      >
+                        {tBossBattle("score")}
+                      </div>
+                      <BossBattleTweetButton className={clsx("mr-[10px]")} />
                     </div>
                     <div
                       className={clsx(
                         "font-bold",
-                        bossBattle.defeated ? "text-[48px]" : "text-[96px]",
-                        bossBattle.defeated ? "" : "text-[#79FF63]",
+                        bossBattle.defeated ? "text-[32px]" : "text-[72px]",
+                        bossBattle.defeated
+                          ? "text-[#f86868]"
+                          : bossBattle.lp > highScore
+                          ? "text-[#79FF63]"
+                          : "",
                         "text-center",
+                        bossBattle.defeated
+                          ? "md:text-[48px]"
+                          : "md:text-[96px]",
                       )}
                     >
                       {bossBattle.defeated
@@ -96,27 +129,15 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                         : bossBattle.score}
                     </div>
                     <div
-                      className={clsx(
-                        "flex",
-                        "justify-between",
-                        "items-center",
-                      )}
+                      className={clsx("flex", "justify-end", "items-center")}
                     >
-                      {bossBattle.defeated ? (
-                        <div className={clsx()}></div>
-                      ) : (
-                        <div
-                          className={clsx(
-                            "font-bold",
-                            "text-[32px]",
-                            "text-end",
-                          )}
-                        >
-                          {tBossBattle("updatedHighScore")}
-                        </div>
-                      )}
                       <BossBattleOKButton
-                        className={clsx("px-[30px]", "text-[20px]")}
+                        className={clsx(
+                          "px-[20px]",
+                          "text-[14px]",
+                          "md:px-[30px]",
+                          "md:text-[20px]",
+                        )}
                         onClick={closeModal}
                       />
                     </div>
@@ -132,36 +153,54 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
 };
 
 /**
+ * HighScore
+ */
+const HighScore = () => {
+  // TODO: ハイスコアコントラクトから取ってくる
+  const { t: tBossBattle } = useTranslation("boss-battle");
+  return (
+    <div className={clsx("flex", "mb-[2px]")}>
+      <div className={clsx("px-[10px]", "text-end", "w-[100%]")}>
+        {tBossBattle("highScore")}: {100}
+      </div>
+    </div>
+  );
+};
+/**
  * Boss battle score
  * @param score score
  */
-const TurnAndScore = ({ turn, score }: any) => {
+const TurnAndScore = ({ turn, score, lp }: any) => {
+  // TODO: ハイスコア超えたら黄金色にする
   const { t: tBossBattle } = useTranslation("boss-battle");
   return (
     <div className={clsx("flex", "mb-[10px]")}>
       <div
         className={clsx(
           "font-bold",
-          "bg-[#272727]",
+          "bg-[#272727]/80",
           "p-[10px]",
           "rounded-lg",
           "border-[1px]",
-          "text-center",
-          "w-1/3",
+          "text-start",
+          "w-1/2",
+          "mr-[5px]",
+          lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
         )}
       >
         {tBossBattle("turn")}: {turn}
       </div>
-      <div className={clsx("w-1/3", "mr-[10px]")}></div>
       <div
         className={clsx(
           "font-bold",
-          "bg-[#272727]",
+          "bg-[#272727]/80",
           "p-[10px]",
           "rounded-lg",
           "border-[1px]",
-          "text-center",
-          "w-1/3",
+          "text-end",
+          "w-1/2",
+          "ml-[5px]",
+          lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
         )}
       >
         {tBossBattle("score")}: {score}
@@ -182,12 +221,13 @@ const MonsterNameAndUserLifePoint = ({ name, lifePoint }: any) => {
         className={clsx(
           "w-2/3",
           "font-bold",
-          "bg-[#272727]",
+          "bg-[#272727]/80",
           "p-[10px]",
           "rounded-lg",
           "border-[1px]",
           "truncate",
           "mr-[10px]",
+          lifePoint < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
         )}
       >
         {name}
@@ -195,15 +235,16 @@ const MonsterNameAndUserLifePoint = ({ name, lifePoint }: any) => {
       <div
         className={clsx(
           "font-bold",
-          "bg-[#272727]",
+          "bg-[#272727]/80",
           "p-[10px]",
           "rounded-lg",
           "border-[1px]",
           "w-1/3",
-          "text-center",
+          "text-end",
+          lifePoint < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
         )}
       >
-        LP: {lifePoint} / {MAX_LIFE_POINT}
+        LP: {lifePoint}
       </div>
     </div>
   );

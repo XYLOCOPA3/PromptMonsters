@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
-import { BOSS_BATTLE_START } from "@/const/bossBattle";
+import { BOSS_BATTLE_START, MAX_LIFE_POINT } from "@/const/bossBattle";
 import {
   getBossAppearedMsg,
   getBossNextActionSignMsg,
@@ -59,17 +59,18 @@ export const BossBattleMenuStart = ({
 
   if (boss.name === "" || language === "") return <></>;
   return (
-    <div className={clsx(className, "flex", "mb-[10px]", "h-[250px]")}>
+    <div className={clsx(className, "flex", "h-[190px]", "md:h-[250px]")}>
       <div
         className={clsx(
           "w-1/3",
           "font-bold",
-          "bg-[#272727]",
+          "bg-[#272727]/80",
           "p-[10px]",
           "rounded-lg",
           "border-[1px]",
           "text-center",
           "mr-[10px]",
+          bossBattle.lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
         )}
       >
         <div className={clsx("flex", "flex-col")}>
@@ -104,10 +105,12 @@ export const BossBattleMenuStart = ({
         className={clsx(
           "w-2/3",
           "font-bold",
-          "bg-[#272727]",
+          "bg-[#272727]/80",
           "p-[10px]",
           "rounded-lg",
           "border-[1px]",
+          bossBattle.lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
+          "overflow-y-scroll",
         )}
       >
         {bossBattle.turn === BOSS_BATTLE_START ? (

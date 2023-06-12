@@ -1,35 +1,38 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/elements/Button";
+import { useBossValue } from "@/hooks/useBoss";
+import { useBossBattleValue } from "@/hooks/useBossBattle";
 import { useMonsterValue } from "@/hooks/useMonster";
+import { BossBattleModel } from "@/models/BossBattleModel";
+import { BossModel } from "@/models/BossModel";
 import { MonsterModel } from "@/models/MonsterModel";
 import { BaseProps } from "@/types/BaseProps";
-import {
-  countCharactersForTwitter,
-  trimCharacters100,
-} from "@/utils/charUtils";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 
-export type GenerateTweetButtonProps = BaseProps;
+export type BossBattleTweetButtonProps = BaseProps;
 
 /**
- * Monster tweet button
+ * BossBattleTweetButton
  * @keit0728
  * @param className Style from parent element
  */
-export const GenerateTweetButton = ({
+export const BossBattleTweetButton = ({
   className,
-}: GenerateTweetButtonProps) => {
+}: BossBattleTweetButtonProps) => {
+  const bossBattle = useBossBattleValue();
+  const boss = useBossValue();
+
   const monster = useMonsterValue();
-  const { t: tCommon } = useTranslation("monsters");
+  const { t: tCommon } = useTranslation("common");
 
   if (monster.name === "") return <></>;
   return (
     <Link
       className={clsx(className)}
       href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-        _getGeneratedTweet(monster),
+        _getBossBattleTweet(monster, bossBattle, boss),
       )}`}
       target="_blank"
     >
@@ -62,18 +65,32 @@ export const GenerateTweetButton = ({
  * @param monster Monster
  * @return {string} Generated tweet
  */
-const _getGeneratedTweet = (monster: MonsterModel): string => {
-  const flavor = trimCharacters100(monster.flavor);
-  const skills = monster.skills.join("\n- ");
+const _getBossBattleTweet = (
+  monster: MonsterModel,
+  bossBattle: BossBattleModel,
+  boss: BossModel,
+): string => {
+  // TODO: ハイスコアだったらハイスコア文章表示
+  const highScore = -1;
 
-  return `Generated a Monster
+  return `Boss Battle!
 
-${monster.name}
-${flavor}${countCharactersForTwitter(flavor) > 100 ? "..." : ""}
-Skills:
-- ${skills}
+Boss: ${boss.name}
+  vs
+You:  ${monster.name}
 
-Check Monster here!
+------
+
+Your score is ... ${bossBattle.score} !!!
+
+${
+  bossBattle.score > highScore
+    ? "Congratulation!!!\nThis score is a high score!"
+    : ""
+}
+
+
+Let's play Prompt Monsters!
 https://prompt-monsters.com/
 
 #PromptMonsters #Alert`;

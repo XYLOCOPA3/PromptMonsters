@@ -16,7 +16,13 @@ export const BossImage = ({ className }: BossImageProps) => {
   if (boss.imageURL === "") return <></>;
   return (
     <Image
-      className={clsx(className, "rounded-2xl")}
+      className={clsx(
+        className,
+        "rounded-2xl",
+        "w-[300px]",
+        "h-auto",
+        "md:w-[512px]",
+      )}
       src={boss.imageURL}
       alt="boss"
       width={512}
