@@ -1,7 +1,7 @@
 import { network } from 'hardhat';
 import fs from 'fs';
 
-export const recordContractsData = async (contractName: string, contractAddress: string) => {
+export const recordContractsData = async (contractName: string, deployerAddress: string, contractAddress: string) => {
   let data;
   let networkName = network.name ? network.name : "undefined";
   const dirPath = `./scripts/helpers/contracts-data/${networkName}/${contractName}`;
@@ -28,6 +28,7 @@ export const recordContractsData = async (contractName: string, contractAddress:
     name: contractName,
     address: contractAddress,
     time: dateTimeJpn,
+    deployer: deployerAddress,
   };
 
   fs.writeFileSync(

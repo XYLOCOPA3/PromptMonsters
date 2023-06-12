@@ -20,9 +20,12 @@ async function main() {
     initializer: "initialize",
   });
   await erc20Proxy.deployed();
+
+  const erc20ImplementationAddress = await upgrades.erc1967.getImplementationAddress(erc20Proxy.address);
   
   try {
-    recordContractsData("Erc20", erc20Proxy.address);
+    recordContractsData("Erc20", erc20Proxy.address, deployer.address);
+    recordContractsData("Erc20Implementation", erc20ImplementationAddress, deployer.address);
     console.log("Recorded contract data");
   } catch (e) {
     console.log(e);
@@ -31,7 +34,7 @@ async function main() {
   console.log("Deployed Erc20 address: ", erc20Proxy.address);
   console.log(
     "Erc20 implementation deployed to:",
-    await upgrades.erc1967.getImplementationAddress(erc20Proxy.address),
+    erc20ImplementationAddress,
   );
 
   console.log("Completed deployment");

@@ -25,9 +25,12 @@ async function main() {
     },
   );
   await battleOffSeasonProxy.deployed();
+
+  const battleOffSeasonImplementationAddress = await upgrades.erc1967.getImplementationAddress(battleOffSeasonProxy.address)
   
   try {
-    recordContractsData("BattleOffSeasonProxy", battleOffSeasonProxy.address);
+    recordContractsData("BattleOffSeasonProxy", battleOffSeasonProxy.address, deployer.address);
+    recordContractsData("BattleOffSeasonImplementation", battleOffSeasonImplementationAddress, deployer.address);
     console.log("Recorded contract data");
   } catch (e) {
     console.log(e);
@@ -39,9 +42,7 @@ async function main() {
   );
   console.log(
     "BattleOffSeason implementation deployed to:",
-    await upgrades.erc1967.getImplementationAddress(
-      battleOffSeasonProxy.address,
-    ),
+    battleOffSeasonImplementationAddress,
   );
 
   console.log("Completed deployment");

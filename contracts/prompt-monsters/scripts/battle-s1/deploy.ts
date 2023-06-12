@@ -25,9 +25,12 @@ async function main() {
     },
   );
   await battleS1Proxy.deployed();
+
+  const battleS1ImplementationAddress = await upgrades.erc1967.getImplementationAddress(battleS1Proxy.address);
   
   try {
-    recordContractsData("BattleS1Proxy", battleS1Proxy.address);
+    recordContractsData("BattleS1Proxy", battleS1Proxy.address, deployer.address);
+    recordContractsData("BattleS1Implementation", battleS1ImplementationAddress, deployer.address);
     console.log("Recorded contract data");
   } catch (e) {
     console.log(e);
@@ -36,7 +39,7 @@ async function main() {
   console.log("Deployed BattleS1Proxy address: ", battleS1Proxy.address);
   console.log(
     "BattleS1 implementation deployed to:",
-    await upgrades.erc1967.getImplementationAddress(battleS1Proxy.address),
+    battleS1ImplementationAddress,
   );
 
   console.log("Completed deployment");
