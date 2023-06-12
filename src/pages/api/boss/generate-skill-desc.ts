@@ -42,8 +42,8 @@ export default async function handler(
       await promptMonsters.getMonsterExtensions([resurrectionPrompt])
     )[0];
     if (!hasUnknownSkill(monsterExtension.skillTypes))
-      return res.status(400).json({
-        message: "This monster has no unknown skill",
+      return res.status(200).json({
+        skillTypes: monsterExtension.skillTypes,
       });
 
     // TODO: Unknownスキルのみ更新
