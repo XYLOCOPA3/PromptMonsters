@@ -2,13 +2,9 @@ import { Fragment, useState } from "react";
 import { useRouter } from "next/router";
 import { MAX_LIFE_POINT } from "@/const/bossBattle";
 import {
-  BossBattleMenuBossActionResult,
   BossBattleMenuContinue,
-  BossBattleMenuDefenseResult,
   BossBattleMenuFight,
-  BossBattleMenuFightResult,
   BossBattleMenuItem,
-  BossBattleMenuItemResult,
   BossBattleMenuResult,
   BossBattleMenuStart,
   BossBattleOKButton,
@@ -223,18 +219,10 @@ const Menu = ({ phase }: any) => {
       return <BossBattleMenuStart />;
     case EnumBossBattlePhase.fightSelect:
       return <BossBattleMenuFight />;
-    case EnumBossBattlePhase.result:
-      return <BossBattleMenuResult />;
-    case EnumBossBattlePhase.fightResult:
-      return <BossBattleMenuFightResult />;
-    case EnumBossBattlePhase.defenseResult:
-      return <BossBattleMenuDefenseResult />;
     case EnumBossBattlePhase.itemSelect:
       return <BossBattleMenuItem />;
-    case EnumBossBattlePhase.itemResult:
-      return <BossBattleMenuItemResult />;
-    case EnumBossBattlePhase.bossActionResult:
-      return <BossBattleMenuBossActionResult />;
+    case EnumBossBattlePhase.result:
+      return <BossBattleMenuResult />;
     case EnumBossBattlePhase.continue:
       return <BossBattleMenuContinue />;
     default:
