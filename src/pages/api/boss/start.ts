@@ -20,6 +20,7 @@ export default async function handler(
     return res.status(400).json({
       message: "Only POST",
     });
+
   const resurrectionPrompt = req.body.resurrectionPrompt || "";
   if (resurrectionPrompt === "") {
     return res.status(400).json({
