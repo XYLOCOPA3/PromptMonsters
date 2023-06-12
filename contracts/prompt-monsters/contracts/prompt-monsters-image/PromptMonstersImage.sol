@@ -7,15 +7,15 @@ import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgrad
 import {StringsUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import {Base64Upgradeable} from "@openzeppelin/contracts-upgradeable/utils/Base64Upgradeable.sol";
 
-import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
-import {IPromptMonstersImage} from "./IPromptMonstersImage.sol";
+import {ITestPM} from "../prompt-monsters/IPromptMonsters.sol";
+import {ITestPMI} from "./IPromptMonstersImage.sol";
 
 /// @title PromptMonstersImage
 /// @author keit (@keitEngineer)
 /// @dev This is a contract of PromptMonstersImage.
-contract PromptMonstersImage is
+contract TestPMI is
   Initializable,
-  IPromptMonstersImage,
+  ITestPMI,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
 {
@@ -24,7 +24,7 @@ contract PromptMonstersImage is
   // --------------------------------------------------------------------------------
 
   /// @custom:oz-renamed-from promptMonsters
-  IPromptMonsters private _promptMonsters;
+  ITestPM private _promptMonsters;
 
   /// @custom:oz-renamed-from imageURL
   mapping(uint256 => string) private _imageURLMap;
@@ -46,7 +46,7 @@ contract PromptMonstersImage is
     __UUPSUpgradeable_init();
 
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-    _promptMonsters = IPromptMonsters(promptMonstersAddress_);
+    _promptMonsters = ITestPM(promptMonstersAddress_);
   }
 
   // --------------------------------------------------------------------------------
@@ -59,11 +59,7 @@ contract PromptMonstersImage is
 
   /// @dev Get _promptMonsters
   /// @return returnValue _promptMonsters
-  function getPromptMonsters()
-    external
-    view
-    returns (IPromptMonsters returnValue)
-  {
+  function getPromptMonsters() external view returns (ITestPM returnValue) {
     returnValue = _promptMonsters;
   }
 
@@ -114,7 +110,7 @@ contract PromptMonstersImage is
     address newState_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     address oldState = address(_promptMonsters);
-    _promptMonsters = IPromptMonsters(newState_);
+    _promptMonsters = ITestPM(newState_);
     emit SetPromptMonsters(_msgSender(), oldState, newState_);
   }
 
@@ -128,7 +124,7 @@ contract PromptMonstersImage is
   /// @return uri token URI
   function tokenURI(
     uint256 tokenId_,
-    IPromptMonsters.Monster memory monster_
+    ITestPM.Monster memory monster_
   ) external view returns (string memory uri) {
     string memory imageURL_ = _imageURLMap[tokenId_];
     if (bytes(imageURL_).length == 0) {
@@ -239,7 +235,7 @@ contract PromptMonstersImage is
   /// @param monster monster
   /// @return svg SVG
   function _getSvg(
-    IPromptMonsters.Monster memory monster
+    ITestPM.Monster memory monster
   ) internal pure returns (string memory svg) {
     svg = string.concat(
       '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" />',

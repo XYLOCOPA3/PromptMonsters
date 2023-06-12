@@ -7,7 +7,7 @@ export async function deployPromptMonstersImage() {
   };
 
   const PromptMonstersImage = await ethers.getContractFactory(
-    "PromptMonstersImage",
+    "TestPMI",
   );
   const promptMonstersImageProxy = await upgrades.deployProxy(
     PromptMonstersImage,

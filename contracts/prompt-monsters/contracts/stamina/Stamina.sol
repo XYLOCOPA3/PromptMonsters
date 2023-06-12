@@ -5,16 +5,16 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
-import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
-import {IStamina} from "./IStamina.sol";
+import {ITestPM} from "../prompt-monsters/IPromptMonsters.sol";
+import {ITestS} from "./IStamina.sol";
 
 import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /// @title Stamina
 /// @dev This is a contract of Stamina.
-contract Stamina is
+contract TestS is
   Initializable,
-  IStamina,
+  ITestS,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
 {
@@ -24,7 +24,7 @@ contract Stamina is
 
   bytes32 public GAME_ROLE;
 
-  IPromptMonsters public promptMonsters;
+  ITestPM public promptMonsters;
 
   uint256 public staminaLimit;
 
@@ -55,7 +55,7 @@ contract Stamina is
     __AccessControlEnumerable_init();
     __UUPSUpgradeable_init();
 
-    promptMonsters = IPromptMonsters(promptMonstersAddress);
+    promptMonsters = ITestPM(promptMonstersAddress);
 
     staminaLimit = 3;
     staminaRecoveryTime = 28800;
@@ -109,7 +109,7 @@ contract Stamina is
   function setPromptMonstersAddress(
     address promptMonstersAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    promptMonsters = IPromptMonsters(promptMonstersAddress);
+    promptMonsters = ITestPM(promptMonstersAddress);
 
     emit SetPromptMonstersAddress(msg.sender, promptMonstersAddress);
   }

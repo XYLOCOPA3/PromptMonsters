@@ -65,7 +65,7 @@ describe("BossBattle Integration Test", function () {
   });
 
   describe("Deploy", function () {
-    describe("PromptMonsters", function () {
+    describe("TestPM", function () {
       it("promptMonsters address", async function () {
         expect(promptMonsters.address).to.not.equal(
           ethers.constants.AddressZero,
@@ -74,7 +74,7 @@ describe("BossBattle Integration Test", function () {
       });
     });
 
-    describe("BossBattle", function () {
+    describe("TestBB", function () {
       it("bossBattle address", async function () {
         expect(bossBattle.address).to.not.equal(
           ethers.constants.AddressZero,
@@ -83,7 +83,7 @@ describe("BossBattle Integration Test", function () {
       });
     });
 
-    describe("BossBattleMch1", function () {
+    describe("TestBBM1", function () {
       it("bossBattleMch1 address", async function () {
         expect(bossBattleMch1.address).to.not.equal(
           ethers.constants.AddressZero,
@@ -92,7 +92,7 @@ describe("BossBattle Integration Test", function () {
       });
     });
 
-    describe("BossMonsterMchYoshka", function () {
+    describe("TestBMMY", function () {
       it("bossMonsterMchYoshka address", async function () {
         expect(bossMonsterMchYoshka.address).to.not.equal(
           ethers.constants.AddressZero,

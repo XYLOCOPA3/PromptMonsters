@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-import {IBossMonster} from "../interfaces/IBossMonster.sol";
+import {ITestBM} from "../interfaces/IBossMonster.sol";
 
 /// @title IBossBattleEvent
 /// @dev This is an interface of BossBattleEvent.
-interface IBossBattleEvent {
+interface ITestBBE {
   // --------------------------------------------------------------------------------
   // Struct
   // --------------------------------------------------------------------------------
@@ -31,8 +31,8 @@ interface IBossBattleEvent {
 
   event SetBossMonster(
     address indexed publisher,
-    IBossMonster oldValue,
-    IBossMonster newValue
+    ITestBM oldValue,
+    ITestBM newValue
   );
 
   event StartedBossBattle(
@@ -82,15 +82,14 @@ interface IBossBattleEvent {
 
   /// @dev Get _bossMonster
   /// @return returnState _bossMonster
-  function getBossMonster() external view returns (IBossMonster returnState);
+  function getBossMonster() external view returns (ITestBM returnState);
 
   /// @dev Get _highScores
   /// @param rps_ resurrection prompts
   /// @return highScores high scores
-  function getHighScores(address[] memory rps_)
-    external
-    view
-    returns (uint32[] memory highScores);
+  function getHighScores(
+    address[] memory rps_
+  ) external view returns (uint32[] memory highScores);
 
   // --------------------------------------------------------------------------------
   // Setter

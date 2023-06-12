@@ -3,7 +3,7 @@ import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-describe("Battle", function () {
+describe("TestB", function () {
   async function init() {
     const { battle, battleS1 } = await loadFixture(deploy);
 
@@ -57,7 +57,7 @@ describe("Battle", function () {
     });
   });
 
-  describe("Battle", function () {
+  describe("TestB", function () {
     it("addSeasonBattleData", async function () {
       const { battle, battleS1 } = await loadFixture(init);
       expect(await battle.addBattleSeasonAddress(battleS1.address)).not.to.be

@@ -4,7 +4,7 @@ import { ethers } from "hardhat";
 export async function mintPrice() {
   const [deployer] = await ethers.getSigners();
   console.log("account: ", deployer.address);
-  const Battle = await ethers.getContractFactory("Battle");
+  const Battle = await ethers.getContractFactory("TestB");
   const battle = Battle.attach(BATTLE_PROXY_ADDRESS);
   console.log(BATTLE_PROXY_ADDRESS);
 
@@ -20,7 +20,7 @@ export async function mintPrice() {
   //   console.log(await stamina.getRoleMember(role, i));
   // }
 
-  // const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
+  // const PromptMonsters = await ethers.getContractFactory("TestPM");
 
   // const promptMonsters = PromptMonsters.attach(PROMPT_MONSTERS_PROXY_ADDRESS);
 

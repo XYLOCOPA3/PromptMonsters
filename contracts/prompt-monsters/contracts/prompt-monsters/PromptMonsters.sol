@@ -11,14 +11,14 @@ import {StringsUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/Stri
 import {Base64Upgradeable} from "@openzeppelin/contracts-upgradeable/utils/Base64Upgradeable.sol";
 import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import {IPromptMonsters, IPromptMonstersImage, IPromptMonstersExtension} from "./IPromptMonsters.sol";
+import {ITestPM, ITestPMI, ITestPME} from "./IPromptMonsters.sol";
 
 /// @title PromptMonsters
 /// @author keit (@keitEngineer)
 /// @dev This is a contract of PromptMonsters.
-contract PromptMonsters is
+contract TestPM is
   Initializable,
-  IPromptMonsters,
+  ITestPM,
   ERC721Upgradeable,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable,
@@ -45,19 +45,19 @@ contract PromptMonsters is
     private _ownerToTokenIdsIndexMap;
 
   /// @custom:oz-renamed-from _monsterHistory
-  mapping(address => IPromptMonsters.Monster) private _monsterHistoryMap;
+  mapping(address => ITestPM.Monster) private _monsterHistoryMap;
 
   /// @custom:oz-renamed-from _ownerToTokenIds
   mapping(address => uint256[]) private _ownerToTokenIdsMap;
 
   /// @custom:oz-renamed-from _monsters
-  IPromptMonsters.Monster[] private _monsters;
+  ITestPM.Monster[] private _monsters;
 
   /// @custom:oz-renamed-from resurrectionIndex
   mapping(address => uint256) private _resurrectionPromptToTokenIdMap;
 
   /// @custom:oz-renamed-from promptMonstersImage
-  IPromptMonstersImage private _promptMonstersImage;
+  ITestPMI private _promptMonstersImage;
 
   /// @custom:oz-renamed-from _paused
   bool private _paused;
@@ -69,7 +69,7 @@ contract PromptMonsters is
   mapping(uint256 => address) private _tokenIdToResurrectionPromptMap;
 
   /// @custom:oz-renamed-from _promptMonstersExtension
-  IPromptMonstersExtension private _promptMonstersExtension;
+  ITestPME private _promptMonstersExtension;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -92,7 +92,7 @@ contract PromptMonsters is
     uint256 mintPrice_,
     address promptMonstersWallet_
   ) public initializer {
-    __ERC721_init("Prompt Monsters", "MON");
+    __ERC721_init("TestPM", "TestM");
     __AccessControlEnumerable_init();
     __UUPSUpgradeable_init();
     __ReentrancyGuard_init();
@@ -193,7 +193,7 @@ contract PromptMonsters is
   function getPromptMonstersImage()
     external
     view
-    returns (IPromptMonstersImage returnValue)
+    returns (ITestPMI returnValue)
   {
     returnValue = _promptMonstersImage;
   }
@@ -241,7 +241,7 @@ contract PromptMonsters is
   function getPromptMonstersExtension()
     external
     view
-    returns (IPromptMonstersExtension returnValue)
+    returns (ITestPME returnValue)
   {
     returnValue = _promptMonstersExtension;
   }
@@ -293,8 +293,8 @@ contract PromptMonsters is
   function setPromptMonstersImage(
     address newState_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    IPromptMonstersImage oldState = _promptMonstersImage;
-    _promptMonstersImage = IPromptMonstersImage(newState_);
+    ITestPMI oldState = _promptMonstersImage;
+    _promptMonstersImage = ITestPMI(newState_);
     emit SetPromptMonstersImage(_msgSender(), oldState, _promptMonstersImage);
   }
 
@@ -315,8 +315,8 @@ contract PromptMonsters is
   function setPromptMonstersExtension(
     address newState_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    IPromptMonstersExtension oldState = _promptMonstersExtension;
-    _promptMonstersExtension = IPromptMonstersExtension(newState_);
+    ITestPME oldState = _promptMonstersExtension;
+    _promptMonstersExtension = ITestPME(newState_);
     emit SetPromptMonstersExtension(
       _msgSender(),
       oldState,
@@ -343,7 +343,7 @@ contract PromptMonsters is
   /// @param monster_ monster
   function generateMonster(
     address resurrectionPrompt_,
-    IPromptMonsters.Monster memory monster_
+    ITestPM.Monster memory monster_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) nonReentrant {
     _monsterHistoryMap[resurrectionPrompt_] = monster_;
     emit GeneratedMonsterV2(resurrectionPrompt_, monster_);
@@ -361,9 +361,7 @@ contract PromptMonsters is
       newTokenId != type(uint256).max,
       "PromptMonsters: token ID is too large"
     );
-    IPromptMonsters.Monster memory monster = _monsterHistoryMap[
-      resurrectionPrompt
-    ];
+    ITestPM.Monster memory monster = _monsterHistoryMap[resurrectionPrompt];
     require(monster.lv != 0, "PromptMonsters: monster is not generated");
 
     _monsters.push(monster);
@@ -405,12 +403,10 @@ contract PromptMonsters is
   )
     external
     view
-    returns (
-      IPromptMonstersExtension.MonsterExtension[] memory monsterExtensions
-    )
+    returns (ITestPME.MonsterExtension[] memory monsterExtensions)
   {
     uint256 length = resurrectionPrompts_.length;
-    monsterExtensions = new IPromptMonstersExtension.MonsterExtension[](length);
+    monsterExtensions = new ITestPME.MonsterExtension[](length);
     for (uint i; i < length; ) {
       address rp = resurrectionPrompts_[i];
       monsterExtensions[i] = _promptMonstersExtension.getMonsterExtension(
@@ -503,11 +499,9 @@ contract PromptMonsters is
   /// @param newState_ _monsterHistory
   function setMonsterHistory(
     address resurrectionPrompt,
-    IPromptMonsters.Monster memory newState_
+    ITestPM.Monster memory newState_
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    IPromptMonsters.Monster memory oldState = _monsterHistoryMap[
-      resurrectionPrompt
-    ];
+    ITestPM.Monster memory oldState = _monsterHistoryMap[resurrectionPrompt];
     require(oldState.lv == 0, "PromptMonsters: monster is already generated");
     _monsterHistoryMap[resurrectionPrompt] = newState_;
     emit SetMonsterHistory(_msgSender(), oldState, newState_);
@@ -538,9 +532,9 @@ contract PromptMonsters is
   /// @return monsters monsters
   function getMonsters(
     uint256[] memory tokenIds
-  ) external view returns (IPromptMonsters.Monster[] memory monsters) {
+  ) external view returns (ITestPM.Monster[] memory monsters) {
     uint256 length = tokenIds.length;
-    monsters = new IPromptMonsters.Monster[](length);
+    monsters = new ITestPM.Monster[](length);
     for (uint i; i < length; ) {
       monsters[i] = _monsters[tokenIds[i]];
       unchecked {

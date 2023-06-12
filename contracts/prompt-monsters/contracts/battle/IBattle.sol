@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-import {IBattleSeason} from "../interfaces/IBattleSeason.sol";
+import {ITestBS} from "../interfaces/IBattleSeason.sol";
 
 /// @title IBattle
 /// @dev This is an interface of Battle.
-interface IBattle {
+interface ITestB {
   // --------------------------------------------------------------------------------
   // Struct
   // --------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ interface IBattle {
   /// @return season battle data
   function getSeasonBattleData(
     uint256 seasonId
-  ) external view returns (IBattleSeason.BattleData[] memory);
+  ) external view returns (ITestBS.BattleData[] memory);
 
   /// @dev Get season battle data by monster ID
   /// @param seasonId ID of the season
@@ -120,7 +120,7 @@ interface IBattle {
   function getSeasonBattleDataByMonsterId(
     uint256 seasonId,
     uint256 monsterId
-  ) external view returns (IBattleSeason.BattleData[] memory);
+  ) external view returns (ITestBS.BattleData[] memory);
 
   /// @dev Get _battleSeasonsAddress
   /// @return _battleSeasonsAddress

@@ -15,7 +15,7 @@ async function main() {
   console.log("Deploying contracts with account: ", deployer.address);
 
   const PromptMonstersImage = await ethers.getContractFactory(
-    "PromptMonstersImage",
+    "TestPMI",
   );
   const promptMonstersImageProxy = await upgrades.deployProxy(
     PromptMonstersImage,

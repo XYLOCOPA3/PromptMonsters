@@ -10,7 +10,7 @@ async function setGameRole() {
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const BossBattleMch1 = await ethers.getContractFactory("BossBattleMch1");
+  const BossBattleMch1 = await ethers.getContractFactory("TestBBM1");
   const bossBattleMch1Proxy = BossBattleMch1.attach(
     BOSS_BATTLE_MCH_1_PROXY_ADDRESS,
   );

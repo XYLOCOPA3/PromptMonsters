@@ -5,7 +5,7 @@ export async function main() {
   const [deployer] = await ethers.getSigners();
   console.log("account: ", deployer.address);
 
-  const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
+  const PromptMonsters = await ethers.getContractFactory("TestPM");
   const promptMonsters = PromptMonsters.attach(PROMPT_MONSTERS_PROXY_ADDRESS);
 
   console.log(`Before: ${await promptMonsters.getMintPrice()}`);

@@ -5,7 +5,7 @@ import {
 import { ethers, upgrades } from "hardhat";
 
 export async function deployBattleOffSeason() {
-  const Battle = await ethers.getContractFactory("Battle");
+  const Battle = await ethers.getContractFactory("TestB");
   const battleProxy = await upgrades.deployProxy(
     Battle,
     [PROMPT_MONSTERS_PROXY_ADDRESS, STAMINA_PROXY_ADDRESS],
@@ -17,7 +17,7 @@ export async function deployBattleOffSeason() {
   await battleProxy.deployed();
 
   const battle = Battle.attach(battleProxy.address);
-  const BattleOffSeason = await ethers.getContractFactory("BattleOffSeason");
+  const BattleOffSeason = await ethers.getContractFactory("TestBOS");
   const battleOffSeasonProxy = await upgrades.deployProxy(
     BattleOffSeason,
     [PROMPT_MONSTERS_PROXY_ADDRESS],

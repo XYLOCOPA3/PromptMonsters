@@ -18,7 +18,7 @@ async function main() {
   console.log("Upgrade BossMonsterMchYoshkaProxy address: ", addr);
 
   const BossMonsterMchYoshka = await ethers.getContractFactory(
-    "BossMonsterMchYoshka",
+    "TestBMMY",
   );
   const bossMonsterMchYoshkaProxy = await upgrades.upgradeProxy(
     addr,

@@ -3,7 +3,7 @@ pragma solidity ^0.8.18;
 
 /// @title IStamina
 /// @dev This is an interface of SeasonforBattle.
-interface IStamina {
+interface ITestS {
   // --------------------------------------------------------------------------------
   // Struct
   // --------------------------------------------------------------------------------

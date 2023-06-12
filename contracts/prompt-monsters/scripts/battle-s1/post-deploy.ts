@@ -16,7 +16,7 @@ async function main() {
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const BattleS1 = await ethers.getContractFactory("BattleS1");
+  const BattleS1 = await ethers.getContractFactory("TestBS1");
   const battleS1 = BattleS1.attach(BATTLE_S1_PROXY_ADDRESS);
 
   console.log("Set PromptMonsters address");

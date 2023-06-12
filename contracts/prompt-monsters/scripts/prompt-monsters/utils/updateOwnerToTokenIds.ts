@@ -7,13 +7,13 @@ import {
 import { ethers } from "hardhat";
 
 export async function main() {
-  const Stamina = await ethers.getContractFactory("Stamina");
+  const Stamina = await ethers.getContractFactory("TestS");
   const stamina = Stamina.attach(STAMINA_PROXY_ADDRESS);
-  const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
+  const PromptMonsters = await ethers.getContractFactory("TestPM");
   const promptMonsters = PromptMonsters.attach(PROMPT_MONSTERS_PROXY_ADDRESS);
-  const Battle = await ethers.getContractFactory("Battle");
+  const Battle = await ethers.getContractFactory("TestB");
   const battle = Battle.attach(BATTLE_PROXY_ADDRESS);
-  const BattleS1 = await ethers.getContractFactory("BattleS1");
+  const BattleS1 = await ethers.getContractFactory("TestBS1");
   const battles1 = BattleS1.attach(BATTLE_S1_PROXY_ADDRESS);
 
   // ユーザー情報のチェック -----------------------------------

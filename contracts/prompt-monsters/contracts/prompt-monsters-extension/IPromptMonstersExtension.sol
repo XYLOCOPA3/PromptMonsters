@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
+import {ITestPM} from "../prompt-monsters/IPromptMonsters.sol";
 
 /// @title IPromptMonstersExtension
 /// @author keit (@keitEngineer)
 /// @dev This is an interface of PromptMonstersExtension.
-interface IPromptMonstersExtension {
+interface ITestPME {
   // --------------------------------------------------------------------------------
   // Struct
   // --------------------------------------------------------------------------------
@@ -83,6 +83,6 @@ interface IPromptMonstersExtension {
   /// @return monsterExtension monster extensions
   function getMonsterExtension(
     address resurrectionPrompt_,
-    IPromptMonsters.Monster memory monster_
+    ITestPM.Monster memory monster_
   ) external view returns (MonsterExtension memory monsterExtension);
 }

@@ -17,7 +17,7 @@ async function main() {
   console.log("Upgrading contracts with account: ", deployer.address);
   console.log("Upgrade BossBattleMch1Proxy address: ", addr);
 
-  const BossBattleMch1 = await ethers.getContractFactory("BossBattleMch1");
+  const BossBattleMch1 = await ethers.getContractFactory("TestBBM1");
   const bossBattleMch1Proxy = await upgrades.upgradeProxy(addr, BossBattleMch1);
   await bossBattleMch1Proxy.deployed();
   console.log(

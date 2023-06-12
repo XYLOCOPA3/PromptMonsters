@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
+import {ITestPM} from "../prompt-monsters/IPromptMonsters.sol";
 
 /// @title IPromptMonstersImage
 /// @author keit (@keitEngineer)
 /// @dev This is an interface of PromptMonstersImage.
-interface IPromptMonstersImage {
+interface ITestPMI {
   // --------------------------------------------------------------------------------
   // Struct
   // --------------------------------------------------------------------------------
@@ -41,10 +41,7 @@ interface IPromptMonstersImage {
 
   /// @dev Get _promptMonsters
   /// @return returnValue _promptMonsters
-  function getPromptMonsters()
-    external
-    view
-    returns (IPromptMonsters returnValue);
+  function getPromptMonsters() external view returns (ITestPM returnValue);
 
   /// @dev Get image URL
   /// @return returnValue image URL
@@ -83,7 +80,7 @@ interface IPromptMonstersImage {
   /// @return uri token URI
   function tokenURI(
     uint256 tokenId_,
-    IPromptMonsters.Monster memory monster_
+    ITestPM.Monster memory monster_
   ) external view returns (string memory uri);
 
   /// @dev Get contract URI

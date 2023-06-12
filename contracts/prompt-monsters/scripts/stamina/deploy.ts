@@ -14,7 +14,7 @@ async function main() {
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with account: ", deployer.address);
 
-  const Stamina = await ethers.getContractFactory("Stamina");
+  const Stamina = await ethers.getContractFactory("TestS");
   const staminaProxy = await upgrades.deployProxy(
     Stamina,
     [PROMPT_MONSTERS_PROXY_ADDRESS],

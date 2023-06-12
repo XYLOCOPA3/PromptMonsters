@@ -6,7 +6,7 @@ import { ethers, upgrades } from "hardhat";
 export async function deployBattle() {
   const { promptMonsters, erc20 } = await loadFixture(deployPromptMonsters);
 
-  const Battle = await ethers.getContractFactory("Battle");
+  const Battle = await ethers.getContractFactory("TestB");
   const battleProxy = await upgrades.deployProxy(
     Battle,
     [promptMonsters.address, STAMINA_PROXY_ADDRESS],
@@ -19,7 +19,7 @@ export async function deployBattle() {
 
   const battle = Battle.attach(battleProxy.address);
 
-  const BattleS1 = await ethers.getContractFactory("BattleS1");
+  const BattleS1 = await ethers.getContractFactory("TestBS1");
   const battleS1Proxy = await upgrades.deployProxy(
     BattleS1,
     [promptMonsters.address],

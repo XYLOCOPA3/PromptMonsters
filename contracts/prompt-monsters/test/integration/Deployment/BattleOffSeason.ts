@@ -5,7 +5,7 @@ export const deployBattleOffSeason = async (
   deployer: SignerWithAddress,
   promptMonstersAddress: string,
 ) => {
-  const BattleOffSeason = await ethers.getContractFactory("BattleOffSeason");
+  const BattleOffSeason = await ethers.getContractFactory("TestBOS");
   const battleOffSeasonProxy = await upgrades.deployProxy(
     BattleOffSeason,
     [promptMonstersAddress],

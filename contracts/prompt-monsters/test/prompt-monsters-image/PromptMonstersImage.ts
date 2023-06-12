@@ -3,7 +3,7 @@ import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-describe("PromptMonstersImage", function () {
+describe("TestPMI", function () {
   async function init() {
     const { promptMonstersImage } = await loadFixture(
       deployPromptMonstersImage,

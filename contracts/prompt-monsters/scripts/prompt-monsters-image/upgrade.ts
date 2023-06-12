@@ -19,7 +19,7 @@ async function main() {
   );
 
   const PromptMonstersImage = await ethers.getContractFactory(
-    "PromptMonstersImage",
+    "TestPMI",
   );
   const promptMonstersImageProxy = await upgrades.upgradeProxy(
     PROMPT_MONSTERS_IMAGE_PROXY_ADDRESS,

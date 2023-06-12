@@ -5,14 +5,14 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
-import {IBossBattleEvent, IBossMonster} from "../interfaces/IBossBattleEvent.sol";
-import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
+import {ITestBBE, ITestBM} from "../interfaces/IBossBattleEvent.sol";
+import {ITestPM} from "../prompt-monsters/IPromptMonsters.sol";
 
 /// @title BossBattleMch1
 /// @dev This is a contract of BossBattleMch1.
-contract BossBattleMch1 is
+contract TestBBM1 is
   Initializable,
-  IBossBattleEvent,
+  ITestBBE,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
 {
@@ -24,7 +24,7 @@ contract BossBattleMch1 is
   bytes32 private GAME_ROLE;
 
   /// @custom:oz-renamed-from _bossMonster
-  IBossMonster private _bossMonster;
+  ITestBM private _bossMonster;
 
   /// @custom:oz-renamed-from _highScoreMap
   mapping(address => uint32) private _highScoreMap;
@@ -136,21 +136,19 @@ contract BossBattleMch1 is
 
   /// @dev Get _bossMonster
   /// @return returnState _bossMonster
-  function getBossMonster() external view returns (IBossMonster returnState) {
+  function getBossMonster() external view returns (ITestBM returnState) {
     returnState = _bossMonster;
   }
 
   /// @dev Get _highScores
   /// @param rps_ resurrection prompts
   /// @return highScores high scores
-  function getHighScores(address[] memory rps_)
-    external
-    view
-    returns (uint32[] memory highScores)
-  {
+  function getHighScores(
+    address[] memory rps_
+  ) external view returns (uint32[] memory highScores) {
     uint256 rpsLength = rps_.length;
     highScores = new uint32[](rpsLength);
-    
+
     for (uint256 i = 0; i < rpsLength; ) {
       highScores[i] = _highScoreMap[rps_[i]];
       unchecked {
@@ -168,8 +166,8 @@ contract BossBattleMch1 is
   function setBossMonster(
     address bossMonsterAddress
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    IBossMonster oldValue = _bossMonster;
-    _bossMonster = IBossMonster(bossMonsterAddress);
+    ITestBM oldValue = _bossMonster;
+    _bossMonster = ITestBM(bossMonsterAddress);
 
     emit SetBossMonster(_msgSender(), oldValue, _bossMonster);
   }
@@ -183,8 +181,8 @@ contract BossBattleMch1 is
   /// @return bbState BBState
   function getBBState(
     address resurrectionPrompt
-  ) public view returns (IBossBattleEvent.BBState memory bbState) {
-    bbState = IBossBattleEvent.BBState(
+  ) public view returns (ITestBBE.BBState memory bbState) {
+    bbState = ITestBBE.BBState(
       _bossBattleStartedMap[resurrectionPrompt],
       _bossBattleContinuedMap[resurrectionPrompt],
       _lpMap[resurrectionPrompt],
@@ -211,7 +209,7 @@ contract BossBattleMch1 is
   ) external onlyRole(GAME_ROLE) onlyNotStarted(resurrectionPrompt) {
     _initBBState(resurrectionPrompt, monsterAdj, bossSign);
 
-    IBossBattleEvent.BBState memory bbState = getBBState(resurrectionPrompt);
+    ITestBBE.BBState memory bbState = getBBState(resurrectionPrompt);
     emit StartedBossBattle(_msgSender(), resurrectionPrompt, bbState);
   }
 
@@ -220,14 +218,14 @@ contract BossBattleMch1 is
   /// @param bbState bbState to update
   function updateBossBattleResult(
     address resurrectionPrompt,
-    IBossBattleEvent.BBState memory bbState
+    ITestBBE.BBState memory bbState
   )
     external
     onlyRole(GAME_ROLE)
     onlyStarted(resurrectionPrompt)
     onlyContinued(resurrectionPrompt)
   {
-    IBossBattleEvent.BBState memory oldValue = getBBState(resurrectionPrompt);
+    ITestBBE.BBState memory oldValue = getBBState(resurrectionPrompt);
 
     _bossBattleContinuedMap[resurrectionPrompt] = false;
     _lpMap[resurrectionPrompt] = bbState.lp;
@@ -239,7 +237,7 @@ contract BossBattleMch1 is
     _hasDebuffItemMap[resurrectionPrompt] = bbState.hasDebuffItem;
     _hasEscapeItemMap[resurrectionPrompt] = bbState.hasEscapeItem;
 
-    IBossBattleEvent.BBState memory newBbState = getBBState(resurrectionPrompt);
+    ITestBBE.BBState memory newBbState = getBBState(resurrectionPrompt);
 
     emit UpdatedBossBattleResult(
       _msgSender(),
@@ -265,13 +263,13 @@ contract BossBattleMch1 is
       _lpMap[resurrectionPrompt] > 0,
       "BossBattleEvent: You have already lost all LP"
     );
-    IBossBattleEvent.BBState memory oldValue = getBBState(resurrectionPrompt);
+    ITestBBE.BBState memory oldValue = getBBState(resurrectionPrompt);
 
     _bossBattleContinuedMap[resurrectionPrompt] = true;
     _turnMap[resurrectionPrompt] = _turnMap[resurrectionPrompt] + 1;
     _bossSignMap[resurrectionPrompt] = bossSign;
 
-    IBossBattleEvent.BBState memory bbState = getBBState(resurrectionPrompt);
+    ITestBBE.BBState memory bbState = getBBState(resurrectionPrompt);
 
     emit ContinuedBossBattle(
       _msgSender(),
@@ -291,12 +289,12 @@ contract BossBattleMch1 is
     onlyStarted(resurrectionPrompt)
     onlyNotContinued(resurrectionPrompt)
   {
-    IBossBattleEvent.BBState memory oldValue = getBBState(resurrectionPrompt);
+    ITestBBE.BBState memory oldValue = getBBState(resurrectionPrompt);
 
     _bossBattleStartedMap[resurrectionPrompt] = false;
     _updateHighScore(resurrectionPrompt);
 
-    IBossBattleEvent.BBState memory bbState = getBBState(resurrectionPrompt);
+    ITestBBE.BBState memory bbState = getBBState(resurrectionPrompt);
     emit EndedBossBattle(_msgSender(), resurrectionPrompt, oldValue, bbState);
   }
 

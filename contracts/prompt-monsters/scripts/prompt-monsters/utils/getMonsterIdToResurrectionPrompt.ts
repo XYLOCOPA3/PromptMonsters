@@ -5,7 +5,7 @@ async function main() {
   console.log("- getMonsterIdToResurrectionPrompt");
   const monsterId = 25;
 
-  const PromptMonsters = await ethers.getContractFactory("PromptMonsters");
+  const PromptMonsters = await ethers.getContractFactory("TestPM");
   const promptMonsters = PromptMonsters.attach(PROMPT_MONSTERS_PROXY_ADDRESS);
   console.log(await promptMonsters.getResurrectionPrompts([21]));
   console.log(await promptMonsters.getResurrectionPrompts([22]));

@@ -3,7 +3,7 @@ pragma solidity ^0.8.18;
 
 /// @title IBattleSeason
 /// @dev This is an interface of SeasonforBattle.
-interface IBattleSeason {
+interface ITestBS {
   // --------------------------------------------------------------------------------
   // Struct
   // --------------------------------------------------------------------------------

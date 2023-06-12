@@ -17,7 +17,7 @@ export async function main() {
     "https://ipfs.io/ipfs/bafkreidtes2p7rjogbqbbgxiubr2t2svd3fle6cf4wa4almydj7752udh4"; // id: 386, 聖天使マリア
 
   const PromptMonstersImage = await ethers.getContractFactory(
-    "PromptMonstersImage",
+    "TestPMI",
   );
   const promptMonstersImage = PromptMonstersImage.attach(
     PROMPT_MONSTERS_IMAGE_PROXY_ADDRESS,

@@ -5,7 +5,7 @@ export const deployBossMonsterMchYoshka = async (
   deployer: SignerWithAddress,
 ) => {
   const BossMonsterMchYoshka = await ethers.getContractFactory(
-    "BossMonsterMchYoshka",
+    "TestBMMY",
   );
   const bossMonsterMchYoshkaProxy = await upgrades.deployProxy(
     BossMonsterMchYoshka,
