@@ -20,12 +20,9 @@ import {
 import axios from "axios";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
-let gUsedBossSkill = "";
 let gCurrentMonsterDamage = 0;
 let gCurrentBossDamage = 0;
 let gCurrentHealing = 0;
-let gDroppedItemId = -1;
-let gBossSign = 0;
 
 export interface BossBattleController {
   init: (monster: MonsterModel) => Promise<number[]>;
@@ -94,20 +91,10 @@ export const useBossBattleController = (): BossBattleController => {
    * moveStart
    */
   const moveStart = async (): Promise<void> => {
-    gUsedBossSkill = "";
-    gCurrentMonsterDamage = 0;
-    gDroppedItemId = -1;
     setBossBattle((prevState) => {
       return prevState.copyWith({
         phase: EnumBossBattlePhase.start,
-        defensed: false,
         setItemId: -1,
-        usedItemId: -1,
-        droppedItemId: -1,
-        usedMonsterSkill: "",
-        currentBossDamage: 0,
-        currentMonsterDamage: 0,
-        usedBossSkill: "",
       });
     });
   };
@@ -244,7 +231,6 @@ export const useBossBattleController = (): BossBattleController => {
     const droppedItemId = res.data.droppedItemId;
     const defensed = true;
 
-    gUsedBossSkill = usedSkillType;
     gCurrentMonsterDamage = monsterDamage;
     gCurrentBossDamage = bossDamage;
     gCurrentHealing = healing;
@@ -316,7 +302,6 @@ export const useBossBattleController = (): BossBattleController => {
     const droppedItemId = res.data.droppedItemId;
     const defensed = false;
 
-    gUsedBossSkill = usedSkillType;
     gCurrentMonsterDamage = monsterDamage;
     gCurrentBossDamage = bossDamage;
     gCurrentHealing = healing;
@@ -516,10 +501,7 @@ const _getBossActionResult = async (): Promise<any> => {
 };
 
 const _initGlobalParam = (): void => {
-  gUsedBossSkill = "";
   gCurrentMonsterDamage = 0;
   gCurrentBossDamage = 0;
   gCurrentHealing = 0;
-  gDroppedItemId = -1;
-  gBossSign = 0;
 };
