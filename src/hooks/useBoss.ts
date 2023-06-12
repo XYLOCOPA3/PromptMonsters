@@ -1,9 +1,10 @@
+import { ClientBossBattle } from "@/features/boss/api/contracts/ClientBossBattle";
 import { BossModel } from "@/models/BossModel";
 import { BossState, bossState } from "@/stores/bossState";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export interface BossController {
-  init: () => Promise<void>;
+  init: (language: string) => Promise<void>;
 }
 
 export const useBossValue = (): BossState => {
@@ -16,13 +17,26 @@ export const useBossController = (): BossController => {
   /**
    * Init boss
    */
-  const init = async (): Promise<void> => {
+  const init = async (language: string): Promise<void> => {
+    const bossBattle = await ClientBossBattle.instance();
+    const boss = await bossBattle.getBossExtension(language);
     setBoss(
       BossModel.create({
-        name: "ヨシュカ",
-        flavor:
-          "クリプトワールドのデータを集めるエネミーの中でも破格の超弩級エネミー。オネエ言葉でしゃべる。",
+        feature: boss.feature,
+        name: boss.name,
+        flavor: boss.flavor,
+        skills: boss.skills,
+        lv: boss.lv,
+        status: {
+          HP: boss.hp,
+          ATK: boss.atk,
+          DEF: boss.def,
+          INT: boss.inte,
+          MGR: boss.mgr,
+          AGL: boss.agl,
+        },
         imageURL: "/assets/images/boss-mch-yoshka.png",
+        skillTypes: boss.skillTypes,
       }),
     );
   };

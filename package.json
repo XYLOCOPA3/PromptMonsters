@@ -11,10 +11,12 @@
     "typechain": "typechain --target ethers-v5 artifacts/*.json --out-dir src/typechain",
     "premove-abi": "cd contracts/prompt-monsters && npm run compile",
     "move-abi-battle": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/battle/Battle.sol/Battle.json ../../artifacts/Battle.json",
+    "move-abi-boss-battle": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/boss-battle/BossBattle.sol/BossBattle.json ../../artifacts/BossBattle.json",
+    "move-abi-boss-monster": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/interfaces/IBossMonster.sol/IBossMonster.json ../../artifacts/IBossMonster.json",
     "move-abi-prompt-monsters": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/prompt-monsters/PromptMonsters.sol/PromptMonsters.json ../../artifacts/PromptMonsters.json",
     "move-abi-prompt-monsters-extension": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/prompt-monsters-extension/PromptMonstersExtension.sol/PromptMonstersExtension.json ../../artifacts/PromptMonstersExtension.json",
     "move-abi-stamina": "cd contracts/prompt-monsters && cp -rf artifacts/contracts/stamina/Stamina.sol/Stamina.json ../../artifacts/Stamina.json",
-    "move-abi": "cd artifacts/ && ls | grep -v -E 'MCHCoin.json' | xargs rm -rf && cd .. && npm run move-abi-prompt-monsters && npm run move-abi-prompt-monsters-extension && npm run move-abi-battle && npm run move-abi-stamina",
+    "move-abi": "cd artifacts/ && ls | grep -v -E 'MCHCoin.json' | xargs rm -rf && cd .. && npm run move-abi-battle && npm run move-abi-boss-battle && npm run move-abi-boss-monster && npm run move-abi-prompt-monsters && npm run move-abi-prompt-monsters-extension && npm run move-abi-stamina",
     "postmove-abi": "rm -rf src/typechain  && npm run typechain"
   },
   "dependencies": {

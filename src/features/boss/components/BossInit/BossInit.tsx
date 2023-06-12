@@ -1,4 +1,5 @@
 import { useBossController } from "@/hooks/useBoss";
+import { useLanguageValue } from "@/hooks/useLanguage";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { BaseProps } from "@/types/BaseProps";
 
@@ -11,14 +12,16 @@ export type BossInitProps = BaseProps;
  */
 export const BossInit = ({ children }: BossInitProps) => {
   const bossController = useBossController();
+  const language = useLanguageValue();
 
   const init = async () => {
-    await bossController.init();
+    if (language === "") return;
+    await bossController.init(language);
   };
 
   useLayoutEffectOfSSR(() => {
     init();
-  }, []);
+  }, [language]);
 
   return <>{children}</>;
 };

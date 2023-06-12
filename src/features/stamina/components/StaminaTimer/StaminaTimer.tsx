@@ -1,6 +1,6 @@
+import { RPC_URL } from "@/const/chainParams";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
-import { RPC_URL } from "@/lib/wallet";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { staminaTimeStdState } from "@/stores/staminaTimeStdState";
 import { Stamina__factory } from "@/typechain";

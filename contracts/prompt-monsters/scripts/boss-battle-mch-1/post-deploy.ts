@@ -1,5 +1,6 @@
 import {
   BOSS_BATTLE_MCH_1_PROXY_ADDRESS,
+  BOSS_BATTLE_PROXY_ADDRESS,
   BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS,
 } from "../const";
 import { ethers } from "hardhat";
@@ -26,6 +27,12 @@ async function main() {
   console.log(`Before: ${await bossBattleMch1Proxy.getBossMonster()}`);
   await (await bossBattleMch1Proxy.setBossMonster(bossMonsterAddress)).wait();
   console.log(`After : ${await bossBattleMch1Proxy.getBossMonster()}`);
+
+  console.log("Set GAME_ROLE -----------------------------");
+  const role = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("GAME_ROLE"));
+  await (
+    await bossBattleMch1Proxy.grantRole(role, BOSS_BATTLE_PROXY_ADDRESS)
+  ).wait();
 
   console.log("");
   console.log("---------------------------------------------");

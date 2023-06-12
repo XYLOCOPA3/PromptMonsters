@@ -1,4 +1,4 @@
-import { ClientWallet } from "@/lib/wallet/client";
+import { ClientWallet } from "@/lib/wallet/ClientWallet";
 import { PromptMonsters, PromptMonsters__factory } from "@/typechain";
 import { IPromptMonstersExtension } from "@/typechain/PromptMonsters";
 import { MonsterId } from "@/types/MonsterId";

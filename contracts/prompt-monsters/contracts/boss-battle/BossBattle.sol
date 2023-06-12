@@ -120,7 +120,7 @@ contract BossBattle is
         break;
       }
       unchecked {
-        i++;
+        ++i;
       }
     }
     require(included, "BossBattle: eventKey not included");
@@ -167,7 +167,7 @@ contract BossBattle is
         break;
       }
       unchecked {
-        i++;
+        ++i;
       }
     }
     require(included, "BossBattle: eventKey not included");
@@ -320,4 +320,17 @@ contract BossBattle is
   function _authorizeUpgrade(
     address newImplementation
   ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
+
+  // TODO: 後で消す(開発用) ------------
+  /// @dev Delete BBState
+  /// @param resurrectionPrompt resurrection prompt
+  function deleteBBState(
+    string memory eventKey,
+    uint256 bbeId,
+    address resurrectionPrompt
+  ) external onlyRole(GAME_ROLE) {
+    IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId]).deleteBBState(
+      resurrectionPrompt
+    );
+  }
 }

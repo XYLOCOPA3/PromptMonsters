@@ -1,5 +1,6 @@
 import { BaseModel } from "@/models/BaseModel";
-import { BossBattlePhase } from "@/types/BossBattlePhase";
+import { EnumBossBattleMsg } from "@/types/EnumBossBattleMsg";
+import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
 
 /**
  * BossBattleModel
@@ -15,23 +16,29 @@ export class BossBattleModel extends BaseModel<string> {
    * ```
    */
   private constructor(
+    public readonly lp: number = 400,
     public readonly turn: number = 0,
     public readonly score: number = 0,
-    public readonly monsterAdj: number = 100,
-    public readonly bossAdj: number = 100,
-    public readonly lifePoint: number = 400,
-    public readonly phase: BossBattlePhase = BossBattlePhase.start,
-    public readonly itemIds: number[] = [],
-    public readonly droppedItemId: number = -1,
-    public readonly setItemId: number = -1,
-    public readonly usedItemId: number = -1,
+    public readonly bossSign: number = 0,
+    public readonly hasHealItem: boolean = false,
+    public readonly hasBuffItem: boolean = false,
+    public readonly hasDebuffItem: boolean = false,
+    public readonly hasEscapeItem: boolean = false,
+    public readonly phase: EnumBossBattlePhase = EnumBossBattlePhase.start,
     public readonly usedMonsterSkill: string = "",
-    public readonly currentMonsterDamaged: number = 0,
-    public readonly usedBossSkill: string = "",
-    public readonly currentBossDamaged: number = 0,
-    public readonly bossNextActionSignIndex: number = 0,
-    public readonly defeated: boolean = false,
+    public readonly currentBossDamage: number = 0,
+    public readonly currentMonsterDamage: number = 0,
+    public readonly currentHealing: number = 0,
+    public readonly currentMonsterHit: boolean = false,
+    public readonly currentBossHit: boolean = false,
+    public readonly resultMsgIds: EnumBossBattleMsg[] = [],
     public readonly defensed: boolean = false,
+    public readonly setItemId: number = -1,
+    public readonly droppedItemId: number = -1,
+    public readonly usedBossSkill: string = "",
+    public readonly itemIds: number[] = [],
+    public readonly usedItemId: number = -1,
+    public readonly defeated: boolean = false,
   ) {
     super("");
   }

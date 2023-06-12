@@ -9,6 +9,7 @@ import {
   BossBattleMenuFightResult,
   BossBattleMenuItem,
   BossBattleMenuItemResult,
+  BossBattleMenuResult,
   BossBattleMenuStart,
   BossBattleOKButton,
 } from "@/features/boss";
@@ -17,7 +18,7 @@ import { useBossBattleValue } from "@/hooks/useBossBattle";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { BaseProps } from "@/types/BaseProps";
-import { BossBattlePhase } from "@/types/BossBattlePhase";
+import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
 import { Dialog, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
@@ -43,7 +44,7 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
   };
 
   useLayoutEffectOfSSR(() => {
-    if (bossBattle.phase === BossBattlePhase.end) setIsOpen(true);
+    if (bossBattle.phase === EnumBossBattlePhase.end) setIsOpen(true);
   }, [bossBattle.phase]);
 
   if (boss.name === "" || boss.flavor === "") return <></>;
@@ -53,7 +54,7 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
         <TurnAndScore turn={bossBattle.turn} score={bossBattle.score} />
         <MonsterNameAndUserLifePoint
           name={monster.name}
-          lifePoint={bossBattle.lifePoint}
+          lifePoint={bossBattle.lp}
         />
         <Menu phase={bossBattle.phase} />
       </div>
@@ -84,17 +85,19 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                 <Dialog.Panel className="m-6 w-full max-w-2xl transform overflow-hidden rounded-2xl bg-[#272727] p-6 text-left align-middle shadow-xl transition-all border-[1px]">
                   <div className={clsx("w-[100%]", "h-[100%]", "relative")}>
                     <div className={clsx("font-bold", "text-[32px]")}>
-                      {tBossBattle("score")}
+                      {bossBattle.defeated ? <></> : tBossBattle("score")}
                     </div>
                     <div
                       className={clsx(
                         "font-bold",
-                        "text-[96px]",
-                        "text-[#79FF63]",
+                        bossBattle.defeated ? "text-[48px]" : "text-[96px]",
+                        bossBattle.defeated ? "" : "text-[#79FF63]",
                         "text-center",
                       )}
                     >
-                      {bossBattle.score}
+                      {bossBattle.defeated
+                        ? tBossBattle("lose")
+                        : bossBattle.score}
                     </div>
                     <div
                       className={clsx(
@@ -103,11 +106,19 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                         "items-center",
                       )}
                     >
-                      <div
-                        className={clsx("font-bold", "text-[32px]", "text-end")}
-                      >
-                        {tBossBattle("updatedHighScore")}
-                      </div>
+                      {bossBattle.defeated ? (
+                        <div className={clsx()}></div>
+                      ) : (
+                        <div
+                          className={clsx(
+                            "font-bold",
+                            "text-[32px]",
+                            "text-end",
+                          )}
+                        >
+                          {tBossBattle("updatedHighScore")}
+                        </div>
+                      )}
                       <BossBattleOKButton
                         className={clsx("px-[30px]", "text-[20px]")}
                         onClick={closeModal}
@@ -143,7 +154,7 @@ const TurnAndScore = ({ turn, score }: any) => {
           "w-1/3",
         )}
       >
-        {tBossBattle("turn")}: {turn + 1}
+        {tBossBattle("turn")}: {turn}
       </div>
       <div className={clsx("w-1/3", "mr-[10px]")}></div>
       <div
@@ -208,21 +219,23 @@ const MonsterNameAndUserLifePoint = ({ name, lifePoint }: any) => {
  */
 const Menu = ({ phase }: any) => {
   switch (phase) {
-    case BossBattlePhase.start:
+    case EnumBossBattlePhase.start:
       return <BossBattleMenuStart />;
-    case BossBattlePhase.fightSelect:
+    case EnumBossBattlePhase.fightSelect:
       return <BossBattleMenuFight />;
-    case BossBattlePhase.fightResult:
+    case EnumBossBattlePhase.result:
+      return <BossBattleMenuResult />;
+    case EnumBossBattlePhase.fightResult:
       return <BossBattleMenuFightResult />;
-    case BossBattlePhase.defenseResult:
+    case EnumBossBattlePhase.defenseResult:
       return <BossBattleMenuDefenseResult />;
-    case BossBattlePhase.itemSelect:
+    case EnumBossBattlePhase.itemSelect:
       return <BossBattleMenuItem />;
-    case BossBattlePhase.itemResult:
+    case EnumBossBattlePhase.itemResult:
       return <BossBattleMenuItemResult />;
-    case BossBattlePhase.bossActionResult:
+    case EnumBossBattlePhase.bossActionResult:
       return <BossBattleMenuBossActionResult />;
-    case BossBattlePhase.continue:
+    case EnumBossBattlePhase.continue:
       return <BossBattleMenuContinue />;
     default:
       return <></>;

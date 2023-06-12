@@ -140,6 +140,25 @@ contract BossBattleMch1 is
     returnState = _bossMonster;
   }
 
+  /// @dev Get _highScores
+  /// @param rps_ resurrection prompts
+  /// @return highScores high scores
+  function getHighScores(address[] memory rps_)
+    external
+    view
+    returns (uint32[] memory highScores)
+  {
+    uint256 rpsLength = rps_.length;
+    highScores = new uint32[](rpsLength);
+    
+    for (uint256 i = 0; i < rpsLength; ) {
+      highScores[i] = _highScoreMap[rps_[i]];
+      unchecked {
+        ++i;
+      }
+    }
+  }
+
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
@@ -331,4 +350,24 @@ contract BossBattleMch1 is
   function _authorizeUpgrade(
     address newImplementation
   ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
+
+  // TODO: 後で消す(開発用) ------------
+  /// @dev Delete BBState
+  /// @param resurrectionPrompt resurrection prompt
+  function deleteBBState(
+    address resurrectionPrompt
+  ) external onlyRole(GAME_ROLE) {
+    delete _bossBattleStartedMap[resurrectionPrompt];
+    delete _bossBattleContinuedMap[resurrectionPrompt];
+    delete _lpMap[resurrectionPrompt];
+    delete _turnMap[resurrectionPrompt];
+    delete _scoreMap[resurrectionPrompt];
+    delete _monsterAdjMap[resurrectionPrompt];
+    delete _bossAdjMap[resurrectionPrompt];
+    delete _bossSignMap[resurrectionPrompt];
+    delete _hasHealItemMap[resurrectionPrompt];
+    delete _hasBuffItemMap[resurrectionPrompt];
+    delete _hasDebuffItemMap[resurrectionPrompt];
+    delete _hasEscapeItemMap[resurrectionPrompt];
+  }
 }

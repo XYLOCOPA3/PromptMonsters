@@ -153,7 +153,7 @@ interface IPromptMonsters is IERC721Upgradeable {
 
   /// @dev Get _promptMonstersImage
   /// @return returnValue _promptMonstersImage
-  function getPromptMonstersImage() external view returns (address returnValue);
+  function getPromptMonstersImage() external view returns (IPromptMonstersImage returnValue);
 
   /// @dev Get _paused
   /// @return returnValue _paused
@@ -258,7 +258,7 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @return uri contract URI
   function contractURI() external view returns (string memory uri);
 
-  // 後で消す -------------------
+  // TODO: 後で消す -------------------
 
   /// @dev Set _monsterHistoryMap
   /// @param resurrectionPrompt resurrection prompt

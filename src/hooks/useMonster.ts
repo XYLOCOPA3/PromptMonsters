@@ -1,7 +1,8 @@
+import { RPC_URL } from "@/const/chainParams";
+import { MAX_STAMINA } from "@/const/monster";
 import { ClientMCHCoin } from "@/features/mchcoin/api/ClientMCHCoin";
 import { ClientPromptMonsters } from "@/features/monster/api/contracts/ClientPromptMonsters";
 import { ClientStamina } from "@/features/stamina/api/ClientStamina";
-import { RPC_URL } from "@/lib/wallet";
 import { MonsterModel } from "@/models/MonsterModel";
 import { MonsterState, monsterState } from "@/stores/monsterState";
 import { FeatureErrorType } from "@/types/FeatureErrorType";
@@ -41,7 +42,6 @@ export const useMonsterController = (): MonsterController => {
 
   /**
    * Generate monster
-   * @param userId user id
    * @param feature monster feature
    * @param language output language
    * @return {MonsterModel} MonsterModel
@@ -88,12 +88,11 @@ export const useMonsterController = (): MonsterController => {
     const resurrectionPrompt = res.data.resurrectionPrompt;
     if (monsterJson.isExisting) throw new Error("This monster is existing.");
     if (!monsterJson.isFiction) throw new Error("This monster is non fiction.");
-    const stamina = ClientStamina.instance();
     const monster = MonsterModel.fromData(
       monsterJson,
       feature,
       resurrectionPrompt,
-      Number(await stamina.getStaminaLimit()),
+      MAX_STAMINA,
     );
     setMonster(monster);
     return monster;

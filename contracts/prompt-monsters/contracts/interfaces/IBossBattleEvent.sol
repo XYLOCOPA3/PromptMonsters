@@ -84,6 +84,14 @@ interface IBossBattleEvent {
   /// @return returnState _bossMonster
   function getBossMonster() external view returns (IBossMonster returnState);
 
+  /// @dev Get _highScores
+  /// @param rps_ resurrection prompts
+  /// @return highScores high scores
+  function getHighScores(address[] memory rps_)
+    external
+    view
+    returns (uint32[] memory highScores);
+
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
@@ -132,4 +140,9 @@ interface IBossBattleEvent {
   /// @dev End boss battle
   /// @param resurrectionPrompt resurrection prompt
   function endBossBattle(address resurrectionPrompt) external;
+
+  // TODO: 後で消す(開発用) ------------
+  /// @dev Delete BBState
+  /// @param resurrectionPrompt resurrection prompt
+  function deleteBBState(address resurrectionPrompt) external;
 }

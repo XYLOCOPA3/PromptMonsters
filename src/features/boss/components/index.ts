@@ -7,6 +7,7 @@ export * from "./BossBattleMenuFight";
 export * from "./BossBattleMenuFightResult";
 export * from "./BossBattleMenuItem";
 export * from "./BossBattleMenuItemResult";
+export * from "./BossBattleMenuResult";
 export * from "./BossBattleMenuStart";
 export * from "./BossBattleNextButton";
 export * from "./BossBattleNoButton";

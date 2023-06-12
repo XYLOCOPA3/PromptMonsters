@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { Button } from "@/components/elements/Button";
+import { BOSS_BATTLE_START } from "@/const/bossBattle";
 import {
   getBossAppearedMsg,
   getBossNextActionSignMsg,
@@ -6,9 +8,12 @@ import {
 import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleState } from "@/hooks/useBossBattle";
 import { useLanguageValue } from "@/hooks/useLanguage";
+import { useMonsterValue } from "@/hooks/useMonster";
+import { disableState } from "@/stores/disableState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
+import { useRecoilState } from "recoil";
 
 export type BossBattleMenuStartProps = BaseProps;
 
@@ -21,15 +26,32 @@ export const BossBattleMenuStart = ({
   className,
 }: BossBattleMenuStartProps) => {
   const language = useLanguageValue();
+  const monster = useMonsterValue();
   const boss = useBossValue();
   const [bossBattle, bossBattleController] = useBossBattleState();
+  const [loading, setLoading] = useState(false);
+  const [disable, setDisable] = useRecoilState(disableState);
   const { t: tBossBattle } = useTranslation("boss-battle");
 
   const handleFightClick = async () => {
     await bossBattleController.moveFightSelector();
   };
   const handleDefenseClick = async () => {
-    await bossBattleController.defense();
+    setDisable(true);
+    setLoading(true);
+    try {
+      await bossBattleController.defense(
+        monster.resurrectionPrompt,
+        boss.skills,
+      );
+    } catch (error) {
+      console.error(error);
+      // TODO: エラー文考える
+      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
+      else alert("Error");
+    }
+    setDisable(false);
+    setLoading(false);
   };
   const handleItemClick = async () => {
     await bossBattleController.moveItemSelector();
@@ -55,6 +77,7 @@ export const BossBattleMenuStart = ({
             variant="bossBattle"
             className={clsx("my-[5px]", "py-[10px]")}
             onClick={handleFightClick}
+            disabled={disable}
           >
             {tBossBattle("fight")}
           </Button>
@@ -62,6 +85,8 @@ export const BossBattleMenuStart = ({
             variant="bossBattle"
             className={clsx("my-[5px]", "py-[10px]")}
             onClick={handleDefenseClick}
+            loading={loading}
+            disabled={disable}
           >
             {tBossBattle("defense")}
           </Button>
@@ -69,7 +94,7 @@ export const BossBattleMenuStart = ({
             variant="bossBattle"
             className={clsx("my-[5px]", "py-[10px]")}
             onClick={handleItemClick}
-            disabled={bossBattle.itemIds.length === 0}
+            disabled={bossBattle.itemIds.length === 0 || disable}
           >
             {tBossBattle("item")}
           </Button>
@@ -85,7 +110,7 @@ export const BossBattleMenuStart = ({
           "border-[1px]",
         )}
       >
-        {bossBattle.turn === 0 ? (
+        {bossBattle.turn === BOSS_BATTLE_START ? (
           <>
             {getBossAppearedMsg(boss.name, tBossBattle("bossAppeared"))}
             <br />
@@ -95,7 +120,7 @@ export const BossBattleMenuStart = ({
           <></>
         )}
         {getBossNextActionSignMsg(
-          bossBattle.bossNextActionSignIndex,
+          bossBattle.bossSign,
           language as "日本語" | "English",
           boss.name,
         )}

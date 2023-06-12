@@ -1,4 +1,4 @@
-import { ServerWallet } from "@/lib/wallet";
+import { ServerWallet } from "@/lib/wallet/ServerWallet";
 import { Battle, Battle__factory } from "@/typechain";
 import { ethers } from "ethers";
 

@@ -1,15 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
+import { RPC_URL } from "@/const/chainParams";
+import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { ServerPromptMonstersExtension } from "@/features/monster/api/contracts/ServerPromptMonstersExtension";
 import { getSkillDescPrompt as getSkillTypePrompt } from "@/lib/prompt";
-import { RPC_URL } from "@/lib/wallet";
 import { SkillType } from "@/types/SkillType";
 import {
   getMonsterSkillsLimit4,
   getSkillTypesFromStr,
   hasUnknownSkill,
-} from "@/utils/monsterUtil";
+} from "@/utils/monsterUtils";
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
@@ -25,29 +25,29 @@ export default async function handler(
     return res.status(400).json({
       message: "Only POST",
     });
-  if (!configuration.apiKey) {
+  if (!configuration.apiKey)
     return res.status(500).json({
       message: "OpenAI API key not configured",
     });
-  }
+
   const resurrectionPrompt = req.body.resurrectionPrompt || "";
-  if (resurrectionPrompt === "") {
+  if (resurrectionPrompt === "")
     return res.status(400).json({
       message: "Unknown monster",
     });
-  }
 
   try {
-    const promptMonsters = PromptMonstersContract.instance(RPC_URL.mchVerse);
+    const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
     const monsterExtension = (
       await promptMonsters.getMonsterExtensions([resurrectionPrompt])
     )[0];
-    if (!hasUnknownSkill(monsterExtension.skillTypes)) {
+    if (!hasUnknownSkill(monsterExtension.skillTypes))
       return res.status(400).json({
         message: "This monster has no unknown skill",
       });
-    }
+
     // TODO: Unknownスキルのみ更新
+
     const prompt = getSkillTypePrompt(monsterExtension.skills);
     console.log(prompt);
 

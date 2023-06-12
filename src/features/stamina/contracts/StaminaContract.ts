@@ -1,4 +1,4 @@
-import { ServerWallet } from "@/lib/wallet";
+import { ServerWallet } from "@/lib/wallet/ServerWallet";
 import { Stamina, Stamina__factory } from "@/typechain";
 import { MonsterId } from "@/types/MonsterId";
 import { ethers } from "ethers";

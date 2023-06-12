@@ -1,4 +1,4 @@
-import { ServerWallet } from "@/lib/wallet";
+import { ServerWallet } from "@/lib/wallet/ServerWallet";
 import { PromptMonsters, PromptMonsters__factory } from "@/typechain";
 import {
   IPromptMonsters,
@@ -6,24 +6,24 @@ import {
 } from "@/typechain/PromptMonsters";
 import { ethers } from "ethers";
 
-export class PromptMonstersContract {
-  private static _instance: PromptMonstersContract;
+export class ServerPromptMonsters {
+  private static _instance: ServerPromptMonsters;
 
   private constructor(private readonly _promptMonsters: PromptMonsters) {}
 
   /**
    * Get instance
    * @param rpcURL RPC URL
-   * @return {PromptMonstersContract} instance
+   * @return {ServerPromptMonsters} instance
    */
-  public static instance(rpcURL: string): PromptMonstersContract {
+  public static instance(rpcURL: string): ServerPromptMonsters {
     if (!this._instance) {
       const wallet = ServerWallet.instance(rpcURL);
       const promptMonsters = PromptMonsters__factory.connect(
         process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
         wallet.signer,
       );
-      this._instance = new PromptMonstersContract(promptMonsters);
+      this._instance = new ServerPromptMonsters(promptMonsters);
     }
     return this._instance;
   }

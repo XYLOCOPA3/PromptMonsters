@@ -1,10 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { RPC_URL } from "@/const/chainParams";
 import { BattleContract } from "@/features/battle/api/contracts/BattleContract";
-import { PromptMonstersContract } from "@/features/monster/api/contracts/PromptMonstersContract";
+import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { calcStaminaFromMonsterId } from "@/features/stamina/utils/calcStamina";
 import { getFightPrompt } from "@/lib/prompt";
-import { RPC_URL } from "@/lib/wallet";
 import console from "console";
 import { Configuration, OpenAIApi } from "openai";
 
@@ -34,10 +34,10 @@ export default async function handler(
   console.log(monsterId);
 
   const enemyId = await _getRandomEnemyId(monsterId);
-  const promptMonsters = PromptMonstersContract.instance(RPC_URL.mchVerse);
-  const enemyResurrectionPrompt = await promptMonsters.getResurrectionPrompts([
-    enemyId,
-  ]);
+  const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
+  const enemyResurrectionPrompt = (
+    await promptMonsters.getResurrectionPrompts([enemyId])
+  )[0];
   const monsterExtensions = await promptMonsters.getMonsterExtensions([
     resurrectionPrompt,
     enemyResurrectionPrompt,
@@ -105,7 +105,7 @@ export default async function handler(
  * @return {Promise<string>} random enemy monster id
  */
 const _getRandomEnemyId = async (monsterId: string): Promise<string> => {
-  const promptMonsters = PromptMonstersContract.instance(RPC_URL.mchVerse);
+  const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
   const totalSupply = Number(await promptMonsters.getMonstersTotalSupply());
   if (totalSupply < 1) throw new Error("server: No enemy monsters.");
   let random: number;
