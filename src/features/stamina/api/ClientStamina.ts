@@ -1,4 +1,4 @@
-import { ClientWallet } from "@/lib/wallet/client";
+import { ClientWallet } from "@/lib/wallet/ClientWallet";
 import { Stamina, Stamina__factory } from "@/typechain";
 import { ethers } from "ethers";
 

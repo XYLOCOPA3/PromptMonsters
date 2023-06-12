@@ -1,4 +1,5 @@
 import { MAX_LIFE_POINT } from "@/const/bossBattle";
+import { devBBkParamState } from "@/dev/stores/devBBkParamState";
 import { ClientBossBattle } from "@/features/boss/api/contracts/ClientBossBattle";
 import { BossBattleModel } from "@/models/BossBattleModel";
 import { MonsterModel } from "@/models/MonsterModel";
@@ -58,6 +59,9 @@ export const useBossBattleValue = (): BossBattleState => {
 };
 
 export const useBossBattleController = (): BossBattleController => {
+  // TODO: dev用
+  const devBBkParam = useRecoilValue(devBBkParamState);
+
   const setBossBattle = useSetRecoilState(bossBattleState);
 
   /**
@@ -70,7 +74,10 @@ export const useBossBattleController = (): BossBattleController => {
       ClientBossBattle.instance(),
     ]);
     const skillTypes = results[0];
-    const bbState = await startBossBattle(monster.resurrectionPrompt);
+    const bbState = await startBossBattle(
+      monster.resurrectionPrompt,
+      devBBkParam,
+    );
 
     _initGlobalParam();
 
@@ -201,6 +208,7 @@ export const useBossBattleController = (): BossBattleController => {
       res = await axios.post("/api/boss/use-skill", {
         resurrectionPrompt,
         skill,
+        devBBkParam,
       });
     } catch (e) {
       if (axios.isAxiosError(e)) {
@@ -276,6 +284,7 @@ export const useBossBattleController = (): BossBattleController => {
     try {
       res = await axios.post("/api/boss/defense", {
         resurrectionPrompt,
+        devBBkParam,
       });
     } catch (e) {
       if (axios.isAxiosError(e)) {
@@ -347,6 +356,7 @@ export const useBossBattleController = (): BossBattleController => {
       res = await axios.post("/api/boss/use-item", {
         resurrectionPrompt,
         usedItemId,
+        devBBkParam,
       });
     } catch (e) {
       if (axios.isAxiosError(e)) {

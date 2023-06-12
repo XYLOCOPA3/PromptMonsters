@@ -5,17 +5,15 @@ import { ClientPromptMonsters } from "@/features/monster/api/contracts/ClientPro
 import { ClientStamina } from "@/features/stamina/api/ClientStamina";
 import { MonsterModel } from "@/models/MonsterModel";
 import { MonsterState, monsterState } from "@/stores/monsterState";
-import { FeatureErrorType } from "@/types/FeatureErrorType";
 import { MonsterId } from "@/types/MonsterId";
 import { UserId } from "@/types/UserId";
-import { checkFeature, isSymbol } from "@/utils/validation";
 import axios from "axios";
 import { getCookie } from "cookies-next";
 import { ethers } from "ethers";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
-export interface MonsterController {
-  generate: (feature: string, language: string) => Promise<MonsterModel>;
+export interface DevMonsterController {
+  generate: () => Promise<MonsterModel>;
   mint: (userId: UserId, resurrectionPrompt: string) => Promise<MonsterModel>;
   set: (monster: MonsterModel) => void;
   reset: () => void;
@@ -33,49 +31,21 @@ export interface MonsterController {
   init: () => Promise<void>;
 }
 
-export const useMonsterValue = (): MonsterState => {
+export const useDevMonsterValue = (): MonsterState => {
   return useRecoilValue(monsterState);
 };
 
-export const useMonsterController = (): MonsterController => {
+export const useDevMonsterController = (): DevMonsterController => {
   const setMonster = useSetRecoilState(monsterState);
 
   /**
    * Generate monster
-   * @param feature monster feature
-   * @param language output language
    * @return {MonsterModel} MonsterModel
    */
-  const generate = async (
-    feature: string,
-    language: string,
-  ): Promise<MonsterModel> => {
-    if (isSymbol(feature))
-      throw new Error("Features must not contain numbers or symbols.");
-    const result = checkFeature(feature);
-    if (result !== FeatureErrorType.ok) {
-      switch (result) {
-        case FeatureErrorType.noFeature:
-          throw new Error("Do not empty feature");
-        case FeatureErrorType.usingSymbol:
-          throw new Error("Do not use symbol");
-        case FeatureErrorType.usingNum:
-          throw new Error("Do not use number");
-        case FeatureErrorType.usingNGWord:
-          throw new Error("Do not use NG word");
-        default:
-          throw new Error("Unknown error");
-      }
-    }
+  const generate = async (): Promise<MonsterModel> => {
     let res: any;
     try {
-      res = await axios.post("/api/generate-monster", {
-        feature,
-        language,
-        transitional: {
-          silentJSONParsing: false,
-        },
-      });
+      res = await axios.post("/api/boss/dev/generate-monster", {});
     } catch (e) {
       if (axios.isAxiosError(e)) {
         throw new Error(e.response!.data.message);
@@ -86,8 +56,7 @@ export const useMonsterController = (): MonsterController => {
     if (res.status !== 200) throw new Error(res.data);
     const monsterJson = res.data.monster;
     const resurrectionPrompt = res.data.resurrectionPrompt;
-    if (monsterJson.isExisting) throw new Error("This monster is existing.");
-    if (!monsterJson.isFiction) throw new Error("This monster is non fiction.");
+    const feature = res.data.feature;
     const monster = MonsterModel.fromData(
       monsterJson,
       feature,
@@ -289,7 +258,7 @@ export const useMonsterController = (): MonsterController => {
     setMonster(MonsterModel.fromContract("", monster, Number(staminaLimit)));
   };
 
-  const controller: MonsterController = {
+  const controller: DevMonsterController = {
     generate,
     mint,
     set,
@@ -302,7 +271,7 @@ export const useMonsterController = (): MonsterController => {
   return controller;
 };
 
-export const useMonsterState = (): [MonsterState, MonsterController] => [
-  useMonsterValue(),
-  useMonsterController(),
+export const useDevMonsterState = (): [MonsterState, DevMonsterController] => [
+  useDevMonsterValue(),
+  useDevMonsterController(),
 ];

@@ -1,4 +1,4 @@
-import { ServerWallet } from "@/lib/wallet";
+import { ServerWallet } from "@/lib/wallet/ServerWallet";
 import { PromptMonsters, PromptMonsters__factory } from "@/typechain";
 import {
   IPromptMonsters,

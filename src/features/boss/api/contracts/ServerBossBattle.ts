@@ -1,4 +1,4 @@
-import { ServerWallet } from "@/lib/wallet";
+import { ServerWallet } from "@/lib/wallet/ServerWallet";
 import { BossBattle, BossBattle__factory } from "@/typechain";
 import {
   IBossBattleEvent,

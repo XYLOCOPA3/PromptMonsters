@@ -1,9 +1,10 @@
+import { RPC_URL } from "@/const/chainParams";
 import { ethers } from "ethers";
 
 export class ClientWallet {
   private static _instance: ClientWallet;
   private constructor(
-    public readonly provider: ethers.providers.Web3Provider,
+    public readonly provider: ethers.providers.JsonRpcProvider,
   ) {}
 
   /**
@@ -12,9 +13,7 @@ export class ClientWallet {
    */
   public static instance(): ClientWallet {
     if (!this._instance) {
-      const { ethereum } = window as any;
-      if (!_isInstallWallet(ethereum)) throw new Error("Not found wallet.");
-      const provider = new ethers.providers.Web3Provider(ethereum);
+      const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
       this._instance = new ClientWallet(provider);
     }
     return this._instance;
@@ -25,7 +24,10 @@ export class ClientWallet {
    * @return {Promise<string[]>} connected wallet address
    */
   getConnectedAddresses = async (): Promise<string[]> => {
-    return await this.provider.send("eth_accounts", []);
+    const { ethereum } = window as any;
+    if (!_isInstallWallet(ethereum)) throw new Error("Not found wallet.");
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    return await provider.send("eth_accounts", []);
   };
 
   /**
@@ -33,7 +35,10 @@ export class ClientWallet {
    * @return {Promise<ethers.providers.JsonRpcSigner>} signer
    */
   getSigner = async (): Promise<ethers.providers.JsonRpcSigner> => {
-    return this.provider.getSigner();
+    const { ethereum } = window as any;
+    if (!_isInstallWallet(ethereum)) throw new Error("Not found wallet.");
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    return provider.getSigner();
   };
 }
 

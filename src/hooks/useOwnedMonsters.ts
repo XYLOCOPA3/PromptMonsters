@@ -1,6 +1,6 @@
+import { RPC_URL } from "@/const/chainParams";
 import { ClientPromptMonsters } from "@/features/monster/api/contracts/ClientPromptMonsters";
 import { calcStamina } from "@/features/stamina/utils/calcStamina";
-import { RPC_URL } from "@/lib/wallet";
 import { MonsterModel } from "@/models/MonsterModel";
 import {
   OwnedMonstersState,

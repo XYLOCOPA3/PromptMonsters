@@ -1,13 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { RPC_URL } from "@/const/chainParams";
 import { ServerBossBattle } from "@/features/boss/api/contracts/ServerBossBattle";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
-import { RPC_URL } from "@/lib/wallet";
 import { EventKey } from "@/types/EventKey";
 import {
   getBossSign,
   getInitialBBState,
-  initMonsterAdj,
   isInvalidMonsterAdj,
 } from "@/utils/bossBattleUtils";
 import { hasUnknownSkill } from "@/utils/monsterUtils";
@@ -20,6 +19,7 @@ export default async function handler(
     return res.status(400).json({
       message: "Only POST",
     });
+
   const resurrectionPrompt = req.body.resurrectionPrompt || "";
   if (resurrectionPrompt === "") {
     return res.status(400).json({
@@ -29,6 +29,10 @@ export default async function handler(
 
   const eventKey = process.env.EVENT_KEY as EventKey;
   const bbeId = Number(process.env.BBE_ID);
+
+  // TODO: dev用
+  const devBBkParam = req.body.devBBkParam;
+  console.log("devBBkParam: ", devBBkParam);
 
   try {
     const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
@@ -57,14 +61,16 @@ export default async function handler(
         message: "This monster has no monsterAdj",
       });
 
-    // BBStateチェック
+    // 戦闘開始済みチェック
     if (bbState.bossBattleStarted)
       return res.status(400).json({
         message: "Boss battle has already started",
       });
 
     // モンスター補正値計算
-    const calculatedMonsterAdj = initMonsterAdj(monsterAdj);
+    // const calculatedMonsterAdj = initMonsterAdj(monsterAdj);
+    // TODO: dev用
+    const calculatedMonsterAdj = Math.floor(devBBkParam.kMonsterWeakness * 100);
     console.log("calculatedMonsterAdj: ", calculatedMonsterAdj);
 
     // ボス前兆確定

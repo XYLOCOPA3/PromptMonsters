@@ -1,9 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { RPC_URL } from "@/const/chainParams";
 import { NOT_FOUND_SKILL } from "@/const/monster";
 import { ServerBossBattle } from "@/features/boss/api/contracts/ServerBossBattle";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
-import { RPC_URL } from "@/lib/wallet";
 import { BBState } from "@/types/BBState";
 import { EnumBossAction } from "@/types/EnumBossAction";
 import { EnumItem } from "@/types/EnumItem";
@@ -48,6 +48,10 @@ export default async function handler(
 
   const eventKey = process.env.EVENT_KEY as EventKey;
   const bbeId = Number(process.env.BBE_ID);
+
+  // TODO: dev用
+  const devBBkParam = req.body.devBBkParam;
+  console.log("devBBkParam: ", devBBkParam);
 
   try {
     const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
@@ -136,6 +140,7 @@ export default async function handler(
       bbState.monsterAdj,
       bbState.bossAdj,
       bbState.turn,
+      devBBkParam,
     );
     console.log("bossDamage: ", bossDamage);
 
@@ -152,6 +157,7 @@ export default async function handler(
       bbState.bossAdj,
       bbState.turn,
       false,
+      devBBkParam,
     );
     console.log("monsterDamage: ", monsterDamage);
 
@@ -162,6 +168,7 @@ export default async function handler(
       usedItemId,
       monsterExtension.inte,
       bbState.monsterAdj,
+      devBBkParam,
     );
     console.log("healing: ", healing);
 
@@ -172,10 +179,10 @@ export default async function handler(
     // バフ・デバフ計算
     let newMonsterAdj = bbState.monsterAdj;
     if (bossAction === EnumBossAction.debuff && bossHit)
-      newMonsterAdj = debuffMonster(newMonsterAdj);
+      newMonsterAdj = debuffMonster(newMonsterAdj, devBBkParam);
     let newBossAdj = bbState.bossAdj;
     if (bossAction === EnumBossAction.buff && bossHit)
-      newBossAdj = buffBoss(newBossAdj);
+      newBossAdj = buffBoss(newBossAdj, devBBkParam);
     console.log("newMonsterAdj: ", newMonsterAdj);
     console.log("newBossAdj: ", newBossAdj);
 

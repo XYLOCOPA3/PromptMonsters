@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { Button } from "@/components/elements/Button";
-import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
+import { BossBattleModel } from "@/models/BossBattleModel";
+import { bossBattleState } from "@/stores/bossBattleState";
 import { BaseProps } from "@/types/BaseProps";
 import axios from "axios";
 import clsx from "clsx";
+import { useSetRecoilState } from "recoil";
 
 export type DevBBResetButtonProps = BaseProps;
 
@@ -16,8 +18,8 @@ export type DevBBResetButtonProps = BaseProps;
  */
 export const DevBBResetButton = ({ className }: DevBBResetButtonProps) => {
   const monster = useMonsterValue();
+  const setBossBattle = useSetRecoilState(bossBattleState);
   const [loading, setLoading] = useState(false);
-  const [isDev, setIsDev] = useState(false);
   const { push } = useRouter();
 
   const handleClick = async () => {
@@ -25,26 +27,14 @@ export const DevBBResetButton = ({ className }: DevBBResetButtonProps) => {
     await axios.post("/api/boss/dev/reset", {
       resurrectionPrompt: monster.resurrectionPrompt,
     });
+    setBossBattle(BossBattleModel.create({}));
     setLoading(false);
     push("/boss");
   };
 
-  useLayoutEffectOfSSR(() => {
-    setIsDev(process.env.NEXT_PUBLIC_IS_PRODUCTION === "false");
-  }, []);
-
-  if (!isDev) return <></>;
   return (
     <Button
-      className={clsx(
-        className,
-        "fixed",
-        "top-[10%]",
-        "left-[20px]",
-        "p-[5px]",
-        "cursor-pointer",
-        "z-[1]",
-      )}
+      className={clsx(className, "m-[5px]", "p-[5px]")}
       onClick={handleClick}
       loading={loading}
     >
