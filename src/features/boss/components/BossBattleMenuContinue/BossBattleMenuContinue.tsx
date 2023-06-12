@@ -1,11 +1,14 @@
 import { MAX_LIFE_POINT } from "@/const/bossBattle";
 import { BossBattleNoButton, BossBattleYesButton } from "@/features/boss";
 import { useBossValue } from "@/hooks/useBoss";
-import { useBossBattleValue } from "@/hooks/useBossBattle";
+import { useBossBattleState } from "@/hooks/useBossBattle";
+import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
+import { disableState } from "@/stores/disableState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
+import { useSetRecoilState } from "recoil";
 
 export type BossBattleMenuContinueProps = BaseProps;
 
@@ -19,8 +22,26 @@ export const BossBattleMenuContinue = ({
 }: BossBattleMenuContinueProps) => {
   const monster = useMonsterValue();
   const boss = useBossValue();
-  const bossBattle = useBossBattleValue();
+  const [bossBattle, bossBattleController] = useBossBattleState();
+  const setDisable = useSetRecoilState(disableState);
   const { t: tBossBattle } = useTranslation("boss-battle");
+
+  const end = async () => {
+    setDisable(true);
+    try {
+      await bossBattleController.end(monster.resurrectionPrompt);
+    } catch (error) {
+      console.error(error);
+      // TODO: エラー文考える
+      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
+      else alert("Error");
+    }
+    setDisable(false);
+  };
+
+  useLayoutEffectOfSSR(() => {
+    if (bossBattle.lp <= 0) end();
+  }, [bossBattle.lp]);
 
   if (monster.name === "" || boss.name === "") return <></>;
   return (
