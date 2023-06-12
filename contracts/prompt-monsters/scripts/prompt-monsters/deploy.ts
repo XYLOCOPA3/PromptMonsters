@@ -5,6 +5,7 @@ import {
   MINT_PRICE,
 } from "../const";
 import { ethers, upgrades } from "hardhat";
+import { recordContractsData } from "../helpers/recordContractsData";
 
 async function main() {
   console.log("---------------------------------------------");
@@ -34,15 +35,26 @@ async function main() {
     },
   );
   await promptMonstersProxy.deployed();
+
+  const promptMonstersImplementationAddress = await upgrades.erc1967.getImplementationAddress(
+    promptMonstersProxy.address,
+  );
+  
+  try {
+    recordContractsData("PromptMonstersProxy", promptMonstersProxy.address, deployer.address);
+    recordContractsData("PromptMonstersImplementation", promptMonstersImplementationAddress, deployer.address);
+    console.log("Recorded contract data");
+  } catch (e) {
+    console.log(e);
+  }
+
   console.log(
     "Deployed PromptMonstersProxy address: ",
     promptMonstersProxy.address,
   );
   console.log(
     "PromptMonsters implementation deployed to:",
-    await upgrades.erc1967.getImplementationAddress(
-      promptMonstersProxy.address,
-    ),
+    promptMonstersImplementationAddress,
   );
 
   console.log("Completed deployment");

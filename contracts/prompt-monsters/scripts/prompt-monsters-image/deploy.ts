@@ -1,5 +1,6 @@
 import { PROMPT_MONSTERS_PROXY_ADDRESS } from "../const";
 import { ethers, upgrades } from "hardhat";
+import { recordContractsData } from "../helpers/recordContractsData";
 
 async function main() {
   console.log("---------------------------------------------");
@@ -26,15 +27,26 @@ async function main() {
     },
   );
   await promptMonstersImageProxy.deployed();
+
+  const promptMonstersImageImplementationAddress = await upgrades.erc1967.getImplementationAddress(
+    promptMonstersImageProxy.address,
+  );
+  
+  try {
+    recordContractsData("PromptMonstersImageProxy", promptMonstersImageProxy.address, deployer.address);
+    recordContractsData("PromptMonstersImageImplementation", promptMonstersImageImplementationAddress, deployer.address);
+    console.log("Recorded contract data");
+  } catch (e) {
+    console.log(e);
+  }
+
   console.log(
     "Deployed PromptMonstersImageProxy address: ",
     promptMonstersImageProxy.address,
   );
   console.log(
     "PromptMonstersImage implementation deployed to:",
-    await upgrades.erc1967.getImplementationAddress(
-      promptMonstersImageProxy.address,
-    ),
+    promptMonstersImageImplementationAddress,
   );
 
   console.log("Completed deployment");

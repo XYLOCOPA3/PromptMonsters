@@ -1,5 +1,6 @@
 import { PROMPT_MONSTERS_PROXY_ADDRESS } from "../const";
 import { ethers, upgrades } from "hardhat";
+import { recordContractsData } from "../helpers/recordContractsData";
 
 async function main() {
   console.log("---------------------------------------------");
@@ -24,15 +25,24 @@ async function main() {
     },
   );
   await battleOffSeasonProxy.deployed();
+
+  const battleOffSeasonImplementationAddress = await upgrades.erc1967.getImplementationAddress(battleOffSeasonProxy.address)
+  
+  try {
+    recordContractsData("BattleOffSeasonProxy", battleOffSeasonProxy.address, deployer.address);
+    recordContractsData("BattleOffSeasonImplementation", battleOffSeasonImplementationAddress, deployer.address);
+    console.log("Recorded contract data");
+  } catch (e) {
+    console.log(e);
+  }
+
   console.log(
     "Deployed BattleOffSeasonProxy address: ",
     battleOffSeasonProxy.address,
   );
   console.log(
     "BattleOffSeason implementation deployed to:",
-    await upgrades.erc1967.getImplementationAddress(
-      battleOffSeasonProxy.address,
-    ),
+    battleOffSeasonImplementationAddress,
   );
 
   console.log("Completed deployment");

@@ -1,4 +1,5 @@
 import { ethers, upgrades } from "hardhat";
+import { recordContractsData } from "../helpers/recordContractsData";
 
 async function main() {
   console.log("---------------------------------------------");
@@ -25,15 +26,26 @@ async function main() {
     },
   );
   await bossMonsterMchYoshkaProxy.deployed();
+
+  const bossMonsterMchYoshkaImplementationAddress = await upgrades.erc1967.getImplementationAddress(
+    bossMonsterMchYoshkaProxy.address,
+  );
+  
+  try {
+    recordContractsData("BossMonsterMchYoshkaProxy", bossMonsterMchYoshkaProxy.address, deployer.address);
+    recordContractsData("BossMonsterMchYoshkaImplementation", bossMonsterMchYoshkaImplementationAddress, deployer.address);
+    console.log("Recorded contract data");
+  } catch (e) {
+    console.log(e);
+  }
+
   console.log(
     "Deployed BossMonsterMchYoshkaProxy address: ",
     bossMonsterMchYoshkaProxy.address,
   );
   console.log(
     "BossMonsterMchYoshka implementation deployed to:",
-    await upgrades.erc1967.getImplementationAddress(
-      bossMonsterMchYoshkaProxy.address,
-    ),
+    bossMonsterMchYoshkaImplementationAddress,
   );
 
   console.log("Completed deployment");
