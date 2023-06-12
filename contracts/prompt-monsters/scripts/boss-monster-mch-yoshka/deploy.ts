@@ -1,4 +1,5 @@
 import { ethers, upgrades } from "hardhat";
+import { recordContractsData } from "../helpers/recordContractsData";
 
 async function main() {
   console.log("---------------------------------------------");
@@ -25,6 +26,14 @@ async function main() {
     },
   );
   await bossMonsterMchYoshkaProxy.deployed();
+  
+  try {
+    recordContractsData("BossMonsterMchYoshkaProxy", bossMonsterMchYoshkaProxy.address);
+    console.log("Recorded contract data");
+  } catch (e) {
+    console.log(e);
+  }
+
   console.log(
     "Deployed BossMonsterMchYoshkaProxy address: ",
     bossMonsterMchYoshkaProxy.address,

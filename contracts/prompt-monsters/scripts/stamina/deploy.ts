@@ -1,5 +1,6 @@
 import { PROMPT_MONSTERS_PROXY_ADDRESS } from "../const";
 import { ethers, upgrades } from "hardhat";
+import { recordContractsData } from "../helpers/recordContractsData";
 
 async function main() {
   console.log("---------------------------------------------");
@@ -24,6 +25,14 @@ async function main() {
     },
   );
   await staminaProxy.deployed();
+  
+  try {
+    recordContractsData("StaminaProxy", staminaProxy.address);
+    console.log("Recorded contract data");
+  } catch (e) {
+    console.log(e);
+  }
+
   console.log("Deployed StaminaProxy address: ", staminaProxy.address);
   console.log(
     "Stamina implementation deployed to:",

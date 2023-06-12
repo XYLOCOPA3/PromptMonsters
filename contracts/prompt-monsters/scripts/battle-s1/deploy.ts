@@ -1,5 +1,6 @@
 import { PROMPT_MONSTERS_PROXY_ADDRESS } from "../const";
 import { ethers, upgrades } from "hardhat";
+import { recordContractsData } from "../helpers/recordContractsData";
 
 async function main() {
   console.log("---------------------------------------------");
@@ -24,6 +25,14 @@ async function main() {
     },
   );
   await battleS1Proxy.deployed();
+  
+  try {
+    recordContractsData("BattleS1Proxy", battleS1Proxy.address);
+    console.log("Recorded contract data");
+  } catch (e) {
+    console.log(e);
+  }
+
   console.log("Deployed BattleS1Proxy address: ", battleS1Proxy.address);
   console.log(
     "BattleS1 implementation deployed to:",

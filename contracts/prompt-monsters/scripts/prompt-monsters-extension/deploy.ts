@@ -1,4 +1,5 @@
 import { ethers, upgrades } from "hardhat";
+import { recordContractsData } from "../helpers/recordContractsData";
 
 async function main() {
   console.log("---------------------------------------------");
@@ -25,6 +26,14 @@ async function main() {
     },
   );
   await promptMonstersExtensionProxy.deployed();
+  
+  try {
+    recordContractsData("PromptMonstersExtensionProxy", promptMonstersExtensionProxy.address);
+    console.log("Recorded contract data");
+  } catch (e) {
+    console.log(e);
+  }
+
   console.log(
     "Deployed PromptMonstersExtensionProxy address: ",
     promptMonstersExtensionProxy.address,

@@ -5,6 +5,7 @@ import {
   MINT_PRICE,
 } from "../const";
 import { ethers, upgrades } from "hardhat";
+import { recordContractsData } from "../helpers/recordContractsData";
 
 async function main() {
   console.log("---------------------------------------------");
@@ -34,6 +35,14 @@ async function main() {
     },
   );
   await promptMonstersProxy.deployed();
+  
+  try {
+    recordContractsData("PromptMonstersProxy", promptMonstersProxy.address);
+    console.log("Recorded contract data");
+  } catch (e) {
+    console.log(e);
+  }
+
   console.log(
     "Deployed PromptMonstersProxy address: ",
     promptMonstersProxy.address,
