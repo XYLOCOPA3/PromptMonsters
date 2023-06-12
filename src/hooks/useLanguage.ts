@@ -5,9 +5,11 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 
 export const useLanguageValue = (): LanguageState => {
   const [language, setLanguageInternal] = useRecoilState(languageState);
+  console.log("useLanguageValue: language = ", language);
 
   useEffect(() => {
     const nextLocale = getCookie("NEXT_LOCALE");
+    console.log("useLanguageValue: nextLocale = ", nextLocale);
     let prevLanguage = "";
     switch (nextLocale) {
       case "en":
@@ -32,6 +34,7 @@ export const useSetLanguageState = (): ((language: string) => void) => {
 
   const setLanguage = useCallback(
     (language: string) => {
+      console.log("useSetLanguageState: language = ", language);
       setCookie("NEXT_LOCALE", language === "日本語" ? "ja" : "en");
       setLanguageInternal(language);
     },
