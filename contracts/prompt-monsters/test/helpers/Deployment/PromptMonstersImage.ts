@@ -5,12 +5,12 @@ export const deployPromptMonstersImage = async (
   deployer: SignerWithAddress,
   promptMonstersAddress: string,
 ) => {
-  const PromptMonstersImage = await ethers.getContractFactory("PromptMonstersImage");
+  const PromptMonstersImage = await ethers.getContractFactory(
+    "PromptMonstersImage",
+  );
   const promptMonstersImageProxy = await upgrades.deployProxy(
     PromptMonstersImage,
-    [
-      promptMonstersAddress,
-    ],
+    [promptMonstersAddress],
     {
       kind: "uups",
       initializer: "initialize",
@@ -18,7 +18,9 @@ export const deployPromptMonstersImage = async (
   );
   await promptMonstersImageProxy.connect(deployer).deployed();
 
-  const promptMonstersImage = PromptMonstersImage.attach(promptMonstersImageProxy.address);
+  const promptMonstersImage = PromptMonstersImage.attach(
+    promptMonstersImageProxy.address,
+  );
 
   return { promptMonstersImage };
 };

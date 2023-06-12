@@ -1,5 +1,7 @@
+import { MAX_LIFE_POINT } from "@/const/bossBattle";
 import { BossBattleNoButton, BossBattleYesButton } from "@/features/boss";
 import { useBossValue } from "@/hooks/useBoss";
+import { useBossBattleValue } from "@/hooks/useBossBattle";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
@@ -17,26 +19,38 @@ export const BossBattleMenuContinue = ({
 }: BossBattleMenuContinueProps) => {
   const monster = useMonsterValue();
   const boss = useBossValue();
+  const bossBattle = useBossBattleValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
 
   if (monster.name === "" || boss.name === "") return <></>;
   return (
     <>
-      <div className={clsx(className, "flex", "mb-[10px]", "h-[250px]")}>
+      <div
+        className={clsx(
+          className,
+          "flex",
+          "mb-[10px]",
+          "h-[190px]",
+          "md:h-[250px]",
+        )}
+      >
         <div
           className={clsx(
             "w-[100%]",
             "font-bold",
-            "bg-[#272727]",
+            "bg-[#272727]/80",
             "p-[10px]",
             "rounded-lg",
             "border-[1px]",
+            bossBattle.lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
+            "overflow-y-scroll",
           )}
         >
           {tBossBattle("continue")}
           <br />
           <br />
-          <div className={clsx("whitespace-pre-wrap")}>
+          <br />
+          <div className={clsx("whitespace-pre-wrap", "font-normal")}>
             {tBossBattle("continueNote")}
           </div>
         </div>

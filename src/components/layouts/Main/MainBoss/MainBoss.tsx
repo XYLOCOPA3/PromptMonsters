@@ -3,11 +3,12 @@ import { Background } from "@/components/elements/Background";
 import { Spinner } from "@/components/elements/Spinner";
 import { BossBattleButton, BossImage, BossStatus } from "@/features/boss";
 import {
+  MonsterGenerator,
   MonsterMintButton,
   MonsterSelector,
+  MonsterStatus,
   ResurrectionPrompt,
 } from "@/features/monster";
-import { MonsterStatus } from "@/features/monster/components/MonsterStatus";
 import { useBossValue } from "@/hooks/useBoss";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import clsx from "clsx";
@@ -21,6 +22,7 @@ import { useRecoilValue } from "recoil";
 export const MainBoss = () => {
   const boss = useBossValue();
   const monsterMinted = useRecoilValue(monsterMintedState);
+  const { t: tCommon } = useTranslation("common");
   const { t: tBoss } = useTranslation("boss");
 
   if (boss.name === "") {
@@ -30,7 +32,9 @@ export const MainBoss = () => {
           className={clsx("opacity-30")}
           src="/assets/images/bg-boss-mch-yoshka.png"
         />
-        <div className={clsx("flex", "items-center", "flex-col")}>
+        <div
+          className={clsx("flex", "justify-center", "items-center", "h-screen")}
+        >
           <Spinner className={clsx("w-[50px]", "h-[50px]", "border-[4px]")} />
         </div>
       </>
@@ -66,7 +70,7 @@ export const MainBoss = () => {
           href="https://www.notion.so/xylocopa/How-to-play-Boss-Battle-14cf1d63bcd04d9bb6e4f2cda1c81c7d?pvs=4"
           target="_blank"
         >
-          {tBoss("howToPlay")}
+          {tCommon("howToPlay")}
         </Link>
         <div
           className={clsx(
@@ -80,6 +84,8 @@ export const MainBoss = () => {
           <BossImage />
           <BossStatus />
         </div>
+        <MonsterGenerator className={clsx("my-[20px]", "w-[300px]")} />
+        <div>or</div>
         <ResurrectionPrompt className={clsx("my-[20px]", "w-[300px]")} />
         <div
           className={clsx(

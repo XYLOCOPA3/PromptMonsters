@@ -4,7 +4,9 @@ import { ethers, upgrades } from "hardhat";
 export const deployPromptMonstersExtension = async (
   deployer: SignerWithAddress,
 ) => {
-  const PromptMonstersExtension = await ethers.getContractFactory("PromptMonstersExtension");
+  const PromptMonstersExtension = await ethers.getContractFactory(
+    "PromptMonstersExtension",
+  );
   const promptMonstersExtensionProxy = await upgrades.deployProxy(
     PromptMonstersExtension,
     [],
@@ -15,7 +17,9 @@ export const deployPromptMonstersExtension = async (
   );
   await promptMonstersExtensionProxy.connect(deployer).deployed();
 
-  const promptMonstersExtension = PromptMonstersExtension.attach(promptMonstersExtensionProxy.address);
+  const promptMonstersExtension = PromptMonstersExtension.attach(
+    promptMonstersExtensionProxy.address,
+  );
 
   return { promptMonstersExtension };
 };

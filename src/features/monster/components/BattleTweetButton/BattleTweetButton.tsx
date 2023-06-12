@@ -23,7 +23,7 @@ export type BattleTweetButtonProps = BaseProps;
 export const BattleTweetButton = ({ className }: BattleTweetButtonProps) => {
   const monster = useMonsterValue();
   const battle = useBattleValue();
-  const { t: tMonsters } = useTranslation("monsters");
+  const { t: tCommon } = useTranslation("monsters");
 
   if (battle.winnerId === "") return <></>;
   return (
@@ -50,7 +50,7 @@ export const BattleTweetButton = ({ className }: BattleTweetButtonProps) => {
           <div
             className={clsx("ml-[10px]", "text-black", "hidden", "md:inline")}
           >
-            {tMonsters("tweet")}
+            {tCommon("tweet")}
           </div>
         </div>
       </Button>

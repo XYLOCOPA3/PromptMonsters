@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ITEMS } from "@/const/bossBattle";
+import { ITEMS, MAX_LIFE_POINT } from "@/const/bossBattle";
 import { BossBattleNextButton } from "@/features/boss";
 import {
   getBossBuffMsg,
@@ -21,10 +21,7 @@ import {
   getUsedItemMsg,
 } from "@/features/boss/utils/utils";
 import { useBossValue } from "@/hooks/useBoss";
-import {
-  useBossBattleController,
-  useBossBattleValue,
-} from "@/hooks/useBossBattle";
+import { useBossBattleState, useBossBattleValue } from "@/hooks/useBossBattle";
 import { useLanguageValue } from "@/hooks/useLanguage";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { disableState } from "@/stores/disableState";
@@ -45,7 +42,7 @@ export const BossBattleMenuResult = ({
   className,
 }: BossBattleMenuResultProps) => {
   const boss = useBossValue();
-  const bossBattleController = useBossBattleController();
+  const [bossBattle, bossBattleController] = useBossBattleState();
   const [loading, setLoading] = useState(false);
   const setDisable = useSetRecoilState(disableState);
 
@@ -67,15 +64,25 @@ export const BossBattleMenuResult = ({
   if (boss.name === "") return <></>;
   return (
     <>
-      <div className={clsx(className, "flex", "mb-[10px]", "h-[250px]")}>
+      <div
+        className={clsx(
+          className,
+          "flex",
+          "mb-[10px]",
+          "h-[190px]",
+          "md:h-[250px]",
+        )}
+      >
         <div
           className={clsx(
             "w-[100%]",
             "font-bold",
-            "bg-[#272727]",
+            "bg-[#272727]/80",
             "p-[10px]",
             "rounded-lg",
             "border-[1px]",
+            bossBattle.lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
+            "overflow-y-scroll",
           )}
         >
           <ResultMsg />

@@ -13,14 +13,14 @@ export type FeatureInputProps = {
  * @param onChange 入力時の処理
  */
 export const FeatureInput = ({ className, onChange }: FeatureInputProps) => {
-  const { t: tMonsters } = useTranslation("monsters");
+  const { t: tCommon } = useTranslation("common");
 
   return (
     <input
       className={clsx("bg-gray-700", "px-2", "rounded-lg", className)}
       type="text"
       name="name"
-      placeholder={tMonsters("featurePlaceholder") as string}
+      placeholder={tCommon("featurePlaceholder") as string}
       autoComplete="off"
       onChange={onChange}
     />

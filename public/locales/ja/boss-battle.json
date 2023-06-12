@@ -18,6 +18,7 @@
   "usedItem": "monsterName は itemName をつかった。",
   "defensed": "monsterName は ぼうぎょ している。",
   "score": "スコア",
+  "highScore": "ハイスコア",
   "turn": "ターン",
   "lose": "まけ...",
   "updatedHighScore": "ハイスコア更新！",

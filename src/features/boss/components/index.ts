@@ -9,6 +9,7 @@ export * from "./BossBattleNextButton";
 export * from "./BossBattleNoButton";
 export * from "./BossBattleOKButton";
 export * from "./BossBattlePrevButton";
+export * from "./BossBattleTweetButton";
 export * from "./BossBattleUseButton";
 export * from "./BossBattleYesButton";
 export * from "./BossImage";

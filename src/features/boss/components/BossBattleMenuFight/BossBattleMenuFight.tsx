@@ -1,15 +1,20 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
+import { MAX_LIFE_POINT } from "@/const/bossBattle";
 import { SKILL_TYPE_NAME } from "@/const/monster";
 import { BossBattlePrevButton } from "@/features/boss/components/BossBattlePrevButton";
 import { useBossValue } from "@/hooks/useBoss";
-import { useBossBattleController } from "@/hooks/useBossBattle";
+import {
+  useBossBattleController,
+  useBossBattleValue,
+} from "@/hooks/useBossBattle";
 import { useLanguageValue } from "@/hooks/useLanguage";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { disableState } from "@/stores/disableState";
 import { monsterInitState } from "@/stores/monsterInitState";
 import { BaseProps } from "@/types/BaseProps";
+import { EnumSkillType } from "@/types/EnumSkillType";
 import clsx from "clsx";
 import { useRecoilState, useRecoilValue } from "recoil";
 
@@ -119,9 +124,17 @@ export const BossBattleMenuFight = ({
   return (
     <>
       <div
-        className={clsx(className, "flex", "my-[5px]", "h-[250px]", "flex-col")}
+        className={clsx(
+          className,
+          "flex",
+          "my-[5px]",
+          "flex-col",
+          "w-[100%]",
+          "h-[190px]",
+          "md:h-[250px]",
+        )}
       >
-        <div className={clsx("flex", "h-[50%]", "mb-[5px]")}>
+        <div className={clsx("flex", "w-[100%]", "h-[50%]", "mb-[5px]")}>
           {monster.skills.length >= 1 ? (
             <Skill
               className={clsx("mr-[5px]")}
@@ -149,7 +162,7 @@ export const BossBattleMenuFight = ({
             <div className={clsx("w-1/2", "ml-[5px]")}></div>
           )}
         </div>
-        <div className={clsx("flex", "h-[50%]", "mt-[5px]")}>
+        <div className={clsx("flex", "w-[100%]", "h-[50%]", "mt-[5px]")}>
           {monster.skills.length >= 3 ? (
             <Skill
               className={clsx("mr-[5px]")}
@@ -196,18 +209,21 @@ const Skill = ({
   loading,
   disable,
 }: any) => {
+  const bossBattle = useBossBattleValue();
+
   return (
     <div
       className={clsx(
         className,
         "w-1/2",
         "font-bold",
-        "bg-[#272727]",
+        "bg-[#272727]/80",
         "p-[10px]",
         "rounded-lg",
         "border-[1px]",
         "text-center",
         "relative",
+        bossBattle.lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
       )}
     >
       <Button
@@ -222,10 +238,20 @@ const Skill = ({
       <div
         className={clsx(
           "absolute",
-          "top-[15px]",
-          "left-[15px]",
+          "top-[10px]",
+          "left-[10px]",
           "font-normal",
-          "text-[12px]",
+          "text-[10px]",
+          skillType === EnumSkillType.physicalAttack
+            ? "text-[#f7a697]"
+            : skillType === EnumSkillType.specialAttack
+            ? "text-[#88d8ec]"
+            : skillType === EnumSkillType.healing
+            ? "text-[#9bf39b]"
+            : "text-[#e9de9b]",
+          "md:text-[12px]",
+          "md:top-[15px]",
+          "md:left-[15px]",
         )}
       >
         {SKILL_TYPE_NAME[language as "日本語" | "English"].get(skillType) ??

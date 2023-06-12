@@ -87,10 +87,9 @@ interface IBossBattleEvent {
   /// @dev Get _highScores
   /// @param rps_ resurrection prompts
   /// @return highScores high scores
-  function getHighScores(address[] memory rps_)
-    external
-    view
-    returns (uint32[] memory highScores);
+  function getHighScores(
+    address[] memory rps_
+  ) external view returns (uint32[] memory highScores);
 
   // --------------------------------------------------------------------------------
   // Setter

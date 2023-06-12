@@ -34,7 +34,7 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
   const setDisable = useSetRecoilState(disableState);
   const setSelectedMonsterIdName = useSetSelectedMonsterIdNameState();
-  const { t: tMonsters } = useTranslation("monsters");
+  const { t: tCommon } = useTranslation("common");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (countCharactersForGenerator(e.target.value) <= maxLength) {
@@ -98,7 +98,7 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
       <div
         className={clsx("flex", "justify-center", "items-center", "w-[100%]")}
       >
-        <Warning className={clsx("mr-[5px]")} hintText={tMonsters("warning")} />
+        <Warning className={clsx("mr-[5px]")} hintText={tCommon("warning")} />
         <FeatureInput
           className={clsx("w-[100%]", "h-[40px]")}
           onChange={handleChange}
