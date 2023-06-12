@@ -1,4 +1,5 @@
 import { ethers, upgrades } from "hardhat";
+import { recordContractsData } from "../helpers/recordContractsData";
 
 async function main() {
   console.log("---------------------------------------------");
@@ -19,6 +20,14 @@ async function main() {
     initializer: "initialize",
   });
   await erc20Proxy.deployed();
+  
+  try {
+    recordContractsData("Erc20", erc20Proxy.address);
+    console.log("Recorded contract data");
+  } catch (e) {
+    console.log(e);
+  }
+
   console.log("Deployed Erc20 address: ", erc20Proxy.address);
   console.log(
     "Erc20 implementation deployed to:",
