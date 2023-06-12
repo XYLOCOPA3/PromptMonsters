@@ -36,5 +36,6 @@
   "bossBuffDebuffMiss": "bossName is flinching and unable to move.",
   "monsterMiss": "But it missed...",
   "bossDefensed": "bossName is defending.",
-  "ok": "OK"
+  "ok": "OK",
+  "invalidStarted": "You should push \"FIGHT\" button to start the boss battle."
 }

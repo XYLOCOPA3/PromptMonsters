@@ -11,7 +11,7 @@ import {
   BossBattleTweetButton,
 } from "@/features/boss";
 import { useBossValue } from "@/hooks/useBoss";
-import { useBossBattleValue } from "@/hooks/useBossBattle";
+import { useBossBattleState } from "@/hooks/useBossBattle";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { BaseProps } from "@/types/BaseProps";
@@ -29,7 +29,7 @@ export type BossBattleMenuProps = BaseProps;
  */
 export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
   const boss = useBossValue();
-  const bossBattle = useBossBattleValue();
+  const [bossBattle, bossBattleController] = useBossBattleState();
   const monster = useMonsterValue();
   const [isOpen, setIsOpen] = useState(false);
   const { push } = useRouter();
@@ -39,12 +39,20 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
 
   const closeModal = () => {
     setIsOpen(false);
+    bossBattleController.reset();
     push("/boss");
   };
 
   useLayoutEffectOfSSR(() => {
     if (bossBattle.phase === EnumBossBattlePhase.end) setIsOpen(true);
   }, [bossBattle.phase]);
+
+  useLayoutEffectOfSSR(() => {
+    if (!bossBattle.bossBattleStarted) {
+      alert(tBossBattle("invalidStarted"));
+      push("/boss");
+    }
+  }, []);
 
   if (boss.name === "" || boss.flavor === "") return <></>;
   return (
@@ -99,10 +107,8 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                       <div
                         className={clsx(
                           "font-bold",
-                          bossBattle.defeated ? "text-[20px]" : "text-[72px]",
-                          bossBattle.defeated
-                            ? "md:text-[32px]"
-                            : "md:text-[32px]",
+                          "text-[20px]",
+                          "md:text-[32px]",
                         )}
                       >
                         {tBossBattle("score")}
