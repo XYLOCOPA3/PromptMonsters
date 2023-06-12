@@ -69,14 +69,15 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
         className,
         "px-[10px]",
         "w-[100%]",
-        "h-[40px]",
+        "h-[50px]",
         "max-w-[150px]",
       )}
       variant="secondary"
       loading={loading}
       onClick={handleClick}
     >
-      MINT: {mintPrice} MCHC
+      $ <span className={clsx("text-[20px]", "font-bold")}>{mintPrice}</span>{" "}
+      MCHC
     </Button>
   );
 };

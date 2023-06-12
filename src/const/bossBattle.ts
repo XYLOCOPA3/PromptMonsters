@@ -189,7 +189,7 @@ export const ITEMS = {
       result: "bossName's stats decreased.",
     },
     {
-      name: "HEALING PROMPT",
+      name: "HEAL PROMPT",
       desc: "LP is fully restored.",
       result: "LP was fully restored.",
     },

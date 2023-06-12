@@ -153,7 +153,10 @@ interface IPromptMonsters is IERC721Upgradeable {
 
   /// @dev Get _promptMonstersImage
   /// @return returnValue _promptMonstersImage
-  function getPromptMonstersImage() external view returns (IPromptMonstersImage returnValue);
+  function getPromptMonstersImage()
+    external
+    view
+    returns (IPromptMonstersImage returnValue);
 
   /// @dev Get _paused
   /// @return returnValue _paused

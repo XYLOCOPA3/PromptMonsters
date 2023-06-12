@@ -24,7 +24,7 @@ import { useRecoilValue } from "recoil";
  */
 export const MainMonsters = () => {
   const monsterMinted = useRecoilValue(monsterMintedState);
-  const { t: tMonsters } = useTranslation("monsters");
+  const { t: tCommon } = useTranslation("common");
   const { locale } = useRouter();
 
   return (
@@ -43,7 +43,7 @@ export const MainMonsters = () => {
         )}
       >
         <div className={clsx("font-bold", "text-[28px]", "md:text-[50px]")}>
-          MONSTER GENERATOR
+          BATTLE
         </div>
         <Link
           className={clsx(
@@ -61,7 +61,7 @@ export const MainMonsters = () => {
           }
           target="_blank"
         >
-          {tMonsters("howToPlay")}
+          {tCommon("howToPlay")}
         </Link>
         <MonsterGenerator className={clsx("my-[20px]", "w-[300px]")} />
         <div>or</div>

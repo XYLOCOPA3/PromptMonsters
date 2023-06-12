@@ -43,7 +43,6 @@ export const Button = ({
       className={clsx(
         className,
         _getVariant(variant, holdDown),
-        "text-white",
         shapes[shape],
         "select-none",
         "disabled:cursor-default",

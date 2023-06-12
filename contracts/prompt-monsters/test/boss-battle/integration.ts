@@ -7,11 +7,28 @@ import {
   PromptMonstersExtension,
   PromptMonstersImage,
 } from "../../typechain-types";
+import {
+  BBState,
+  FireMonsterDetails,
+  FireMonsterExtensionDetails,
+  FireMonsterNoExtensionDetails,
+  MonsterExtensionDetails,
+  Rp1Turn1BBState,
+  Rp1Turn2BBState,
+  YoshkaExtensionDetails,
+  defaultBBState,
+  firstBossSignForRp1,
+  firstMonsterAdjForRp1,
+  initialBBState,
+  initialMintPrice,
+  monsterAdjForRp1,
+  transformBBState,
+  transformMonsterExtensionDetails,
+} from "../helpers/test_constants";
 import { deploy } from "./Deployment";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { ethers } from "hardhat";
 import { expect } from "chai";
-import { BBState, FireMonsterDetails, FireMonsterExtensionDetails, FireMonsterNoExtensionDetails, MonsterExtensionDetails, Rp1Turn1BBState, Rp1Turn2BBState, YoshkaExtensionDetails, defaultBBState, firstBossSignForRp1, firstMonsterAdjForRp1, initialBBState, initialMintPrice, monsterAdjForRp1, transformBBState, transformMonsterExtensionDetails } from "../helpers/test_constants";
+import { ethers } from "hardhat";
 
 describe("BossBattle Integration Test", function () {
   let promptMonsters: PromptMonsters;
@@ -107,7 +124,9 @@ describe("BossBattle Integration Test", function () {
       it("generate promptMonsters", async function () {
         expect(
           await promptMonsters
-            .connect(deployer).generateMonster(resurrectionPrompt1.address, FireMonsterDetails)).not.to.be.reverted;
+            .connect(deployer)
+            .generateMonster(resurrectionPrompt1.address, FireMonsterDetails),
+        ).not.to.be.reverted;
       });
 
       it("mint promptMonsters by user1", async function () {
@@ -117,8 +136,8 @@ describe("BossBattle Integration Test", function () {
             .increaseAllowance(promptMonsters.address, initialMintPrice),
         ).not.to.be.reverted;
         expect(
-          await promptMonsters
-            .connect(user1).mint(resurrectionPrompt1.address)).not.to.be.reverted;
+          await promptMonsters.connect(user1).mint(resurrectionPrompt1.address),
+        ).not.to.be.reverted;
       });
     });
   });
@@ -126,25 +145,30 @@ describe("BossBattle Integration Test", function () {
   describe("Setting BossBattle", function () {
     describe("Set BossMonster's status", function () {
       it("addLanguage", async function () {
-        expect(
-          await bossMonsterMchYoshka.addLanguage("Japanese"),
-        ).not.to.be.reverted;
-        
-        expect(
-          await bossMonsterMchYoshka.getLanguages(),
-        ).to.deep.equal(["Japanese"]);
+        expect(await bossMonsterMchYoshka.addLanguage("Japanese")).not.to.be
+          .reverted;
+
+        expect(await bossMonsterMchYoshka.getLanguages()).to.deep.equal([
+          "Japanese",
+        ]);
       });
 
       it("setBoss & ", async function () {
-        (expect(
-          await bossMonsterMchYoshka.setBoss("Japanese", YoshkaExtensionDetails),
-        ).not.to.be.reverted);
+        expect(
+          await bossMonsterMchYoshka.setBoss(
+            "Japanese",
+            YoshkaExtensionDetails,
+          ),
+        ).not.to.be.reverted;
 
-        (expect(
-          await bossMonsterMchYoshka.setSkillTypes(YoshkaExtensionDetails.skills, YoshkaExtensionDetails.skillTypes),
-        ).not.to.be.reverted);
-        
-        boss = await bossBattle.getBossExtension("MCH",0,"Japanese");
+        expect(
+          await bossMonsterMchYoshka.setSkillTypes(
+            YoshkaExtensionDetails.skills,
+            YoshkaExtensionDetails.skillTypes,
+          ),
+        ).not.to.be.reverted;
+
+        boss = await bossBattle.getBossExtension("MCH", 0, "Japanese");
         boss = transformMonsterExtensionDetails(boss);
 
         expect(boss).to.deep.equal(YoshkaExtensionDetails);
@@ -156,42 +180,69 @@ describe("BossBattle Integration Test", function () {
     describe("Before battle start", function () {
       describe("Get monster extensions", function () {
         it("getMonsterExtensions", async function () {
-          rps = await promptMonsters.getMonsterExtensions([resurrectionPrompt1.address]);
-          
+          rps = await promptMonsters.getMonsterExtensions([
+            resurrectionPrompt1.address,
+          ]);
+
           rp1 = transformMonsterExtensionDetails(rps[0]);
-          expect(
-            rp1).to.deep.equal(FireMonsterNoExtensionDetails);
+          expect(rp1).to.deep.equal(FireMonsterNoExtensionDetails);
         });
       });
       describe("Set monster adj", function () {
         it("setMonsterAdj", async function () {
-          expect(await bossBattle.connect(deployer).setMonsterAdj("MCH", 0,resurrectionPrompt1.address, monsterAdjForRp1)).not.to.be.reverted;
+          expect(
+            await bossBattle
+              .connect(deployer)
+              .setMonsterAdj(
+                "MCH",
+                0,
+                resurrectionPrompt1.address,
+                monsterAdjForRp1,
+              ),
+          ).not.to.be.reverted;
 
-          const adj = await bossBattle.getMonsterAdj("MCH", 0, resurrectionPrompt1.address);
-          expect(adj.weaknessFeatureAdj).to.equal(monsterAdjForRp1.weaknessFeatureAdj);
+          const adj = await bossBattle.getMonsterAdj(
+            "MCH",
+            0,
+            resurrectionPrompt1.address,
+          );
+          expect(adj.weaknessFeatureAdj).to.equal(
+            monsterAdjForRp1.weaknessFeatureAdj,
+          );
         });
       });
 
       describe("Set monster extensions", function () {
         it("setMonsterAdj", async function () {
-          expect(await promptMonstersExtension.connect(deployer).setBatchSkillTypes([resurrectionPrompt1.address], [FireMonsterExtensionDetails.skills], [FireMonsterExtensionDetails.skillTypes])).not.to.be.reverted;
-
-          rps = await promptMonsters.getMonsterExtensions([resurrectionPrompt1.address]);
-          
-          rp1 = transformMonsterExtensionDetails(rps[0]);
           expect(
-            rp1).to.deep.equal(FireMonsterExtensionDetails);
+            await promptMonstersExtension
+              .connect(deployer)
+              .setBatchSkillTypes(
+                [resurrectionPrompt1.address],
+                [FireMonsterExtensionDetails.skills],
+                [FireMonsterExtensionDetails.skillTypes],
+              ),
+          ).not.to.be.reverted;
+
+          rps = await promptMonsters.getMonsterExtensions([
+            resurrectionPrompt1.address,
+          ]);
+
+          rp1 = transformMonsterExtensionDetails(rps[0]);
+          expect(rp1).to.deep.equal(FireMonsterExtensionDetails);
         });
       });
 
       describe("Get BBState", function () {
         it("getBBState", async function () {
-          bbState = await bossBattle.getBBState("MCH", 0, resurrectionPrompt1.address);
+          bbState = await bossBattle.getBBState(
+            "MCH",
+            0,
+            resurrectionPrompt1.address,
+          );
           bbState = transformBBState(bbState);
 
-          expect(bbState).to.deep.equal(
-            defaultBBState
-          );
+          expect(bbState).to.deep.equal(defaultBBState);
         });
       });
     });
@@ -200,31 +251,81 @@ describe("BossBattle Integration Test", function () {
       describe("Turn 1", function () {
         describe("Start BossBattle", function () {
           it("startBossBattle", async function () {
-            expect(await bossBattle.connect(deployer).startBossBattle("MCH", 0, resurrectionPrompt1.address, firstMonsterAdjForRp1, firstBossSignForRp1)).not.to.be.reverted;
-            
-            bbState = await bossBattle.getBBState("MCH", 0, resurrectionPrompt1.address);
+            expect(
+              await bossBattle
+                .connect(deployer)
+                .startBossBattle(
+                  "MCH",
+                  0,
+                  resurrectionPrompt1.address,
+                  firstMonsterAdjForRp1,
+                  firstBossSignForRp1,
+                ),
+            ).not.to.be.reverted;
+
+            bbState = await bossBattle.getBBState(
+              "MCH",
+              0,
+              resurrectionPrompt1.address,
+            );
             bbState = transformBBState(bbState);
 
             expect(bbState).to.deep.equal(initialBBState);
           });
 
           it("Should revert startBossBattle if already started", async function () {
-            await expect(bossBattle.connect(deployer).startBossBattle("MCH", 0, resurrectionPrompt1.address, firstMonsterAdjForRp1, firstBossSignForRp1)).to.be.revertedWith("BossBattleEvent: monster has already started boss battle");
+            await expect(
+              bossBattle
+                .connect(deployer)
+                .startBossBattle(
+                  "MCH",
+                  0,
+                  resurrectionPrompt1.address,
+                  firstMonsterAdjForRp1,
+                  firstBossSignForRp1,
+                ),
+            ).to.be.revertedWith(
+              "BossBattleEvent: monster has already started boss battle",
+            );
           });
         });
 
         describe("Update boss battle result", function () {
           it("updateBossBattleResult", async function () {
-            expect(await bossBattle.connect(deployer).updateBossBattleResult("MCH", 0, resurrectionPrompt1.address, Rp1Turn1BBState)).not.to.be.reverted;
-            
-            bbState = await bossBattle.getBBState("MCH", 0, resurrectionPrompt1.address);
+            expect(
+              await bossBattle
+                .connect(deployer)
+                .updateBossBattleResult(
+                  "MCH",
+                  0,
+                  resurrectionPrompt1.address,
+                  Rp1Turn1BBState,
+                ),
+            ).not.to.be.reverted;
+
+            bbState = await bossBattle.getBBState(
+              "MCH",
+              0,
+              resurrectionPrompt1.address,
+            );
             bbState = transformBBState(bbState);
 
             expect(bbState).to.deep.equal(Rp1Turn1BBState);
           });
 
           it("Should revert updateBossBattleResult if the turn does not continue", async function () {
-            await expect(bossBattle.connect(deployer).updateBossBattleResult("MCH", 0, resurrectionPrompt1.address, Rp1Turn1BBState)).to.be.revertedWith("BossBattleEvent: monster has not continued boss battle");
+            await expect(
+              bossBattle
+                .connect(deployer)
+                .updateBossBattleResult(
+                  "MCH",
+                  0,
+                  resurrectionPrompt1.address,
+                  Rp1Turn1BBState,
+                ),
+            ).to.be.revertedWith(
+              "BossBattleEvent: monster has not continued boss battle",
+            );
           });
         });
       });
@@ -232,11 +333,19 @@ describe("BossBattle Integration Test", function () {
       describe("Turn 2", function () {
         describe("Continue boss battle", function () {
           it("continueBossBattle", async function () {
-            expect(await bossBattle.connect(deployer).continueBossBattle("MCH", 0, resurrectionPrompt1.address, 2)).not.to.be.reverted;
+            expect(
+              await bossBattle
+                .connect(deployer)
+                .continueBossBattle("MCH", 0, resurrectionPrompt1.address, 2),
+            ).not.to.be.reverted;
 
-            bbState = await bossBattle.getBBState("MCH", 0, resurrectionPrompt1.address);
+            bbState = await bossBattle.getBBState(
+              "MCH",
+              0,
+              resurrectionPrompt1.address,
+            );
             bbState = transformBBState(bbState);
-  
+
             expect(bbState).to.deep.equal({
               bossBattleStarted: Rp1Turn1BBState.bossBattleStarted,
               bossBattleContinued: true,
@@ -254,28 +363,55 @@ describe("BossBattle Integration Test", function () {
           });
 
           it("Should revert continueBossBattle if the turn continues", async function () {
-            await expect(bossBattle.connect(deployer).continueBossBattle("MCH", 0, resurrectionPrompt1.address, 2)).to.be.reverted;
+            await expect(
+              bossBattle
+                .connect(deployer)
+                .continueBossBattle("MCH", 0, resurrectionPrompt1.address, 2),
+            ).to.be.reverted;
           });
         });
 
         describe("Update boss battle result", function () {
           it("updateBossBattleResult", async function () {
-            expect(await bossBattle.connect(deployer).updateBossBattleResult("MCH", 0, resurrectionPrompt1.address, Rp1Turn2BBState)).not.to.be.reverted;
-            
-            bbState = await bossBattle.getBBState("MCH", 0, resurrectionPrompt1.address);
+            expect(
+              await bossBattle
+                .connect(deployer)
+                .updateBossBattleResult(
+                  "MCH",
+                  0,
+                  resurrectionPrompt1.address,
+                  Rp1Turn2BBState,
+                ),
+            ).not.to.be.reverted;
+
+            bbState = await bossBattle.getBBState(
+              "MCH",
+              0,
+              resurrectionPrompt1.address,
+            );
             bbState = transformBBState(bbState);
 
             expect(bbState).to.deep.equal(Rp1Turn2BBState);
           });
 
           it("Should revert continueBossBattle if the lp is 0", async function () {
-            await expect(bossBattle.connect(deployer).continueBossBattle("MCH", 0, resurrectionPrompt1.address, 3)).to.be.revertedWith("BossBattleEvent: You have already lost all LP");
+            await expect(
+              bossBattle
+                .connect(deployer)
+                .continueBossBattle("MCH", 0, resurrectionPrompt1.address, 3),
+            ).to.be.revertedWith(
+              "BossBattleEvent: You have already lost all LP",
+            );
           });
         });
 
         describe("End boss battle", function () {
           it("endBossBattle", async function () {
-            expect(await bossBattle.connect(deployer).endBossBattle("MCH", 0, resurrectionPrompt1.address)).not.to.be.reverted;
+            expect(
+              await bossBattle
+                .connect(deployer)
+                .endBossBattle("MCH", 0, resurrectionPrompt1.address),
+            ).not.to.be.reverted;
           });
         });
       });
