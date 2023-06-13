@@ -1,5 +1,5 @@
 import { RPC_URL } from "@/const/chainParams";
-import { MAX_STAMINA } from "@/const/monster";
+import { MAX_FEATURES_CHAR, MAX_STAMINA } from "@/const/monster";
 import { ClientMCHCoin } from "@/features/mchcoin/api/ClientMCHCoin";
 import { ClientPromptMonsters } from "@/features/monster/api/contracts/ClientPromptMonsters";
 import { ClientStamina } from "@/features/stamina/api/ClientStamina";
@@ -8,7 +8,7 @@ import { MonsterState, monsterState } from "@/stores/monsterState";
 import { FeatureErrorType } from "@/types/FeatureErrorType";
 import { MonsterId } from "@/types/MonsterId";
 import { UserId } from "@/types/UserId";
-import { checkFeature, isSymbol } from "@/utils/validation";
+import { checkFeature } from "@/utils/validation";
 import axios from "axios";
 import { getCookie } from "cookies-next";
 import { ethers } from "ethers";
@@ -50,13 +50,17 @@ export const useMonsterController = (): MonsterController => {
     feature: string,
     language: string,
   ): Promise<MonsterModel> => {
-    if (isSymbol(feature))
-      throw new Error("Features must not contain numbers or symbols.");
     const result = checkFeature(feature);
     if (result !== FeatureErrorType.ok) {
       switch (result) {
         case FeatureErrorType.noFeature:
           throw new Error("Do not empty feature");
+        case FeatureErrorType.characterLimit:
+          throw new Error(
+            `Too many characters.\n\nPlease limit the number of characters to ${MAX_FEATURES_CHAR} for single-byte characters and ${
+              MAX_FEATURES_CHAR / 3
+            } for double-byte characters.`,
+          );
         case FeatureErrorType.usingSymbol:
           throw new Error("Do not use symbol");
         case FeatureErrorType.usingNum:
@@ -86,8 +90,6 @@ export const useMonsterController = (): MonsterController => {
     if (res.status !== 200) throw new Error(res.data);
     const monsterJson = res.data.monster;
     const resurrectionPrompt = res.data.resurrectionPrompt;
-    if (monsterJson.isExisting) throw new Error("This monster is existing.");
-    if (!monsterJson.isFiction) throw new Error("This monster is non fiction.");
     const monster = MonsterModel.fromData(
       monsterJson,
       feature,
@@ -176,7 +178,6 @@ export const useMonsterController = (): MonsterController => {
     let res: any;
     try {
       res = await axios.post("/api/fight-monster", {
-        monsterId,
         language,
         resurrectionPrompt,
       });

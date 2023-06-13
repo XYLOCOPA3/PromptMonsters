@@ -70,7 +70,7 @@ export const Drawer = () => {
                   </Link>
                   <Link
                     className={clsx("mx-[20px]", "my-[10px]", "font-bold")}
-                    href="/boss-battle"
+                    href="/boss"
                     onClick={handleClick}
                   >
                     {tCommon("boss")}

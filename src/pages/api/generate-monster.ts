@@ -1,7 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { RPC_URL } from "@/const/chainParams";
+import { ERROR_WAIT_TIME, MAX_ERROR_CNT } from "@/const/error";
 import { LANGUAGES } from "@/const/language";
+import { MAX_FEATURES_CHAR } from "@/const/monster";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { getGeneratingPrompt } from "@/lib/prompt";
 import { FeatureErrorType } from "@/types/FeatureErrorType";
@@ -29,8 +31,12 @@ export default async function handler(
     });
   }
 
+  let errorCnt = 0;
+
   const feature = req.body.feature || "";
   const language = req.body.language || "";
+  if (!LANGUAGES.includes(language))
+    return res.status(400).json({ message: "Invalid language." });
 
   const result = checkFeature(feature);
   if (result !== FeatureErrorType.ok) {
@@ -39,6 +45,17 @@ export default async function handler(
         console.log("Do not empty feature");
         return res.status(400).json({
           message: "Do not empty feature",
+        });
+      case FeatureErrorType.characterLimit:
+        console.log(
+          `Too many characters.\n\nPlease limit the number of characters to ${MAX_FEATURES_CHAR} for single-byte characters and ${
+            MAX_FEATURES_CHAR / 3
+          } for double-byte characters.`,
+        );
+        return res.status(400).json({
+          message: `Too many characters.\n\nPlease limit the number of characters to ${MAX_FEATURES_CHAR} for single-byte characters and ${
+            MAX_FEATURES_CHAR / 3
+          } for double-byte characters.`,
         });
       case FeatureErrorType.usingSymbol:
         console.log("Do not use symbol");
@@ -63,35 +80,70 @@ export default async function handler(
   }
   const resurrectionPrompt = ethers.Wallet.createRandom().address;
   console.log("Create Monster Resurrection Prompt: ", resurrectionPrompt);
+  const prefixLog = `/generate-monster: ${resurrectionPrompt}:`;
 
-  try {
-    const generatePrompt = getGeneratingPrompt(feature, language);
-    console.log(generatePrompt);
-    const completion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: generatePrompt }],
-      temperature: 1.0,
-    });
-    console.log(completion.data.choices);
-    console.log(completion.data.usage);
+  const generatePrompt = getGeneratingPrompt(feature, language);
+  console.log(prefixLog, generatePrompt);
 
-    const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
-    const monster = _getMonster(
-      completion.data.choices[0].message!.content,
-      language,
-    );
-    console.log("Fixed status ---------------------------");
-    console.log(monster);
-    await promptMonsters.generateMonster(resurrectionPrompt, monster, feature);
-    return res.status(200).json({ monster, resurrectionPrompt });
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message);
-      return res.status(400).json({ message: error.message });
+  const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
+  let monster: any;
+  while (true) {
+    try {
+      console.log(prefixLog, errorCnt);
+      const completion = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: generatePrompt }],
+        temperature: 1.0,
+      });
+      console.log(completion.data.choices);
+      console.log(completion.data.usage);
+      monster = _getMonster(
+        completion.data.choices[0].message!.content,
+        language,
+      );
+      errorCnt = 0;
+      break;
+    } catch (error) {
+      errorCnt++;
+      error instanceof Error
+        ? console.error(prefixLog, error.message)
+        : console.error(prefixLog, error);
+      if (errorCnt >= MAX_ERROR_CNT) {
+        if (error instanceof Error)
+          return res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error });
+      }
     }
-    console.log(error);
-    return res.status(400).json({ message: error });
   }
+  console.log("Fixed status ---------------------------");
+  console.log(monster);
+
+  while (true) {
+    try {
+      console.log(prefixLog, errorCnt);
+      await promptMonsters.generateMonster(
+        resurrectionPrompt,
+        monster,
+        feature,
+      );
+      errorCnt = 0;
+      break;
+    } catch (error) {
+      errorCnt++;
+      error instanceof Error
+        ? console.error(prefixLog, error.message)
+        : console.error(prefixLog, error);
+      if (errorCnt >= MAX_ERROR_CNT) {
+        if (error instanceof Error)
+          return res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error });
+      }
+      // "ERROR_WAIT_TIME" ms待機
+      await new Promise((resolve) => setTimeout(resolve, ERROR_WAIT_TIME));
+    }
+  }
+
+  return res.status(200).json({ monster, resurrectionPrompt });
 }
 
 /**
@@ -228,7 +280,7 @@ const _isOverSumStatus = (status: any): boolean => {
   sumStatus += status.INT;
   sumStatus += status.MGR;
   sumStatus += status.AGL;
-  const std = 70 + Math.floor(Math.random() * 21);
+  const std = 80 + Math.floor(Math.random() * 11);
   console.log("sumStatus: " + sumStatus);
   console.log("std: " + std);
   if (sumStatus > std) return true;

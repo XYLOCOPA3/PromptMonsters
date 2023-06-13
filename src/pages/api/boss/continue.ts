@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { RPC_URL } from "@/const/chainParams";
+import { ERROR_WAIT_TIME, MAX_ERROR_CNT } from "@/const/error";
 import { ServerBossBattle } from "@/features/boss/api/contracts/ServerBossBattle";
 import { BBState } from "@/types/BBState";
 import { EventKey } from "@/types/EventKey";
@@ -23,72 +24,91 @@ export default async function handler(
 
   const eventKey = process.env.EVENT_KEY as EventKey;
   const bbeId = Number(process.env.BBE_ID);
+  const prefixLog = `/boss/continue: ${resurrectionPrompt}:`;
 
+  const bossBattle = ServerBossBattle.instance(RPC_URL.mchVerse);
+
+  let bbState: any;
   try {
-    const bossBattle = ServerBossBattle.instance(RPC_URL.mchVerse);
-    const bbState = await bossBattle.getBBState(
-      eventKey!,
-      bbeId,
-      resurrectionPrompt,
-    );
-    console.log("bbState: ", bbState);
-
-    // 戦闘開始チェック
-    if (!bbState.bossBattleStarted)
-      return res.status(400).json({
-        message: "Boss battle has not started",
-      });
-
-    // 戦闘継続チェック
-    if (bbState.bossBattleContinued)
-      return res.status(400).json({
-        message: "Boss battle has already continued",
-      });
-
-    // モンスターHPチェック
-    if (bbState.lp <= 0)
-      return res.status(400).json({
-        message: "Monster has already been defeated",
-      });
-
-    // ボス前兆確定
-    const bossSign = getBossSign();
-    console.log("bossSign: ", bossSign);
-
-    // 戦闘継続
-    await bossBattle.continueBossBattle(
-      eventKey,
-      bbeId,
-      resurrectionPrompt,
-      bossSign,
-    );
-
-    // BBState更新
-    const newBBState: BBState = {
-      bossBattleStarted: bbState.bossBattleStarted,
-      bossBattleContinued: true,
-      lp: bbState.lp,
-      turn: bbState.turn + 1,
-      score: bbState.score,
-      monsterAdj: bbState.monsterAdj,
-      bossAdj: bbState.bossAdj,
-      bossSign: bossSign,
-      hasHealItem: bbState.hasHealItem,
-      hasBuffItem: bbState.hasBuffItem,
-      hasDebuffItem: bbState.hasDebuffItem,
-      hasEscapeItem: bbState.hasEscapeItem,
-    };
-    console.log("newBBState: ", newBBState);
-
-    return res.status(200).json({
-      newBBState,
-    });
+    bbState = await bossBattle.getBBState(eventKey!, bbeId, resurrectionPrompt);
   } catch (error) {
     if (error instanceof Error) {
-      console.error(error.message);
+      console.error(prefixLog, error.message);
       return res.status(400).json({ message: error.message });
     }
-    console.log(error);
+    console.error(prefixLog, error);
     return res.status(400).json({ message: error });
   }
+  console.log(prefixLog, "bbState = ", bbState);
+
+  // 戦闘開始チェック
+  if (!bbState.bossBattleStarted)
+    return res.status(400).json({
+      message: "Boss battle has not started",
+    });
+
+  // 戦闘継続チェック
+  if (bbState.bossBattleContinued)
+    return res.status(400).json({
+      message: "Boss battle has already continued",
+    });
+
+  // モンスターHPチェック
+  if (bbState.lp <= 0)
+    return res.status(400).json({
+      message: "Monster has already been defeated",
+    });
+
+  // ボス前兆確定
+  const bossSign = getBossSign();
+  console.log(prefixLog, "bossSign = ", bossSign);
+
+  // BBState更新
+  const newBBState: BBState = {
+    bossBattleStarted: bbState.bossBattleStarted,
+    bossBattleContinued: true,
+    lp: bbState.lp,
+    turn: bbState.turn + 1,
+    score: bbState.score,
+    monsterAdj: bbState.monsterAdj,
+    bossAdj: bbState.bossAdj,
+    bossSign: bossSign,
+    hasHealItem: bbState.hasHealItem,
+    hasBuffItem: bbState.hasBuffItem,
+    hasDebuffItem: bbState.hasDebuffItem,
+    hasEscapeItem: bbState.hasEscapeItem,
+  };
+  console.log(prefixLog, "newBBState = ", newBBState);
+
+  // 戦闘継続
+  let errorCnt = 0;
+  while (true) {
+    try {
+      console.log(prefixLog, errorCnt);
+      await bossBattle.continueBossBattle(
+        eventKey,
+        bbeId,
+        resurrectionPrompt,
+        bossSign,
+      );
+      errorCnt = 0;
+      break;
+    } catch (error) {
+      errorCnt++;
+      error instanceof Error
+        ? console.error(prefixLog, error.message)
+        : console.error(prefixLog, error);
+      if (errorCnt >= MAX_ERROR_CNT) {
+        if (error instanceof Error)
+          return res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error });
+      }
+      // "ERROR_WAIT_TIME" ms待機
+      await new Promise((resolve) => setTimeout(resolve, ERROR_WAIT_TIME));
+    }
+  }
+
+  return res.status(200).json({
+    newBBState,
+  });
 }

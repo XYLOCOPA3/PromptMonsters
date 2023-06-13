@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { RPC_URL } from "@/const/chainParams";
+import { ERROR_WAIT_TIME, MAX_ERROR_CNT } from "@/const/error";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { ethers } from "ethers";
 
@@ -20,26 +21,43 @@ export default async function handler(
     });
   }
 
+  let errorCnt = 0;
+
   const feature = "平均";
 
   const resurrectionPrompt = ethers.Wallet.createRandom().address;
   console.log("Create Monster Resurrection Prompt: ", resurrectionPrompt);
 
-  try {
-    const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
-    const monster = _getDevMonster(feature);
-    console.log("Fixed status ---------------------------");
-    console.log(monster);
-    await promptMonsters.generateMonster(resurrectionPrompt, monster, feature);
-    return res.status(200).json({ monster, resurrectionPrompt, feature });
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message);
-      return res.status(400).json({ message: error.message });
+  const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
+  const monster = _getDevMonster(feature);
+  console.log(monster);
+
+  while (true) {
+    try {
+      console.log(errorCnt);
+      await promptMonsters.generateMonster(
+        resurrectionPrompt,
+        monster,
+        feature,
+      );
+      errorCnt = 0;
+      break;
+    } catch (error) {
+      errorCnt++;
+      error instanceof Error
+        ? console.error(error.message)
+        : console.log(error);
+      if (errorCnt >= MAX_ERROR_CNT) {
+        if (error instanceof Error)
+          return res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error });
+      }
+      // "ERROR_WAIT_TIME" ms待機
+      await new Promise((resolve) => setTimeout(resolve, ERROR_WAIT_TIME));
     }
-    console.log(error);
-    return res.status(400).json({ message: error });
   }
+
+  return res.status(200).json({ monster, resurrectionPrompt, feature });
 }
 
 /**

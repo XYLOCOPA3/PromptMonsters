@@ -1,10 +1,13 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { RPC_URL } from "@/const/chainParams";
+import { ERROR_WAIT_TIME, MAX_ERROR_CNT } from "@/const/error";
+import { LANGUAGES } from "@/const/language";
 import { BattleContract } from "@/features/battle/api/contracts/BattleContract";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { calcStaminaFromMonsterId } from "@/features/stamina/utils/calcStamina";
 import { getFightPrompt } from "@/lib/prompt";
+import { IPromptMonstersExtension } from "@/typechain/PromptMonstersExtension";
 import console from "console";
 import { Configuration, OpenAIApi } from "openai";
 
@@ -19,84 +22,153 @@ export default async function handler(
 ) {
   if (req.method !== "POST")
     return res.status(400).json({ message: "Only POST" });
-  if (!configuration.apiKey) {
-    res.status(400).json({
+
+  if (!configuration.apiKey)
+    return res.status(500).json({
       message:
         "OpenAI API key not configured, please follow instructions in README.md",
     });
-    return;
-  }
 
-  const monsterId = req.body.monsterId;
-  const language = req.body.language;
-  const resurrectionPrompt = req.body.resurrectionPrompt;
+  let errorCnt = 0;
 
-  console.log(monsterId);
+  const language = req.body.language || "";
+  if (!LANGUAGES.includes(language))
+    return res.status(400).json({ message: "Invalid language." });
 
-  const enemyId = await _getRandomEnemyId(monsterId);
+  const resurrectionPrompt = req.body.resurrectionPrompt || "";
+  if (resurrectionPrompt === "")
+    return res.status(400).json({ message: "Invalid resurrectionPrompt." });
+
+  const prefixLog = `/fight-monster: ${resurrectionPrompt}:`;
+
   const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
-  const enemyResurrectionPrompt = (
-    await promptMonsters.getResurrectionPrompts([enemyId])
-  )[0];
-  const monsterExtensions = await promptMonsters.getMonsterExtensions([
-    resurrectionPrompt,
-    enemyResurrectionPrompt,
-  ]);
-  const monster = monsterExtensions[0];
-  const enemy = monsterExtensions[1];
-  const fightPrompt = getFightPrompt(
-    monsterId,
-    monster,
-    enemyId,
-    enemy,
-    language,
-  );
-  console.log(fightPrompt);
 
+  let monsterId: string;
+  let results: any;
   try {
-    const stamina = await calcStaminaFromMonsterId(monsterId);
-    console.log(`Remaining stamina: ${stamina}`);
-    if (stamina < 1) {
-      const message = "Stamina is not enough";
-      console.log(message);
-      return res.status(400).json({ message });
-    }
-    const completion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "user",
-          content: fightPrompt,
-        },
-      ],
-      temperature: 1.0,
-    });
-    console.log(completion.data.choices);
-    console.log(completion.data.usage);
-    const battleResult = JSON.parse(
-      completion.data.choices[0].message!.content,
-    );
-    if (
-      battleResult.winnerId !== monsterId &&
-      battleResult.winnerId !== "dummyID" &&
-      battleResult.winnerId !== enemyId
-    ) {
-      battleResult.winnerId = "draw";
-      console.log("The battle ended in a stalemate. -----------------");
-      return res.status(500).json({ battleResult });
-    }
-    const battle = BattleContract.instance(RPC_URL.mchVerse);
-    await battle.addSeasonBattleData(
-      monsterId,
-      battleResult.winnerId === enemyId ? enemyId : monsterId,
-      battleResult.winnerId === enemyId ? monsterId : enemyId,
-      battleResult.battleDescription,
-    );
-    return res.status(200).json({ battleResult });
+    monsterId = (await promptMonsters.getTokenIds([resurrectionPrompt]))[0];
+    results = await Promise.all([
+      calcStaminaFromMonsterId(monsterId),
+      _getRandomEnemyId(monsterId),
+    ]);
   } catch (error) {
-    console.log(error);
+    if (error instanceof Error) {
+      console.error(prefixLog, error.message);
+      return res.status(400).json({ message: error.message });
+    }
+    console.error(prefixLog, error);
     return res.status(400).json({ message: error });
   }
+  const stamina = results[0];
+  const enemyId = results[1];
+  console.log(prefixLog, `Remaining stamina: ${stamina}`);
+  console.log(prefixLog, `enemyId = ${enemyId}`);
+
+  // スタミナチェック
+  if (stamina < 1) {
+    const message = prefixLog + "Stamina is not enough";
+    console.error(message);
+    return res.status(400).json({ message });
+  }
+
+  let monsterExtensions: IPromptMonstersExtension.MonsterExtensionStructOutput[];
+  let enemyResurrectionPrompt: string;
+  try {
+    enemyResurrectionPrompt = (
+      await promptMonsters.getResurrectionPrompts([enemyId])
+    )[0];
+    monsterExtensions = await promptMonsters.getMonsterExtensions([
+      resurrectionPrompt,
+      enemyResurrectionPrompt,
+    ]);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(prefixLog, error.message);
+      return res.status(400).json({ message: error.message });
+    }
+    console.error(prefixLog, error);
+    return res.status(400).json({ message: error });
+  }
+  const monsterExtension = monsterExtensions[0];
+  const enemyExtension = monsterExtensions[1];
+  const fightPrompt = getFightPrompt(
+    monsterExtension,
+    enemyExtension,
+    language,
+  );
+  console.log(prefixLog, "fightPrompt = ", fightPrompt);
+
+  let battleResult: any;
+  while (true) {
+    try {
+      console.log(prefixLog, errorCnt);
+      const completion = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "user",
+            content: fightPrompt,
+          },
+        ],
+        temperature: 1.0,
+      });
+      console.log(completion.data.choices);
+      console.log(completion.data.usage);
+      battleResult = JSON.parse(completion.data.choices[0].message!.content);
+      errorCnt = 0;
+      break;
+    } catch (error) {
+      errorCnt++;
+      error instanceof Error
+        ? console.error(prefixLog, error.message)
+        : console.error(prefixLog, error);
+      if (errorCnt >= MAX_ERROR_CNT) {
+        if (error instanceof Error)
+          return res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error });
+      }
+    }
+  }
+  if (
+    battleResult.winnerId !== monsterExtension.resurrectionPrompt &&
+    battleResult.winnerId !== enemyExtension.resurrectionPrompt
+  ) {
+    battleResult.winnerId = "draw";
+    console.log("The battle ended in a stalemate. -----------------");
+    return res.status(500).json({ battleResult });
+  }
+
+  const battle = BattleContract.instance(RPC_URL.mchVerse);
+  while (true) {
+    try {
+      console.log(prefixLog, errorCnt);
+      await battle.addSeasonBattleData(
+        monsterId,
+        battleResult.winnerId === enemyExtension.resurrectionPrompt
+          ? enemyId
+          : monsterId,
+        battleResult.winnerId === enemyExtension.resurrectionPrompt
+          ? monsterId
+          : enemyId,
+        battleResult.battleDescription,
+      );
+      errorCnt = 0;
+      break;
+    } catch (error) {
+      errorCnt++;
+      error instanceof Error
+        ? console.error(prefixLog, error.message)
+        : console.error(prefixLog, error);
+      if (errorCnt >= MAX_ERROR_CNT) {
+        if (error instanceof Error)
+          return res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error });
+      }
+      // "ERROR_WAIT_TIME" ms待機
+      await new Promise((resolve) => setTimeout(resolve, ERROR_WAIT_TIME));
+    }
+  }
+  return res.status(200).json({ battleResult });
 }
 
 /**

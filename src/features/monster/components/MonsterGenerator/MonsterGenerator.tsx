@@ -9,13 +9,11 @@ import { useSetSelectedMonsterIdNameState } from "@/hooks/useSelectedMonsterIdNa
 import { disableState } from "@/stores/disableState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { BaseProps } from "@/types/BaseProps";
-import { countCharactersForGenerator } from "@/utils/charUtils";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { useSetRecoilState } from "recoil";
 
 let feature = "";
-const maxLength = 45;
 
 export type MonsterGeneratorProps = BaseProps;
 
@@ -25,35 +23,21 @@ export type MonsterGeneratorProps = BaseProps;
  * @param className Style from parent element
  */
 export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
-  const [loading, setLoading] = useState(false);
-  const [maxLengthOver, setMaxLengthOver] = useState(false);
   const language = useLanguageValue();
-  const [ownedMonsters, ownedMonstersController] = useOwnedMonstersState();
   const monsterController = useMonsterController();
   const battleController = useBattleController();
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
   const setDisable = useSetRecoilState(disableState);
   const setSelectedMonsterIdName = useSetSelectedMonsterIdNameState();
+  const [loading, setLoading] = useState(false);
+  const [ownedMonsters, ownedMonstersController] = useOwnedMonstersState();
   const { t: tCommon } = useTranslation("common");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (countCharactersForGenerator(e.target.value) <= maxLength) {
-      feature = e.target.value;
-      if (maxLengthOver) setMaxLengthOver(false);
-      return;
-    }
-    setMaxLengthOver(true);
+    feature = e.target.value;
   };
 
   const handleClick = async () => {
-    if (maxLengthOver) {
-      alert(
-        `Too many characters.\n\nPlease limit the number of characters to ${maxLength} for single-byte characters and ${
-          maxLength / 3
-        } for double-byte characters.`,
-      );
-      return;
-    }
     let hasNotMintedMonster = false;
     for (let i = 0; i < ownedMonsters.length; i++) {
       if (ownedMonsters[i].id !== "") continue;
@@ -81,11 +65,11 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
       setLoading(false);
       setDisable(false);
       if (error instanceof Error) {
-        alert("Invalid monster name.\n\nReason: " + error.message);
+        alert("Invalid feature.\n\nReason: " + error.message);
         console.error(error);
         return;
       }
-      alert("Invalid monster name.");
+      alert("Invalid feature.");
       console.error(error);
       return;
     }

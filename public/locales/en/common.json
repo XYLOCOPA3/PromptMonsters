@@ -5,5 +5,6 @@
   "hint": "What is the 'Resurrection Prompt'?\n\nIt's an ID assigned to a monster when it's generated. Unminted monsters can be resurrected at any time by entering this ID.",
   "featurePlaceholder": "Input features: ex. fire,slime",
   "warning": "⚠️Warning:\n\nThe creation of monsters with features that manipulate stats illegitimately or violate public decency and order, as well as the creation of monsters that infringe upon third-party copyrights, is strictly prohibited in this game. If you generate and use such monsters, you may face penalties such as account suspension, permanent ban, and other measures deemed necessary by our company. We appreciate your understanding and cooperation.",
-  "tweet": "Tweet"
+  "tweet": "Tweet",
+  "failedTx": "Transaction sending to the chain has failed. 😭\nI would appreciate it if you could try again. 🙇‍♂️"
 }

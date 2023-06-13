@@ -35,7 +35,9 @@ export const MonsterFightText = ({ className }: MonsterFightTextProps) => {
         ) : (
           <>
             {monster.name}{" "}
-            {battle.winnerId !== battle.monsterBId ? "win!!!" : "lose..."}
+            {battle.winnerId === monster.resurrectionPrompt
+              ? "win!!!"
+              : "lose..."}
           </>
         )}
       </div>
