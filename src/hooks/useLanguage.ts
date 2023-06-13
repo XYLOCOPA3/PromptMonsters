@@ -7,7 +7,6 @@ const STORAGE_KEY_LANGUAGE = "prompt-monsters.com/language";
 
 export const useLanguageValue = (): LanguageState => {
   const [language, setLanguageInternal] = useRecoilState(languageState);
-  console.log("useLanguageValue: language = ", language);
 
   // クライアントでの初期レンダリング直後にローカルストレージの設定を反映
   useEffect(() => {
