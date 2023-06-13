@@ -101,7 +101,6 @@ export const BossBattleMenuResult = ({
 
 const ResultMsg = () => {
   const bossBattle = useBossBattleValue();
-  console.log(bossBattle.resultMsgIds);
   switch (bossBattle.resultMsgIds[bossBattle.resultMsgIds.length - 1]) {
     case EnumBossBattleMsg.monsterFightPhysicalAttack:
     case EnumBossBattleMsg.monsterFightSpecialAttack:

@@ -12,11 +12,10 @@ import { useLanguageValue } from "@/hooks/useLanguage";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { disableState } from "@/stores/disableState";
-import { monsterInitState } from "@/stores/monsterInitState";
 import { BaseProps } from "@/types/BaseProps";
 import { EnumSkillType } from "@/types/EnumSkillType";
 import clsx from "clsx";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 
 export type BossBattleMenuFightProps = BaseProps;
 
@@ -30,7 +29,6 @@ export const BossBattleMenuFight = ({
 }: BossBattleMenuFightProps) => {
   const boss = useBossValue();
   const monster = useMonsterValue();
-  const monsterInit = useRecoilValue(monsterInitState);
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
   const bossBattleController = useBossBattleController();
@@ -113,14 +111,13 @@ export const BossBattleMenuFight = ({
   };
 
   useLayoutEffectOfSSR(() => {
-    if (!monsterInit) return;
     if (monster.name !== "" && monster.skills.length === 0) {
       // TODO: スキルが1つもない場合の処理を書く
       return;
     }
-  }, [monsterInit]);
+  }, [monster]);
 
-  if (boss.name === "" || !monsterInit || language === "") return <></>;
+  if (boss.name === "" || language === "") return <></>;
   return (
     <>
       <div

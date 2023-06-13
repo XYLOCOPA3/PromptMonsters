@@ -21,7 +21,7 @@ export const BossImage = ({ className }: BossImageProps) => {
         "rounded-2xl",
         "w-[300px]",
         "h-auto",
-        "md:w-[512px]",
+        "md:w-[450px]",
       )}
       src={boss.imageURL}
       alt="boss"

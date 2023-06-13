@@ -28,6 +28,7 @@ export const MonsterInit = ({ children }: MonsterInitProps) => {
       else alert("Error");
       return;
     }
+    // TODO: ログインしてない状態だと一生初期化終わらないことになっちゃう
     setMonstersInit(true);
   };
 

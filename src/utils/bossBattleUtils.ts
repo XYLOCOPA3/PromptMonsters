@@ -444,7 +444,6 @@ export const calcMonsterDamage = (
   }
   if (defensed) monsterDamage *= 0.1;
 
-  console.log("monsterDamage: ", Math.floor(monsterDamage));
   return Math.floor(monsterDamage) > 0 ? Math.floor(monsterDamage) : 1;
 };
 
