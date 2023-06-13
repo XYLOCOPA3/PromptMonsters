@@ -3,6 +3,7 @@ import Image from "next/image";
 import { BaseProps } from "@/types/BaseProps";
 import { Transition } from "@headlessui/react";
 import clsx from "clsx";
+import uuid from "react-uuid";
 
 export type WarningProps = { hintText: string } & BaseProps;
 
@@ -38,9 +39,9 @@ export const Warning = ({ className, hintText }: WarningProps) => {
         leaveTo="opacity-0"
       >
         <div className="absolute z-10 p-[10px] text-sm font-medium text-white bg-gray-900 rounded w-[300px] text-justify">
-          {lines.map((line, index) => {
-            if (line === "") return <br />;
-            return <div key={index}>{line}</div>;
+          {lines.map((line) => {
+            if (line === "") return <br key={uuid()} />;
+            return <div key={uuid()}>{line}</div>;
           })}
         </div>
       </Transition>

@@ -14,11 +14,13 @@ import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleState } from "@/hooks/useBossBattle";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
+import { disableState } from "@/stores/disableState";
 import { BaseProps } from "@/types/BaseProps";
 import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
 import { Dialog, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
+import { useSetRecoilState } from "recoil";
 
 export type BossBattleMenuProps = BaseProps;
 
@@ -29,8 +31,9 @@ export type BossBattleMenuProps = BaseProps;
  */
 export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
   const boss = useBossValue();
-  const [bossBattle, bossBattleController] = useBossBattleState();
   const monster = useMonsterValue();
+  const setDisable = useSetRecoilState(disableState);
+  const [bossBattle, bossBattleController] = useBossBattleState();
   const [isOpen, setIsOpen] = useState(false);
   const { push } = useRouter();
   const { t: tBossBattle } = useTranslation("boss-battle");
@@ -43,6 +46,19 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
     push("/boss");
   };
 
+  const end = async () => {
+    setDisable(true);
+    try {
+      await bossBattleController.end(monster.resurrectionPrompt);
+    } catch (error) {
+      console.error(error);
+      // TODO: エラー文考える
+      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
+      else alert("Error");
+    }
+    setDisable(false);
+  };
+
   useLayoutEffectOfSSR(() => {
     if (bossBattle.phase === EnumBossBattlePhase.end) setIsOpen(true);
   }, [bossBattle.phase]);
@@ -53,6 +69,10 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
       push("/boss");
     }
   }, []);
+
+  useLayoutEffectOfSSR(() => {
+    if (bossBattle.lp <= 0) end();
+  }, [bossBattle.lp]);
 
   if (boss.name === "" || boss.flavor === "") return <></>;
   return (

@@ -35,7 +35,7 @@ export const DevComponents = ({ className }: DevComponentsProps) => {
           "left-[20px]",
           "p-[5px]",
           "cursor-pointer",
-          "z-[1]",
+          "z-[100]",
           "flex",
           "flex-col",
         )}
@@ -52,9 +52,10 @@ export const DevComponents = ({ className }: DevComponentsProps) => {
         "left-[20px]",
         "p-[5px]",
         "cursor-pointer",
-        "z-[1]",
+        "z-[100]",
         "flex",
         "flex-col",
+        "bg-gray-800",
       )}
     >
       <div className={clsx("flex")}>
