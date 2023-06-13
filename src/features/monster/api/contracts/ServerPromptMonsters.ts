@@ -112,4 +112,19 @@ export class ServerPromptMonsters {
     }
     return await this._promptMonsters.getResurrectionPrompts(monsterIdsBN);
   };
+
+  /**
+   * getTokenIds
+   * @return {Promise<string[]>} tokenIds
+   */
+  getTokenIds = async (resurrectionPrompts: string[]): Promise<string[]> => {
+    const monsterIdsBN = await this._promptMonsters.getTokenIds(
+      resurrectionPrompts,
+    );
+    const monsterIds: string[] = [];
+    for (let i = 0; i < resurrectionPrompts.length; i++) {
+      monsterIds.push(monsterIdsBN[i].toString());
+    }
+    return monsterIds;
+  };
 }

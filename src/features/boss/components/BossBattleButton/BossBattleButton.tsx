@@ -23,6 +23,7 @@ export const BossBattleButton = ({ className }: BossBattleButtonProps) => {
   const [monster, monsterController] = useMonsterState();
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
+  const { t: tCommon } = useTranslation("common");
   const { t: tBoss } = useTranslation("boss");
   const { push } = useRouter();
 
@@ -44,9 +45,9 @@ export const BossBattleButton = ({ className }: BossBattleButtonProps) => {
       setLoading(false);
       setDisable(false);
       console.error(error);
-      // TODO: エラー文考える
-      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
-      else alert("Error");
+      if (error instanceof Error)
+        alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
+      else alert(tCommon("failedTx"));
       return;
     }
     setDisable(false);

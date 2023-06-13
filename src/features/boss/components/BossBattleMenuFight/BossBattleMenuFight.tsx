@@ -15,6 +15,7 @@ import { disableState } from "@/stores/disableState";
 import { BaseProps } from "@/types/BaseProps";
 import { EnumSkillType } from "@/types/EnumSkillType";
 import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 import { useRecoilState } from "recoil";
 
 export type BossBattleMenuFightProps = BaseProps;
@@ -29,10 +30,11 @@ export const BossBattleMenuFight = ({
 }: BossBattleMenuFightProps) => {
   const boss = useBossValue();
   const monster = useMonsterValue();
+  const language = useLanguageValue();
+  const bossBattleController = useBossBattleController();
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
-  const bossBattleController = useBossBattleController();
-  const language = useLanguageValue();
+  const { t: tCommon } = useTranslation("common");
 
   const handleSkill1Click = async () => {
     setDisable(true);
@@ -45,9 +47,9 @@ export const BossBattleMenuFight = ({
       );
     } catch (error) {
       console.error(error);
-      // TODO: エラー文考える
-      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
-      else alert("Error");
+      if (error instanceof Error)
+        alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
+      else alert(tCommon("failedTx"));
     }
     setDisable(false);
     setLoading(false);
@@ -64,9 +66,9 @@ export const BossBattleMenuFight = ({
       );
     } catch (error) {
       console.error(error);
-      // TODO: エラー文考える
-      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
-      else alert("Error");
+      if (error instanceof Error)
+        alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
+      else alert(tCommon("failedTx"));
     }
     setDisable(false);
     setLoading(false);
@@ -83,9 +85,9 @@ export const BossBattleMenuFight = ({
       );
     } catch (error) {
       console.error(error);
-      // TODO: エラー文考える
-      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
-      else alert("Error");
+      if (error instanceof Error)
+        alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
+      else alert(tCommon("failedTx"));
     }
     setDisable(false);
     setLoading(false);
@@ -102,9 +104,9 @@ export const BossBattleMenuFight = ({
       );
     } catch (error) {
       console.error(error);
-      // TODO: エラー文考える
-      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
-      else alert("Error");
+      if (error instanceof Error)
+        alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
+      else alert(tCommon("failedTx"));
     }
     setDisable(false);
     setLoading(false);

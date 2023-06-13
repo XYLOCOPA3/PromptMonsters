@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { RPC_URL } from "@/const/chainParams";
+import { ERROR_WAIT_TIME, MAX_ERROR_CNT } from "@/const/error";
 import { ServerBossBattle } from "@/features/boss/api/contracts/ServerBossBattle";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { EventKey } from "@/types/EventKey";
@@ -18,44 +19,75 @@ export default async function handler(
     return res.status(400).json({
       message: "Only POST",
     });
+
   const resurrectionPrompt = req.body.resurrectionPrompt || "";
   if (resurrectionPrompt === "") {
     return res.status(400).json({
       message: "Unknown monster",
     });
   }
+
   const eventKey = process.env.EVENT_KEY as EventKey;
   const bbeId = Number(process.env.BBE_ID);
+  const prefixLog = `/boss/generate-adj: ${resurrectionPrompt}:`;
 
+  const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
+  const bossBattle = ServerBossBattle.instance(RPC_URL.mchVerse);
+
+  let results: any;
   try {
-    const bossBattle = ServerBossBattle.instance(RPC_URL.mchVerse);
-    const monsterAdj = await bossBattle.getMonsterAdj(
-      eventKey!,
-      bbeId,
-      resurrectionPrompt,
-    );
-    if (!isInvalidMonsterAdj(monsterAdj))
-      return res.status(200).json({ monsterAdj });
-    const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
-    const monsterExtension = (
-      await promptMonsters.getMonsterExtensions([resurrectionPrompt])
-    )[0];
-    let newMonsterAdj: MonsterAdj = { weaknessFeatureAdj: 100 };
-    if (hasBossWeaknessFeatures(monsterExtension, eventKey))
-      newMonsterAdj.weaknessFeatureAdj = 120;
-    await bossBattle.setMonsterAdj(
-      eventKey,
-      bbeId,
-      resurrectionPrompt,
-      newMonsterAdj,
-    );
-    return res.status(200).json({ monsterAdj });
+    results = await Promise.all([
+      bossBattle.getMonsterAdj(eventKey!, bbeId, resurrectionPrompt),
+      promptMonsters.getMonsterExtensions([resurrectionPrompt]),
+    ]);
   } catch (error) {
     if (error instanceof Error) {
-      console.error(error.message);
+      console.error(prefixLog, error.message);
       return res.status(400).json({ message: error.message });
     }
-    console.log(error);
+    console.error(prefixLog, error);
     return res.status(400).json({ message: error });
   }
+
+  const monsterAdj = results[0];
+  const monsterExtension = results[1][0];
+
+  console.log(prefixLog, "monsterAdj = ", monsterAdj);
+  console.log(prefixLog, "monsterExtension = ", monsterExtension);
+
+  // 補正値計算
+  if (!isInvalidMonsterAdj(monsterAdj))
+    return res.status(200).json({ monsterAdj });
+  let newMonsterAdj: MonsterAdj = { weaknessFeatureAdj: 100 };
+  if (hasBossWeaknessFeatures(monsterExtension, eventKey))
+    newMonsterAdj.weaknessFeatureAdj = 120;
+
+  // 補正値更新
+  let errorCnt = 0;
+  while (true) {
+    try {
+      console.log(prefixLog, errorCnt);
+      await bossBattle.setMonsterAdj(
+        eventKey,
+        bbeId,
+        resurrectionPrompt,
+        newMonsterAdj,
+      );
+      errorCnt = 0;
+      break;
+    } catch (error) {
+      errorCnt++;
+      error instanceof Error
+        ? console.error(prefixLog, error.message)
+        : console.error(prefixLog, error);
+      if (errorCnt >= MAX_ERROR_CNT) {
+        if (error instanceof Error)
+          return res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error });
+      }
+      // "ERROR_WAIT_TIME" ms待機
+      await new Promise((resolve) => setTimeout(resolve, ERROR_WAIT_TIME));
+    }
+  }
+  return res.status(200).json({ monsterAdj: newMonsterAdj });
 }

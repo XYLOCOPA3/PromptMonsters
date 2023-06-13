@@ -23,6 +23,7 @@ export const BossBattleYesButton = ({
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
   const { t: tBossBattle } = useTranslation("boss-battle");
+  const { t: tCommon } = useTranslation("common");
 
   const handleClick = async () => {
     setDisable(true);
@@ -31,9 +32,9 @@ export const BossBattleYesButton = ({
       await bossBattleController.continueBossBattle(monster.resurrectionPrompt);
     } catch (error) {
       console.error(error);
-      // TODO: エラー文考える
-      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
-      else alert("Error");
+      if (error instanceof Error)
+        alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
+      else alert(tCommon("failedTx"));
     }
     setDisable(false);
     setLoading(false);

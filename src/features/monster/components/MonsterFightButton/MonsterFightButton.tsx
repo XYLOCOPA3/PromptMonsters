@@ -56,7 +56,7 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
         className,
         "px-[20px]",
         "w-[100%]",
-        monsterMinted ? "h-[62px]" : "h-[40px]",
+        monsterMinted ? "h-[62px]" : "h-[50px]",
         "max-w-[200px]",
       )}
       variant="secondary"
