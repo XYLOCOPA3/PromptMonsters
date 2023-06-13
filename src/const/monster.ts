@@ -3,6 +3,7 @@ import { EnumSkillType } from "@/types/EnumSkillType";
 export const MAX_STAMINA = 3;
 export const UNMINTED_MONSTER_ID = "";
 export const MAX_SKILLS = 4;
+export const MAX_FEATURES_CHAR = 45;
 export const NOT_FOUND_SKILL = -1;
 export const SKILL_TYPE_MAP = {
   Unknown: EnumSkillType.none,

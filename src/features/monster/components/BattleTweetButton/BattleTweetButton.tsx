@@ -74,7 +74,9 @@ const _getBattleTweet = (
 
 ${battleDesc}${countCharactersForTwitter(battleDesc) > 100 ? "..." : ""}
 
-${monster.name} ${battle.winnerId !== battle.monsterBId ? "win!!!" : "lose..."}
+${monster.name} ${
+    battle.winnerId !== monster.resurrectionPrompt ? "win!!!" : "lose..."
+  }
 
 Check out more stories here!
 https://prompt-monsters.com/

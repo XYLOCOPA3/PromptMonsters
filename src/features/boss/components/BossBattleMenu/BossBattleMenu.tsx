@@ -37,6 +37,8 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { push } = useRouter();
   const { t: tBossBattle } = useTranslation("boss-battle");
+  const { t: tCommon } = useTranslation("common");
+
   // TODO: ハイスコア取得
   const highScore = -1;
 
@@ -52,9 +54,9 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
       await bossBattleController.end(monster.resurrectionPrompt);
     } catch (error) {
       console.error(error);
-      // TODO: エラー文考える
-      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
-      else alert("Error");
+      if (error instanceof Error)
+        alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
+      else alert(tCommon("failedTx"));
     }
     setDisable(false);
   };

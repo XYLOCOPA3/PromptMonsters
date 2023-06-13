@@ -13,41 +13,39 @@ export const getGeneratingPrompt = (
 ): string => {
   switch (language) {
     case LANGUAGES[0]:
-      return `Create a JSON fictional monster:
-- Non-litigious words
-- Unique "name"
-- No proper nouns in "flavor"
-- Don't reuse "feature" words
-- Apply status that matches the monster's features
-- Single JSON output
-- HP: 1-40, other stats: 1-20
-- Total stats <= 100
-- Only one status can have the maximum value
-- The numeric specification of the status must be completely ignored.
+      return `Generate one fictional monster:
+- Absolutely no copyright infringement
+- The 'name' must be unique
+- Avoid using proper nouns in the 'flavor' description
+- Do not reuse words in the 'feature' category
+- Status limits: HP<=40,ATK<=20,DEF<=20,INT<=20,MGR<=20,AGL<=20
+- The sum of all stats must be <= 100.
 
-Example:
-feature="A yellow bear that loves honey":
-{"language":"English","name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":12,"ATK":2,"DEF":4,"INT":6,"MGR":4,"AGL":4},"skills":["Honey Attack","Hug","Healing Song"],"isFiction":true,"isExisting":true}
+"""
+Output example:
+feature="A yellow bear that loves honey"
+Output in JSON->{"name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":22,"ATK":8,"DEF":12,"INT":14,"MGR":12,"AGL":6},"skills":["Honey Licker","Hug","Laid-back"]}
+"""
 
-feature="${feature}":`;
+feature="${feature}"
+Output in JSON->`;
     case LANGUAGES[1]:
-      return `架空のモンスターのJSONを作成する:
-- 訴訟に関連する単語を使用しない
+      return `架空のモンスターを1体生成。
+- 著作権は絶対に侵害しない
 - "name"はユニークである
 - "flavor"には固有名詞を使用しない
 - "feature"の単語を再利用しない
-- ステータスはモンスターの特徴に合わせる
-- 単一のJSON出力を生成する
-- HP: 1-40、その他のステータス: 1-20
-- 合計ステータスは100を超えてはいけない
-- 最大値を取ることができるステータスは1つだけ
-- ステータスの数値指定は無視する
+- ステータス上限: HP<=40,ATK<=20,DEF<=20,INT<=20,MGR<=20,AGL<=20
+- ステータス合計<=100
 
-例:
-feature="黄色い熊 蜂蜜大好き":
-{"name":"くまのプーさん","flavor":"ハチミツが大好きなクマ。のんびり屋で、優しい心を持ち、友達思いの性格をしている。","status":{"HP":12,"ATK":2,"DEF":4,"INT":6,"MGR":4,"AGL":4},"skills":["蜂蜜舐め","ハグ","のんびり歩行"],"isFiction":true,"isExisting":true}
+"""
+出力例:
+feature="黄色い熊, 蜂蜜大好き"
+JSON出力->{"name":"くまのプーさん","flavor":"ハチミツが大好きなクマ。のんびり屋で、優しい心を持ち、友達思いの性格をしている。","status":{"HP":22,"ATK":8,"DEF":12,"INT":14,"MGR":12,"AGL":6},"skills":["蜂蜜舐め","ハグ","のんびり"]}
+"""
 
-feature="${feature}":`;
+feature="${feature}"
+JSON出力->`;
     default:
       throw new Error("Unknown Language");
   }
@@ -63,54 +61,81 @@ feature="${feature}":`;
  * @return {Promise<string>} fight prompt
  */
 export const getFightPrompt = (
-  monsterId: string,
   monster: IPromptMonstersExtension.MonsterExtensionStructOutput,
-  enemyId: string,
   enemy: IPromptMonstersExtension.MonsterExtensionStructOutput,
   language: string = "English",
 ): string => {
   switch (language) {
     case LANGUAGES[0]:
-      return `MonsterA: id:${monsterId === "" ? "dummyID" : monsterId} name:${
-        monster.name
-      } flavor:${monster.flavor} status: HP:${monster.hp} ATK:${
-        monster.atk
-      } DEF:${monster.def} INT:${monster.inte} MGR:${monster.mgr} AGL:${
-        monster.agl
-      } skills:[${monster.skills}]
-MonsterB: id:${enemyId} name:${enemy.name} flavor:${enemy.flavor} status: HP:${
-        enemy.hp
-      } ATK:${enemy.atk} DEF:${enemy.def} INT:${enemy.inte} MGR:${
-        enemy.mgr
-      } AGL:${enemy.agl} skills:[${enemy.skills}]
+      return `Output the battle result.
 
-Example:
-MonsterA vs MonsterB:
-Output in JSON format->{"battleAnalysis": "[Determine advantage in <50 chars using flavor, status, skills.]", "battleDescription":"[Write a <200-char novel-style battle from Monster's flavor, status, skills.],"monsterBId":"1","winnerId":"1"}
+"""
+Monster details:
+  ${monster.name}:
+    id:${monster.resurrectionPrompt}
+    flavor:${monster.flavor}
+    status:
+    HP:${monster.hp}
+    ATK:${monster.atk}
+    DEF:${monster.def}
+    INT:${monster.inte}
+    MGR:${monster.mgr}
+    AGL:${monster.agl}
+    skills:[${monster.skills}]
+  ${enemy.name}:
+    id:${enemy.resurrectionPrompt}
+    flavor:${enemy.flavor}
+    status:
+    HP:${enemy.hp}
+    ATK:${enemy.atk}
+    DEF:${enemy.def}
+    INT:${enemy.inte}
+    MGR:${enemy.mgr}
+    AGL:${enemy.agl}
+    skills:[${enemy.skills}]
+
+Output example:
+${monster.name} vs ${enemy.name}
+Output in JSON->{"battleAnalysis": "[Summarize the advantageous aspect of the battle based on monster details in 50 characters or less.]", "battleDescription":"[Write the battle result in a novel-like manner in 200 characters or less.],"winnerId":"0x0000000000000000000000000000000000000000"}
+"""
 
 ${monster.name} vs ${enemy.name}:
-Output in JSON format->`;
+Output in JSON->`;
     case LANGUAGES[1]:
-      return `
-MonsterA: id:${monsterId === "" ? "dummyID" : monsterId} name:${
-        monster.name
-      } flavor:${monster.flavor} status: HP:${monster.hp} ATK:${
-        monster.atk
-      } DEF:${monster.def} INT:${monster.inte} MGR:${monster.mgr} AGL:${
-        monster.agl
-      } skills:[${monster.skills}]
-MonsterB: id:${enemyId} name:${enemy.name} flavor:${enemy.flavor} status: HP:${
-        enemy.hp
-      } ATK:${enemy.atk} DEF:${enemy.def} INT:${enemy.inte} MGR:${
-        enemy.mgr
-      } AGL:${enemy.agl} skills:[${enemy.skills}]
+      return `戦闘結果を出力。
 
-例:
-MonsterA vs MonsterB:
-JSON形式で出力->{"battleAnalysis": "['flavor','status','skills'から有利な方を50文字以内で判定]", "battleDescription":"[Monsterの'flavor','status','skills'から連想した戦闘結果を200文字以内で小説風に書く],"monsterBId":"1","winnerId":"1"}
+"""
+モンスター詳細:
+  ${monster.name}:
+    id:${monster.resurrectionPrompt}
+    flavor:${monster.flavor}
+    status:
+    HP:${monster.hp}
+    ATK:${monster.atk}
+    DEF:${monster.def}
+    INT:${monster.inte}
+    MGR:${monster.mgr}
+    AGL:${monster.agl}
+    skills:[${monster.skills}]
+  ${enemy.name}:
+    id:${enemy.resurrectionPrompt}
+    flavor:${enemy.flavor}
+    status:
+    HP:${enemy.hp}
+    ATK:${enemy.atk}
+    DEF:${enemy.def}
+    INT:${enemy.inte}
+    MGR:${enemy.mgr}
+    AGL:${enemy.agl}
+    skills:[${enemy.skills}]
+
+出力例:
+${monster.name} vs ${enemy.name}
+JSON出力->{"battleAnalysis": "[モンスター詳細から戦闘に有利な方を50文字以下で端的にまとめる。]", "battleDescription":"[戦闘結果を200文字以下で小説風に書く。],"winnerId":"0x0000000000000000000000000000000000000000"}
+"""
 
 ${monster.name} vs ${enemy.name}:
-JSON形式で出力->`;
+JSON出力->`;
     default:
       throw new Error("Invalid language");
   }

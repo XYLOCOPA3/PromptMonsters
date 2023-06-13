@@ -10,13 +10,11 @@ export class BattleModel extends ObjectCopier {
    * ```
    * @param battleAnalysis battle analysis
    * @param battleDescription battle description
-   * @param monsterBId monster B id
    * @param winnerId winner id
    */
   private constructor(
     public readonly battleAnalysis: string = "",
     public readonly battleDescription: string = "",
-    public readonly monsterBId: string = "",
     public readonly winnerId: MonsterId = "",
   ) {
     super();

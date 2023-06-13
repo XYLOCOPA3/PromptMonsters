@@ -56,8 +56,7 @@ export const generateMonsterAdjIfNotSet = async (
     console.error(e);
     throw new Error("Unknown Error");
   }
-  const newMonsterAdj = res.data.monsterAdj;
-  return newMonsterAdj;
+  return res.data.monsterAdj;
 };
 
 export const hasBossWeaknessFeatures = (
@@ -256,7 +255,7 @@ export const judgeBossSkillHit = (
   itemUsed: boolean,
 ): boolean => {
   const random = Math.floor(Math.random() * 100);
-  if (bossAction === EnumBossAction.oneHitKill) return random < 3;
+  if (bossAction === EnumBossAction.oneHitKill) return random < 30;
   if (bossAction === EnumBossAction.powerAttack) return random < 85;
   if (bossAction === EnumBossAction.attack) return random < 95;
   if (bossAction === EnumBossAction.counterAttack) {
@@ -1027,10 +1026,10 @@ export const decideDroppedItem = (
   hasEscapeItem: boolean,
 ): EnumItem => {
   const random = Math.floor(Math.random() * 100);
-  if (random < 9 && !hasBuffItem) return EnumItem.buff;
-  if (9 <= random && random < 18 && !hasDebuffItem) return EnumItem.debuff;
-  if (18 <= random && random < 27 && !hasHealItem) return EnumItem.healing;
-  if (27 <= random && random < 30 && !hasEscapeItem) return EnumItem.escape;
+  if (random < 12 && !hasBuffItem) return EnumItem.buff;
+  if (12 <= random && random < 24 && !hasDebuffItem) return EnumItem.debuff;
+  if (24 <= random && random < 36 && !hasHealItem) return EnumItem.healing;
+  if (36 <= random && random < 40 && !hasEscapeItem) return EnumItem.escape;
   return EnumItem.none;
 };
 
