@@ -21,10 +21,7 @@ import axios from "axios";
 export const generateSkillTypesIfNotSet = async (
   monster: MonsterModel,
 ): Promise<number[]> => {
-  if (!hasUnknownSkill(monster.skillTypes)) {
-    console.log("Your monster has no unknown skill.");
-    return monster.skillTypes;
-  }
+  if (!hasUnknownSkill(monster.skillTypes)) return monster.skillTypes;
   let res: any;
   try {
     res = await axios.post("/api/boss/generate-skill-desc", {
@@ -77,11 +74,8 @@ export const hasBossWeaknessFeatures = (
 
 export const startBossBattle = async (
   resurrectionPrompt: string,
-  devBBkParam: DevBBKState, // TODO: dev用
+  devBBkParam: DevBBKState, // TODO: 後で消す
 ): Promise<BBState> => {
-  const bossBattle = await ClientBossBattle.instance();
-  const bbState = await bossBattle.getBBState(resurrectionPrompt);
-  if (bbState.bossBattleStarted) return bbState;
   let res: any;
   try {
     res = await axios.post("/api/boss/start", {
