@@ -9,7 +9,7 @@ import { ethers } from "ethers";
 export class ServerPromptMonsters {
   private static _instance: ServerPromptMonsters;
 
-  private constructor(private readonly _promptMonsters: PromptMonsters) {}
+  private constructor(private readonly _contract: PromptMonsters) {}
 
   /**
    * Get instance
@@ -18,12 +18,12 @@ export class ServerPromptMonsters {
    */
   public static instance(rpcURL: string): ServerPromptMonsters {
     if (!this._instance) {
-      const wallet = ServerWallet.instance(rpcURL);
-      const promptMonsters = PromptMonsters__factory.connect(
+      const wallet = ServerWallet.getWallet(rpcURL);
+      const contract = PromptMonsters__factory.connect(
         process.env.NEXT_PUBLIC_PROMPT_MONSTERS_CONTRACT!,
-        wallet.signer,
+        wallet,
       );
-      this._instance = new ServerPromptMonsters(promptMonsters);
+      this._instance = new ServerPromptMonsters(contract);
     }
     return this._instance;
   }
@@ -41,7 +41,7 @@ export class ServerPromptMonsters {
     feature: string,
   ): Promise<ethers.ContractReceipt> => {
     return await (
-      await this._promptMonsters.generateMonster(
+      await this._contract.generateMonster(
         userId,
         this.toMonsterStruct(monster, feature),
       )
@@ -79,7 +79,7 @@ export class ServerPromptMonsters {
    * @return {Promise<number>} monsters total supply
    */
   getMonstersTotalSupply = async (): Promise<number> => {
-    return Number(await this._promptMonsters.getMonstersTotalSupply());
+    return Number(await this._contract.getMonstersTotalSupply());
   };
 
   /**
@@ -90,15 +90,15 @@ export class ServerPromptMonsters {
   getMonsterExtensions = async (
     resurrectionPrompts: string[],
   ): Promise<IPromptMonstersExtension.MonsterExtensionStructOutput[]> => {
-    return await this._promptMonsters.getMonsterExtensions(resurrectionPrompts);
+    return await this._contract.getMonsterExtensions(resurrectionPrompts);
   };
 
   /**
    * Get monster mint price
-   * @return {Promise<number>} monster mint price
+   * @return {Promise<ethers.BigNumber>} monster mint price
    */
-  getMintPrice = async (): Promise<number> => {
-    return Number(await this._promptMonsters.getMintPrice());
+  getMintPrice = async (): Promise<ethers.BigNumber> => {
+    return await this._contract.getMintPrice();
   };
 
   /**
@@ -110,7 +110,7 @@ export class ServerPromptMonsters {
     for (let i = 0; i < monsterIds.length; i++) {
       monsterIdsBN.push(ethers.BigNumber.from(monsterIds[i]));
     }
-    return await this._promptMonsters.getResurrectionPrompts(monsterIdsBN);
+    return await this._contract.getResurrectionPrompts(monsterIdsBN);
   };
 
   /**
@@ -118,9 +118,7 @@ export class ServerPromptMonsters {
    * @return {Promise<string[]>} tokenIds
    */
   getTokenIds = async (resurrectionPrompts: string[]): Promise<string[]> => {
-    const monsterIdsBN = await this._promptMonsters.getTokenIds(
-      resurrectionPrompts,
-    );
+    const monsterIdsBN = await this._contract.getTokenIds(resurrectionPrompts);
     const monsterIds: string[] = [];
     for (let i = 0; i < resurrectionPrompts.length; i++) {
       monsterIds.push(monsterIdsBN[i].toString());

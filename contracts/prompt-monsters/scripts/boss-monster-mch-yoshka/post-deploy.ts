@@ -190,52 +190,46 @@ async function main() {
     101, 101, 1, 1, 1, 1, 1, 1, 1, 101, 200, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   ];
 
-  console.log("--- Post Deploy -----------------------------");
-
-  const [deployer] = await ethers.getSigners();
-  console.log("Deploying contracts with account: ", deployer.address);
-
+  const addr = BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS;
   const BossMonsterMchYoshka = await ethers.getContractFactory(
     "BossMonsterMchYoshka",
   );
-  const bossMonsterMchYoshkaProxy = BossMonsterMchYoshka.attach(
-    BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS,
-  );
+  const bossMonsterMchYoshka = BossMonsterMchYoshka.attach(addr);
 
   console.log("addLanguage -----------------------------");
-  console.log(`Before: ${await bossMonsterMchYoshkaProxy.getLanguages()}`);
-  await (await bossMonsterMchYoshkaProxy.addLanguage(languageEn)).wait();
-  await (await bossMonsterMchYoshkaProxy.addLanguage(languageJp)).wait();
-  console.log(`After : ${await bossMonsterMchYoshkaProxy.getLanguages()}`);
+  console.log(`Before: ${await bossMonsterMchYoshka.getLanguages()}`);
+  await (await bossMonsterMchYoshka.addLanguage(languageEn)).wait();
+  await (await bossMonsterMchYoshka.addLanguage(languageJp)).wait();
+  console.log(`After : ${await bossMonsterMchYoshka.getLanguages()}`);
 
   console.log("setBoss -----------------------------");
   console.log(languageEn);
   console.log(
-    `Before: ${await bossMonsterMchYoshkaProxy.getBossExtension(languageEn)}`,
+    `Before: ${await bossMonsterMchYoshka.getBossExtension(languageEn)}`,
   );
-  await (await bossMonsterMchYoshkaProxy.setBoss(languageEn, bossEn)).wait();
+  await (await bossMonsterMchYoshka.setBoss(languageEn, bossEn)).wait();
   await (
-    await bossMonsterMchYoshkaProxy.setSkillTypes(bossEn.skills, _skillTypes)
+    await bossMonsterMchYoshka.setSkillTypes(bossEn.skills, _skillTypes)
   ).wait();
   console.log(
-    `After : ${await bossMonsterMchYoshkaProxy.getBossExtension(languageEn)}`,
+    `After : ${await bossMonsterMchYoshka.getBossExtension(languageEn)}`,
   );
   console.log(languageJp);
   console.log(
-    `Before: ${await bossMonsterMchYoshkaProxy.getBossExtension(languageJp)}`,
+    `Before: ${await bossMonsterMchYoshka.getBossExtension(languageJp)}`,
   );
-  await (await bossMonsterMchYoshkaProxy.setBoss(languageJp, bossJp)).wait();
+  await (await bossMonsterMchYoshka.setBoss(languageJp, bossJp)).wait();
   await (
-    await bossMonsterMchYoshkaProxy.setSkillTypes(bossJp.skills, _skillTypes)
+    await bossMonsterMchYoshka.setSkillTypes(bossJp.skills, _skillTypes)
   ).wait();
   console.log(
-    `After : ${await bossMonsterMchYoshkaProxy.getBossExtension(languageJp)}`,
+    `After : ${await bossMonsterMchYoshka.getBossExtension(languageJp)}`,
   );
 
   console.log("Set GAME_ROLE -----------------------------");
-  const role = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("GAME_ROLE"));
+  const role = ethers.utils.id("GAME_ROLE");
   await (
-    await bossMonsterMchYoshkaProxy.grantRole(role, BOSS_BATTLE_PROXY_ADDRESS)
+    await bossMonsterMchYoshka.grantRole(role, BOSS_BATTLE_PROXY_ADDRESS)
   ).wait();
 
   console.log("");

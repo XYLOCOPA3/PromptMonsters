@@ -71,6 +71,9 @@ contract PromptMonsters is
   /// @custom:oz-renamed-from _promptMonstersExtension
   IPromptMonstersExtension private _promptMonstersExtension;
 
+  /// @custom:oz-renamed-from GAME_ROLE
+  bytes32 private GAME_ROLE;
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
@@ -344,7 +347,7 @@ contract PromptMonsters is
   function generateMonster(
     address resurrectionPrompt_,
     IPromptMonsters.Monster memory monster_
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) nonReentrant {
+  ) external onlyRole(GAME_ROLE) nonReentrant {
     _monsterHistoryMap[resurrectionPrompt_] = monster_;
     emit GeneratedMonsterV2(resurrectionPrompt_, monster_);
   }
@@ -547,5 +550,10 @@ contract PromptMonsters is
         ++i;
       }
     }
+  }
+
+  /// @dev setGameRole
+  function setGameRole() external onlyRole(DEFAULT_ADMIN_ROLE) {
+    GAME_ROLE = keccak256("GAME_ROLE");
   }
 }

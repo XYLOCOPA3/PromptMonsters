@@ -42,14 +42,21 @@ export default async function handler(
   const prefixLog = `/fight-monster: ${resurrectionPrompt}:`;
 
   const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
+  const battle = BattleContract.instance(RPC_URL.mchVerse);
 
   let monsterId: string;
   let results: any;
   try {
-    monsterId = (await promptMonsters.getTokenIds([resurrectionPrompt]))[0];
+    results = await Promise.all([
+      promptMonsters.getTokenIds([resurrectionPrompt]),
+      promptMonsters.getMonstersTotalSupply(),
+    ]);
+    monsterId = results[0][0];
+    const totalSupply = Number(results[1]);
+    if (monsterId === "0") monsterId = "";
     results = await Promise.all([
       calcStaminaFromMonsterId(monsterId),
-      _getRandomEnemyId(monsterId),
+      _getRandomEnemyId(monsterId, totalSupply),
     ]);
   } catch (error) {
     if (error instanceof Error) {
@@ -103,7 +110,7 @@ export default async function handler(
     try {
       console.log(prefixLog, errorCnt);
       const completion = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
+        model: "gpt-3.5-turbo-0613",
         messages: [
           {
             role: "user",
@@ -138,7 +145,6 @@ export default async function handler(
     return res.status(500).json({ battleResult });
   }
 
-  const battle = BattleContract.instance(RPC_URL.mchVerse);
   while (true) {
     try {
       console.log(prefixLog, errorCnt);
@@ -174,11 +180,13 @@ export default async function handler(
 /**
  * Get random enemy monster id
  * @param monsterId monster id
+ * @param totalSupply total monster supply
  * @return {Promise<string>} random enemy monster id
  */
-const _getRandomEnemyId = async (monsterId: string): Promise<string> => {
-  const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
-  const totalSupply = Number(await promptMonsters.getMonstersTotalSupply());
+const _getRandomEnemyId = async (
+  monsterId: string,
+  totalSupply: number,
+): Promise<string> => {
   if (totalSupply < 1) throw new Error("server: No enemy monsters.");
   let random: number;
   while (true) {
