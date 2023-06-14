@@ -173,8 +173,8 @@ export const ITEMS = {
     },
     {
       name: "脱出プロンプト",
-      desc: "戦闘から逃げ出すことができる。",
-      result: "monsterName は戦闘から逃げ出した。",
+      desc: "ボスの行動を回避して逃げる",
+      result: "bossName の行動から逃がれた",
     },
   ],
   English: [
@@ -195,8 +195,8 @@ export const ITEMS = {
     },
     {
       name: "ESCAPE PROMPT",
-      desc: "You can escape from the battle.",
-      result: "monsterName escaped from the battle.",
+      desc: "Avoid Boss's actions and escape.",
+      result: "Escaped from bossName's action.",
     },
   ],
 };
