@@ -12,27 +12,30 @@ async function main() {
   console.log("");
 
   const bossMonsterAddress = BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS;
+  const bossBattleAddress = BOSS_BATTLE_PROXY_ADDRESS;
 
-  console.log("--- Post Deploy -----------------------------");
-
-  const [deployer] = await ethers.getSigners();
-  console.log("Deploying contracts with account: ", deployer.address);
-
+  const addr = BOSS_BATTLE_MCH_1_PROXY_ADDRESS;
   const BossBattleMch1 = await ethers.getContractFactory("BossBattleMch1");
-  const bossBattleMch1Proxy = BossBattleMch1.attach(
-    BOSS_BATTLE_MCH_1_PROXY_ADDRESS,
-  );
+  const bossBattleMch1Proxy = BossBattleMch1.attach(addr);
 
   console.log("setBossMonster -----------------------------");
   console.log(`Before: ${await bossBattleMch1Proxy.getBossMonster()}`);
   await (await bossBattleMch1Proxy.setBossMonster(bossMonsterAddress)).wait();
   console.log(`After : ${await bossBattleMch1Proxy.getBossMonster()}`);
 
-  console.log("Set GAME_ROLE -----------------------------");
-  const role = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("GAME_ROLE"));
-  await (
-    await bossBattleMch1Proxy.grantRole(role, BOSS_BATTLE_PROXY_ADDRESS)
-  ).wait();
+  console.log("grantRole -----------------------------");
+  const role = ethers.utils.id("GAME_ROLE");
+  console.log("Before: ");
+  const oldRoleMemberCount = await bossBattleMch1Proxy.getRoleMemberCount(role);
+  for (let i = 0; i < Number(oldRoleMemberCount); i++) {
+    console.log(await bossBattleMch1Proxy.getRoleMember(role, i));
+  }
+  await (await bossBattleMch1Proxy.grantRole(role, bossBattleAddress)).wait();
+  console.log("After : ");
+  const newRoleMemberCount = await bossBattleMch1Proxy.getRoleMemberCount(role);
+  for (let i = 0; i < Number(newRoleMemberCount); i++) {
+    console.log(await bossBattleMch1Proxy.getRoleMember(role, i));
+  }
 
   console.log("");
   console.log("---------------------------------------------");

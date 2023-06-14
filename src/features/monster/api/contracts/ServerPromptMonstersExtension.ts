@@ -6,8 +6,6 @@ import {
 import { ethers } from "ethers";
 
 export class ServerPromptMonstersExtension {
-  private static _instance: ServerPromptMonstersExtension;
-
   private constructor(private readonly _contract: PromptMonstersExtension) {}
 
   /**
@@ -16,15 +14,12 @@ export class ServerPromptMonstersExtension {
    * @return {ServerPromptMonstersExtension} instance
    */
   public static instance(rpcURL: string): ServerPromptMonstersExtension {
-    if (!this._instance) {
-      const wallet = ServerWallet.instance(rpcURL);
-      const contract = PromptMonstersExtension__factory.connect(
-        process.env.NEXT_PUBLIC_PROMPT_MONSTERS_EXTENSION_CONTRACT!,
-        wallet.signer,
-      );
-      this._instance = new ServerPromptMonstersExtension(contract);
-    }
-    return this._instance;
+    const wallet = ServerWallet.getWallet(rpcURL);
+    const contract = PromptMonstersExtension__factory.connect(
+      process.env.NEXT_PUBLIC_PROMPT_MONSTERS_EXTENSION_CONTRACT!,
+      wallet,
+    );
+    return new ServerPromptMonstersExtension(contract);
   }
 
   /**

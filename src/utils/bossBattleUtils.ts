@@ -1,4 +1,8 @@
-import { BOSS_WEAKNESS_FEATURES, MAX_LIFE_POINT, MAX_MONSTER_DAMAGE, MAX_MONSTER_DAMAGE } from "@/const/bossBattle";
+import {
+  BOSS_WEAKNESS_FEATURES,
+  MAX_LIFE_POINT,
+  MAX_MONSTER_DAMAGE,
+} from "@/const/bossBattle";
 import { DevBBKState } from "@/dev/stores/devBBkParamState";
 import { ClientBossBattle } from "@/features/boss/api/contracts/ClientBossBattle";
 import { MonsterModel } from "@/models/MonsterModel";
