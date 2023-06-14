@@ -1,4 +1,4 @@
-import { BOSS_WEAKNESS_FEATURES, MAX_LIFE_POINT } from "@/const/bossBattle";
+import { BOSS_WEAKNESS_FEATURES, MAX_LIFE_POINT, MAX_MONSTER_DAMAGE, MAX_MONSTER_DAMAGE } from "@/const/bossBattle";
 import { DevBBKState } from "@/dev/stores/devBBkParamState";
 import { ClientBossBattle } from "@/features/boss/api/contracts/ClientBossBattle";
 import { MonsterModel } from "@/models/MonsterModel";
@@ -441,7 +441,9 @@ export const calcMonsterDamage = (
         kMonsterMgr * adjMonsterMgr;
     }
   }
+
   if (defensed) monsterDamage *= 0.1;
+  if (monsterDamage > MAX_MONSTER_DAMAGE) monsterDamage = MAX_MONSTER_DAMAGE;
 
   return Math.floor(monsterDamage) > 0 ? Math.floor(monsterDamage) : 1;
 };
