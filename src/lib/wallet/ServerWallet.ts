@@ -18,7 +18,8 @@ export class ServerWallet {
       process.env.GAME_ROLE_MNEMONIC!,
       `m/44'/60'/0'/0/${ServerWallet.seedCnt % ServerWallet.CNT_WALLET}`,
     ).connect(provider);
-    console.log(ServerWallet.seedCnt);
+    // TODO: 後で消す
+    console.log(`ServerWallet: ${ServerWallet.seedCnt}`);
     return signer;
   }
 }

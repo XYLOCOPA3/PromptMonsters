@@ -1,5 +1,6 @@
 import { MAX_LIFE_POINT } from "@/const/bossBattle";
 import { devBBkParamState } from "@/dev/stores/devBBkParamState";
+import { ClientBossBattle } from "@/features/boss/api/contracts/ClientBossBattle";
 import { BossBattleModel } from "@/models/BossBattleModel";
 import { MonsterModel } from "@/models/MonsterModel";
 import { BossBattleState, bossBattleState } from "@/stores/bossBattleState";
@@ -52,7 +53,7 @@ export const useBossBattleValue = (): BossBattleState => {
 };
 
 export const useBossBattleController = (): BossBattleController => {
-  // TODO: dev用
+  // TODO: 後で消す
   const devBBkParam = useRecoilValue(devBBkParamState);
 
   const setBossBattle = useSetRecoilState(bossBattleState);
@@ -61,14 +62,25 @@ export const useBossBattleController = (): BossBattleController => {
    * Init bossBattle
    */
   const init = async (monster: MonsterModel): Promise<number[]> => {
-    const skillTypes = await generateSkillTypesIfNotSet(monster);
-    await generateMonsterAdjIfNotSet(monster.resurrectionPrompt);
-    const bbState = await startBossBattle(
-      monster.resurrectionPrompt,
-      devBBkParam,
-    );
+    const bossBattle = await ClientBossBattle.instance();
+    let bbState = await bossBattle.getBBState(monster.resurrectionPrompt);
+    let skillTypes = monster.skillTypes;
+    if (!bbState.bossBattleStarted) {
+      const results = await Promise.all([
+        generateSkillTypesIfNotSet(monster),
+        generateMonsterAdjIfNotSet(monster.resurrectionPrompt),
+      ]);
+      skillTypes = results[0];
+      bbState = await startBossBattle(monster.resurrectionPrompt, devBBkParam);
+    }
 
     _initGlobalParam();
+
+    let newItemIds: number[] = [];
+    if (bbState.hasBuffItem) newItemIds.push(EnumItem.buff);
+    if (bbState.hasDebuffItem) newItemIds.push(EnumItem.debuff);
+    if (bbState.hasHealItem) newItemIds.push(EnumItem.healing);
+    if (bbState.hasEscapeItem) newItemIds.push(EnumItem.escape);
 
     setBossBattle(
       BossBattleModel.create({
@@ -77,10 +89,11 @@ export const useBossBattleController = (): BossBattleController => {
         turn: bbState.turn,
         score: bbState.score,
         bossSign: bbState.bossSign,
-        hasHealItem: bbState.hasHealItem,
         hasBuffItem: bbState.hasBuffItem,
         hasDebuffItem: bbState.hasDebuffItem,
+        hasHealItem: bbState.hasHealItem,
         hasEscapeItem: bbState.hasEscapeItem,
+        itemIds: newItemIds,
         phase: bbState.bossBattleContinued
           ? EnumBossBattlePhase.start
           : EnumBossBattlePhase.continue,
