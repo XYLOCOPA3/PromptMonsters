@@ -173,7 +173,7 @@ export const ITEMS = {
     },
     {
       name: "封印プロンプト",
-      desc: "ボスの攻撃を1ターンの間、封じる",
+      desc: "ボスの攻撃を１ターンの間、封じる",
       result: "bossName の攻撃を封じた",
     },
   ],
@@ -195,7 +195,7 @@ export const ITEMS = {
     },
     {
       name: "SEAL PROMPT",
-      desc: "Seals Boss's attack for one turn.",
+      desc: "Seals Boss's attack for 1 turn.",
       result: "bossName's attack was sealed.",
     },
   ],
