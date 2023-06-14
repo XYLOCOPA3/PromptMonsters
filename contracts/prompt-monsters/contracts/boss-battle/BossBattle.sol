@@ -210,6 +210,20 @@ contract BossBattle is
     bossMonster.setMonsterAdj(resurrectionPrompt, monsterAdj);
   }
 
+  /// @dev get high scores
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param resurrectionPrompts resurrection prompts
+  /// @return highScores high scores
+  function getHighScores(
+    string memory eventKey,
+    uint256 bbeId,
+    address[] memory resurrectionPrompts
+  ) external view returns (uint32[] memory highScores) {
+    highScores = IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId])
+      .getHighScores(resurrectionPrompts);
+  }
+
   /// @dev get boss battle state
   /// @param eventKey event key
   /// @param bbeId ID of bossBattleEvent
@@ -221,8 +235,8 @@ contract BossBattle is
     address resurrectionPrompt
   ) public view returns (IBossBattleEvent.BBState memory bbState) {
     bbState = IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId]).getBBState(
-      resurrectionPrompt
-    );
+        resurrectionPrompt
+      );
   }
 
   /// @dev get boss battle data to calculate battle result

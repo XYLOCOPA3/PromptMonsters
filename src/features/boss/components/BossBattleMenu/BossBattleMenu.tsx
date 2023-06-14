@@ -39,9 +39,6 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
   const { t: tBossBattle } = useTranslation("boss-battle");
   const { t: tCommon } = useTranslation("common");
 
-  // TODO: ハイスコア取得
-  const highScore = -1;
-
   const closeModal = () => {
     setIsOpen(false);
     bossBattleController.reset();
@@ -87,11 +84,12 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
           "md:text-[16px]",
         )}
       >
-        <HighScore />
+        <HighScore highScore={bossBattle.highScore} />
         <TurnAndScore
           turn={bossBattle.turn}
           score={bossBattle.score}
           lp={bossBattle.lp}
+          highScore={bossBattle.highScore}
         />
         <MonsterNameAndUserLifePoint
           name={monster.name}
@@ -143,7 +141,7 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                         "text-[72px]",
                         bossBattle.defeated
                           ? "text-[#f86868]"
-                          : bossBattle.lp > highScore
+                          : bossBattle.lp > bossBattle.highScore
                           ? "text-[#79FF63]"
                           : "",
                         "text-center",
@@ -179,13 +177,13 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
 /**
  * HighScore
  */
-const HighScore = () => {
+const HighScore = ({ highScore }: any) => {
   // TODO: ハイスコアコントラクトから取ってくる
   const { t: tBossBattle } = useTranslation("boss-battle");
   return (
     <div className={clsx("flex", "mb-[2px]")}>
       <div className={clsx("px-[10px]", "text-end", "w-[100%]")}>
-        {tBossBattle("highScore")}: {100}
+        {tBossBattle("highScore")}: {highScore}
       </div>
     </div>
   );
@@ -194,7 +192,7 @@ const HighScore = () => {
  * Boss battle score
  * @param score score
  */
-const TurnAndScore = ({ turn, score, lp }: any) => {
+const TurnAndScore = ({ turn, score, lp, highScore }: any) => {
   // TODO: ハイスコア超えたら黄金色にする
   const { t: tBossBattle } = useTranslation("boss-battle");
   return (
@@ -225,6 +223,7 @@ const TurnAndScore = ({ turn, score, lp }: any) => {
           "w-1/2",
           "ml-[5px]",
           lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
+          score > highScore ? "text-[#79FF63]" : "",
         )}
       >
         {tBossBattle("score")}: {score}

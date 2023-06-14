@@ -63,7 +63,12 @@ export const useBossBattleController = (): BossBattleController => {
    */
   const init = async (monster: MonsterModel): Promise<number[]> => {
     const bossBattle = await ClientBossBattle.instance();
-    let bbState = await bossBattle.getBBState(monster.resurrectionPrompt);
+    const results = await Promise.all([
+      bossBattle.getHighScores([monster.resurrectionPrompt]),
+      bossBattle.getBBState(monster.resurrectionPrompt),
+    ]);
+    const highScore = results[0][0];
+    let bbState = results[1];
     let skillTypes = monster.skillTypes;
     if (!bbState.bossBattleStarted) {
       const results = await Promise.all([
@@ -97,6 +102,7 @@ export const useBossBattleController = (): BossBattleController => {
         phase: bbState.bossBattleContinued
           ? EnumBossBattlePhase.start
           : EnumBossBattlePhase.continue,
+        highScore: highScore,
       }),
     );
     return skillTypes;
