@@ -76,7 +76,7 @@ export default async function handler(
     try {
       console.log(prefixLog, errorCnt);
       completion = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
+        model: "gpt-3.5-turbo-0613",
         messages: [{ role: "user", content: prompt }],
         temperature: 0.2,
       });

@@ -144,15 +144,13 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                         bossBattle.defeated
                           ? "text-[#f86868]"
                           : bossBattle.lp > highScore
-                            ? "text-[#79FF63]"
-                            : "",
+                          ? "text-[#79FF63]"
+                          : "",
                         "text-center",
                         "md:text-[96px]",
                       )}
                     >
-                      {bossBattle.defeated
-                        ? 0
-                        : bossBattle.score}
+                      {bossBattle.defeated ? 0 : bossBattle.score}
                     </div>
                     <div
                       className={clsx("flex", "justify-end", "items-center")}
