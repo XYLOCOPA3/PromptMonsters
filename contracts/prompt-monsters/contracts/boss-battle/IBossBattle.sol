@@ -118,6 +118,17 @@ interface IBossBattle {
     IBossMonster.MonsterAdj memory monsterAdj
   ) external;
 
+  /// @dev get high scores
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param resurrectionPrompts resurrection prompts
+  /// @return highScores high scores
+  function getHighScores(
+    string memory eventKey,
+    uint256 bbeId,
+    address[] memory resurrectionPrompts
+  ) external view returns (uint32[] memory highScores);
+
   /// @dev get boss battle state
   /// @param eventKey ID of event
   /// @param bbeId ID of bossBattleEvent
