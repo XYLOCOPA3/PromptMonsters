@@ -79,7 +79,9 @@ export default async function handler(
   // モンスター補正値計算
   // const initialMonsterAdj = initMonsterAdj(monsterAdj);
   // TODO: 後で消す
-  const initialMonsterAdj = Math.floor(devBBkParam.kMonsterWeakness * 100);
+  const initialMonsterAdj = Math.floor(
+    Number(devBBkParam.kMonsterWeakness) * 100,
+  );
 
   // ボス前兆確定
   let bossSign = 0;

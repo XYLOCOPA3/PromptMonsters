@@ -19,7 +19,7 @@ import {
   calcMonsterDamage,
   debuffBoss,
   debuffMonster,
-  decideAction as decideBossAction,
+  decideBossAction,
   decideDroppedItem,
   hasItem,
   judgeBossSkillHit,
