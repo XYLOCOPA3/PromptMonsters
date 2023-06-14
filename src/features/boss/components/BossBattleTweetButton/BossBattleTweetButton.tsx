@@ -83,14 +83,14 @@ You:  ${monster.name}
 
 ${bossBattle.lp !== 0
       ? `Your score is ... ${bossBattle.score} !!!`
-      : `Your score is ... ${bossBattle.score} !\nBut lose...`
+      : `Your score is ... ${bossBattle.score} !\nYou lose...`
     }
 
 ${bossBattle.lp !== 0
       ? bossBattle.score > highScore
         ? "Congratulation!!!\nThis score is a high score!"
         : ""
-      : "This time defeated...but waiting for the next challenge!"
+      : "This time, you defeated...but waiting for the next challenge!"
     }
 
 
