@@ -134,6 +134,9 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                         )}
                       >
                         {tBossBattle("score")}
+                        {bossBattle.defeated
+                          ? ` (${tBossBattle("lose")})`
+                          : ""}
                       </div>
                       <BossBattleTweetButton className={clsx("mr-[10px]")} />
                     </div>
@@ -144,8 +147,8 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                         bossBattle.defeated
                           ? "text-[#f86868]"
                           : bossBattle.lp > highScore
-                          ? "text-[#79FF63]"
-                          : "",
+                            ? "text-[#79FF63]"
+                            : "",
                         "text-center",
                         bossBattle.defeated
                           ? "md:text-[48px]"
@@ -153,7 +156,7 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                       )}
                     >
                       {bossBattle.defeated
-                        ? tBossBattle("lose")
+                        ? 0
                         : bossBattle.score}
                     </div>
                     <div
