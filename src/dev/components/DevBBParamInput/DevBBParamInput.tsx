@@ -3,7 +3,7 @@ import clsx from "clsx";
 
 export type DevBBParamInputProps = {
   title: string;
-  kParam: number;
+  kParam: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 } & BaseProps;
 

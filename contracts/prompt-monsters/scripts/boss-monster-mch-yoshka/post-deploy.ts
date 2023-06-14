@@ -19,6 +19,7 @@ async function main() {
     flavor:
       "A super powerful enemy among those who gather data in the Cryptoworld. It speaks in gay slang.",
     skills: [
+      // 一撃必殺 --------------------------------------------
       "Digital Apocalypse",
       "Digital Black Hole",
       "Data Explosion",
@@ -29,6 +30,7 @@ async function main() {
       "Crypto Shard Storm",
       "Disk of Oblivion",
       "Digital Starlight",
+      // 強攻撃 --------------------------------------------
       "Data Storm",
       "System Crash",
       "Virus Bamboo",
@@ -39,6 +41,7 @@ async function main() {
       "Malware Meteor",
       "Binary Barrage",
       "Close-Sole",
+      // 攻撃 --------------------------------------------
       "Data Knock",
       "Bug Finger",
       "Software Scratch",
@@ -49,6 +52,7 @@ async function main() {
       "Malware Punch",
       "Error Eye Beam",
       "Binary Breeze",
+      // カウンター --------------------------------------------
       "Digital Reflector",
       "Data Deflect",
       "Bug Bounce",
@@ -59,6 +63,7 @@ async function main() {
       "Crypto Counter Crash",
       "Cyber Savvy Counter",
       "Fragment Flip-Flop",
+      // バフ --------------------------------------------
       "System Stabilizer",
       "Virus Veil",
       "Code Conditioner",
@@ -69,6 +74,7 @@ async function main() {
       "System Supercharge",
       "Data Drive",
       "Crypto Boost",
+      // デバフ --------------------------------------------
       "Digital Virus",
       "Crypto Disruption",
       "Slow Data",
@@ -79,6 +85,7 @@ async function main() {
       "Network Noise",
       "Digital Drag",
       "Digital Malware",
+      // 防御 --------------------------------------------
       "Data Defense",
       "Bug Barrier",
       "Binary Barrier",
@@ -104,6 +111,7 @@ async function main() {
     flavor:
       "クリプトワールドのデータを集めるエネミーの中でも破格の超弩級エネミー。オネエ言葉でしゃべる。",
     skills: [
+      // 一撃必殺 --------------------------------------------
       "デジタルアポカリプス",
       "デジタルブラックホール",
       "データエクスプロージョン",
@@ -114,6 +122,7 @@ async function main() {
       "クリプトシャードストーム",
       "ディスクオブリビオン",
       "デジタルスターライト",
+      // 強攻撃 --------------------------------------------
       "データストーム",
       "システムクラッシュ",
       "ウイルスバンブー",
@@ -124,6 +133,7 @@ async function main() {
       "マルウェアメテオ",
       "バイナリバラージ",
       "クローソール",
+      // 攻撃 --------------------------------------------
       "データノック",
       "バグフィンガー",
       "ソフトウェアスクラッチ",
@@ -134,6 +144,7 @@ async function main() {
       "マルウェアパンチ",
       "エラーアイビーム",
       "バイナリブリーズ",
+      // カウンター --------------------------------------------
       "デジタルリフレクター",
       "データデフレクト",
       "バグバウンス",
@@ -144,6 +155,7 @@ async function main() {
       "クリプトカウンタークラッシュ",
       "サイバーサヴァイカウンター",
       "フラグメントフリップフロップ",
+      // バフ --------------------------------------------
       "システムスタビライザー",
       "ウイルスヴェール",
       "コードコンディショナー",
@@ -154,6 +166,7 @@ async function main() {
       "システムスーパーチャージ",
       "データドライブ",
       "クリプトブースト",
+      // デバフ --------------------------------------------
       "デジタルウィルス",
       "クリプトディスラプション",
       "スローデータ",
@@ -164,6 +177,7 @@ async function main() {
       "ネットワークノイズ",
       "デジタルドラッグ",
       "デジタルマルウェア",
+      // 防御 --------------------------------------------
       "データディフェンス",
       "バグバリア",
       "バイナリバリア",

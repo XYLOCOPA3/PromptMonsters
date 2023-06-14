@@ -18,7 +18,7 @@ import {
   calcLifePoint,
   calcMonsterDamage,
   debuffMonster,
-  decideAction as decideBossAction,
+  decideBossAction,
   decideDroppedItem,
   decideOtherSkillType,
   judgeBossSkillHit,
