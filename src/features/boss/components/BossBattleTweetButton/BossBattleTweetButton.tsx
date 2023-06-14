@@ -81,13 +81,17 @@ You:  ${monster.name}
 
 ------
 
-Your score is ... ${bossBattle.score} !!!
+${bossBattle.lp !== 0
+      ? `Your score is ... ${bossBattle.score} !!!`
+      : `Your score is ... ${bossBattle.score} !\nBut lose...`
+    }
 
-${
-  bossBattle.score > highScore
-    ? "Congratulation!!!\nThis score is a high score!"
-    : ""
-}
+${bossBattle.lp !== 0
+      ? bossBattle.score > highScore
+        ? "Congratulation!!!\nThis score is a high score!"
+        : ""
+      : "This time defeated...but waiting for the next challenge!"
+    }
 
 
 Let's play Prompt Monsters!
