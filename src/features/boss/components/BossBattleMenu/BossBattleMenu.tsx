@@ -67,13 +67,6 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
   }, [bossBattle.phase]);
 
   useLayoutEffectOfSSR(() => {
-    if (!bossBattle.bossBattleStarted) {
-      alert(tBossBattle("invalidStarted"));
-      push("/boss");
-    }
-  }, []);
-
-  useLayoutEffectOfSSR(() => {
     if (bossBattle.lp <= 0) end();
   }, [bossBattle.lp]);
 
@@ -341,9 +334,10 @@ const MonsterNameAndUserLifePoint = ({ name, lifePoint }: any) => {
 };
 
 /**
- * Display monster name and user life point
+ * Display monster status
  * @param name monster name
  * @param lifePoint user life point
+ * @param monsterAdj monster adjust
  */
 const MonsterStatus = ({ status, lifePoint, monsterAdj }: any) => {
   const atk = Math.floor((status.ATK * monsterAdj) / 100);

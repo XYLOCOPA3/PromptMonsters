@@ -13,8 +13,8 @@ export type TwitterIconProps = BaseProps;
  */
 export const TwitterIcon = ({ className }: TwitterIconProps) => {
   const { pathname } = useRouter();
-  if (pathname === "/boss/battle") return <></>;
 
+  if (pathname === "/boss/battle") return <></>;
   return (
     <Link
       href="https://twitter.com/prompt_monsters"
