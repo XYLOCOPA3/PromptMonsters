@@ -9,6 +9,7 @@ import { EnumBossBattleMsg } from "@/types/EnumBossBattleMsg";
 import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
 import { EnumItem } from "@/types/EnumItem";
 import {
+  compareTensPlace,
   generateMonsterAdjIfNotSet,
   generateSkillTypesIfNotSet,
   getBossSkill,
@@ -207,11 +208,17 @@ export const useBossBattleController = (): BossBattleController => {
         otherSkillAction,
         defensed,
       );
+
       let newItemIds = prevState.itemIds;
       if (droppedItemId !== EnumItem.none) {
         newItemIds = [...newItemIds, droppedItemId];
         newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
       }
+
+      if (!compareTensPlace(bossSign, bossAction)) {
+        newResultMsgIds = [...newResultMsgIds, EnumBossBattleMsg.bossSubAction];
+      }
+
       return prevState.copyWith({
         phase: EnumBossBattlePhase.result,
         usedMonsterSkill: skill,
@@ -278,11 +285,17 @@ export const useBossBattleController = (): BossBattleController => {
         otherSkillAction,
         defensed,
       );
+
       let newItemIds = prevState.itemIds;
       if (droppedItemId !== EnumItem.none) {
         newItemIds = [...newItemIds, droppedItemId];
         newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
       }
+
+      if (!compareTensPlace(bossSign, bossAction)) {
+        newResultMsgIds = [...newResultMsgIds, EnumBossBattleMsg.bossSubAction];
+      }
+
       return prevState.copyWith({
         phase: EnumBossBattlePhase.result,
         usedMonsterSkill: "",
@@ -360,6 +373,11 @@ export const useBossBattleController = (): BossBattleController => {
         newItemIds = [...newItemIds, droppedItemId];
         newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
       }
+
+      if (!compareTensPlace(bossSign, bossAction)) {
+        newResultMsgIds = [...newResultMsgIds, EnumBossBattleMsg.bossSubAction];
+      }
+
       return prevState.copyWith({
         phase: EnumBossBattlePhase.result,
         usedMonsterSkill: "",

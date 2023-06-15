@@ -7,7 +7,12 @@
   "next": "次へ",
   "monsterUsedSkill": "monsterName のスキル \"skillName\" 。",
   "bossDamage": "bossName に bossDamage のダメージ。",
-  "bossUsedSkill": "bossName のスキル \"bossSkillName\" 。",
+  "bossUsedOneHitKillSkill": "bossName の一撃必殺、 \"bossSkillName\" 。",
+  "bossUsedPowerAttackSkill": "bossName の強攻撃、 \"bossSkillName\" 。",
+  "bossUsedAttackSkill": "bossName の攻撃、 \"bossSkillName\" 。",
+  "bossUsedCounterAttackSkill": "bossName のカウンター攻撃、 \"bossSkillName\" 。",
+  "bossUsedBuffSkill": "bossName のバフスキル、 \"bossSkillName\" 。",
+  "bossUsedDebuffSkill": "bossName のデバフスキル、 \"bossSkillName\" 。",
   "monsterDamage": "monsterName に monsterDamage ダメージ。",
   "droppedItem": "bossName は itemName を落とした。",
   "continue": "モンスターとボスの攻撃力は、ターンが進むごとに強くなります。\nバトルはますます激しさを増していくでしょう。\n\n戦闘を継続しますか？",
@@ -32,7 +37,8 @@
   "bossMiss": "しかし当たらなかった...",
   "bossBuff": "bossName のステータスが上昇した！",
   "bossDebuff": "monsterName のステータスが減少した！",
-  "bossBuffDebuffMiss": "bossName はひるんで動けない。",
+  "bossBuffMiss": "bossName は monsterName の攻撃にひるみ、バフスキルをうてなかった！",
+  "bossDebuffMiss": "bossName は monsterName の攻撃にひるみ、デバフスキルをうてなかった！",
   "monsterMiss": "しかし当たらなかった...",
   "bossDefensed": "bossName は ぼうぎょ している。",
   "ok": "OK",
@@ -42,5 +48,7 @@
   "join": "に参加しよう！",
   "havingWeakFeature": "monsterName は bossName の弱点特徴、 \"weakFeature\" を持っている！\nmonsterName のステータスが上昇した！！！",
   "defeated": "monsterName のLPは0になってしまった！\n\n目の前が真っ暗になっていく...",
-  "escapeNext": "bossName は行動できない！"
+  "escapeNext": "bossName は行動できない！",
+  "bossSign": "bossName「bossSignMsg」",
+  "usedBossSubAction": "bossName は普段と異なる動きをしそうだ..."
 }
