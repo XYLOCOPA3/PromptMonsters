@@ -24,6 +24,10 @@ export const BOSS_MAIN_SEL_RATE = 70;
 export const FIRST_TURN = 1;
 export const MAX_TURN_ADJ = 30;
 
+export const BOSS_ADJ_STD = 1000;
+
+export const K_TURN = 1.1;
+
 export const BOSS_WEAKNESS_FEATURES = {
   mch: "MCH|MyCryptoHeroes|マイクリプトヒーローズ|マイクリ|ゲーム専務|みかん|Orange",
 };
@@ -210,8 +214,8 @@ export const ITEMS = {
     },
     {
       name: "封印プロンプト",
-      desc: "ボスの攻撃を１ターンの間、封じる",
-      result: "bossName の攻撃を封じた",
+      desc: "ボスの行動を１ターンの間、封じる。",
+      result: "bossName の行動を封じた！",
     },
   ],
   English: [
@@ -232,8 +236,8 @@ export const ITEMS = {
     },
     {
       name: "SEAL PROMPT",
-      desc: "Seals Boss's attack for 1 turn.",
-      result: "bossName's attack was sealed.",
+      desc: "Seals Boss's action for 1 turn.",
+      result: "bossName's action was sealed!",
     },
   ],
 };

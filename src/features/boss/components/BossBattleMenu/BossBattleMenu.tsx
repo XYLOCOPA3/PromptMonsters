@@ -1,7 +1,12 @@
 import { Fragment, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { MAX_LIFE_POINT } from "@/const/bossBattle";
+import {
+  FIRST_TURN,
+  K_TURN,
+  MAX_LIFE_POINT,
+  MAX_TURN_ADJ,
+} from "@/const/bossBattle";
 import {
   BossBattleMenuContinue,
   BossBattleMenuFight,
@@ -63,19 +68,11 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
   };
 
   useLayoutEffectOfSSR(() => {
-    if (bossBattle.phase === EnumBossBattlePhase.end) setIsOpen(true);
-  }, [bossBattle.phase]);
-
-  useLayoutEffectOfSSR(() => {
-    if (!bossBattle.bossBattleStarted) {
-      alert(tBossBattle("invalidStarted"));
-      push("/boss");
+    if (bossBattle.phase === EnumBossBattlePhase.end) {
+      end();
+      setIsOpen(true);
     }
-  }, []);
-
-  useLayoutEffectOfSSR(() => {
-    if (bossBattle.lp <= 0) end();
-  }, [bossBattle.lp]);
+  }, [bossBattle.phase]);
 
   if (boss.name === "" || boss.flavor === "") return <></>;
   return (
@@ -103,6 +100,7 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
           status={monster.status}
           lifePoint={bossBattle.lp}
           monsterAdj={bossBattle.monsterAdj}
+          turn={bossBattle.turn}
         />
         <Menu phase={bossBattle.phase} />
       </div>
@@ -341,14 +339,19 @@ const MonsterNameAndUserLifePoint = ({ name, lifePoint }: any) => {
 };
 
 /**
- * Display monster name and user life point
+ * Display monster status
  * @param name monster name
  * @param lifePoint user life point
+ * @param monsterAdj monster adjust
+ * @param turn turn
  */
-const MonsterStatus = ({ status, lifePoint, monsterAdj }: any) => {
-  const atk = Math.floor((status.ATK * monsterAdj) / 100);
+const MonsterStatus = ({ status, lifePoint, monsterAdj, turn }: any) => {
+  let turnAdj = K_TURN * (turn - 1);
+  if (turn === FIRST_TURN) turnAdj = 1;
+  if (turnAdj > MAX_TURN_ADJ) turnAdj = MAX_TURN_ADJ;
+  const atk = Math.floor((status.ATK * monsterAdj * turnAdj) / 100);
   const def = Math.floor((status.DEF * monsterAdj) / 100);
-  const int = Math.floor((status.INT * monsterAdj) / 100);
+  const int = Math.floor((status.INT * monsterAdj * turnAdj) / 100);
   const mgr = Math.floor((status.MGR * monsterAdj) / 100);
 
   return (

@@ -130,6 +130,14 @@ export const getDroppedItemMsg = (
     .replace("itemName", itemName);
 };
 
+export const getDefeatedMsg = (monsterName: string, msg: string): string => {
+  return msg.replace("monsterName", monsterName);
+};
+
+export const getEscapeNextMsg = (bossName: string, msg: string): string => {
+  return msg.replace("bossName", bossName);
+};
+
 export const getBossNextActionSignMsg = (
   bossSign: number,
   language: "日本語" | "English",

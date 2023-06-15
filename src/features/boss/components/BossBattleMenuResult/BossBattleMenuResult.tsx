@@ -10,8 +10,10 @@ import {
   getBossPreCounterAttackMsg,
   getBossUsedSkillMsg,
   getBuffDebuffBossMissMsg,
+  getDefeatedMsg,
   getDefensedMsg,
   getDroppedItemMsg,
+  getEscapeNextMsg,
   getItemUseResultMsg,
   getMonsterHealMsg,
   getMonsterOtherHealMsg,
@@ -127,6 +129,8 @@ const ResultMsg = () => {
     case EnumBossBattleMsg.monsterItemHeal:
     case EnumBossBattleMsg.monsterItemEscape:
       return <MonsterItemMsg />;
+    case EnumBossBattleMsg.monsterItemEscapeNext:
+      return <MonsterItemEscapeNextMsg />;
     case EnumBossBattleMsg.bossOneHitKill:
       return <BossOneHitKillMsg />;
     case EnumBossBattleMsg.bossAttack:
@@ -144,6 +148,8 @@ const ResultMsg = () => {
       return <BossDefenseMsg />;
     case EnumBossBattleMsg.droppedItem:
       return <DroppedItemMsg />;
+    case EnumBossBattleMsg.defeated:
+      return <DefeatedMsg />;
     default:
       return <></>;
   }
@@ -377,7 +383,6 @@ const BossOneHitKillMsg = () => {
   const monster = useMonsterValue();
   const boss = useBossValue();
   const bossBattle = useBossBattleValue();
-  const language = useLanguageValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
   return (
     <>
@@ -403,7 +408,6 @@ const BossAttackMsg = () => {
   const monster = useMonsterValue();
   const boss = useBossValue();
   const bossBattle = useBossBattleValue();
-  const language = useLanguageValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
   return (
     <>
@@ -442,7 +446,6 @@ const BossCounterAttackMsg = () => {
   const monster = useMonsterValue();
   const boss = useBossValue();
   const bossBattle = useBossBattleValue();
-  const language = useLanguageValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
   return (
     <>
@@ -467,7 +470,6 @@ const BossCounterAttackMsg = () => {
 const BossBuffMsg = () => {
   const boss = useBossValue();
   const bossBattle = useBossBattleValue();
-  const language = useLanguageValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
   return (
     <>
@@ -492,7 +494,6 @@ const BossDebuffMsg = () => {
   const monster = useMonsterValue();
   const boss = useBossValue();
   const bossBattle = useBossBattleValue();
-  const language = useLanguageValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
   return (
     <>
@@ -515,8 +516,6 @@ const BossDebuffMsg = () => {
 
 const BossDefenseMsg = () => {
   const boss = useBossValue();
-  const bossBattle = useBossBattleValue();
-  const language = useLanguageValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
   return <>{getBossDefensedMsg(boss.name, tBossBattle("bossDefensed"))}</>;
 };
@@ -536,5 +535,27 @@ const DroppedItemMsg = () => {
         tBossBattle("droppedItem"),
       )}
     </>
+  );
+};
+
+const DefeatedMsg = () => {
+  const monster = useMonsterValue();
+  const { t: tBossBattle } = useTranslation("boss-battle");
+
+  return (
+    <div className={clsx("whitespace-pre-wrap")}>
+      {getDefeatedMsg(monster.name, tBossBattle("defeated"))}
+    </div>
+  );
+};
+
+const MonsterItemEscapeNextMsg = () => {
+  const boss = useBossValue();
+  const { t: tBossBattle } = useTranslation("boss-battle");
+
+  return (
+    <div className={clsx("whitespace-pre-wrap")}>
+      {getEscapeNextMsg(boss.name, tBossBattle("escapeNext"))}
+    </div>
   );
 };

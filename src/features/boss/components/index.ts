@@ -1,3 +1,4 @@
+export * from "./BossAdjCircle";
 export * from "./BossBattleButton";
 export * from "./BossBattleMenu";
 export * from "./BossBattleMenuContinue";

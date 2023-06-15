@@ -21,7 +21,7 @@ export class DevBBkParamModel extends ObjectCopier {
     public readonly kMonsterDebuff: string = "0.75", // デバフ倍率
     public readonly kMonsterPower: string = "1.5", // 強攻撃倍率
     public readonly kMonsterHealing: string = "10.0", // 回復料倍率
-    public readonly kMonsterWeakness: string = "1.2", // 弱点特徴倍率
+    public readonly kMonsterWeakness: string = "1.0", // 弱点特徴倍率
 
     // ボス
     public readonly kBossAtk: string = "1.0",
