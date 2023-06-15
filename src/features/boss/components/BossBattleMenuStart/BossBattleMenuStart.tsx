@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
-import { BOSS_BATTLE_START, MAX_LIFE_POINT } from "@/const/bossBattle";
+import { FIRST_TURN, MAX_LIFE_POINT } from "@/const/bossBattle";
 import {
   getBossAppearedMsg,
   getBossNextActionSignMsg,
+  getHavingWeakFeatureMsg,
 } from "@/features/boss/utils/utils";
 import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleState } from "@/hooks/useBossBattle";
+import { useBossEventValue } from "@/hooks/useBossEvent";
 import { useLanguageValue } from "@/hooks/useLanguage";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { disableState } from "@/stores/disableState";
 import { BaseProps } from "@/types/BaseProps";
+import { EventKey } from "@/types/EventKey";
+import { hasBossWeaknessFeatures } from "@/utils/bossBattleUtils";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { useRecoilState } from "recoil";
@@ -28,15 +32,24 @@ export const BossBattleMenuStart = ({
   const language = useLanguageValue();
   const monster = useMonsterValue();
   const boss = useBossValue();
+  const bossEvent = useBossEventValue();
   const [bossBattle, bossBattleController] = useBossBattleState();
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
   const { t: tBossBattle } = useTranslation("boss-battle");
   const { t: tCommon } = useTranslation("common");
 
+  const weakFeatures = hasBossWeaknessFeatures(
+    bossEvent.eventKey as EventKey,
+    monster.feature,
+    monster.name,
+    monster.flavor,
+  );
+
   const handleFightClick = async () => {
     await bossBattleController.moveFightSelector();
   };
+
   const handleDefenseClick = async () => {
     setDisable(true);
     setLoading(true);
@@ -54,11 +67,13 @@ export const BossBattleMenuStart = ({
     setDisable(false);
     setLoading(false);
   };
+
   const handleItemClick = async () => {
     await bossBattleController.moveItemSelector();
   };
 
-  if (boss.name === "" || language === "") return <></>;
+  if (boss.name === "" || language === "" || bossEvent.eventKey === "")
+    return <></>;
   return (
     <div className={clsx(className, "flex", "h-[190px]", "md:h-[250px]")}>
       <div
@@ -114,12 +129,30 @@ export const BossBattleMenuStart = ({
           "overflow-y-scroll",
         )}
       >
-        {bossBattle.turn === BOSS_BATTLE_START ? (
+        {bossBattle.turn === FIRST_TURN ? (
           <>
             {getBossAppearedMsg(boss.name, tBossBattle("bossAppeared"))}
             <br />
             <br />
           </>
+        ) : (
+          <></>
+        )}
+        {bossBattle.turn === FIRST_TURN ? (
+          weakFeatures !== null ? (
+            <div className={clsx("whitespace-pre-wrap")}>
+              {getHavingWeakFeatureMsg(
+                monster.name,
+                boss.name,
+                weakFeatures[0],
+                tBossBattle("havingWeakFeature"),
+              )}
+              <br />
+              <br />
+            </div>
+          ) : (
+            <></>
+          )
         ) : (
           <></>
         )}

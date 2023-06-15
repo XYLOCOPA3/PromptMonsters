@@ -1,7 +1,10 @@
 import { ethers } from "hardhat";
 
 export const getWallets = async (cntWallet: number) => {
-  const mnemonic = process.env.GAME_ROLE_MNEMONIC;
+  const mnemonic =
+    process.env.STAGE === "production"
+      ? process.env.GAME_ROLE_MNEMONIC
+      : process.env.DEV_GAME_ROLE_MNEMONIC;
   const hdNode = ethers.utils.HDNode.fromMnemonic(mnemonic!);
 
   const wallets: any = [];
