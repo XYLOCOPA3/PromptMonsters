@@ -24,6 +24,8 @@ export const BOSS_MAIN_SEL_RATE = 70;
 export const FIRST_TURN = 1;
 export const MAX_TURN_ADJ = 30;
 
+export const BOSS_ADJ_STD = 100;
+
 export const BOSS_WEAKNESS_FEATURES = {
   mch: "MCH|MyCryptoHeroes|マイクリプトヒーローズ|マイクリ|ゲーム専務|みかん|Orange",
 };
