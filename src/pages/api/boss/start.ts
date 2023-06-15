@@ -32,9 +32,8 @@ export default async function handler(
   const bbeId = Number(process.env.BBE_ID);
   const prefixLog = `/boss/start: ${resurrectionPrompt}:`;
 
-  // TODO: dev用
+  // TODO: 後で消す
   const devBBkParam = req.body.devBBkParam;
-  console.log(prefixLog, "devBBkParam = ", devBBkParam);
 
   const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
   const bossBattle = ServerBossBattle.instance(RPC_URL.mchVerse);
@@ -58,9 +57,6 @@ export default async function handler(
   const monsterExtension = results[0][0];
   const monsterAdj = results[1];
   const bbState = results[2];
-  console.log(prefixLog, "monsterExtension = ", monsterExtension);
-  console.log(prefixLog, "monsterAdj = ", monsterAdj);
-  console.log(prefixLog, "bbState = ", bbState);
 
   // スキルタイプチェック
   if (hasUnknownSkill(monsterExtension.skillTypes))
@@ -82,9 +78,10 @@ export default async function handler(
 
   // モンスター補正値計算
   // const initialMonsterAdj = initMonsterAdj(monsterAdj);
-  // TODO: dev用
-  const initialMonsterAdj = Math.floor(devBBkParam.kMonsterWeakness * 100);
-  console.log(prefixLog, "calculatedMonsterAdj = ", initialMonsterAdj);
+  // TODO: 後で消す
+  const initialMonsterAdj = Math.floor(
+    Number(devBBkParam.kMonsterWeakness) * 100,
+  );
 
   // ボス前兆確定
   let bossSign = 0;
@@ -92,7 +89,6 @@ export default async function handler(
     bossSign = getBossSign();
     if (bossSign >= 10) break;
   }
-  console.log(prefixLog, "bossSign = ", bossSign);
 
   // ボスバトル開始
   let errorCnt = 0;

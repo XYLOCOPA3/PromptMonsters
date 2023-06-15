@@ -19,7 +19,7 @@ import {
   calcMonsterDamage,
   debuffBoss,
   debuffMonster,
-  decideAction as decideBossAction,
+  decideBossAction,
   decideDroppedItem,
   hasItem,
   judgeBossSkillHit,
@@ -53,9 +53,8 @@ export default async function handler(
   const bbeId = Number(process.env.BBE_ID);
   const prefixLog = `/boss/use-item: ${resurrectionPrompt}:`;
 
-  // TODO: dev用
+  // TODO: 後で消す
   const devBBkParam = req.body.devBBkParam;
-  console.log(prefixLog, "devBBkParam = ", devBBkParam);
 
   const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
   const bossBattle = ServerBossBattle.instance(RPC_URL.mchVerse);
@@ -79,9 +78,6 @@ export default async function handler(
   const bbState = results[0];
   const monsterExtension = results[1][0];
   const boss = results[2];
-  console.log(prefixLog, "bbState = ", bbState);
-  console.log(prefixLog, "monsterExtension = ", monsterExtension);
-  console.log(prefixLog, "boss = ", boss);
 
   const defensed = false;
   const itemUsed = true;
@@ -154,6 +150,7 @@ export default async function handler(
         await new Promise((resolve) => setTimeout(resolve, ERROR_WAIT_TIME));
       }
     }
+
     return res.status(200).json({
       bossAction: EnumBossAction.none,
       otherSkillAction: EnumOtherSkillAction.none,

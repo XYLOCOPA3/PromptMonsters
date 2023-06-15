@@ -37,5 +37,8 @@
   "monsterMiss": "しかし当たらなかった...",
   "bossDefensed": "bossName は ぼうぎょ している。",
   "ok": "OK",
-  "invalidStarted": "「たたかう」を押して始めてください。"
+  "invalidStarted": "「たたかう」を押して始めてください。",
+  "mint": "ミントして",
+  "campaign": "キャンペーン",
+  "join": "に参加しよう！"
 }

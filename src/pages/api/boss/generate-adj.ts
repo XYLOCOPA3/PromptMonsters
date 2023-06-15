@@ -52,9 +52,6 @@ export default async function handler(
   const monsterAdj = results[0];
   const monsterExtension = results[1][0];
 
-  console.log(prefixLog, "monsterAdj = ", monsterAdj);
-  console.log(prefixLog, "monsterExtension = ", monsterExtension);
-
   // 補正値計算
   if (!isInvalidMonsterAdj(monsterAdj))
     return res.status(200).json({ monsterAdj });
@@ -89,5 +86,8 @@ export default async function handler(
       await new Promise((resolve) => setTimeout(resolve, ERROR_WAIT_TIME));
     }
   }
+
+  console.log(prefixLog, "newMonsterAdj = ", newMonsterAdj);
+
   return res.status(200).json({ monsterAdj: newMonsterAdj });
 }

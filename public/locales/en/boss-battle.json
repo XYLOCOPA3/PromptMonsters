@@ -37,5 +37,8 @@
   "monsterMiss": "But it missed...",
   "bossDefensed": "bossName is defending.",
   "ok": "OK",
-  "invalidStarted": "You should push \"FIGHT\" button to start the boss battle."
+  "invalidStarted": "You should push \"FIGHT\" button to start the boss battle.",
+  "mint": "Mint and join the ",
+  "campaign": "campaign",
+  "join": "!"
 }

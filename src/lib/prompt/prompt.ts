@@ -32,7 +32,7 @@ Output in JSON->`;
     case LANGUAGES[1]:
       return `架空のモンスターを1体生成。
 - 著作権は絶対に侵害しない
-- "name"はユニークである
+- モンスター名は唯一無二の名前にする
 - "flavor"には固有名詞を使用しない
 - "feature"の単語を再利用しない
 - ステータス上限: HP<=40,ATK<=20,DEF<=20,INT<=20,MGR<=20,AGL<=20

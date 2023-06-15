@@ -24,9 +24,14 @@ export const DevBBResetButton = ({ className }: DevBBResetButtonProps) => {
 
   const handleClick = async () => {
     setLoading(true);
-    await axios.post("/api/boss/dev/reset", {
-      resurrectionPrompt: monster.resurrectionPrompt,
-    });
+    try {
+      await axios.post("/api/boss/dev/reset", {
+        resurrectionPrompt: monster.resurrectionPrompt,
+      });
+    } catch (e) {
+      setLoading(false);
+      return;
+    }
     setBossBattle(BossBattleModel.create({}));
     setLoading(false);
     push("/boss");

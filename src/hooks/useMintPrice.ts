@@ -1,5 +1,6 @@
+import { ClientPromptMonsters } from "@/features/monster/api/contracts/ClientPromptMonsters";
 import { mintPriceState } from "@/stores/mintPriceState";
-import axios from "axios";
+import { ethers } from "ethers";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export interface MintPriceController {
@@ -19,9 +20,10 @@ export const useMintPriceController = (): MintPriceController => {
    * @param mintPrice Mint price
    */
   const init = async (): Promise<void> => {
-    const res = await axios.post("/api/get-mint-price");
-    if (res.status !== 200) throw new Error(res.data.message);
-    setMintPrice(res.data.mintPrice);
+    const promptMonsters = ClientPromptMonsters.instance();
+    setMintPrice(
+      Number(ethers.utils.formatEther(await promptMonsters.getMintPrice())),
+    );
   };
 
   /**

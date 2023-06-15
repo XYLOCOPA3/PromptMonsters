@@ -19,6 +19,7 @@ async function main() {
     flavor:
       "A super powerful enemy among those who gather data in the Cryptoworld. It speaks in gay slang.",
     skills: [
+      // 一撃必殺 --------------------------------------------
       "Digital Apocalypse",
       "Digital Black Hole",
       "Data Explosion",
@@ -29,6 +30,7 @@ async function main() {
       "Crypto Shard Storm",
       "Disk of Oblivion",
       "Digital Starlight",
+      // 強攻撃 --------------------------------------------
       "Data Storm",
       "System Crash",
       "Virus Bamboo",
@@ -39,6 +41,7 @@ async function main() {
       "Malware Meteor",
       "Binary Barrage",
       "Close-Sole",
+      // 攻撃 --------------------------------------------
       "Data Knock",
       "Bug Finger",
       "Software Scratch",
@@ -49,6 +52,7 @@ async function main() {
       "Malware Punch",
       "Error Eye Beam",
       "Binary Breeze",
+      // カウンター --------------------------------------------
       "Digital Reflector",
       "Data Deflect",
       "Bug Bounce",
@@ -59,6 +63,7 @@ async function main() {
       "Crypto Counter Crash",
       "Cyber Savvy Counter",
       "Fragment Flip-Flop",
+      // バフ --------------------------------------------
       "System Stabilizer",
       "Virus Veil",
       "Code Conditioner",
@@ -69,6 +74,7 @@ async function main() {
       "System Supercharge",
       "Data Drive",
       "Crypto Boost",
+      // デバフ --------------------------------------------
       "Digital Virus",
       "Crypto Disruption",
       "Slow Data",
@@ -79,6 +85,7 @@ async function main() {
       "Network Noise",
       "Digital Drag",
       "Digital Malware",
+      // 防御 --------------------------------------------
       "Data Defense",
       "Bug Barrier",
       "Binary Barrier",
@@ -104,6 +111,7 @@ async function main() {
     flavor:
       "クリプトワールドのデータを集めるエネミーの中でも破格の超弩級エネミー。オネエ言葉でしゃべる。",
     skills: [
+      // 一撃必殺 --------------------------------------------
       "デジタルアポカリプス",
       "デジタルブラックホール",
       "データエクスプロージョン",
@@ -114,6 +122,7 @@ async function main() {
       "クリプトシャードストーム",
       "ディスクオブリビオン",
       "デジタルスターライト",
+      // 強攻撃 --------------------------------------------
       "データストーム",
       "システムクラッシュ",
       "ウイルスバンブー",
@@ -124,6 +133,7 @@ async function main() {
       "マルウェアメテオ",
       "バイナリバラージ",
       "クローソール",
+      // 攻撃 --------------------------------------------
       "データノック",
       "バグフィンガー",
       "ソフトウェアスクラッチ",
@@ -134,6 +144,7 @@ async function main() {
       "マルウェアパンチ",
       "エラーアイビーム",
       "バイナリブリーズ",
+      // カウンター --------------------------------------------
       "デジタルリフレクター",
       "データデフレクト",
       "バグバウンス",
@@ -144,6 +155,7 @@ async function main() {
       "クリプトカウンタークラッシュ",
       "サイバーサヴァイカウンター",
       "フラグメントフリップフロップ",
+      // バフ --------------------------------------------
       "システムスタビライザー",
       "ウイルスヴェール",
       "コードコンディショナー",
@@ -154,6 +166,7 @@ async function main() {
       "システムスーパーチャージ",
       "データドライブ",
       "クリプトブースト",
+      // デバフ --------------------------------------------
       "デジタルウィルス",
       "クリプトディスラプション",
       "スローデータ",
@@ -164,6 +177,7 @@ async function main() {
       "ネットワークノイズ",
       "デジタルドラッグ",
       "デジタルマルウェア",
+      // 防御 --------------------------------------------
       "データディフェンス",
       "バグバリア",
       "バイナリバリア",
@@ -190,52 +204,46 @@ async function main() {
     101, 101, 1, 1, 1, 1, 1, 1, 1, 101, 200, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   ];
 
-  console.log("--- Post Deploy -----------------------------");
-
-  const [deployer] = await ethers.getSigners();
-  console.log("Deploying contracts with account: ", deployer.address);
-
+  const addr = BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS;
   const BossMonsterMchYoshka = await ethers.getContractFactory(
     "BossMonsterMchYoshka",
   );
-  const bossMonsterMchYoshkaProxy = BossMonsterMchYoshka.attach(
-    BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS,
-  );
+  const bossMonsterMchYoshka = BossMonsterMchYoshka.attach(addr);
 
   console.log("addLanguage -----------------------------");
-  console.log(`Before: ${await bossMonsterMchYoshkaProxy.getLanguages()}`);
-  await (await bossMonsterMchYoshkaProxy.addLanguage(languageEn)).wait();
-  await (await bossMonsterMchYoshkaProxy.addLanguage(languageJp)).wait();
-  console.log(`After : ${await bossMonsterMchYoshkaProxy.getLanguages()}`);
+  console.log(`Before: ${await bossMonsterMchYoshka.getLanguages()}`);
+  await (await bossMonsterMchYoshka.addLanguage(languageEn)).wait();
+  await (await bossMonsterMchYoshka.addLanguage(languageJp)).wait();
+  console.log(`After : ${await bossMonsterMchYoshka.getLanguages()}`);
 
   console.log("setBoss -----------------------------");
   console.log(languageEn);
   console.log(
-    `Before: ${await bossMonsterMchYoshkaProxy.getBossExtension(languageEn)}`,
+    `Before: ${await bossMonsterMchYoshka.getBossExtension(languageEn)}`,
   );
-  await (await bossMonsterMchYoshkaProxy.setBoss(languageEn, bossEn)).wait();
+  await (await bossMonsterMchYoshka.setBoss(languageEn, bossEn)).wait();
   await (
-    await bossMonsterMchYoshkaProxy.setSkillTypes(bossEn.skills, _skillTypes)
+    await bossMonsterMchYoshka.setSkillTypes(bossEn.skills, _skillTypes)
   ).wait();
   console.log(
-    `After : ${await bossMonsterMchYoshkaProxy.getBossExtension(languageEn)}`,
+    `After : ${await bossMonsterMchYoshka.getBossExtension(languageEn)}`,
   );
   console.log(languageJp);
   console.log(
-    `Before: ${await bossMonsterMchYoshkaProxy.getBossExtension(languageJp)}`,
+    `Before: ${await bossMonsterMchYoshka.getBossExtension(languageJp)}`,
   );
-  await (await bossMonsterMchYoshkaProxy.setBoss(languageJp, bossJp)).wait();
+  await (await bossMonsterMchYoshka.setBoss(languageJp, bossJp)).wait();
   await (
-    await bossMonsterMchYoshkaProxy.setSkillTypes(bossJp.skills, _skillTypes)
+    await bossMonsterMchYoshka.setSkillTypes(bossJp.skills, _skillTypes)
   ).wait();
   console.log(
-    `After : ${await bossMonsterMchYoshkaProxy.getBossExtension(languageJp)}`,
+    `After : ${await bossMonsterMchYoshka.getBossExtension(languageJp)}`,
   );
 
   console.log("Set GAME_ROLE -----------------------------");
-  const role = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("GAME_ROLE"));
+  const role = ethers.utils.id("GAME_ROLE");
   await (
-    await bossMonsterMchYoshkaProxy.grantRole(role, BOSS_BATTLE_PROXY_ADDRESS)
+    await bossMonsterMchYoshka.grantRole(role, BOSS_BATTLE_PROXY_ADDRESS)
   ).wait();
 
   console.log("");

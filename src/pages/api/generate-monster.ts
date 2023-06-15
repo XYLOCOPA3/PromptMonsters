@@ -42,12 +42,12 @@ export default async function handler(
   if (result !== FeatureErrorType.ok) {
     switch (result) {
       case FeatureErrorType.noFeature:
-        console.log("Do not empty feature");
+        console.error("Do not empty feature");
         return res.status(400).json({
           message: "Do not empty feature",
         });
       case FeatureErrorType.characterLimit:
-        console.log(
+        console.error(
           `Too many characters.\n\nPlease limit the number of characters to ${MAX_FEATURES_CHAR} for single-byte characters and ${
             MAX_FEATURES_CHAR / 3
           } for double-byte characters.`,
@@ -58,21 +58,22 @@ export default async function handler(
           } for double-byte characters.`,
         });
       case FeatureErrorType.usingSymbol:
-        console.log("Do not use symbol");
+        console.error("Do not use symbol");
         return res.status(400).json({
           message: "Do not use symbol",
         });
       case FeatureErrorType.usingNum:
-        console.log("Do not use number");
+        console.error("Do not use number");
         return res.status(400).json({
           message: "Do not use number",
         });
       case FeatureErrorType.usingNGWord:
-        console.log("Do not use NG word");
+        console.error("Do not use NG word");
         return res.status(400).json({
           message: "Do not use NG word",
         });
       default:
+        console.error("Unknown error");
         return res.status(400).json({
           message: "Unknown error",
         });
@@ -91,7 +92,7 @@ export default async function handler(
     try {
       console.log(prefixLog, errorCnt);
       const completion = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
+        model: "gpt-3.5-turbo-0613",
         messages: [{ role: "user", content: generatePrompt }],
         temperature: 1.0,
       });

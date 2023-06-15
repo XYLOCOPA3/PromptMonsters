@@ -2,6 +2,8 @@ import {
   BOSS_BATTLE_MCH_1_PROXY_ADDRESS,
   BOSS_BATTLE_PROXY_ADDRESS,
 } from "../const";
+import { grantGameRoleToMnemonic } from "./utils/grantGameRoleToMnemonic";
+import console from "console";
 import { ethers } from "hardhat";
 
 async function main() {
@@ -13,25 +15,24 @@ async function main() {
   const eventKey = "mch";
   const eventAddress = BOSS_BATTLE_MCH_1_PROXY_ADDRESS;
 
-  console.log("--- Post Deploy -----------------------------");
-
-  const [deployer] = await ethers.getSigners();
-  console.log("Deploying contracts with account: ", deployer.address);
-
+  const addr = BOSS_BATTLE_PROXY_ADDRESS;
   const BossBattle = await ethers.getContractFactory("BossBattle");
-  const bossBattleProxy = BossBattle.attach(BOSS_BATTLE_PROXY_ADDRESS);
+  const bossBattleProxy = BossBattle.attach(addr);
 
-  console.log("Add event key -----------------------------");
+  console.log("addEventKey -----------------------------");
   console.log(`Before: ${await bossBattleProxy.getEventKeys()}`);
   await (await bossBattleProxy.addEventKey(eventKey)).wait();
   console.log(`After : ${await bossBattleProxy.getEventKeys()}`);
 
-  console.log("Add event address -----------------------------");
+  console.log("addBossBattleEvent -----------------------------");
   console.log(`Before: ${await bossBattleProxy.getBossBattleEvents()}`);
   await (
     await bossBattleProxy.addBossBattleEvent(eventKey, eventAddress)
   ).wait();
   console.log(`After : ${await bossBattleProxy.getBossBattleEvents()}`);
+
+  console.log("grantGameRoleToMnemonic -----------------------------");
+  await grantGameRoleToMnemonic();
 
   console.log("");
   console.log("---------------------------------------------");

@@ -1,26 +1,25 @@
 import { ethers } from "ethers";
 
 export class ServerWallet {
-  private static _instance: ServerWallet;
+  public static readonly CNT_WALLET = 100;
+  public static seedCnt = -1;
 
-  private constructor(
-    public readonly provider: ethers.providers.JsonRpcProvider,
-    public readonly signer: ethers.Wallet,
-  ) {}
+  private constructor() {}
 
   /**
-   * Get instance
-   * @return {ServerWallet} instance
+   * Get wallet
+   * nonce has been used 対策済みウォレットアドレス取得
+   * @return {ethers.Wallet} wallet
    */
-  public static instance(rpcURL: string): ServerWallet {
-    if (!this._instance) {
-      const provider = new ethers.providers.JsonRpcProvider(rpcURL);
-      const signer = new ethers.Wallet(
-        process.env.PRIVATE_KEY as string,
-        provider,
-      );
-      this._instance = new ServerWallet(provider, signer);
-    }
-    return this._instance;
+  public static getWallet(rpcURL: string): ethers.Wallet {
+    const provider = new ethers.providers.JsonRpcProvider(rpcURL);
+    ServerWallet.seedCnt++;
+    const signer = ethers.Wallet.fromMnemonic(
+      process.env.GAME_ROLE_MNEMONIC!,
+      `m/44'/60'/0'/0/${ServerWallet.seedCnt % ServerWallet.CNT_WALLET}`,
+    ).connect(provider);
+    // TODO: 後で消す
+    console.log(`ServerWallet: ${ServerWallet.seedCnt}`);
+    return signer;
   }
 }

@@ -39,7 +39,6 @@ export default async function handler(
     console.error(prefixLog, error);
     return res.status(400).json({ message: error });
   }
-  console.log(prefixLog, "bbState = ", bbState);
 
   // 戦闘開始チェック
   if (!bbState.bossBattleStarted)
@@ -61,7 +60,6 @@ export default async function handler(
 
   // ボス前兆確定
   const bossSign = getBossSign();
-  console.log(prefixLog, "bossSign = ", bossSign);
 
   // BBState更新
   const newBBState: BBState = {
