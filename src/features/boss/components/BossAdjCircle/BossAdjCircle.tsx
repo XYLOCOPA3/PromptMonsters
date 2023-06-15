@@ -1,4 +1,9 @@
-import { BOSS_ADJ_STD } from "@/const/bossBattle";
+import {
+  BOSS_ADJ_STD,
+  FIRST_TURN,
+  K_TURN,
+  MAX_TURN_ADJ,
+} from "@/const/bossBattle";
 import { useBossBattleValue } from "@/hooks/useBossBattle";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
@@ -12,6 +17,11 @@ export type BossAdjCircleProps = BaseProps;
  */
 export const BossAdjCircle = ({ className }: BossAdjCircleProps) => {
   const bossBattle = useBossBattleValue();
+
+  let turnAdj = K_TURN * (bossBattle.turn - 1);
+  if (bossBattle.turn === FIRST_TURN) turnAdj = 1;
+  if (turnAdj > MAX_TURN_ADJ) turnAdj = MAX_TURN_ADJ;
+  const bossAdj = Math.floor(bossBattle.bossAdj * turnAdj);
 
   return (
     <div
@@ -37,14 +47,14 @@ export const BossAdjCircle = ({ className }: BossAdjCircleProps) => {
     >
       <span
         className={clsx(
-          bossBattle.bossAdj > BOSS_ADJ_STD
-            ? "text-[#79FF63]"
-            : bossBattle.bossAdj < BOSS_ADJ_STD
+          bossAdj > BOSS_ADJ_STD
             ? "text-[#f86868]"
+            : bossAdj < BOSS_ADJ_STD
+            ? "text-[#79FF63]"
             : "",
         )}
       >
-        {bossBattle.bossAdj}
+        {bossAdj}
       </span>
     </div>
   );

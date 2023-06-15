@@ -409,7 +409,7 @@ export const useBossBattleController = (): BossBattleController => {
 
       let newMonsterAdj = prevState.monsterAdj;
       if (isBuffDebuffMonster(prevResultMsgId)) newMonsterAdj = gMonsterAdj;
-      let newBossAdj = prevState.monsterAdj;
+      let newBossAdj = prevState.bossAdj;
       if (isBuffDebuffBoss(prevResultMsgId)) newBossAdj = gBossAdj;
 
       return prevState.copyWith({
