@@ -70,6 +70,10 @@ const _getBossBattleTweet = (
   bossBattle: BossBattleModel,
   boss: BossModel,
 ): string => {
+  const skillsAndTypes = monster.skills.map((skill, index) => {
+    return `- ${skill}:${monster.skillTypes[index]}\n`;
+  });
+
   return `Boss Battle!
 
 Boss: ${boss.name}
@@ -80,12 +84,18 @@ You:  ${monster.name}
 
 Your score is ... ${bossBattle.score} !!!
 
-${
-  bossBattle.score > bossBattle.highScore
-    ? "Congratulation!!!\nThis score is a high score!"
-    : ""
-}
+${bossBattle.score > bossBattle.highScore
+      ? "Congratulation!!!\nThis score is a high score!"
+      : ""
+    }
 
+Your Monster
+${monster.name}
+HP:${monster.status.HP} / ATK:${monster.status.ATK} / DEF:${monster.status.DEF}
+INT:${monster.status.INT} / MGR:${monster.status.MGR} / AGL:${monster.status.AGL}
+
+Skills
+${skillsAndTypes}
 
 Let's play Prompt Monsters!
 https://prompt-monsters.com/
