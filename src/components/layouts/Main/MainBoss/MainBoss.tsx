@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { Background } from "@/components/elements/Background";
 import { Spinner } from "@/components/elements/Spinner";
 import { BossBattleButton, BossImage, BossStatus } from "@/features/boss";
@@ -22,6 +23,7 @@ import { useRecoilValue } from "recoil";
 export const MainBoss = () => {
   const boss = useBossValue();
   const monsterMinted = useRecoilValue(monsterMintedState);
+  const { locale } = useRouter();
   const { t: tCommon } = useTranslation("common");
   const { t: tBoss } = useTranslation("boss");
 
@@ -67,7 +69,11 @@ export const MainBoss = () => {
             "mb-[40px]",
             "md:text-[20px]",
           )}
-          href="https://www.notion.so/xylocopa/How-to-play-Boss-Battle-14cf1d63bcd04d9bb6e4f2cda1c81c7d?pvs=4"
+          href={
+            locale === "ja"
+              ? "https://xylocopa.notion.site/Boss-Battle-07781f9c428242e9b018eace0a036685?pvs=4"
+              : "https://xylocopa.notion.site/English-How-to-play-Boss-Battle-dcb04db635fb4fa59983f52165d12fa1?pvs=4"
+          }
           target="_blank"
         >
           {tCommon("howToPlay")}

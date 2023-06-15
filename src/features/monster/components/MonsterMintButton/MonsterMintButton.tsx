@@ -69,7 +69,7 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
         className,
         "px-[10px]",
         "w-[100%]",
-        "h-[50px]",
+        className === undefined ? "h-[50px]" : "",
         "max-w-[150px]",
       )}
       variant="secondary"
