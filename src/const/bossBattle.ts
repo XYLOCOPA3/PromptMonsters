@@ -1,5 +1,4 @@
 export const MAX_LIFE_POINT = 400;
-export const BOSS_BATTLE_START = 1;
 export const MAX_MONSTER_DAMAGE = 350;
 
 export const MAX_MONSTER_ADJ = 400;
@@ -14,6 +13,11 @@ export const BOSS_CATK_SEL_RATE = 20;
 export const BOSS_BUFF_SEL_RATE = 10;
 export const BOSS_DEBUFF_SEL_RATE = 10;
 export const BOSS_DEF_SEL_RATE = 10;
+
+export const BOSS_ITEM_BUFF_DROPPED_RATE = 12;
+export const BOSS_ITEM_DEBUFF_DROPPED_RATE = 12;
+export const BOSS_ITEM_HEALING_DROPPED_RATE = 12;
+export const BOSS_ITEM_ESCAPE_DROPPED_RATE = 4;
 
 export const BOSS_MAIN_SEL_RATE = 70;
 
@@ -205,9 +209,9 @@ export const ITEMS = {
       result: "LPが全回復した。",
     },
     {
-      name: "脱出プロンプト",
-      desc: "戦闘から逃げ出すことができる。",
-      result: "monsterName は戦闘から逃げ出した。",
+      name: "封印プロンプト",
+      desc: "ボスの攻撃を１ターンの間、封じる",
+      result: "bossName の攻撃を封じた",
     },
   ],
   English: [
@@ -227,9 +231,9 @@ export const ITEMS = {
       result: "LP was fully restored.",
     },
     {
-      name: "ESCAPE PROMPT",
-      desc: "You can escape from the battle.",
-      result: "monsterName escaped from the battle.",
+      name: "SEAL PROMPT",
+      desc: "Seals Boss's attack for 1 turn.",
+      result: "bossName's attack was sealed.",
     },
   ],
 };

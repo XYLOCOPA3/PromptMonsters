@@ -99,6 +99,11 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
           name={monster.name}
           lifePoint={bossBattle.lp}
         />
+        <MonsterStatus
+          status={monster.status}
+          lifePoint={bossBattle.lp}
+          monsterAdj={bossBattle.monsterAdj}
+        />
         <Menu phase={bossBattle.phase} />
       </div>
       <Transition appear show={isOpen} as={Fragment}>
@@ -235,6 +240,7 @@ const HighScore = ({ highScore }: any) => {
     </div>
   );
 };
+
 /**
  * Boss battle score
  * @param score score
@@ -242,18 +248,20 @@ const HighScore = ({ highScore }: any) => {
 const TurnAndScore = ({ turn, score, lp, highScore }: any) => {
   const { t: tBossBattle } = useTranslation("boss-battle");
   return (
-    <div className={clsx("flex", "mb-[10px]")}>
+    <div className={clsx("flex", "mb-[5px]", "md:mb-[10px]")}>
       <div
         className={clsx(
           "font-bold",
           "bg-[#272727]/80",
-          "p-[10px]",
+          "p-[5px]",
           "rounded-lg",
           "border-[1px]",
           "text-start",
           "w-1/2",
           "mr-[5px]",
           lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
+          "md:mr-[10px]",
+          "md:p-[10px]",
         )}
       >
         {tBossBattle("turn")}: {turn}
@@ -262,13 +270,13 @@ const TurnAndScore = ({ turn, score, lp, highScore }: any) => {
         className={clsx(
           "font-bold",
           "bg-[#272727]/80",
-          "p-[10px]",
+          "p-[5px]",
           "rounded-lg",
           "border-[1px]",
           "text-end",
           "w-1/2",
-          "ml-[5px]",
           lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
+          "md:p-[10px]",
         )}
       >
         {tBossBattle("score")}:{" "}
@@ -287,18 +295,28 @@ const TurnAndScore = ({ turn, score, lp, highScore }: any) => {
  */
 const MonsterNameAndUserLifePoint = ({ name, lifePoint }: any) => {
   return (
-    <div className={clsx("flex", "justify-between", "mb-[10px]", "w-[100%]")}>
+    <div
+      className={clsx(
+        "flex",
+        "justify-between",
+        "mb-[5px]",
+        "w-[100%]",
+        "md:mb-[10px]",
+      )}
+    >
       <div
         className={clsx(
           "w-2/3",
           "font-bold",
           "bg-[#272727]/80",
-          "p-[10px]",
+          "p-[5px]",
           "rounded-lg",
           "border-[1px]",
           "truncate",
-          "mr-[10px]",
+          "mr-[5px]",
           lifePoint < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
+          "md:mr-[10px]",
+          "md:p-[10px]",
         )}
       >
         {name}
@@ -307,16 +325,96 @@ const MonsterNameAndUserLifePoint = ({ name, lifePoint }: any) => {
         className={clsx(
           "font-bold",
           "bg-[#272727]/80",
-          "p-[10px]",
+          "p-[5px]",
           "rounded-lg",
           "border-[1px]",
           "w-1/3",
           "text-end",
           lifePoint < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
+          "md:p-[10px]",
         )}
       >
         LP: {lifePoint}
       </div>
+    </div>
+  );
+};
+
+/**
+ * Display monster name and user life point
+ * @param name monster name
+ * @param lifePoint user life point
+ */
+const MonsterStatus = ({ status, lifePoint, monsterAdj }: any) => {
+  const atk = Math.floor((status.ATK * monsterAdj) / 100);
+  const def = Math.floor((status.DEF * monsterAdj) / 100);
+  const int = Math.floor((status.INT * monsterAdj) / 100);
+  const mgr = Math.floor((status.MGR * monsterAdj) / 100);
+
+  return (
+    <div
+      className={clsx(
+        "mb-[5px]",
+        "w-[100%]",
+        "font-bold",
+        "bg-[#272727]/80",
+        "p-[5px]",
+        "md:p-[10px]",
+        "rounded-lg",
+        "border-[1px]",
+        "truncate",
+        lifePoint < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
+        "md:mb-[10px]",
+      )}
+    >
+      ATK:{" "}
+      <span
+        className={clsx(
+          atk > status.ATK
+            ? "text-[#79FF63]"
+            : atk < status.ATK
+            ? "text-[#f86868]"
+            : "",
+        )}
+      >
+        {atk}
+      </span>{" "}
+      / DEF:{" "}
+      <span
+        className={clsx(
+          def > status.DEF
+            ? "text-[#79FF63]"
+            : def < status.DEF
+            ? "text-[#f86868]"
+            : "",
+        )}
+      >
+        {def}
+      </span>{" "}
+      / INT:{" "}
+      <span
+        className={clsx(
+          int > status.INT
+            ? "text-[#79FF63]"
+            : int < status.INT
+            ? "text-[#f86868]"
+            : "",
+        )}
+      >
+        {int}
+      </span>{" "}
+      / MGR:{" "}
+      <span
+        className={clsx(
+          mgr > status.MGR
+            ? "text-[#79FF63]"
+            : mgr < status.MGR
+            ? "text-[#f86868]"
+            : "",
+        )}
+      >
+        {mgr}
+      </span>
     </div>
   );
 };

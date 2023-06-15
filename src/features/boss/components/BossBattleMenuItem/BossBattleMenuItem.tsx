@@ -28,8 +28,9 @@ export const BossBattleMenuItem = ({ className }: BossBattleMenuItemProps) => {
         className={clsx(
           className,
           "flex",
-          "mb-[10px]",
-          "h-[190px]",
+          "mb-[5px]",
+          "h-[140px]",
+          "md:mb-[10px]",
           "md:h-[250px]",
         )}
       >
@@ -43,9 +44,10 @@ export const BossBattleMenuItem = ({ className }: BossBattleMenuItemProps) => {
             "rounded-lg",
             "border-[1px]",
             "text-center",
-            "mr-[10px]",
+            "mr-[5px]",
             bossBattle.lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
             "overflow-y-scroll",
+            "md:mr-[10px]",
             "md:p-[10px]",
           )}
         >

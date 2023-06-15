@@ -126,17 +126,26 @@ export const BossBattleMenuFight = ({
         className={clsx(
           className,
           "flex",
-          "my-[5px]",
+          "mb-[5px]",
           "flex-col",
           "w-[100%]",
-          "h-[190px]",
+          "h-[140px]",
+          "md:mb-[10px]",
           "md:h-[250px]",
         )}
       >
-        <div className={clsx("flex", "w-[100%]", "h-[50%]", "mb-[5px]")}>
+        <div
+          className={clsx(
+            "flex",
+            "w-[100%]",
+            "h-[50%]",
+            "mb-[5px]",
+            "md:mb-[10px]",
+          )}
+        >
           {monster.skills.length >= 1 ? (
             <Skill
-              className={clsx("mr-[5px]")}
+              className={clsx("mr-[5px]", "md:mr-[10px]")}
               onClick={handleSkill1Click}
               skillName={monster.skills[0]}
               skillType={monster.skillTypes[0]}
@@ -145,11 +154,11 @@ export const BossBattleMenuFight = ({
               disable={disable}
             />
           ) : (
-            <div className={clsx("w-1/2", "mr-[5px]")}></div>
+            <div className={clsx("w-1/2", "mr-[5px]", "md:mr-[10px]")}></div>
           )}
           {monster.skills.length >= 2 ? (
             <Skill
-              className={clsx("ml-[5px]")}
+              className={clsx()}
               onClick={handleSkill2Click}
               skillName={monster.skills[1]}
               skillType={monster.skillTypes[1]}
@@ -158,13 +167,13 @@ export const BossBattleMenuFight = ({
               disable={disable}
             />
           ) : (
-            <div className={clsx("w-1/2", "ml-[5px]")}></div>
+            <div className={clsx("w-1/2")}></div>
           )}
         </div>
-        <div className={clsx("flex", "w-[100%]", "h-[50%]", "mt-[5px]")}>
+        <div className={clsx("flex", "w-[100%]", "h-[50%]")}>
           {monster.skills.length >= 3 ? (
             <Skill
-              className={clsx("mr-[5px]")}
+              className={clsx("mr-[5px]", "md:mr-[10px]")}
               onClick={handleSkill3Click}
               skillName={monster.skills[2]}
               skillType={monster.skillTypes[2]}
@@ -173,11 +182,11 @@ export const BossBattleMenuFight = ({
               disable={disable}
             />
           ) : (
-            <div className={clsx("w-1/2", "mr-[5px]")}></div>
+            <div className={clsx("w-1/2", "mr-[5px]", "md:mr-[10px]")}></div>
           )}
           {monster.skills.length >= 4 ? (
             <Skill
-              className={clsx("ml-[5px]")}
+              className={clsx()}
               onClick={handleSkill4Click}
               skillName={monster.skills[3]}
               skillType={monster.skillTypes[3]}
@@ -186,11 +195,11 @@ export const BossBattleMenuFight = ({
               disable={disable}
             />
           ) : (
-            <div className={clsx("w-1/2", "ml-[5px]")}></div>
+            <div className={clsx("w-1/2")}></div>
           )}
         </div>
       </div>
-      <BossBattlePrevButton className={clsx("w-1/4", "my-[5px]")} />
+      <BossBattlePrevButton className={clsx("w-1/4")} />
     </>
   );
 };

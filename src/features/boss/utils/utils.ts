@@ -7,6 +7,19 @@ export const getBossAppearedMsg = (
   return bossAppearedMsg.replace("bossName", bossName);
 };
 
+export const getHavingWeakFeatureMsg = (
+  monsterName: string,
+  bossName: string,
+  weakFeature: string,
+  msg: string,
+): string => {
+  return msg
+    .replace("monsterName", monsterName)
+    .replace("monsterName", monsterName)
+    .replace("bossName", bossName)
+    .replace("weakFeature", weakFeature);
+};
+
 export const getMonsterUsedSkillMsg = (
   monsterName: string,
   skillName: string,

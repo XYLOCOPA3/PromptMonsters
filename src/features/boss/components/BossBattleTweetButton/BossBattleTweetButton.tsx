@@ -10,6 +10,7 @@ import { MonsterModel } from "@/models/MonsterModel";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
+import { SKILL_TYPE_NAME_SIMPLE } from "@/const/monster";
 
 export type BossBattleTweetButtonProps = BaseProps;
 
@@ -70,25 +71,25 @@ const _getBossBattleTweet = (
   bossBattle: BossBattleModel,
   boss: BossModel,
 ): string => {
-  return `Boss Battle!
+  const skillsAndTypes = monster.skills.map((skill, index) => {
+    return `- ${skill}: ${SKILL_TYPE_NAME_SIMPLE.get(monster.skillTypes[index]) ??
+      "???"}\n`;
+  });
 
-Boss: ${boss.name}
-  vs
-You:  ${monster.name}
+  return `vs Boss ${boss.name}!
 
-------
+${bossBattle.lp !== 0
+      ? `Score : ${bossBattle.score}🎉`
+      : `Score : ${bossBattle.score}\nYou lose...`}
 
-Your score is ... ${bossBattle.score} !!!
+With
+${monster.name}
 
-${
-  bossBattle.score > bossBattle.highScore
-    ? "Congratulation!!!\nThis score is a high score!"
-    : ""
-}
+HP:${monster.status.HP} / ATK:${monster.status.ATK} / DEF:${monster.status.DEF}
+INT:${monster.status.INT} / MGR:${monster.status.MGR} / AGL:${monster.status.AGL}
 
-
-Let's play Prompt Monsters!
+${skillsAndTypes.join("")}
+Let's battle!
 https://prompt-monsters.com/
-
-#PromptMonsters #Alert`;
+#PromptMonsters #Alert #BCG`;
 };

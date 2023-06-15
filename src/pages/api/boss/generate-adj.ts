@@ -56,7 +56,14 @@ export default async function handler(
   if (!isInvalidMonsterAdj(monsterAdj))
     return res.status(200).json({ monsterAdj });
   let newMonsterAdj: MonsterAdj = { weaknessFeatureAdj: 100 };
-  if (hasBossWeaknessFeatures(monsterExtension, eventKey))
+  if (
+    hasBossWeaknessFeatures(
+      eventKey,
+      monsterExtension.feature,
+      monsterExtension.name,
+      monsterExtension.flavor,
+    ) !== null
+  )
     newMonsterAdj.weaknessFeatureAdj = 120;
 
   // 補正値更新

@@ -204,5 +204,7 @@ export default async function handler(
     bossSign: newBBState.bossSign,
     usedSkillType,
     droppedItemId,
+    newMonsterAdj,
+    newBossAdj,
   });
 }

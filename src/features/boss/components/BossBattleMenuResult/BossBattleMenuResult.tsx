@@ -68,8 +68,9 @@ export const BossBattleMenuResult = ({
         className={clsx(
           className,
           "flex",
-          "mb-[10px]",
-          "h-[190px]",
+          "mb-[5px]",
+          "h-[140px]",
+          "md:mb-[10px]",
           "md:h-[250px]",
         )}
       >
