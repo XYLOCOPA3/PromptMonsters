@@ -10,7 +10,7 @@
   "bossUsedSkill": "bossName のスキル \"bossSkillName\" 。",
   "monsterDamage": "monsterName に monsterDamage ダメージ。",
   "droppedItem": "bossName は itemName を落とした。",
-  "continue": "戦闘を継続しますか？",
+  "continue": "モンスターとボスの攻撃力は、ターンが進むごとに強くなります。\nバトルはますます激しさを増していくでしょう。\n戦闘を継続しますか？",
   "continueNote": "*いいえで現在のスコアが登録されます。\n*ハイスコアが上書きされることはありません。",
   "no": "いいえ",
   "yes": "はい",
