@@ -57,6 +57,7 @@ export const Drawer = () => {
                 "left-0",
                 "bottom-0",
                 "bg-[#303339]",
+                "w-[40%]",
               )}
             >
               <Dialog.Panel>

@@ -1,8 +1,8 @@
 export enum EnumBossAction {
   none,
   oneHitKill,
-  attack,
   powerAttack,
+  attack,
   counterAttack,
   buff,
   debuff,

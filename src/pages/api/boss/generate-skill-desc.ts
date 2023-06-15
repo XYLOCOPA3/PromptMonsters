@@ -67,7 +67,6 @@ export default async function handler(
   // TODO: Unknownスキルのみ更新
 
   const prompt = getSkillTypePrompt(monsterExtension.skills);
-  console.log(prefixLog, prompt);
 
   // スキルタイプをGPTで生成
   let completion: any;
@@ -76,7 +75,7 @@ export default async function handler(
     try {
       console.log(prefixLog, errorCnt);
       completion = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
+        model: "gpt-3.5-turbo-0613",
         messages: [{ role: "user", content: prompt }],
         temperature: 0.2,
       });
@@ -131,6 +130,8 @@ export default async function handler(
       await new Promise((resolve) => setTimeout(resolve, ERROR_WAIT_TIME));
     }
   }
+
+  console.log(prefixLog, "skillTypes =", skillTypes);
 
   return res.status(200).json({ skillTypes });
 }

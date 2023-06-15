@@ -70,9 +70,6 @@ const _getBossBattleTweet = (
   bossBattle: BossBattleModel,
   boss: BossModel,
 ): string => {
-  // TODO: ハイスコアだったらハイスコア文章表示
-  const highScore = -1;
-
   return `Boss Battle!
 
 Boss: ${boss.name}

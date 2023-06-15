@@ -18,7 +18,7 @@ import {
   calcLifePoint,
   calcMonsterDamage,
   debuffMonster,
-  decideAction as decideBossAction,
+  decideBossAction,
   decideDroppedItem,
   decideOtherSkillType,
   judgeBossSkillHit,
@@ -51,9 +51,8 @@ export default async function handler(
   const bbeId = Number(process.env.BBE_ID);
   const prefixLog = `/boss/use-skill: ${resurrectionPrompt}:`;
 
-  // TODO: dev用
+  // TODO: 後で消す
   const devBBkParam = req.body.devBBkParam;
-  console.log(prefixLog, "devBBkParam = ", devBBkParam);
 
   const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
   const bossBattle = ServerBossBattle.instance(RPC_URL.mchVerse);
@@ -77,9 +76,6 @@ export default async function handler(
   const bbState = results[0];
   const monsterExtension = results[1][0];
   const boss = results[2];
-  console.log(prefixLog, "bbState = ", bbState);
-  console.log(prefixLog, "monsterExtension = ", monsterExtension);
-  console.log(prefixLog, "boss = ", boss);
 
   const usedItemId = EnumItem.none;
 
@@ -116,7 +112,6 @@ export default async function handler(
 
   // ボス行動確定
   const bossAction = decideBossAction(bbState.bossSign);
-  console.log(prefixLog, "bossAction = ", bossAction);
 
   // Otherスキル行動確定
   let otherSkillAction = EnumOtherSkillAction.none;
@@ -125,7 +120,6 @@ export default async function handler(
       monsterExtension.atk,
       monsterExtension.inte,
     );
-  console.log(prefixLog, "otherSkillAction = ", otherSkillAction);
 
   // 命中判定
   const monsterHit = judgeSkillHit(usedSkillType);
@@ -137,8 +131,6 @@ export default async function handler(
     false,
     false,
   );
-  console.log(prefixLog, "monsterHit = ", monsterHit);
-  console.log(prefixLog, "bossHit = ", bossHit);
 
   // ダメージ計算
   const bossDamage = calcBossDamage(
@@ -155,7 +147,6 @@ export default async function handler(
     bbState.turn,
     devBBkParam,
   );
-  console.log(prefixLog, "bossDamage = ", bossDamage);
 
   const monsterDamage = calcMonsterDamage(
     bossHit,
@@ -172,7 +163,6 @@ export default async function handler(
     false,
     devBBkParam,
   );
-  console.log(prefixLog, "monsterDamage = ", monsterDamage);
 
   // 回復計算
   const healing = calcHealing(
@@ -183,11 +173,9 @@ export default async function handler(
     bbState.monsterAdj,
     devBBkParam,
   );
-  console.log(prefixLog, "healing = ", healing);
 
   // lp計算
   const lp = calcLifePoint(bbState.lp, monsterDamage, healing);
-  console.log(prefixLog, "lp = ", lp);
 
   // バフ・デバフ計算
   let newMonsterAdj = bbState.monsterAdj;
@@ -196,8 +184,6 @@ export default async function handler(
   let newBossAdj = bbState.bossAdj;
   if (bossAction === EnumBossAction.buff && bossHit)
     newBossAdj = buffBoss(newBossAdj, devBBkParam);
-  console.log(prefixLog, "newMonsterAdj = ", newMonsterAdj);
-  console.log(prefixLog, "newBossAdj = ", newBossAdj);
 
   // アイテムドロップ判定
   let newHasBuffItem = bbState.hasBuffItem;
@@ -210,7 +196,6 @@ export default async function handler(
     newHasHealItem,
     newHasEscapeItem,
   );
-  console.log(prefixLog, "droppedItemId = ", droppedItemId);
   if (droppedItemId === EnumItem.buff) newHasBuffItem = true;
   if (droppedItemId === EnumItem.debuff) newHasDebuffItem = true;
   if (droppedItemId === EnumItem.healing) newHasHealItem = true;

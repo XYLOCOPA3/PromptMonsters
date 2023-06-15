@@ -9,8 +9,6 @@ import { MonsterAdj } from "@/types/MonsterAdj";
 import { ethers } from "ethers";
 
 export class ServerBossBattle {
-  private static _instance: ServerBossBattle;
-
   private constructor(private readonly _contract: BossBattle) {}
 
   /**
@@ -19,15 +17,12 @@ export class ServerBossBattle {
    * @return {ServerBossBattle} instance
    */
   public static instance(rpcURL: string): ServerBossBattle {
-    if (!this._instance) {
-      const wallet = ServerWallet.instance(rpcURL);
-      const contract = BossBattle__factory.connect(
-        process.env.NEXT_PUBLIC_BOSS_BATTLE_CONTRACT!,
-        wallet.signer,
-      );
-      this._instance = new ServerBossBattle(contract);
-    }
-    return this._instance;
+    const wallet = ServerWallet.getWallet(rpcURL);
+    const contract = BossBattle__factory.connect(
+      process.env.NEXT_PUBLIC_BOSS_BATTLE_CONTRACT!,
+      wallet,
+    );
+    return new ServerBossBattle(contract);
   }
 
   /**

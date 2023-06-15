@@ -30,6 +30,8 @@ contract Battle is
 
   uint256 public battleStamina;
 
+  bytes32 private GAME_ROLE;
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
@@ -246,7 +248,7 @@ contract Battle is
     uint256 winMonsterId,
     uint256 loseMonsterId,
     string memory battleLog
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  ) external onlyRole(GAME_ROLE) {
     promptMonsters.checkMonsterId(winMonsterId);
     promptMonsters.checkMonsterId(loseMonsterId);
     IBattleSeason(_battleSeasonsAddress[seasonId]).addBattleData(
@@ -266,4 +268,10 @@ contract Battle is
   function _authorizeUpgrade(
     address newImplementation
   ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
+
+  // TODO: 後で消す
+  /// @dev setGameRole
+  function setGameRole() external onlyRole(DEFAULT_ADMIN_ROLE) {
+    GAME_ROLE = keccak256("GAME_ROLE");
+  }
 }

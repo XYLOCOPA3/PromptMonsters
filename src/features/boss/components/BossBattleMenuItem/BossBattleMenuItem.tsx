@@ -6,6 +6,7 @@ import { useBossBattleState } from "@/hooks/useBossBattle";
 import { useLanguageValue } from "@/hooks/useLanguage";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
+import uuid from "react-uuid";
 
 export type BossBattleMenuItemProps = BaseProps;
 
@@ -56,7 +57,7 @@ export const BossBattleMenuItem = ({ className }: BossBattleMenuItemProps) => {
               return (
                 <>
                   <Button
-                    key={index}
+                    key={uuid()}
                     variant="bossBattle"
                     className={clsx(
                       "my-[2px]",

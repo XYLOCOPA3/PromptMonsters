@@ -18,7 +18,7 @@ export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
   // 共通 ここから ------------------------
   const handleKCommonTurnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kCommonTurn: Number(e.target.value) });
+      return prevState.copyWith({ kCommonTurn: e.target.value });
     });
   };
   // 共通 ここから ------------------------
@@ -26,31 +26,31 @@ export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
   // モンスター ここから ------------------------
   const handleKMonsterAtkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kMonsterAtk: Number(e.target.value) });
+      return prevState.copyWith({ kMonsterAtk: e.target.value });
     });
   };
 
   const handleKMonsterDefChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kMonsterDef: Number(e.target.value) });
+      return prevState.copyWith({ kMonsterDef: e.target.value });
     });
   };
 
   const handleKMonsterIntChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kMonsterInt: Number(e.target.value) });
+      return prevState.copyWith({ kMonsterInt: e.target.value });
     });
   };
 
   const handleKMonsterMgrChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kMonsterMgr: Number(e.target.value) });
+      return prevState.copyWith({ kMonsterMgr: e.target.value });
     });
   };
 
   const handleKMonsterBuffChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kMonsterBuff: Number(e.target.value) });
+      return prevState.copyWith({ kMonsterBuff: e.target.value });
     });
   };
 
@@ -58,7 +58,7 @@ export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kMonsterDebuff: Number(e.target.value) });
+      return prevState.copyWith({ kMonsterDebuff: e.target.value });
     });
   };
 
@@ -66,7 +66,7 @@ export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kMonsterPower: Number(e.target.value) });
+      return prevState.copyWith({ kMonsterPower: e.target.value });
     });
   };
 
@@ -74,7 +74,7 @@ export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kMonsterHealing: Number(e.target.value) });
+      return prevState.copyWith({ kMonsterHealing: e.target.value });
     });
   };
 
@@ -82,7 +82,7 @@ export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kMonsterWeakness: Number(e.target.value) });
+      return prevState.copyWith({ kMonsterWeakness: e.target.value });
     });
   };
   // モンスター ここまで ------------------------
@@ -90,43 +90,43 @@ export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
   // ボス ここから ------------------------
   const handleKBossAtkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kBossAtk: Number(e.target.value) });
+      return prevState.copyWith({ kBossAtk: e.target.value });
     });
   };
 
   const handleKBossDefChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kBossDef: Number(e.target.value) });
+      return prevState.copyWith({ kBossDef: e.target.value });
     });
   };
 
   const handleKBossIntChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kBossInt: Number(e.target.value) });
+      return prevState.copyWith({ kBossInt: e.target.value });
     });
   };
 
   const handleKBossMgrChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kBossMgr: Number(e.target.value) });
+      return prevState.copyWith({ kBossMgr: e.target.value });
     });
   };
 
   const handleKBossPowerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kBossPower: Number(e.target.value) });
+      return prevState.copyWith({ kBossPower: e.target.value });
     });
   };
 
   const handleKBossBuffChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kBossBuff: Number(e.target.value) });
+      return prevState.copyWith({ kBossBuff: e.target.value });
     });
   };
 
   const handleKBossDebuffChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kBossDebuff: Number(e.target.value) });
+      return prevState.copyWith({ kBossDebuff: e.target.value });
     });
   };
   // ボス ここまで ------------------------
