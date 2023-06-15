@@ -10,6 +10,8 @@ import { MonsterModel } from "@/models/MonsterModel";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
+import { useLanguageValue } from "@/hooks/useLanguage";
+import { SKILL_TYPE_NAME_SIMPLE } from "@/const/monster";
 
 export type BossBattleTweetButtonProps = BaseProps;
 
@@ -70,35 +72,27 @@ const _getBossBattleTweet = (
   bossBattle: BossBattleModel,
   boss: BossModel,
 ): string => {
+  const language = useLanguageValue();
   const skillsAndTypes = monster.skills.map((skill, index) => {
-    return `- ${skill}:${monster.skillTypes[index]}\n`;
+    return `- ${skill}: ${SKILL_TYPE_NAME_SIMPLE.get(monster.skillTypes[index]) ??
+      "???"}\n`;
   });
 
-  return `Boss Battle!
+  return `vs Boss Yoshka!
 
-Boss: ${boss.name}
-  vs
-You:  ${monster.name}
+Score: ${bossBattle.score}🎉
 
-------
-
-Your score is ... ${bossBattle.score} !!!
+With
+${monster.name}
 
 ${bossBattle.score > bossBattle.highScore
       ? "Congratulation!!!\nThis score is a high score!"
       : ""
-    }
-
-Your Monster
-${monster.name}
-HP:${monster.status.HP} / ATK:${monster.status.ATK} / DEF:${monster.status.DEF}
+    }HP:${monster.status.HP} / ATK:${monster.status.ATK} / DEF:${monster.status.DEF}
 INT:${monster.status.INT} / MGR:${monster.status.MGR} / AGL:${monster.status.AGL}
 
-Skills
-${skillsAndTypes}
-
-Let's play Prompt Monsters!
+${skillsAndTypes.join("")}
+Let's battle!
 https://prompt-monsters.com/
-
-#PromptMonsters #Alert`;
+#PromptMonsters #AIart #BCG`;
 };
