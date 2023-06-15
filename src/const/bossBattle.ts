@@ -205,9 +205,9 @@ export const ITEMS = {
       result: "LPが全回復した。",
     },
     {
-      name: "脱出プロンプト",
-      desc: "戦闘から逃げ出すことができる。",
-      result: "monsterName は戦闘から逃げ出した。",
+      name: "封印プロンプト",
+      desc: "ボスの攻撃を１ターンの間、封じる",
+      result: "bossName の攻撃を封じた",
     },
   ],
   English: [
@@ -227,9 +227,9 @@ export const ITEMS = {
       result: "LP was fully restored.",
     },
     {
-      name: "ESCAPE PROMPT",
-      desc: "You can escape from the battle.",
-      result: "monsterName escaped from the battle.",
+      name: "SEAL PROMPT",
+      desc: "Seals Boss's attack for 1 turn.",
+      result: "bossName's attack was sealed.",
     },
   ],
 };
