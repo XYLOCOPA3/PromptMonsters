@@ -71,7 +71,6 @@ const _getBossBattleTweet = (
   boss: BossModel,
 ): string => {
   // TODO: ハイスコアだったらハイスコア文章表示
-  const highScore = -1;
   return `Boss Battle!
 
 Boss: ${boss.name}
@@ -86,7 +85,7 @@ ${bossBattle.lp !== 0
     }
 
 ${bossBattle.lp !== 0
-      ? bossBattle.score > highScore
+      ? bossBattle.score > bossBattle.highScore
         ? "Congratulation!!!\nThis score is a high score!"
         : ""
       : "This time, you defeated...but waiting for the next challenge!"
