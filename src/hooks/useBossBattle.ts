@@ -13,6 +13,8 @@ import {
   generateSkillTypesIfNotSet,
   getBossSkill,
   getResultMsgIds,
+  isBuffDebuffBoss,
+  isBuffDebuffMonster,
   isDamageBoss,
   isDamageMonster,
   isHealMonster,
@@ -24,6 +26,8 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 let gCurrentMonsterDamage = 0;
 let gCurrentBossDamage = 0;
 let gCurrentHealing = 0;
+let gMonsterAdj = 0;
+let gBossAdj = 0;
 
 export interface BossBattleController {
   init: (monster: MonsterModel) => Promise<number[]>;
@@ -93,6 +97,8 @@ export const useBossBattleController = (): BossBattleController => {
         lp: bbState.lp,
         turn: bbState.turn,
         score: bbState.score,
+        monsterAdj: bbState.monsterAdj,
+        bossAdj: bbState.bossAdj,
         bossSign: bbState.bossSign,
         hasBuffItem: bbState.hasBuffItem,
         hasDebuffItem: bbState.hasDebuffItem,
@@ -174,10 +180,14 @@ export const useBossBattleController = (): BossBattleController => {
     const usedSkillType = res.data.usedSkillType;
     const droppedItemId = res.data.droppedItemId;
     const defensed = false;
+    const newMonsterAdj = res.data.newMonsterAdj;
+    const newBossAdj = res.data.newBossAdj;
 
     gCurrentMonsterDamage = monsterDamage;
     gCurrentBossDamage = bossDamage;
     gCurrentHealing = healing;
+    gMonsterAdj = newMonsterAdj;
+    gBossAdj = newBossAdj;
 
     let newResultMsgIds = getResultMsgIds(
       EnumItem.none,
@@ -251,10 +261,14 @@ export const useBossBattleController = (): BossBattleController => {
     const usedSkillType = res.data.usedSkillType;
     const droppedItemId = res.data.droppedItemId;
     const defensed = true;
+    const newMonsterAdj = res.data.newMonsterAdj;
+    const newBossAdj = res.data.newBossAdj;
 
     gCurrentMonsterDamage = monsterDamage;
     gCurrentBossDamage = bossDamage;
     gCurrentHealing = healing;
+    gMonsterAdj = newMonsterAdj;
+    gBossAdj = newBossAdj;
 
     setBossBattle((prevState) => {
       let newResultMsgIds = getResultMsgIds(
@@ -322,10 +336,14 @@ export const useBossBattleController = (): BossBattleController => {
     const usedSkillType = res.data.usedSkillType;
     const droppedItemId = res.data.droppedItemId;
     const defensed = false;
+    const newMonsterAdj = res.data.newMonsterAdj;
+    const newBossAdj = res.data.newBossAdj;
 
     gCurrentMonsterDamage = monsterDamage;
     gCurrentBossDamage = bossDamage;
     gCurrentHealing = healing;
+    gMonsterAdj = newMonsterAdj;
+    gBossAdj = newBossAdj;
 
     setBossBattle((prevState) => {
       let newResultMsgIds = getResultMsgIds(
@@ -382,11 +400,18 @@ export const useBossBattleController = (): BossBattleController => {
       const newResultMsgIds = prevState.resultMsgIds.filter(
         (_, index) => index !== lastIndex,
       );
+
       let newLp = prevState.lp;
       if (isHealMonster(prevResultMsgId)) newLp += gCurrentHealing;
       if (isDamageMonster(prevResultMsgId)) newLp -= gCurrentMonsterDamage;
       if (newLp < 0) newLp = 0;
       if (newLp > MAX_LIFE_POINT) newLp = MAX_LIFE_POINT;
+
+      let newMonsterAdj = prevState.monsterAdj;
+      if (isBuffDebuffMonster(prevResultMsgId)) newMonsterAdj = gMonsterAdj;
+      let newBossAdj = prevState.monsterAdj;
+      if (isBuffDebuffBoss(prevResultMsgId)) newBossAdj = gBossAdj;
+
       return prevState.copyWith({
         phase:
           newLp === 0
@@ -400,6 +425,8 @@ export const useBossBattleController = (): BossBattleController => {
           : prevState.score,
         lp: newLp,
         defeated: newLp === 0,
+        monsterAdj: newMonsterAdj,
+        bossAdj: newBossAdj,
       });
       // TODO: 脱出アイテムの仕様次第でこっち使う
       // return prevState.copyWith({
@@ -516,23 +543,10 @@ export const useBossBattleState = (): [
   BossBattleController,
 ] => [useBossBattleValue(), useBossBattleController()];
 
-const _getBossActionResult = async (): Promise<any> => {
-  // TODO: ボスの行動をリクエスト
-  const usedBossSkill = "ギャラクティック・メテオストーム";
-  const monsterDamage = 100;
-  const droppedItemId = 0;
-  const bossNextActionSignIndex = 0;
-
-  return {
-    usedBossSkill,
-    monsterDamage,
-    droppedItemId,
-    bossNextActionSignIndex,
-  };
-};
-
 const _initGlobalParam = (): void => {
   gCurrentMonsterDamage = 0;
   gCurrentBossDamage = 0;
   gCurrentHealing = 0;
+  gMonsterAdj = 0;
+  gBossAdj = 0;
 };

@@ -21,6 +21,8 @@ export class BossBattleModel extends BaseModel<string> {
     public readonly lp: number = 400,
     public readonly turn: number = 0,
     public readonly score: number = 0,
+    public readonly monsterAdj: number = 0,
+    public readonly bossAdj: number = 0,
     public readonly bossSign: number = 0,
     public readonly hasBuffItem: boolean = false,
     public readonly hasDebuffItem: boolean = false,
