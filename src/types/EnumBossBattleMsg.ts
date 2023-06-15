@@ -23,4 +23,5 @@ export enum EnumBossBattleMsg {
   bossDebuff,
   bossDefense,
   droppedItem,
+  defeated,
 }

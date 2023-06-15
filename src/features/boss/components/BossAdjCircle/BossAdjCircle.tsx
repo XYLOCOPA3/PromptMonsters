@@ -2,6 +2,7 @@ import {
   BOSS_ADJ_STD,
   FIRST_TURN,
   K_TURN,
+  MAX_LIFE_POINT,
   MAX_TURN_ADJ,
 } from "@/const/bossBattle";
 import { useBossBattleValue } from "@/hooks/useBossBattle";
@@ -40,20 +41,14 @@ export const BossAdjCircle = ({ className }: BossAdjCircleProps) => {
         "w-[40px]",
         "h-[40px]",
         "text-[14px]",
+        bossBattle.lp < MAX_LIFE_POINT / 4 ? "text-[#FCA7A4]" : "",
+        bossBattle.lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
         "md:w-[50px]",
         "md:h-[50px]",
         "md:text-[16px]",
       )}
     >
-      <span
-        className={clsx(
-          bossAdj > BOSS_ADJ_STD
-            ? "text-[#f86868]"
-            : bossAdj < BOSS_ADJ_STD
-            ? "text-[#79FF63]"
-            : "",
-        )}
-      >
+      <span className={clsx(bossAdj > BOSS_ADJ_STD ? "text-[#f86868]" : "")}>
         {bossAdj}
       </span>
     </div>

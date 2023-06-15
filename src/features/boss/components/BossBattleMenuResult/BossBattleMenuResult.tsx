@@ -10,6 +10,7 @@ import {
   getBossPreCounterAttackMsg,
   getBossUsedSkillMsg,
   getBuffDebuffBossMissMsg,
+  getDefeatedMsg,
   getDefensedMsg,
   getDroppedItemMsg,
   getItemUseResultMsg,
@@ -144,6 +145,8 @@ const ResultMsg = () => {
       return <BossDefenseMsg />;
     case EnumBossBattleMsg.droppedItem:
       return <DroppedItemMsg />;
+    case EnumBossBattleMsg.defeated:
+      return <DefeatedMsg />;
     default:
       return <></>;
   }
@@ -536,5 +539,16 @@ const DroppedItemMsg = () => {
         tBossBattle("droppedItem"),
       )}
     </>
+  );
+};
+
+const DefeatedMsg = () => {
+  const monster = useMonsterValue();
+  const { t: tBossBattle } = useTranslation("boss-battle");
+
+  return (
+    <div className={clsx("whitespace-pre-wrap")}>
+      {getDefeatedMsg(monster.name, tBossBattle("defeated"))}
+    </div>
   );
 };

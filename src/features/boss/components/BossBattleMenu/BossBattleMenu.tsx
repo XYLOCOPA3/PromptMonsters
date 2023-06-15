@@ -68,12 +68,11 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
   };
 
   useLayoutEffectOfSSR(() => {
-    if (bossBattle.phase === EnumBossBattlePhase.end) setIsOpen(true);
+    if (bossBattle.phase === EnumBossBattlePhase.end) {
+      end();
+      setIsOpen(true);
+    }
   }, [bossBattle.phase]);
-
-  useLayoutEffectOfSSR(() => {
-    if (bossBattle.lp <= 0) end();
-  }, [bossBattle.lp]);
 
   if (boss.name === "" || boss.flavor === "") return <></>;
   return (
