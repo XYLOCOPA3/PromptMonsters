@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { MAX_LIFE_POINT } from "@/const/bossBattle";
 import {
@@ -10,17 +11,19 @@ import {
   BossBattleOKButton,
   BossBattleTweetButton,
 } from "@/features/boss";
+import { MonsterMintButton } from "@/features/monster";
 import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleState } from "@/hooks/useBossBattle";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { disableState } from "@/stores/disableState";
+import { monsterMintedState } from "@/stores/monsterMintedState";
 import { BaseProps } from "@/types/BaseProps";
 import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
 import { Dialog, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export type BossBattleMenuProps = BaseProps;
 
@@ -32,15 +35,13 @@ export type BossBattleMenuProps = BaseProps;
 export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
   const boss = useBossValue();
   const monster = useMonsterValue();
+  const monsterMinted = useRecoilValue(monsterMintedState);
   const setDisable = useSetRecoilState(disableState);
   const [bossBattle, bossBattleController] = useBossBattleState();
   const [isOpen, setIsOpen] = useState(false);
-  const { push } = useRouter();
+  const { push, locale } = useRouter();
   const { t: tBossBattle } = useTranslation("boss-battle");
   const { t: tCommon } = useTranslation("common");
-
-  // TODO: ハイスコア取得
-  const highScore = -1;
 
   const closeModal = () => {
     setIsOpen(false);
@@ -87,11 +88,12 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
           "md:text-[16px]",
         )}
       >
-        <HighScore />
+        <HighScore highScore={bossBattle.highScore} />
         <TurnAndScore
           turn={bossBattle.turn}
           score={bossBattle.score}
           lp={bossBattle.lp}
+          highScore={bossBattle.highScore}
         />
         <MonsterNameAndUserLifePoint
           name={monster.name}
@@ -133,7 +135,10 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                           "md:text-[32px]",
                         )}
                       >
-                        {tBossBattle("score")}
+                        {bossBattle.score > bossBattle.highScore &&
+                        !bossBattle.defeated
+                          ? `${tBossBattle("highScore")}!!!`
+                          : tBossBattle("score")}
                       </div>
                       <BossBattleTweetButton className={clsx("mr-[10px]")} />
                     </div>
@@ -143,7 +148,7 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                         "text-[72px]",
                         bossBattle.defeated
                           ? "text-[#f86868]"
-                          : bossBattle.lp > highScore
+                          : bossBattle.score > bossBattle.highScore
                           ? "text-[#79FF63]"
                           : "",
                         "text-center",
@@ -153,8 +158,19 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                       {bossBattle.defeated ? 0 : bossBattle.score}
                     </div>
                     <div
-                      className={clsx("flex", "justify-end", "items-center")}
+                      className={clsx(
+                        "flex",
+                        monsterMinted ? "justify-end" : "justify-between",
+                        "items-center",
+                      )}
                     >
+                      {monsterMinted ? (
+                        <></>
+                      ) : (
+                        <MonsterMintButton
+                          className={clsx("h-[41px]", "md:h-[50px]")}
+                        />
+                      )}
                       <BossBattleOKButton
                         className={clsx(
                           "px-[20px]",
@@ -165,6 +181,36 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                         onClick={closeModal}
                       />
                     </div>
+                    {monsterMinted ? (
+                      <></>
+                    ) : (
+                      <div
+                        className={clsx(
+                          "mt-[10px]",
+                          "font-bold",
+                          "text-[13px]",
+                          "md:text-[16px]",
+                        )}
+                      >
+                        {tBossBattle("mint")}
+                        <Link
+                          className={clsx(
+                            "text-blue-500",
+                            "hover:underline",
+                            "font-bold",
+                          )}
+                          href={
+                            locale === "ja"
+                              ? "https://promptmonsters.substack.com/p/mchyoshka?r=2coxjj&utm_campaign=post&utm_medium=web"
+                              : "https://promptmonsters.substack.com/p/new-mode-collaboration-campaignintroducing"
+                          }
+                          target="_blank"
+                        >
+                          {` ${tBossBattle("campaign")} `}
+                        </Link>
+                        {tBossBattle("join")}
+                      </div>
+                    )}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
@@ -179,13 +225,12 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
 /**
  * HighScore
  */
-const HighScore = () => {
-  // TODO: ハイスコアコントラクトから取ってくる
+const HighScore = ({ highScore }: any) => {
   const { t: tBossBattle } = useTranslation("boss-battle");
   return (
     <div className={clsx("flex", "mb-[2px]")}>
       <div className={clsx("px-[10px]", "text-end", "w-[100%]")}>
-        {tBossBattle("highScore")}: {100}
+        {tBossBattle("highScore")}: {highScore}
       </div>
     </div>
   );
@@ -194,8 +239,7 @@ const HighScore = () => {
  * Boss battle score
  * @param score score
  */
-const TurnAndScore = ({ turn, score, lp }: any) => {
-  // TODO: ハイスコア超えたら黄金色にする
+const TurnAndScore = ({ turn, score, lp, highScore }: any) => {
   const { t: tBossBattle } = useTranslation("boss-battle");
   return (
     <div className={clsx("flex", "mb-[10px]")}>
@@ -227,7 +271,10 @@ const TurnAndScore = ({ turn, score, lp }: any) => {
           lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
         )}
       >
-        {tBossBattle("score")}: {score}
+        {tBossBattle("score")}:{" "}
+        <span className={clsx(score > highScore ? "text-[#79FF63]" : "")}>
+          {score}
+        </span>
       </div>
     </div>
   );

@@ -16,6 +16,7 @@ export class BossBattleModel extends BaseModel<string> {
    * ```
    */
   private constructor(
+    // BBState -----------------------------------------------
     public readonly bossBattleStarted: boolean = false,
     public readonly lp: number = 400,
     public readonly turn: number = 0,
@@ -25,6 +26,7 @@ export class BossBattleModel extends BaseModel<string> {
     public readonly hasDebuffItem: boolean = false,
     public readonly hasHealItem: boolean = false,
     public readonly hasEscapeItem: boolean = false,
+    // その他 -----------------------------------------------
     public readonly phase: EnumBossBattlePhase = EnumBossBattlePhase.start,
     public readonly usedMonsterSkill: string = "",
     public readonly currentBossDamage: number = 0,
@@ -40,6 +42,7 @@ export class BossBattleModel extends BaseModel<string> {
     public readonly itemIds: number[] = [],
     public readonly usedItemId: number = -1,
     public readonly defeated: boolean = false,
+    public readonly highScore: number = 0,
   ) {
     super("");
   }

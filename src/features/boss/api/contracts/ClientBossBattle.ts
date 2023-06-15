@@ -79,6 +79,18 @@ export class ClientBossBattle {
   };
 
   /**
+   * getHighScores
+   * @return {Promise<number[]>} highScores
+   */
+  getHighScores = async (resurrectionPrompts: string[]): Promise<number[]> => {
+    return await this._reader.getHighScores(
+      this._eventKey,
+      this._bbeId,
+      resurrectionPrompts,
+    );
+  };
+
+  /**
    * toBBState
    * @return {BBState} bbState
    */
