@@ -3,11 +3,9 @@ import { Background } from "@/components/elements/Background";
 import { Spinner } from "@/components/elements/Spinner";
 import { BossAdjCircle, BossImage } from "@/features/boss";
 import { BossBattleMenu } from "@/features/boss";
-import { ClientBossBattle } from "@/features/boss/api/contracts/ClientBossBattle";
 import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleValue } from "@/hooks/useBossBattle";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
-import { useMonsterValue } from "@/hooks/useMonster";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 
@@ -17,17 +15,14 @@ import { useTranslation } from "react-i18next";
  */
 export const MainBossBattle = () => {
   const boss = useBossValue();
-  const monster = useMonsterValue();
   const bossBattle = useBossBattleValue();
 
   const { push } = useRouter();
   const { t: tBossBattle } = useTranslation("boss-battle");
 
   const pushToBossIfNotStarted = async () => {
-    if (monster.resurrectionPrompt === "") return;
-    const bossBattle = await ClientBossBattle.instance();
-    const bbState = await bossBattle.getBBState(monster.resurrectionPrompt);
-    if (!bbState.bossBattleStarted) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (!bossBattle.bossBattleStarted) {
       alert(tBossBattle("invalidStarted"));
       push("/boss");
     }
@@ -35,7 +30,7 @@ export const MainBossBattle = () => {
 
   useLayoutEffectOfSSR(() => {
     pushToBossIfNotStarted();
-  }, [monster.resurrectionPrompt]);
+  }, []);
 
   if (boss.name === "" || !bossBattle.bossBattleStarted) {
     return (

@@ -20,6 +20,7 @@ import {
   getMonsterOtherPhysicalAttack,
   getMonsterOtherPowerPhysicalAttack,
   getMonsterUsedSkillMsg,
+  getUsedBossSubActionMsg,
   getUsedItemMsg,
 } from "@/features/boss/utils/utils";
 import { useBossValue } from "@/hooks/useBoss";
@@ -134,8 +135,9 @@ const ResultMsg = () => {
     case EnumBossBattleMsg.bossOneHitKill:
       return <BossOneHitKillMsg />;
     case EnumBossBattleMsg.bossAttack:
-    case EnumBossBattleMsg.bossPowerAttack:
       return <BossAttackMsg />;
+    case EnumBossBattleMsg.bossPowerAttack:
+      return <BossPowerAttackMsg />;
     case EnumBossBattleMsg.bossPreCounterAttack:
       return <BossPreCounterAttackMsg />;
     case EnumBossBattleMsg.bossCounterAttack:
@@ -150,6 +152,8 @@ const ResultMsg = () => {
       return <DroppedItemMsg />;
     case EnumBossBattleMsg.defeated:
       return <DefeatedMsg />;
+    case EnumBossBattleMsg.bossSubAction:
+      return <BossSubActionMsg />;
     default:
       return <></>;
   }
@@ -160,6 +164,7 @@ const MonsterFightAttackMsg = () => {
   const boss = useBossValue();
   const bossBattle = useBossBattleValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return (
     <>
       {getMonsterUsedSkillMsg(
@@ -184,6 +189,7 @@ const MonsterFightHealMsg = () => {
   const monster = useMonsterValue();
   const bossBattle = useBossBattleValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return (
     <>
       {getMonsterUsedSkillMsg(
@@ -206,6 +212,7 @@ const MonsterFightOtherPhysicalAttackMsg = () => {
   const boss = useBossValue();
   const bossBattle = useBossBattleValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return (
     <>
       {getMonsterUsedSkillMsg(
@@ -237,6 +244,7 @@ const MonsterFightOtherSpecialAttackMsg = () => {
   const boss = useBossValue();
   const bossBattle = useBossBattleValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return (
     <>
       {getMonsterUsedSkillMsg(
@@ -264,6 +272,7 @@ const MonsterFightOtherPowerPhysicalAttackMsg = () => {
   const boss = useBossValue();
   const bossBattle = useBossBattleValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return (
     <>
       {getMonsterUsedSkillMsg(
@@ -294,6 +303,7 @@ const MonsterFightOtherPowerSpecialAttackMsg = () => {
   const boss = useBossValue();
   const bossBattle = useBossBattleValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return (
     <>
       {getMonsterUsedSkillMsg(
@@ -320,6 +330,7 @@ const MonsterFightOtherDefenseMsg = () => {
   const monster = useMonsterValue();
   const bossBattle = useBossBattleValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return (
     <>
       {getMonsterUsedSkillMsg(
@@ -337,6 +348,7 @@ const MonsterFightOtherHealMsg = () => {
   const monster = useMonsterValue();
   const bossBattle = useBossBattleValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return (
     <>
       {getMonsterUsedSkillMsg(
@@ -384,12 +396,13 @@ const BossOneHitKillMsg = () => {
   const boss = useBossValue();
   const bossBattle = useBossBattleValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return (
     <>
       {getBossUsedSkillMsg(
         boss.name,
         bossBattle.usedBossSkill,
-        tBossBattle("bossUsedSkill"),
+        tBossBattle("bossUsedOneHitKillSkill"),
       )}
       <br />
       {bossBattle.currentBossHit
@@ -409,12 +422,39 @@ const BossAttackMsg = () => {
   const boss = useBossValue();
   const bossBattle = useBossBattleValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return (
     <>
       {getBossUsedSkillMsg(
         boss.name,
         bossBattle.usedBossSkill,
-        tBossBattle("bossUsedSkill"),
+        tBossBattle("bossUsedAttackSkill"),
+      )}
+      <br />
+      {bossBattle.currentBossHit
+        ? getBossDamagedMsg(
+            boss.name,
+            bossBattle.currentMonsterDamage,
+            monster.name,
+            tBossBattle("monsterDamage"),
+          )
+        : tBossBattle("bossMiss")}
+    </>
+  );
+};
+
+const BossPowerAttackMsg = () => {
+  const monster = useMonsterValue();
+  const boss = useBossValue();
+  const bossBattle = useBossBattleValue();
+  const { t: tBossBattle } = useTranslation("boss-battle");
+
+  return (
+    <>
+      {getBossUsedSkillMsg(
+        boss.name,
+        bossBattle.usedBossSkill,
+        tBossBattle("bossUsedPowerAttackSkill"),
       )}
       <br />
       {bossBattle.currentBossHit
@@ -432,6 +472,7 @@ const BossAttackMsg = () => {
 const BossPreCounterAttackMsg = () => {
   const boss = useBossValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return (
     <>
       {getBossPreCounterAttackMsg(
@@ -447,12 +488,13 @@ const BossCounterAttackMsg = () => {
   const boss = useBossValue();
   const bossBattle = useBossBattleValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return (
     <>
       {getBossUsedSkillMsg(
         boss.name,
         bossBattle.usedBossSkill,
-        tBossBattle("bossUsedSkill"),
+        tBossBattle("bossUsedCounterAttackSkill"),
       )}
       <br />
       {bossBattle.currentBossHit
@@ -469,8 +511,10 @@ const BossCounterAttackMsg = () => {
 
 const BossBuffMsg = () => {
   const boss = useBossValue();
+  const monster = useMonsterValue();
   const bossBattle = useBossBattleValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return (
     <>
       {bossBattle.currentBossHit ? (
@@ -478,13 +522,17 @@ const BossBuffMsg = () => {
           {getBossUsedSkillMsg(
             boss.name,
             bossBattle.usedBossSkill,
-            tBossBattle("bossUsedSkill"),
+            tBossBattle("bossUsedBuffSkill"),
           )}
           <br />
           {getBossBuffMsg(boss.name, tBossBattle("bossBuff"))}
         </>
       ) : (
-        getBuffDebuffBossMissMsg(boss.name, tBossBattle("bossBuffDebuffMiss"))
+        getBuffDebuffBossMissMsg(
+          boss.name,
+          monster.name,
+          tBossBattle("bossBuffMiss"),
+        )
       )}
     </>
   );
@@ -495,6 +543,7 @@ const BossDebuffMsg = () => {
   const boss = useBossValue();
   const bossBattle = useBossBattleValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return (
     <>
       {bossBattle.currentBossHit ? (
@@ -502,13 +551,17 @@ const BossDebuffMsg = () => {
           {getBossUsedSkillMsg(
             boss.name,
             bossBattle.usedBossSkill,
-            tBossBattle("bossUsedSkill"),
+            tBossBattle("bossUsedDebuffSkill"),
           )}
           <br />
           {getBossDebuffMsg(monster.name, tBossBattle("bossDebuff"))}
         </>
       ) : (
-        getBuffDebuffBossMissMsg(boss.name, tBossBattle("bossBuffDebuffMiss"))
+        getBuffDebuffBossMissMsg(
+          boss.name,
+          monster.name,
+          tBossBattle("bossDebuffMiss"),
+        )
       )}
     </>
   );
@@ -517,6 +570,7 @@ const BossDebuffMsg = () => {
 const BossDefenseMsg = () => {
   const boss = useBossValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return <>{getBossDefensedMsg(boss.name, tBossBattle("bossDefensed"))}</>;
 };
 
@@ -556,6 +610,17 @@ const MonsterItemEscapeNextMsg = () => {
   return (
     <div className={clsx("whitespace-pre-wrap")}>
       {getEscapeNextMsg(boss.name, tBossBattle("escapeNext"))}
+    </div>
+  );
+};
+
+const BossSubActionMsg = () => {
+  const boss = useBossValue();
+  const { t: tBossBattle } = useTranslation("boss-battle");
+
+  return (
+    <div className={clsx("whitespace-pre-wrap")}>
+      {getUsedBossSubActionMsg(boss.name, tBossBattle("usedBossSubAction"))}
     </div>
   );
 };
