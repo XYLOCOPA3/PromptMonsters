@@ -85,8 +85,9 @@ export const BossBattleMenuStart = ({
           "rounded-lg",
           "border-[1px]",
           "text-center",
-          "mr-[10px]",
+          "mr-[5px]",
           bossBattle.lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
+          "md:mr-[10px]",
         )}
       >
         <div className={clsx("flex", "flex-col")}>

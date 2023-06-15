@@ -3,6 +3,10 @@ import {
   BOSS_BUFF_SEL_RATE,
   BOSS_CATK_SEL_RATE,
   BOSS_DEBUFF_SEL_RATE,
+  BOSS_ITEM_BUFF_DROPPED_RATE,
+  BOSS_ITEM_DEBUFF_DROPPED_RATE,
+  BOSS_ITEM_ESCAPE_DROPPED_RATE,
+  BOSS_ITEM_HEALING_DROPPED_RATE,
   BOSS_MAIN_SEL_RATE,
   BOSS_OHK_SEL_RATE,
   BOSS_PTAK_SEL_RATE,
@@ -999,10 +1003,14 @@ export const decideDroppedItem = (
   hasEscapeItem: boolean,
 ): EnumItem => {
   const random = Math.floor(Math.random() * 100);
-  if (random < 12 && !hasBuffItem) return EnumItem.buff;
-  if (12 <= random && random < 24 && !hasDebuffItem) return EnumItem.debuff;
-  if (24 <= random && random < 36 && !hasHealItem) return EnumItem.healing;
-  if (36 <= random && random < 40 && !hasEscapeItem) return EnumItem.escape;
+  let droppedRate = BOSS_ITEM_BUFF_DROPPED_RATE;
+  if (random < droppedRate && !hasBuffItem) return EnumItem.buff;
+  droppedRate += BOSS_ITEM_DEBUFF_DROPPED_RATE;
+  if (random < droppedRate && !hasDebuffItem) return EnumItem.debuff;
+  droppedRate += BOSS_ITEM_HEALING_DROPPED_RATE;
+  if (random < droppedRate && !hasHealItem) return EnumItem.healing;
+  droppedRate += BOSS_ITEM_ESCAPE_DROPPED_RATE;
+  if (random < droppedRate && !hasEscapeItem) return EnumItem.escape;
   return EnumItem.none;
 };
 
@@ -1022,6 +1030,20 @@ export const isHealMonster = (prevResultMsgId: number): boolean => {
   if (p === EnumBossBattleMsg.monsterFightHeal) return true;
   if (p === EnumBossBattleMsg.monsterFightOtherHeal) return true;
   if (p === EnumBossBattleMsg.monsterItemHeal) return true;
+  return false;
+};
+
+export const isBuffDebuffMonster = (prevResultMsgId: number): boolean => {
+  const p = prevResultMsgId;
+  if (p === EnumBossBattleMsg.monsterItemBuff) return true;
+  if (p === EnumBossBattleMsg.bossDebuff) return true;
+  return false;
+};
+
+export const isBuffDebuffBoss = (prevResultMsgId: number): boolean => {
+  const p = prevResultMsgId;
+  if (p === EnumBossBattleMsg.bossBuff) return true;
+  if (p === EnumBossBattleMsg.monsterItemDebuff) return true;
   return false;
 };
 

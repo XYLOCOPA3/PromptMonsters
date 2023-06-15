@@ -19,7 +19,7 @@ export const BossImage = ({ className }: BossImageProps) => {
       className={clsx(
         className,
         "rounded-2xl",
-        "w-[300px]",
+        "w-[250px]",
         "h-auto",
         "md:w-[450px]",
       )}

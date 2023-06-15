@@ -14,6 +14,11 @@ export const BOSS_BUFF_SEL_RATE = 10;
 export const BOSS_DEBUFF_SEL_RATE = 10;
 export const BOSS_DEF_SEL_RATE = 10;
 
+export const BOSS_ITEM_BUFF_DROPPED_RATE = 12;
+export const BOSS_ITEM_DEBUFF_DROPPED_RATE = 12;
+export const BOSS_ITEM_HEALING_DROPPED_RATE = 12;
+export const BOSS_ITEM_ESCAPE_DROPPED_RATE = 4;
+
 export const BOSS_MAIN_SEL_RATE = 70;
 
 export const FIRST_TURN = 1;

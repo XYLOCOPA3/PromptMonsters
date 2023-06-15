@@ -29,9 +29,10 @@ export const BossBattleMenuContinue = ({
         className={clsx(
           className,
           "flex",
-          "mb-[10px]",
-          "h-[190px]",
+          "mb-[5px]",
+          "h-[140px]",
           "md:h-[250px]",
+          "md:mb-[10px]",
         )}
       >
         <div
@@ -46,15 +47,7 @@ export const BossBattleMenuContinue = ({
             "overflow-y-scroll",
           )}
         >
-          <div className={"whitespace-pre-wrap"}>
-            {tBossBattle("continue")}
-          </div>
-          <br />
-          <br />
-          <br />
-          <div className={clsx("whitespace-pre-wrap", "font-normal")}>
-            {tBossBattle("continueNote")}
-          </div>
+          <div className={"whitespace-pre-wrap"}>{tBossBattle("continue")}</div>
         </div>
       </div>
       <div className={clsx("flex", "justify-between", "my-[5px]")}>
