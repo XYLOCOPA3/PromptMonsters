@@ -5,7 +5,7 @@ import { Drawer } from "@/components/elements/Drawer";
 import { mchVerse } from "@/const/chainParams";
 import { DevComponents } from "@/dev/components/DevComponents";
 import { AutoLogin } from "@/features/auth";
-import { BossInit } from "@/features/boss";
+import { BossEventInit, BossInit } from "@/features/boss";
 import { TwitterIcon } from "@/features/lp";
 import {
   MonsterInit,
@@ -286,15 +286,17 @@ const App = ({ Component, pageProps }: AppProps) => {
             <AutoLogin>
               <MonsterMintPriceInit>
                 <OwnedMonstersInit>
-                  <BossInit>
-                    <MonsterInit>
-                      {/* TODO: 後で消す */}
-                      <DevComponents />
-                      <TwitterIcon />
-                      <Drawer />
-                      <Component {...pageProps} />
-                    </MonsterInit>
-                  </BossInit>
+                  <BossEventInit>
+                    <BossInit>
+                      <MonsterInit>
+                        {/* TODO: 後で消す */}
+                        <DevComponents />
+                        <TwitterIcon />
+                        <Drawer />
+                        <Component {...pageProps} />
+                      </MonsterInit>
+                    </BossInit>
+                  </BossEventInit>
                 </OwnedMonstersInit>
               </MonsterMintPriceInit>
             </AutoLogin>

@@ -40,5 +40,6 @@
   "invalidStarted": "「たたかう」を押して始めてください。",
   "mint": "ミントして",
   "campaign": "キャンペーン",
-  "join": "に参加しよう！"
+  "join": "に参加しよう！",
+  "havingWeakFeature": "monsterName は bossName の弱点特徴、 \"weakFeature\" を持っている！\nmonsterName のステータスが上昇した！！！"
 }

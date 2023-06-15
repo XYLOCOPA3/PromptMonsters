@@ -40,5 +40,6 @@
   "invalidStarted": "You should push \"FIGHT\" button to start the boss battle.",
   "mint": "Mint and join the ",
   "campaign": "campaign",
-  "join": "!"
+  "join": "!",
+  "havingWeakFeature": "monsterName has a weakness feature, \"weakFeature\", against bossName!\nmonsterName's stats have increased!!!"
 }

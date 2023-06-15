@@ -1,5 +1,4 @@
 export const MAX_LIFE_POINT = 400;
-export const BOSS_BATTLE_START = 1;
 export const MAX_MONSTER_DAMAGE = 350;
 
 export const MAX_MONSTER_ADJ = 400;

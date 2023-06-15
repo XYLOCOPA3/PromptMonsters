@@ -19,7 +19,6 @@ import {
 import { DevBBKState } from "@/dev/stores/devBBkParamState";
 import { ClientBossBattle } from "@/features/boss/api/contracts/ClientBossBattle";
 import { MonsterModel } from "@/models/MonsterModel";
-import { IPromptMonstersExtension } from "@/typechain/PromptMonsters";
 import { BBState } from "@/types/BBState";
 import { EnumBossAction } from "@/types/EnumBossAction";
 import { EnumBossBattleMsg } from "@/types/EnumBossBattleMsg";
@@ -75,15 +74,20 @@ export const generateMonsterAdjIfNotSet = async (
 };
 
 export const hasBossWeaknessFeatures = (
-  monster: IPromptMonstersExtension.MonsterExtensionStructOutput,
   eventKey: EventKey,
-): boolean => {
+  feature: string,
+  name: string,
+  flavor: string,
+): RegExpMatchArray | null => {
   const weaknessFeatures = BOSS_WEAKNESS_FEATURES[eventKey];
-  const pattern = new RegExp(weaknessFeatures);
-  if (pattern.test(monster.feature)) return true;
-  if (pattern.test(monster.name)) return true;
-  if (pattern.test(monster.flavor)) return true;
-  return false;
+  const pattern = new RegExp(`(${weaknessFeatures})`, "gi");
+  let matches = feature.match(pattern);
+  if (matches !== null) return matches;
+  matches = name.match(pattern);
+  if (matches !== null) return matches;
+  matches = flavor.match(pattern);
+  if (matches !== null) return matches;
+  return matches;
 };
 
 export const startBossBattle = async (
