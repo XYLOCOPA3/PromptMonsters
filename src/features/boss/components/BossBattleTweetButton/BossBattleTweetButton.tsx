@@ -80,17 +80,16 @@ const _getBossBattleTweet = (
 
   return `vs Boss Yoshka!
 
-Score: ${bossBattle.score}🎉
+${bossBattle.lp !== 0
+      ? `Score : ${bossBattle.score}🎉`
+      : `Score : ${bossBattle.score}\nYou lose...`}
 
 With
 ${monster.name}
 
-${bossBattle.score > bossBattle.highScore
-      ? "Congratulation!!!\nThis score is a high score!"
-      : ""
-    }HP:${monster.status.HP} / ATK:${monster.status.ATK} / DEF:${monster.status.DEF}
+HP:${monster.status.HP} / ATK:${monster.status.ATK} / DEF:${monster.status.DEF}
 INT:${monster.status.INT} / MGR:${monster.status.MGR} / AGL:${monster.status.AGL}
-
+    
 ${skillsAndTypes.join("")}
 Let's battle!
 https://prompt-monsters.com/

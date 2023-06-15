@@ -46,7 +46,15 @@ export const BossBattleMenuContinue = ({
             "overflow-y-scroll",
           )}
         >
-          {tBossBattle("continue")}
+          <div className={"whitespace-pre-wrap"}>
+            {tBossBattle("continue")}
+          </div>
+          <br />
+          <br />
+          <br />
+          <div className={clsx("whitespace-pre-wrap", "font-normal")}>
+            {tBossBattle("continueNote")}
+          </div>
         </div>
       </div>
       <div className={clsx("flex", "justify-between", "my-[5px]")}>

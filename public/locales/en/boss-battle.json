@@ -10,7 +10,7 @@
   "bossUsedSkill": "bossName used a Skill \"bossSkillName\" .",
   "monsterDamage": "bossName inflicted monsterDamage damage on monsterName .",
   "droppedItem": "bossName dropped a itemName .",
-  "continue": "Will you continue the battle?",
+  "continue": "The attack power of the monsters and the boss will become stronger with each turn.\nThe battle will become more and more intense.\nWill you continue the battle?",
   "continueNote": "*The current score will be recorded as \"No\".\n*The high score will not be overwritten.",
   "no": "NO",
   "yes": "YES",
