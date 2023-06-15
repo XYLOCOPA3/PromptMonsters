@@ -27,3 +27,10 @@ export const SKILL_TYPE_NAME = {
     [EnumSkillType.healing, "Healing"],
   ]),
 };
+
+export const SKILL_TYPE_NAME_SIMPLE = new Map([
+  [EnumSkillType.other, "???"],
+  [EnumSkillType.physicalAttack, "PA"],
+  [EnumSkillType.specialAttack, "SA"],
+  [EnumSkillType.healing, "HE"],
+]);
