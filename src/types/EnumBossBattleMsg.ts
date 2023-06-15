@@ -14,6 +14,7 @@ export enum EnumBossBattleMsg {
   monsterItemDebuff,
   monsterItemHeal,
   monsterItemEscape,
+  monsterItemEscapeNext,
   bossOneHitKill,
   bossAttack,
   bossPowerAttack,

@@ -57,23 +57,21 @@ export const BossBattleMenuItem = ({ className }: BossBattleMenuItemProps) => {
                 await bossBattleController.setItemId(itemId);
               };
               return (
-                <>
-                  <Button
-                    key={uuid()}
-                    variant="bossBattle"
-                    className={clsx(
-                      "my-[2px]",
-                      "py-[5px]",
-                      "text-[11px]",
-                      "md:py-[10px]",
-                      "md:text-[16px]",
-                    )}
-                    holdDown={itemId === bossBattle.setItemId}
-                    onClick={handleClick}
-                  >
-                    {ITEMS[language as "日本語" | "English"][itemId].name}
-                  </Button>
-                </>
+                <Button
+                  key={uuid()}
+                  variant="bossBattle"
+                  className={clsx(
+                    "my-[2px]",
+                    "py-[5px]",
+                    "text-[11px]",
+                    "md:py-[10px]",
+                    "md:text-[16px]",
+                  )}
+                  holdDown={itemId === bossBattle.setItemId}
+                  onClick={handleClick}
+                >
+                  {ITEMS[language as "日本語" | "English"][itemId].name}
+                </Button>
               );
             })}
           </div>

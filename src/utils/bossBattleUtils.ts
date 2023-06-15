@@ -510,7 +510,10 @@ export const getResultMsgIds = (
   defensed: boolean,
 ): EnumBossBattleMsg[] => {
   if (usedItemId === EnumItem.escape)
-    return [EnumBossBattleMsg.monsterItemEscape];
+    return [
+      EnumBossBattleMsg.monsterItemEscapeNext,
+      EnumBossBattleMsg.monsterItemEscape,
+    ];
   if (bossAction === EnumBossAction.counterAttack) {
     if (usedSkillType === EnumSkillType.physicalAttack)
       return [
@@ -960,30 +963,6 @@ export const getResultMsgIds = (
       return [EnumBossBattleMsg.bossBuff, EnumBossBattleMsg.monsterItemHeal];
     if (bossAction === EnumBossAction.debuff)
       return [EnumBossBattleMsg.bossDebuff, EnumBossBattleMsg.monsterItemHeal];
-  }
-  if (usedItemId === EnumItem.escape) {
-    if (bossAction === EnumBossAction.oneHitKill)
-      return [
-        EnumBossBattleMsg.bossOneHitKill,
-        EnumBossBattleMsg.monsterItemEscape,
-      ];
-    if (bossAction === EnumBossAction.attack)
-      return [
-        EnumBossBattleMsg.bossAttack,
-        EnumBossBattleMsg.monsterItemEscape,
-      ];
-    if (bossAction === EnumBossAction.powerAttack)
-      return [
-        EnumBossBattleMsg.bossPowerAttack,
-        EnumBossBattleMsg.monsterItemEscape,
-      ];
-    if (bossAction === EnumBossAction.buff)
-      return [EnumBossBattleMsg.bossBuff, EnumBossBattleMsg.monsterItemEscape];
-    if (bossAction === EnumBossAction.debuff)
-      return [
-        EnumBossBattleMsg.bossDebuff,
-        EnumBossBattleMsg.monsterItemEscape,
-      ];
   }
   return [];
 };

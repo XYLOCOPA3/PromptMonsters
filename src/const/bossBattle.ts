@@ -214,8 +214,8 @@ export const ITEMS = {
     },
     {
       name: "封印プロンプト",
-      desc: "ボスの攻撃を１ターンの間、封じる",
-      result: "bossName の攻撃を封じた",
+      desc: "ボスの行動を１ターンの間、封じる。",
+      result: "bossName の行動を封じた！",
     },
   ],
   English: [
@@ -236,8 +236,8 @@ export const ITEMS = {
     },
     {
       name: "SEAL PROMPT",
-      desc: "Seals Boss's attack for 1 turn.",
-      result: "bossName's attack was sealed.",
+      desc: "Seals Boss's action for 1 turn.",
+      result: "bossName's action was sealed!",
     },
   ],
 };
