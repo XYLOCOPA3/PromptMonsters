@@ -297,7 +297,7 @@ export const calcBossDamage = (
   const kBossMgr = Number(devBBkParam.kBossMgr);
   const kMonsterPower = Number(devBBkParam.kMonsterPower);
   let kCommonTurn = Number(devBBkParam.kCommonTurn) * (turn - 1);
-  if (kCommonTurn === FIRST_TURN) kCommonTurn = 1;
+  if (turn === FIRST_TURN) kCommonTurn = 1;
   if (kCommonTurn > MAX_TURN_ADJ) kCommonTurn = MAX_TURN_ADJ;
 
   const adjMonsterAtk = (monsterAtk * monsterAdj) / 100;
@@ -374,7 +374,7 @@ export const calcMonsterDamage = (
   const kMonsterMgr = Number(devBBkParam.kMonsterMgr);
   const kBossPower = Number(devBBkParam.kBossPower);
   let kCommonTurn = Number(devBBkParam.kCommonTurn) * (turn - 1);
-  if (kCommonTurn === FIRST_TURN) kCommonTurn = 1;
+  if (turn === FIRST_TURN) kCommonTurn = 1;
   if (kCommonTurn > MAX_TURN_ADJ) kCommonTurn = MAX_TURN_ADJ;
 
   const adjBossAtk = (bossAtk * bossAdj) / 100;
