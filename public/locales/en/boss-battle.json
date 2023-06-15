@@ -41,5 +41,6 @@
   "campaign": "campaign",
   "join": "!",
   "havingWeakFeature": "monsterName has a weakness feature, \"weakFeature\", against bossName!\nmonsterName's stats have increased!!!",
-  "defeated": "The LP of monsterName has reached 0!\n\nEverything in front of me is becoming pitch black..."
+  "defeated": "The LP of monsterName has reached 0!\n\nEverything in front of me is becoming pitch black...",
+  "escapeNext": "bossName is unable to act!"
 }
