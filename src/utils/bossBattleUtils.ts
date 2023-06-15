@@ -502,6 +502,13 @@ export const getBossSkill = (
   return bossSkills[usedBossSkillIndex];
 };
 
+export const compareTensPlace = (num1: number, num2: number): boolean => {
+  const tensPlace1 = Math.floor(num1 / 10) % 10;
+  const tensPlace2 = Math.floor(num2 / 10) % 10;
+
+  return tensPlace1 === tensPlace2;
+};
+
 export const getResultMsgIds = (
   usedItemId: number,
   bossAction: number,

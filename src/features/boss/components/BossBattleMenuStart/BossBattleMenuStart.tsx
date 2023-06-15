@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
-import { FIRST_TURN, MAX_LIFE_POINT } from "@/const/bossBattle";
+import {
+  BOSS_NEXT_ACTION_SIGNS,
+  FIRST_TURN,
+  MAX_LIFE_POINT,
+} from "@/const/bossBattle";
 import {
   getBossAppearedMsg,
-  getBossNextActionSignMsg,
+  getBossSignMsg,
   getHavingWeakFeatureMsg,
 } from "@/features/boss/utils/utils";
 import { useBossValue } from "@/hooks/useBoss";
@@ -157,10 +161,12 @@ export const BossBattleMenuStart = ({
         ) : (
           <></>
         )}
-        {getBossNextActionSignMsg(
-          bossBattle.bossSign,
-          language as "日本語" | "English",
+        {getBossSignMsg(
           boss.name,
+          BOSS_NEXT_ACTION_SIGNS[bossEvent.eventKey as EventKey][
+            language as "日本語" | "English"
+          ][bossBattle.bossSign],
+          tBossBattle("bossSign"),
         )}
       </div>
     </div>
