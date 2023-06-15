@@ -40,5 +40,6 @@
   "mint": "ミントして",
   "campaign": "キャンペーン",
   "join": "に参加しよう！",
-  "havingWeakFeature": "monsterName は bossName の弱点特徴、 \"weakFeature\" を持っている！\nmonsterName のステータスが上昇した！！！"
+  "havingWeakFeature": "monsterName は bossName の弱点特徴、 \"weakFeature\" を持っている！\nmonsterName のステータスが上昇した！！！",
+  "defeated": "monsterName のLPは0になってしまった！\n\n目の前が真っ暗になっていく..."
 }

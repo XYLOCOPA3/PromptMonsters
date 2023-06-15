@@ -397,14 +397,24 @@ export const useBossBattleController = (): BossBattleController => {
     setBossBattle((prevState) => {
       const lastIndex = prevState.resultMsgIds.length - 1;
       const prevResultMsgId = prevState.resultMsgIds[lastIndex];
-      const newResultMsgIds = prevState.resultMsgIds.filter(
+      if (prevResultMsgId === EnumBossBattleMsg.defeated)
+        return prevState.copyWith({
+          phase: EnumBossBattlePhase.end,
+          resultMsgIds: [],
+          defeated: true,
+        });
+
+      let newResultMsgIds = prevState.resultMsgIds.filter(
         (_, index) => index !== lastIndex,
       );
 
       let newLp = prevState.lp;
       if (isHealMonster(prevResultMsgId)) newLp += gCurrentHealing;
       if (isDamageMonster(prevResultMsgId)) newLp -= gCurrentMonsterDamage;
-      if (newLp < 0) newLp = 0;
+      if (newLp < 0) {
+        newLp = 0;
+        newResultMsgIds = [EnumBossBattleMsg.defeated];
+      }
       if (newLp > MAX_LIFE_POINT) newLp = MAX_LIFE_POINT;
 
       let newMonsterAdj = prevState.monsterAdj;
@@ -414,9 +424,7 @@ export const useBossBattleController = (): BossBattleController => {
 
       return prevState.copyWith({
         phase:
-          newLp === 0
-            ? EnumBossBattlePhase.end
-            : newResultMsgIds.length === 0
+          newResultMsgIds.length === 0
             ? EnumBossBattlePhase.continue
             : prevState.phase,
         resultMsgIds: newResultMsgIds,
@@ -424,7 +432,6 @@ export const useBossBattleController = (): BossBattleController => {
           ? prevState.score + gCurrentBossDamage
           : prevState.score,
         lp: newLp,
-        defeated: newLp === 0,
         monsterAdj: newMonsterAdj,
         bossAdj: newBossAdj,
       });
