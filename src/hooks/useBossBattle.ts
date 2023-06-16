@@ -215,8 +215,6 @@ export const useBossBattleController = (): BossBattleController => {
         newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
       }
 
-      console.log(`bossSign: ${bossSign}`);
-      console.log(`bossAction: ${bossAction}`);
       if (isBossSubAction(bossSign, bossAction))
         newResultMsgIds = [...newResultMsgIds, EnumBossBattleMsg.bossSubAction];
 
@@ -293,8 +291,6 @@ export const useBossBattleController = (): BossBattleController => {
         newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
       }
 
-      console.log(`bossSign: ${bossSign}`);
-      console.log(`bossAction: ${bossAction}`);
       if (isBossSubAction(bossSign, bossAction)) {
         newResultMsgIds = [...newResultMsgIds, EnumBossBattleMsg.bossSubAction];
       }
@@ -377,8 +373,6 @@ export const useBossBattleController = (): BossBattleController => {
         newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
       }
 
-      console.log(`bossSign: ${bossSign}`);
-      console.log(`bossAction: ${bossAction}`);
       if (isBossSubAction(bossSign, bossAction)) {
         newResultMsgIds = [...newResultMsgIds, EnumBossBattleMsg.bossSubAction];
       }
