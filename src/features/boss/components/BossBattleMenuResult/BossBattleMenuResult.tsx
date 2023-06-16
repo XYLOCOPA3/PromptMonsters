@@ -20,7 +20,6 @@ import {
   getMonsterOtherPhysicalAttack,
   getMonsterOtherPowerPhysicalAttack,
   getMonsterUsedSkillMsg,
-  getPreMonsterAnyOtherSkillMsg,
   getUsedBossSubActionMsg,
   getUsedItemMsg,
 } from "@/features/boss/utils/utils";
@@ -222,16 +221,13 @@ const MonsterFightOtherPhysicalAttackMsg = () => {
         tBossBattle("monsterUsedSkill"),
       )}
       <br />
-      {getPreMonsterAnyOtherSkillMsg(
-        bossBattle.usedMonsterSkill,
-        tBossBattle("preMonsterAnyOtherSkill"),
-      )}
-      <br />
-      {getMonsterOtherPhysicalAttack(
-        monster.name,
-        boss.name,
-        tBossBattle("monsterOtherPhysicalAttack"),
-      )}
+      <div className={clsx("whitespace-pre-wrap")}>
+        {getMonsterOtherPhysicalAttack(
+          monster.name,
+          boss.name,
+          bossBattle.usedMonsterSkill,
+          tBossBattle("monsterOtherPhysicalAttack"),
+        )}</div>
       <br />
       {bossBattle.currentMonsterHit
         ? getBossDamageMsg(
@@ -259,12 +255,9 @@ const MonsterFightOtherSpecialAttackMsg = () => {
         tBossBattle("monsterUsedSkill"),
       )}
       <br />
-      {getPreMonsterAnyOtherSkillMsg(
-        bossBattle.usedMonsterSkill,
-        tBossBattle("preMonsterAnyOtherSkill"),
-      )}
-      <br />
-      {tBossBattle("monsterOtherSpecialAttack")}
+      <div className={clsx("whitespace-pre-wrap")}>
+        {tBossBattle("monsterOtherSpecialAttack").replace("skillName", bossBattle.usedMonsterSkill)}
+      </div>
       <br />
       {bossBattle.currentMonsterHit
         ? getBossDamageMsg(
@@ -292,15 +285,13 @@ const MonsterFightOtherPowerPhysicalAttackMsg = () => {
         tBossBattle("monsterUsedSkill"),
       )}
       <br />
-      {getPreMonsterAnyOtherSkillMsg(
-        bossBattle.usedMonsterSkill,
-        tBossBattle("preMonsterAnyOtherSkill"),
-      )}
-      <br />
-      {getMonsterOtherPowerPhysicalAttack(
-        monster.name,
-        tBossBattle("monsterOtherPowerPhysicalAttack"),
-      )}
+      <div className={clsx("whitespace-pre-wrap")}>
+        {getMonsterOtherPowerPhysicalAttack(
+          monster.name,
+          bossBattle.usedMonsterSkill,
+          tBossBattle("monsterOtherPowerPhysicalAttack"),
+        )}
+      </div>
       <br />
       {bossBattle.currentMonsterHit
         ? getBossDamageMsg(
@@ -328,12 +319,9 @@ const MonsterFightOtherPowerSpecialAttackMsg = () => {
         tBossBattle("monsterUsedSkill"),
       )}
       <br />
-      {getPreMonsterAnyOtherSkillMsg(
-        bossBattle.usedMonsterSkill,
-        tBossBattle("preMonsterAnyOtherSkill"),
-      )}
-      <br />
-      {tBossBattle("monsterOtherPowerSpecialAttack")}
+      <div className={clsx("whitespace-pre-wrap")}>
+        {tBossBattle("monsterOtherPowerSpecialAttack").replace("skillName", bossBattle.usedMonsterSkill)}
+      </div>
       <br />
       {bossBattle.currentMonsterHit
         ? getBossDamageMsg(
@@ -360,12 +348,9 @@ const MonsterFightOtherDefenseMsg = () => {
         tBossBattle("monsterUsedSkill"),
       )}
       <br />
-      {getPreMonsterAnyOtherSkillMsg(
-        bossBattle.usedMonsterSkill,
-        tBossBattle("preMonsterAnyOtherSkill"),
-      )}
-      <br />
-      {tBossBattle("monsterOtherDefense")}
+      <div className={clsx("whitespace-pre-wrap")}>
+        {tBossBattle("monsterOtherDefense").replace("skillName", bossBattle.usedMonsterSkill)}
+      </div>
     </>
   );
 };
@@ -383,12 +368,9 @@ const MonsterFightOtherHealMsg = () => {
         tBossBattle("monsterUsedSkill"),
       )}
       <br />
-      {getPreMonsterAnyOtherSkillMsg(
-        bossBattle.usedMonsterSkill,
-        tBossBattle("preMonsterAnyOtherSkill"),
-      )}
-      <br />
-      {getMonsterOtherHealMsg(monster.name, tBossBattle("monsterOtherHeal"))}
+      <div className={clsx("whitespace-pre-wrap")}>
+        {getMonsterOtherHealMsg(monster.name, bossBattle.usedMonsterSkill, tBossBattle("monsterOtherHeal"))}
+      </div>
     </>
   );
 };
