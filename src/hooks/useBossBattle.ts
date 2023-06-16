@@ -9,11 +9,11 @@ import { EnumBossBattleMsg } from "@/types/EnumBossBattleMsg";
 import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
 import { EnumItem } from "@/types/EnumItem";
 import {
-  compareTensPlace,
   generateMonsterAdjIfNotSet,
   generateSkillTypesIfNotSet,
   getBossSkill,
   getResultMsgIds,
+  isBossSubAction,
   isBuffDebuffBoss,
   isBuffDebuffMonster,
   isDamageBoss,
@@ -215,9 +215,8 @@ export const useBossBattleController = (): BossBattleController => {
         newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
       }
 
-      if (!compareTensPlace(bossSign, bossAction)) {
+      if (isBossSubAction(bossSign, bossAction))
         newResultMsgIds = [...newResultMsgIds, EnumBossBattleMsg.bossSubAction];
-      }
 
       return prevState.copyWith({
         phase: EnumBossBattlePhase.result,
@@ -292,7 +291,7 @@ export const useBossBattleController = (): BossBattleController => {
         newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
       }
 
-      if (!compareTensPlace(bossSign, bossAction)) {
+      if (isBossSubAction(bossSign, bossAction)) {
         newResultMsgIds = [...newResultMsgIds, EnumBossBattleMsg.bossSubAction];
       }
 
@@ -374,7 +373,7 @@ export const useBossBattleController = (): BossBattleController => {
         newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
       }
 
-      if (!compareTensPlace(bossSign, bossAction)) {
+      if (isBossSubAction(bossSign, bossAction)) {
         newResultMsgIds = [...newResultMsgIds, EnumBossBattleMsg.bossSubAction];
       }
 
