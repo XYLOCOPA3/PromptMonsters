@@ -162,17 +162,17 @@ export const decideBossAction = (bossSign: number): EnumBossAction => {
   if (bossSign < EnumBossSign.signOneHitKill)
     return random < BOSS_MAIN_SEL_RATE
       ? EnumBossAction.oneHitKill
-      : EnumBossAction.attack;
+      : EnumBossAction.powerAttack;
   // 強攻撃
   if (bossSign < EnumBossSign.signPowerAttack)
     return random < BOSS_MAIN_SEL_RATE
       ? EnumBossAction.powerAttack
-      : EnumBossAction.debuff;
+      : EnumBossAction.buff;
   // 攻撃
   if (bossSign < EnumBossSign.signAttack)
     return random < BOSS_MAIN_SEL_RATE
       ? EnumBossAction.attack
-      : EnumBossAction.buff;
+      : EnumBossAction.powerAttack;
   // カウンター
   if (bossSign < EnumBossSign.signCounterAttack)
     return random < BOSS_MAIN_SEL_RATE
@@ -191,7 +191,7 @@ export const decideBossAction = (bossSign: number): EnumBossAction => {
   // 防御
   return random < BOSS_MAIN_SEL_RATE
     ? EnumBossAction.defense
-    : EnumBossAction.buff;
+    : EnumBossAction.powerAttack;
 };
 
 export const judgeSkillHit = (skillType: number): boolean => {

@@ -2,19 +2,19 @@ import { GetStaticProps } from "next";
 import Head from "next/head";
 import { Header } from "@/components/layouts/Header";
 import { Main } from "@/components/layouts/Main";
-import { MainMonsters } from "@/components/layouts/Main/MainMonsters";
+import { MainMaintenance } from "@/components/layouts/Main/MainMaintenance";
 import { HOST_NAME } from "@/const/hostname";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 /**
- * Monsters
+ * Maintenance
  * @keit0728
  */
-export default function Monsters() {
+export default function Maintenance() {
   return (
     <>
       <Head>
-        <title>Prompt Monsters | BATTLE</title>
+        <title>Prompt Monsters | MAINTENANCE</title>
         <meta property="og:url" content={`https://${HOST_NAME}/`} />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Prompt Monsters" />
@@ -29,7 +29,7 @@ export default function Monsters() {
       </Head>
       <Header />
       <Main>
-        <MainMonsters />
+        <MainMaintenance />
       </Main>
     </>
   );
@@ -38,7 +38,10 @@ export default function Monsters() {
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale ?? "en", ["common", "monsters"])),
+      ...(await serverSideTranslations(locale ?? "en", [
+        "common",
+        "maintenance",
+      ])),
     },
   };
 };
