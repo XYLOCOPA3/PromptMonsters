@@ -27,6 +27,7 @@
   "lose": "You lose...",
   "updatedHighScore": "New high score!",
   "monsterHeal": "monsterName has recovered with healing!",
+  "preMonsterAnyOtherSkill": "However, the ability of the \"skillName\" has suddenly changed!",
   "monsterOtherPhysicalAttack": "monsterName charged towards bossName!",
   "monsterOtherSpecialAttack": "A shockwave occurred!",
   "monsterOtherPowerPhysicalAttack": "monsterName unleashed a tremendous blow with all its might!",

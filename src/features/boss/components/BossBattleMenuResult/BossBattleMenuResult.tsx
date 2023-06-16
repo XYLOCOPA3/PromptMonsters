@@ -20,6 +20,7 @@ import {
   getMonsterOtherPhysicalAttack,
   getMonsterOtherPowerPhysicalAttack,
   getMonsterUsedSkillMsg,
+  getPreMonsterAnyOtherSkillMsg,
   getUsedBossSubActionMsg,
   getUsedItemMsg,
 } from "@/features/boss/utils/utils";
@@ -175,11 +176,11 @@ const MonsterFightAttackMsg = () => {
       <br />
       {bossBattle.currentMonsterHit
         ? getBossDamageMsg(
-            monster.name,
-            bossBattle.currentBossDamage,
-            boss.name,
-            tBossBattle("bossDamage"),
-          )
+          monster.name,
+          bossBattle.currentBossDamage,
+          boss.name,
+          tBossBattle("bossDamage"),
+        )
         : tBossBattle("monsterMiss")}
     </>
   );
@@ -221,6 +222,11 @@ const MonsterFightOtherPhysicalAttackMsg = () => {
         tBossBattle("monsterUsedSkill"),
       )}
       <br />
+      {getPreMonsterAnyOtherSkillMsg(
+        bossBattle.usedMonsterSkill,
+        tBossBattle("preMonsterAnyOtherSkill"),
+      )}
+      <br />
       {getMonsterOtherPhysicalAttack(
         monster.name,
         boss.name,
@@ -229,11 +235,11 @@ const MonsterFightOtherPhysicalAttackMsg = () => {
       <br />
       {bossBattle.currentMonsterHit
         ? getBossDamageMsg(
-            monster.name,
-            bossBattle.currentBossDamage,
-            boss.name,
-            tBossBattle("bossDamage"),
-          )
+          monster.name,
+          bossBattle.currentBossDamage,
+          boss.name,
+          tBossBattle("bossDamage"),
+        )
         : tBossBattle("monsterMiss")}
     </>
   );
@@ -253,15 +259,20 @@ const MonsterFightOtherSpecialAttackMsg = () => {
         tBossBattle("monsterUsedSkill"),
       )}
       <br />
+      {getPreMonsterAnyOtherSkillMsg(
+        bossBattle.usedMonsterSkill,
+        tBossBattle("preMonsterAnyOtherSkill"),
+      )}
+      <br />
       {tBossBattle("monsterOtherSpecialAttack")}
       <br />
       {bossBattle.currentMonsterHit
         ? getBossDamageMsg(
-            monster.name,
-            bossBattle.currentBossDamage,
-            boss.name,
-            tBossBattle("bossDamage"),
-          )
+          monster.name,
+          bossBattle.currentBossDamage,
+          boss.name,
+          tBossBattle("bossDamage"),
+        )
         : tBossBattle("monsterMiss")}
     </>
   );
@@ -281,6 +292,11 @@ const MonsterFightOtherPowerPhysicalAttackMsg = () => {
         tBossBattle("monsterUsedSkill"),
       )}
       <br />
+      {getPreMonsterAnyOtherSkillMsg(
+        bossBattle.usedMonsterSkill,
+        tBossBattle("preMonsterAnyOtherSkill"),
+      )}
+      <br />
       {getMonsterOtherPowerPhysicalAttack(
         monster.name,
         tBossBattle("monsterOtherPowerPhysicalAttack"),
@@ -288,11 +304,11 @@ const MonsterFightOtherPowerPhysicalAttackMsg = () => {
       <br />
       {bossBattle.currentMonsterHit
         ? getBossDamageMsg(
-            monster.name,
-            bossBattle.currentBossDamage,
-            boss.name,
-            tBossBattle("bossDamage"),
-          )
+          monster.name,
+          bossBattle.currentBossDamage,
+          boss.name,
+          tBossBattle("bossDamage"),
+        )
         : tBossBattle("monsterMiss")}
     </>
   );
@@ -312,15 +328,20 @@ const MonsterFightOtherPowerSpecialAttackMsg = () => {
         tBossBattle("monsterUsedSkill"),
       )}
       <br />
+      {getPreMonsterAnyOtherSkillMsg(
+        bossBattle.usedMonsterSkill,
+        tBossBattle("preMonsterAnyOtherSkill"),
+      )}
+      <br />
       {tBossBattle("monsterOtherPowerSpecialAttack")}
       <br />
       {bossBattle.currentMonsterHit
         ? getBossDamageMsg(
-            monster.name,
-            bossBattle.currentBossDamage,
-            boss.name,
-            tBossBattle("bossDamage"),
-          )
+          monster.name,
+          bossBattle.currentBossDamage,
+          boss.name,
+          tBossBattle("bossDamage"),
+        )
         : tBossBattle("monsterMiss")}
     </>
   );
@@ -339,6 +360,11 @@ const MonsterFightOtherDefenseMsg = () => {
         tBossBattle("monsterUsedSkill"),
       )}
       <br />
+      {getPreMonsterAnyOtherSkillMsg(
+        bossBattle.usedMonsterSkill,
+        tBossBattle("preMonsterAnyOtherSkill"),
+      )}
+      <br />
       {tBossBattle("monsterOtherDefense")}
     </>
   );
@@ -355,6 +381,11 @@ const MonsterFightOtherHealMsg = () => {
         monster.name,
         bossBattle.usedMonsterSkill,
         tBossBattle("monsterUsedSkill"),
+      )}
+      <br />
+      {getPreMonsterAnyOtherSkillMsg(
+        bossBattle.usedMonsterSkill,
+        tBossBattle("preMonsterAnyOtherSkill"),
       )}
       <br />
       {getMonsterOtherHealMsg(monster.name, tBossBattle("monsterOtherHeal"))}
@@ -407,11 +438,11 @@ const BossOneHitKillMsg = () => {
       <br />
       {bossBattle.currentBossHit
         ? getBossDamagedMsg(
-            boss.name,
-            bossBattle.currentMonsterDamage,
-            monster.name,
-            tBossBattle("monsterDamage"),
-          )
+          boss.name,
+          bossBattle.currentMonsterDamage,
+          monster.name,
+          tBossBattle("monsterDamage"),
+        )
         : tBossBattle("bossMiss")}
     </>
   );
@@ -433,11 +464,11 @@ const BossAttackMsg = () => {
       <br />
       {bossBattle.currentBossHit
         ? getBossDamagedMsg(
-            boss.name,
-            bossBattle.currentMonsterDamage,
-            monster.name,
-            tBossBattle("monsterDamage"),
-          )
+          boss.name,
+          bossBattle.currentMonsterDamage,
+          monster.name,
+          tBossBattle("monsterDamage"),
+        )
         : tBossBattle("bossMiss")}
     </>
   );
@@ -459,11 +490,11 @@ const BossPowerAttackMsg = () => {
       <br />
       {bossBattle.currentBossHit
         ? getBossDamagedMsg(
-            boss.name,
-            bossBattle.currentMonsterDamage,
-            monster.name,
-            tBossBattle("monsterDamage"),
-          )
+          boss.name,
+          bossBattle.currentMonsterDamage,
+          monster.name,
+          tBossBattle("monsterDamage"),
+        )
         : tBossBattle("bossMiss")}
     </>
   );
@@ -499,11 +530,11 @@ const BossCounterAttackMsg = () => {
       <br />
       {bossBattle.currentBossHit
         ? getBossDamagedMsg(
-            boss.name,
-            bossBattle.currentMonsterDamage,
-            monster.name,
-            tBossBattle("monsterDamage"),
-          )
+          boss.name,
+          bossBattle.currentMonsterDamage,
+          monster.name,
+          tBossBattle("monsterDamage"),
+        )
         : tBossBattle("bossMiss")}
     </>
   );

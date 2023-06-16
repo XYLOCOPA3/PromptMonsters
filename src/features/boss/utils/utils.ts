@@ -28,6 +28,13 @@ export const getMonsterUsedSkillMsg = (
     .replace("skillName", skillName);
 };
 
+export const getPreMonsterAnyOtherSkillMsg = (
+  skillName: string,
+  msg: string,
+): string => {
+  return msg.replace("skillName", skillName);
+};
+
 export const getMonsterOtherHealMsg = (
   monsterName: string,
   msg: string,

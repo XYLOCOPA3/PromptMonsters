@@ -27,6 +27,7 @@
   "lose": "まけ...",
   "updatedHighScore": "ハイスコア更新！",
   "monsterHeal": "monsterName は healing 回復した。",
+  "preMonsterAnyOtherSkill": "しかし、 \"skillName\" の能力は突如として変化した！",
   "monsterOtherPhysicalAttack": "bossName に向かって突進した！",
   "monsterOtherSpecialAttack": "衝撃波が発生した！",
   "monsterOtherPowerPhysicalAttack": "全身全霊をかけた凄まじい一撃を放った！",
