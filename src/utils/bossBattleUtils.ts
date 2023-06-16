@@ -498,15 +498,15 @@ export const getBossSkill = (
   bossAction: EnumBossAction,
 ): string => {
   if (bossAction === EnumBossAction.none) return "";
-  const usedBossSkillIndex = (bossSign % 10) + (bossAction - 1) * 10;
+  const usedBossSkillIndex = (bossSign % 10) + bossAction * 10;
   return bossSkills[usedBossSkillIndex];
 };
 
-export const compareTensPlace = (num1: number, num2: number): boolean => {
-  const tensPlace1 = Math.floor(num1 / 10) % 10;
-  const tensPlace2 = Math.floor(num2 / 10) % 10;
-
-  return tensPlace1 === tensPlace2;
+export const isBossSubAction = (
+  bossSign: number,
+  bossAction: number,
+): boolean => {
+  return Math.floor(bossSign / 10) % 10 !== bossAction;
 };
 
 export const getResultMsgIds = (
