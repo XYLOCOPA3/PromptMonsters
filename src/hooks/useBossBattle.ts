@@ -50,6 +50,7 @@ export interface BossBattleController {
   nextResultMsg: () => Promise<void>;
   continueBossBattle: (resurrectionPrompt: string) => Promise<void>;
   end: (resurrectionPrompt: string) => Promise<void>;
+  moveEnd: () => void;
   reset: () => void;
 }
 
@@ -164,10 +165,7 @@ export const useBossBattleController = (): BossBattleController => {
         devBBkParam,
       });
     } catch (e) {
-      if (axios.isAxiosError(e)) {
-        if (e.response!.status === 500) return e.response!.data.battleResult;
-        throw new Error(e.response!.data.message);
-      }
+      if (axios.isAxiosError(e)) throw new Error(e.response!.data.message);
       console.error(e);
       throw new Error("Unknown Error");
     }
@@ -249,10 +247,7 @@ export const useBossBattleController = (): BossBattleController => {
         devBBkParam,
       });
     } catch (e) {
-      if (axios.isAxiosError(e)) {
-        if (e.response!.status === 500) return e.response!.data.battleResult;
-        throw new Error(e.response!.data.message);
-      }
+      if (axios.isAxiosError(e)) throw new Error(e.response!.data.message);
       console.error(e);
       throw new Error("Unknown Error");
     }
@@ -330,10 +325,7 @@ export const useBossBattleController = (): BossBattleController => {
         devBBkParam,
       });
     } catch (e) {
-      if (axios.isAxiosError(e)) {
-        if (e.response!.status === 500) return e.response!.data.battleResult;
-        throw new Error(e.response!.data.message);
-      }
+      if (axios.isAxiosError(e)) throw new Error(e.response!.data.message);
       console.error(e);
       throw new Error("Unknown Error");
     }
@@ -479,10 +471,7 @@ export const useBossBattleController = (): BossBattleController => {
         resurrectionPrompt,
       });
     } catch (e) {
-      if (axios.isAxiosError(e)) {
-        if (e.response!.status === 500) return e.response!.data.battleResult;
-        throw new Error(e.response!.data.message);
-      }
+      if (axios.isAxiosError(e)) throw new Error(e.response!.data.message);
       console.error(e);
       throw new Error("Unknown Error");
     }
@@ -516,14 +505,23 @@ export const useBossBattleController = (): BossBattleController => {
         resurrectionPrompt,
       });
     } catch (e) {
-      if (axios.isAxiosError(e)) {
-        if (e.response!.status === 500) return e.response!.data.battleResult;
-        throw new Error(e.response!.data.message);
-      }
+      if (axios.isAxiosError(e)) throw new Error(e.response!.data.message);
       console.error(e);
       throw new Error("Unknown Error");
     }
     _initGlobalParam();
+    return;
+  };
+
+  /**
+   * moveEnd
+   */
+  const moveEnd = (): void => {
+    setBossBattle((prevState) => {
+      return prevState.copyWith({
+        phase: EnumBossBattlePhase.end,
+      });
+    });
     return;
   };
 
@@ -547,6 +545,7 @@ export const useBossBattleController = (): BossBattleController => {
     nextResultMsg,
     continueBossBattle,
     end,
+    moveEnd,
     reset,
   };
   return controller;

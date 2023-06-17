@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { Button } from "@/components/elements/Button";
+import { ERROR_MAINTENANCE } from "@/const/error";
 import { useBossBattleController } from "@/hooks/useBossBattle";
 import { useMonsterState } from "@/hooks/useMonster";
 import { useOwnedMonstersController } from "@/hooks/useOwnedMonsters";
@@ -45,9 +46,10 @@ export const BossBattleButton = ({ className }: BossBattleButtonProps) => {
       setLoading(false);
       setDisable(false);
       console.error(error);
-      if (error instanceof Error)
-        alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
-      else alert(tCommon("failedTx"));
+      if (error instanceof Error) {
+        if (error.message !== ERROR_MAINTENANCE)
+          alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
+      } else alert(tCommon("failedTx"));
       return;
     }
     setDisable(false);
@@ -55,6 +57,7 @@ export const BossBattleButton = ({ className }: BossBattleButtonProps) => {
     push("/boss/battle");
   };
 
+  if (monster === undefined) return <></>;
   if (monster.name === "") return <></>;
   return (
     <Button

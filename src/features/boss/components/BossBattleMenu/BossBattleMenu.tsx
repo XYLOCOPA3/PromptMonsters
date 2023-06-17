@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
@@ -8,6 +8,7 @@ import {
   MAX_TURN_ADJ,
   MIN_LIFE_POINT,
 } from "@/const/bossBattle";
+import { ERROR_MAINTENANCE } from "@/const/error";
 import {
   BossBattleMenuContinue,
   BossBattleMenuFight,
@@ -22,12 +23,14 @@ import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleState } from "@/hooks/useBossBattle";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
+import { useUserValue } from "@/hooks/useUser";
 import { disableState } from "@/stores/disableState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { scoreOpenedState } from "@/stores/scoreOpenedState";
 import { BaseProps } from "@/types/BaseProps";
 import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
 import { Dialog, Transition } from "@headlessui/react";
+import { useWeb3Modal } from "@web3modal/react";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
@@ -40,15 +43,18 @@ export type BossBattleMenuProps = BaseProps;
  * @param className Style from parent element
  */
 export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
+  const user = useUserValue();
   const boss = useBossValue();
   const monster = useMonsterValue();
   const monsterMinted = useRecoilValue(monsterMintedState);
   const setDisable = useSetRecoilState(disableState);
   const [bossBattle, bossBattleController] = useBossBattleState();
   const [scoreOpened, setScoreOpened] = useRecoilState(scoreOpenedState);
+  const [loginNotification, setLoginNotification] = useState(false);
   const { push, locale } = useRouter();
   const { t: tBossBattle } = useTranslation("boss-battle");
   const { t: tCommon } = useTranslation("common");
+  const { isOpen } = useWeb3Modal();
 
   const closeModal = () => {
     setScoreOpened(false);
@@ -62,9 +68,10 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
       await bossBattleController.end(monster.resurrectionPrompt);
     } catch (error) {
       console.error(error);
-      if (error instanceof Error)
-        alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
-      else alert(tCommon("failedTx"));
+      if (error instanceof Error) {
+        if (error.message !== ERROR_MAINTENANCE)
+          alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
+      } else alert(tCommon("failedTx"));
     }
     setDisable(false);
   };
@@ -72,6 +79,19 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
   useLayoutEffectOfSSR(() => {
     if (bossBattle.lp <= MIN_LIFE_POINT) end();
   }, [bossBattle.lp]);
+
+  useLayoutEffectOfSSR(() => {
+    if (bossBattle.phase !== EnumBossBattlePhase.end) return;
+    if (isOpen) setLoginNotification(true);
+    setScoreOpened(!isOpen);
+  }, [isOpen]);
+
+  useLayoutEffectOfSSR(() => {
+    if (!loginNotification) return;
+    if (user.id === "") return;
+    alert(tCommon("loginNotification"));
+    setLoginNotification(false);
+  }, [loginNotification, user.id]);
 
   if (boss.name === "" || boss.flavor === "") return <></>;
   return (
@@ -101,10 +121,10 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
           monsterAdj={bossBattle.monsterAdj}
           turn={bossBattle.turn}
         />
-        <Menu phase={bossBattle.phase} />
+        <Menu phase={bossBattle.phase} defeated={bossBattle.defeated} />
       </div>
       <Transition appear show={scoreOpened} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Dialog as="div" className="relative z-10" onClose={() => {}}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -425,7 +445,7 @@ const MonsterStatus = ({ status, lifePoint, monsterAdj, turn }: any) => {
  * Boss battle score
  * @param score score
  */
-const Menu = ({ phase }: any) => {
+const Menu = ({ phase, defeated }: any) => {
   switch (phase) {
     case EnumBossBattlePhase.start:
       return <BossBattleMenuStart />;
@@ -436,6 +456,9 @@ const Menu = ({ phase }: any) => {
     case EnumBossBattlePhase.result:
       return <BossBattleMenuResult />;
     case EnumBossBattlePhase.continue:
+      return <BossBattleMenuContinue />;
+    case EnumBossBattlePhase.end:
+      if (defeated) return <BossBattleMenuResult />;
       return <BossBattleMenuContinue />;
     default:
       return <></>;

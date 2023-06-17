@@ -2,13 +2,10 @@ import { useState } from "react";
 import { Button } from "@/components/elements/Button";
 import { mchVerse } from "@/const/chainParams";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
-import { useMonsterState } from "@/hooks/useMonster";
 import { useUserController } from "@/hooks/useUser";
-import { monsterMintedState } from "@/stores/monsterMintedState";
 import { BaseProps } from "@/types/BaseProps";
 import { useWeb3Modal } from "@web3modal/react";
 import clsx from "clsx";
-import { useSetRecoilState } from "recoil";
 // import { isSet } from "util/types";
 import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 
@@ -20,13 +17,12 @@ export type LoginButtonProps = BaseProps;
  * @param className Style from parent element
  */
 export const LoginButton = ({ className }: LoginButtonProps) => {
-  const { chain } = useNetwork();
-  const { address, isConnected, connector: activeConnector } = useAccount();
-  const { open, setDefaultChain } = useWeb3Modal();
-  const [monster, monsterController] = useMonsterState();
-  const [loading, setLoading] = useState(false);
-  const setMonsterMinted = useSetRecoilState(monsterMintedState);
   const userController = useUserController();
+  const [loading, setLoading] = useState(false);
+
+  const { chain } = useNetwork();
+  const { address, isConnected } = useAccount();
+  const { open, setDefaultChain } = useWeb3Modal();
   const { switchNetwork } = useSwitchNetwork();
 
   /**

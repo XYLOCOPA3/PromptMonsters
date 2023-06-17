@@ -5,6 +5,7 @@ import {
   FIRST_TURN,
   MAX_LIFE_POINT,
 } from "@/const/bossBattle";
+import { ERROR_MAINTENANCE } from "@/const/error";
 import {
   getBossAppearedMsg,
   getBossSignMsg,
@@ -64,9 +65,10 @@ export const BossBattleMenuStart = ({
       );
     } catch (error) {
       console.error(error);
-      if (error instanceof Error)
-        alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
-      else alert(tCommon("failedTx"));
+      if (error instanceof Error) {
+        if (error.message !== ERROR_MAINTENANCE)
+          alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
+      } else alert(tCommon("failedTx"));
     }
     setDisable(false);
     setLoading(false);

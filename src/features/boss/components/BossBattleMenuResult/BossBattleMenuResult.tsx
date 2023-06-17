@@ -55,8 +55,10 @@ export const BossBattleMenuResult = ({
     setDisable(true);
     setLoading(true);
     try {
-      if (bossBattle.lp <= MIN_LIFE_POINT) setScoreOpened(true);
-      else await bossBattleController.nextResultMsg();
+      if (bossBattle.lp <= MIN_LIFE_POINT) {
+        bossBattleController.moveEnd();
+        setScoreOpened(true);
+      } else await bossBattleController.nextResultMsg();
     } catch (error) {
       console.error(error);
       // TODO: エラー文考える

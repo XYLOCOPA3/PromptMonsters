@@ -4,8 +4,8 @@ export function middleware(request: NextRequest) {
   const maintenance = process.env.MAINTENANCE === "true";
   if (maintenance) {
     if (request.nextUrl.pathname === "/maintenance") return;
-    // if (isApiPath(request.nextUrl.pathname))
-    //   return NextResponse.rewrite(new URL("/api/maintenance", request.url));
+    if (isApiPath(request.nextUrl.pathname))
+      return NextResponse.rewrite(new URL("/api/maintenance", request.url));
     return NextResponse.redirect(new URL("/maintenance", request.url));
   }
   if (request.nextUrl.pathname === "/maintenance")
@@ -23,7 +23,7 @@ export const config = {
      * - locales
      */
     // "/((?!_next/static|_next/image|assets|locales).*)",
-    "/((?!api|_next/static|_next/image|assets|locales).*)",
+    "/((?!_next/static|_next/image|assets|locales).*)",
     "/",
   ],
 };

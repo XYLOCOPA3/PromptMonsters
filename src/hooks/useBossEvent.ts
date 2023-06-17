@@ -22,10 +22,7 @@ export const useBossEventController = (): BossEventController => {
     try {
       res = await axios.post("/api/boss/get-event");
     } catch (e) {
-      if (axios.isAxiosError(e)) {
-        if (e.response!.status === 500) return e.response!.data.battleResult;
-        throw new Error(e.response!.data.message);
-      }
+      if (axios.isAxiosError(e)) throw new Error(e.response!.data.message);
       console.error(e);
       throw new Error("Unknown Error");
     }
