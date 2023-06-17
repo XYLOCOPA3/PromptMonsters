@@ -2,12 +2,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { RPC_URL } from "@/const/chainParams";
 import { ERROR_WAIT_TIME, MAX_ERROR_CNT } from "@/const/error";
+import { DevBBkParamModel } from "@/dev/models/DevBBkParamModel";
 import { ServerBossBattle } from "@/features/boss/api/contracts/ServerBossBattle";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { EventKey } from "@/types/EventKey";
 import {
   getBossSign,
   getInitialBBState,
+  initMonsterAdj,
   isInvalidMonsterAdj,
 } from "@/utils/bossBattleUtils";
 import { hasUnknownSkill } from "@/utils/monsterUtils";
@@ -33,7 +35,10 @@ export default async function handler(
   const prefixLog = `/boss/start: ${resurrectionPrompt}:`;
 
   // TODO: 後で消す
-  const devBBkParam = req.body.devBBkParam;
+  const devBBkParam =
+    process.env.STAGE === "develop"
+      ? req.body.devBBkParam
+      : DevBBkParamModel.create({});
 
   const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
   const bossBattle = ServerBossBattle.instance(RPC_URL.mchVerse);
@@ -77,11 +82,11 @@ export default async function handler(
     });
 
   // モンスター補正値計算
-  // const initialMonsterAdj = initMonsterAdj(monsterAdj);
+  const initialMonsterAdj = initMonsterAdj(monsterAdj);
   // TODO: 後で消す
-  const initialMonsterAdj = Math.floor(
-    Number(devBBkParam.kMonsterWeakness) * 100,
-  );
+  // const initialMonsterAdj = Math.floor(
+  //   Number(devBBkParam.kMonsterWeakness) * 100,
+  // );
 
   // ボス前兆確定
   let bossSign = 0;
