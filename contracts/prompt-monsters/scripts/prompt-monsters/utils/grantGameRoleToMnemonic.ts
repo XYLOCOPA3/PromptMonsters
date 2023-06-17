@@ -27,6 +27,12 @@ export async function grantGameRoleToMnemonic() {
     await (await promptMonsters.grantRole(role, wallets[i].address)).wait();
     console.log(`DONE!!!`);
   }
+  // await (
+  //   await promptMonsters.grantRole(
+  //     role,
+  //     "0x2B7c474E24bbE5Ac5695b0bD5dF2615eB007D2b1",
+  //   )
+  // ).wait();
 
   console.log("After : ");
   const newRoleMemberCount = await promptMonsters.getRoleMemberCount(role);

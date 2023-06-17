@@ -51,7 +51,7 @@ export const BATTLE_S1_PROXY_ADDRESS =
 
 export const BOSS_BATTLE_PROXY_ADDRESS =
   process.env.STAGE === STAGE.PRODUCTION
-    ? "0x0000000000000000000000000000000000000000" // mchMainnet
+    ? "0x9BC30aA7E6352608bF556d8E30dCCF99d221Be8F" // mchMainnet
     : process.env.STAGE === STAGE.DEMO
     ? "0x0ab8a738c835C5F496753cE5FB9A5341bc5aa538" // mchTestnet-demo
     : process.env.STAGE === STAGE.DEVELOP
@@ -64,7 +64,7 @@ export const BOSS_BATTLE_PROXY_ADDRESS =
 
 export const BOSS_BATTLE_MCH_1_PROXY_ADDRESS =
   process.env.STAGE === STAGE.PRODUCTION
-    ? "0x0000000000000000000000000000000000000000" // mchMainnet
+    ? "0xbc35D59b01EB90a418f3D555Fa38112224d94176" // mchMainnet
     : process.env.STAGE === STAGE.DEMO
     ? "0xa552Dfc121a54a8cd22773C016C3a69c9b37691d" // mchTestnet-demo
     : process.env.STAGE === STAGE.DEVELOP
@@ -77,7 +77,7 @@ export const BOSS_BATTLE_MCH_1_PROXY_ADDRESS =
 
 export const BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS =
   process.env.STAGE === STAGE.PRODUCTION
-    ? "0x0000000000000000000000000000000000000000" // mchMainnet
+    ? "0x8aeB00028253fea900c80E2640f207f81E0556cD" // mchMainnet
     : process.env.STAGE === STAGE.DEMO
     ? "0xc365Fa73bA01793594Bf4E737d683bAC2518490f" // mchTestnet-demo
     : process.env.STAGE === STAGE.DEVELOP
@@ -130,7 +130,7 @@ export const MINT_PRICE = ethers.utils.parseEther("50");
 
 export const PROMPT_MONSTERS_EXTENSION_PROXY_ADDRESS =
   process.env.STAGE === STAGE.PRODUCTION
-    ? "0x0000000000000000000000000000000000000000" // mchMainnet
+    ? "0x7EA9BF1D136A9F38680B25A1072F4EdF94A62BF7" // mchMainnet
     : process.env.STAGE === STAGE.DEMO
     ? "0xb67a019b7D1871401132badc51571049149fB513" // mchTestnet-demo
     : process.env.STAGE === STAGE.DEVELOP

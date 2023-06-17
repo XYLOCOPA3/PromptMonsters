@@ -5,6 +5,7 @@ export const getWallets = async (cntWallet: number) => {
     process.env.STAGE === "production"
       ? process.env.GAME_ROLE_MNEMONIC
       : process.env.DEV_GAME_ROLE_MNEMONIC;
+  console.log("mnemonic", mnemonic);
   const hdNode = ethers.utils.HDNode.fromMnemonic(mnemonic!);
 
   const wallets: any = [];
