@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
+import { ERROR_MAINTENANCE } from "@/const/error";
 import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleState } from "@/hooks/useBossBattle";
 import { useMonsterValue } from "@/hooks/useMonster";
@@ -38,9 +39,10 @@ export const BossBattleUseButton = ({
       );
     } catch (error) {
       console.error(error);
-      if (error instanceof Error)
-        alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
-      else alert(tCommon("failedTx"));
+      if (error instanceof Error) {
+        if (error.message !== ERROR_MAINTENANCE)
+          alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
+      } else alert(tCommon("failedTx"));
     }
     setDisable(false);
     setLoading(false);

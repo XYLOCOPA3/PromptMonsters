@@ -12,7 +12,7 @@ import { ethers } from "ethers";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export interface OwnedMonsterIdsController {
-  init: (userId: UserId) => Promise<void>;
+  init: (userId: UserId, ownedMonsters: MonsterModel[]) => Promise<void>;
   reset: () => void;
   add: (newMonster: MonsterModel) => void;
   updateAfterMinted: (newMonster: MonsterModel) => void;
@@ -30,9 +30,12 @@ export const useOwnedMonstersController = (): OwnedMonsterIdsController => {
   /**
    * Initialize ownedMonsters
    * @param userId user id
-   * @param monster monster
+   * @param ownedMonsters owned monsters
    */
-  const init = async (userId: UserId): Promise<void> => {
+  const init = async (
+    userId: UserId,
+    ownedMonsters: MonsterModel[],
+  ): Promise<void> => {
     const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
     const promptMonsters = ClientPromptMonsters.instance();
     const stamina = Stamina__factory.connect(
@@ -67,6 +70,9 @@ export const useOwnedMonstersController = (): OwnedMonsterIdsController => {
           monsterStaminas[i],
         ),
       );
+    }
+    for (let i = 0; i < ownedMonsters.length; i++) {
+      if (ownedMonsters[i].id === "") monsters.push(ownedMonsters[i]);
     }
     setOwnedMonsters(monsters);
   };

@@ -29,6 +29,7 @@ export const DevBBResetButton = ({ className }: DevBBResetButtonProps) => {
         resurrectionPrompt: monster.resurrectionPrompt,
       });
     } catch (e) {
+      alert(e);
       setLoading(false);
       return;
     }

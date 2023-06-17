@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Warning } from "@/components/elements/Warning";
+import { ERROR_MAINTENANCE } from "@/const/error";
 import { FeatureInput, GenerateButton } from "@/features/monster";
 import { useBattleController } from "@/hooks/useBattle";
 import { useLanguageValue } from "@/hooks/useLanguage";
@@ -65,7 +66,8 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
       setLoading(false);
       setDisable(false);
       if (error instanceof Error) {
-        alert("Invalid feature.\n\nReason: " + error.message);
+        if (error.message !== ERROR_MAINTENANCE)
+          alert("Invalid feature.\n\nReason: " + error.message);
         console.error(error);
         return;
       }

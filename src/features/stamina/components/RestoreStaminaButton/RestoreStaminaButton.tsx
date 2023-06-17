@@ -65,6 +65,7 @@ export const RestoreStaminaButton = ({
     restorePriceController.init();
   }, []);
 
+  if (monster === undefined) return <></>;
   if (restorePrice === 0 || monster.stamina !== 0 || monster.name === "")
     return <></>;
   return (
