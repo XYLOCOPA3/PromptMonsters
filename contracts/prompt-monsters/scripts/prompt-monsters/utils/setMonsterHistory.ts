@@ -12,14 +12,34 @@ async function main() {
   for (let i = 0; i < totalSupply; i++) {
     tokenIds.push(i);
   }
+  // console.log("tokenIds: ", tokenIds);
+  const monsters = await promptMonsters.getMonsters(tokenIds);
+  // console.log("monsters: ", monsters);
 
-  // for (let i = 0; i < totalSupply; i++) {
-  //   // _monsterHistoryMapへ登録
-  //   await promptMonsters.getMonsters();
+  for (let i = 0; i < monsters.length; i++) {
+    const resurrectionPrompt = ethers.Wallet.createRandom().address;
+    console.log(`${i}: ${resurrectionPrompt} --------------------`);
 
-  //   // _tokenIdToResurrectionPromptMapへ登録
-  //   // _mintedMapへ登録
-  // }
+    // _monsterHistoryMapへ登録
+    await (
+      await promptMonsters.setMonsterHistory(resurrectionPrompt, monsters[i])
+    ).wait();
+    console.log(`Done _monsterHistoryMap`);
+
+    // _tokenIdToResurrectionPromptMapへ登録
+    await (
+      await promptMonsters.setTokenIdToResurrectionPromptMap(
+        i,
+        resurrectionPrompt,
+      )
+    ).wait();
+    console.log(`Done _tokenIdToResurrectionPromptMap`);
+
+    // _mintedMapへ登録
+    await (await promptMonsters.setMintMap(resurrectionPrompt, true)).wait();
+    console.log(`Done _mintedMap`);
+  }
+  console.log(`DONE!!!`);
 
   // const monsterId = 21;
   // const monsterId = 22;
