@@ -1,6 +1,6 @@
+import { RPC_URL } from "@/const/chainParams";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
-import { RPC_URL } from "@/lib/wallet";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { staminaTimeStdState } from "@/stores/staminaTimeStdState";
 import { Stamina__factory } from "@/typechain";
@@ -24,6 +24,7 @@ export const StaminaTimer = ({ className }: StaminaTimerProps) => {
     useRecoilState(staminaTimeStdState);
 
   const fetch = async () => {
+    if (monster === undefined) return;
     if (monster.id === "") {
       setStaminaTimeStd({ hours: 0, minutes: 0, seconds: 0 });
       return false;
@@ -71,6 +72,7 @@ export const StaminaTimer = ({ className }: StaminaTimerProps) => {
     return () => clearInterval(interval);
   }, [monster, monsterMinted]);
 
+  if (monster === undefined) return <></>;
   if (
     monster.name === "" ||
     !monsterMinted ||

@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import { Drawer } from "@/components/elements/Drawer";
 import { mchVerse } from "@/const/chainParams";
+import { DevComponents } from "@/dev/components/DevComponents";
 import { AutoLogin } from "@/features/auth";
-import { MonsterMintPriceInit, OwnedMonstersInit } from "@/features/monster";
+import { BossEventInit, BossInit } from "@/features/boss";
+import { TwitterIcon } from "@/features/lp";
+import {
+  MonsterInit,
+  MonsterMintPriceInit,
+  OwnedMonstersInit,
+} from "@/features/monster";
 import "@/styles/globals.css";
 import {
   EthereumClient,
@@ -11,23 +19,21 @@ import {
   w3mProvider,
 } from "@web3modal/ethereum";
 import { Web3Modal } from "@web3modal/react";
+import { appWithTranslation } from "next-i18next";
 import { RecoilRoot } from "recoil";
-import { WagmiConfig, configureChains, createClient } from "wagmi";
+import { WagmiConfig, configureChains, createConfig } from "wagmi";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID!;
-
 const chains = [mchVerse];
-
-const { provider } = configureChains(chains, [w3mProvider({ projectId })]);
-const wagmiClient = createClient({
+const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
+const wagmiClient = createConfig({
   autoConnect: true,
   connectors: w3mConnectors({ version: 1, chains, projectId }),
-  provider,
+  publicClient,
 });
-
 const ethereumClient = new EthereumClient(wagmiClient, chains);
 
-export default function App({ Component, pageProps }: AppProps) {
+const App = ({ Component, pageProps }: AppProps) => {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -275,12 +281,22 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel="manifest" href="/assets/favicons/manifest.json" />{" "}
       </Head>
       {ready ? (
-        <WagmiConfig client={wagmiClient}>
+        <WagmiConfig config={wagmiClient}>
           <RecoilRoot>
             <AutoLogin>
               <MonsterMintPriceInit>
                 <OwnedMonstersInit>
-                  <Component {...pageProps} />
+                  <BossEventInit>
+                    <BossInit>
+                      <MonsterInit>
+                        {/* TODO: 後で消す */}
+                        <DevComponents />
+                        <TwitterIcon />
+                        <Drawer />
+                        <Component {...pageProps} />
+                      </MonsterInit>
+                    </BossInit>
+                  </BossEventInit>
                 </OwnedMonstersInit>
               </MonsterMintPriceInit>
             </AutoLogin>
@@ -290,4 +306,6 @@ export default function App({ Component, pageProps }: AppProps) {
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
     </>
   );
-}
+};
+
+export default appWithTranslation(App);

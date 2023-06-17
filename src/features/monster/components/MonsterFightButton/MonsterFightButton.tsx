@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
+import { ERROR_MAINTENANCE } from "@/const/error";
 import { useBattleController } from "@/hooks/useBattle";
 import { useLanguageValue } from "@/hooks/useLanguage";
 import { useMonsterState } from "@/hooks/useMonster";
@@ -7,13 +8,13 @@ import { disableState } from "@/stores/disableState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 import { useRecoilState, useRecoilValue } from "recoil";
 
 export type MonsterFightButtonProps = BaseProps;
 
 /**
  * Monster fight button
- * @feature
  * @keit0728
  * @param className Style from parent element
  */
@@ -24,6 +25,7 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
   const battleController = useBattleController();
+  const { t: tMonsters } = useTranslation("monsters");
 
   /**
    * Click event
@@ -40,6 +42,10 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
       );
       battleController.set(battleResult);
     } catch (e) {
+      if (e instanceof Error) {
+        if (e.message !== ERROR_MAINTENANCE)
+          alert(`Failed to fight.\n\nReason: ${e.message}`);
+      }
       console.error(e);
       alert(`Failed to fight.\n\nReason: ${e}`);
     }
@@ -47,6 +53,7 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
     setLoading(false);
   };
 
+  if (monster === undefined) return <></>;
   if (monster.name === "") return <></>;
   return (
     <Button
@@ -55,17 +62,17 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
         className,
         "px-[20px]",
         "w-[100%]",
-        monsterMinted ? "h-[62px]" : "h-[40px]",
+        monsterMinted ? "h-[62px]" : "h-[50px]",
         "max-w-[200px]",
       )}
       variant="secondary"
       loading={loading}
       onClick={handleClick}
     >
-      FIGHT
+      {tMonsters("fight")}
       {monsterMinted ? (
         <div className={clsx("text-[12px]", "md:text-[16px]")}>
-          Stamina: {monster.stamina} / 3
+          {tMonsters("stamina")}: {monster.stamina} / 3
         </div>
       ) : (
         <></>

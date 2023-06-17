@@ -11,6 +11,7 @@ import {
   trimCharacters100,
 } from "@/utils/charUtils";
 import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 
 export type BattleTweetButtonProps = BaseProps;
 
@@ -22,6 +23,7 @@ export type BattleTweetButtonProps = BaseProps;
 export const BattleTweetButton = ({ className }: BattleTweetButtonProps) => {
   const monster = useMonsterValue();
   const battle = useBattleValue();
+  const { t: tCommon } = useTranslation("monsters");
 
   if (battle.winnerId === "") return <></>;
   return (
@@ -33,7 +35,7 @@ export const BattleTweetButton = ({ className }: BattleTweetButtonProps) => {
       target="_blank"
     >
       <Button
-        className={clsx("w-[40px]", "h-[40px]", "md:w-[100px]")}
+        className={clsx("w-[40px]", "h-[40px]", "md:w-[120px]")}
         variant="twitter"
         shape="circle"
       >
@@ -48,7 +50,7 @@ export const BattleTweetButton = ({ className }: BattleTweetButtonProps) => {
           <div
             className={clsx("ml-[10px]", "text-black", "hidden", "md:inline")}
           >
-            Tweet
+            {tCommon("tweet")}
           </div>
         </div>
       </Button>
@@ -72,7 +74,9 @@ const _getBattleTweet = (
 
 ${battleDesc}${countCharactersForTwitter(battleDesc) > 100 ? "..." : ""}
 
-${monster.name} ${battle.winnerId !== battle.monsterBId ? "win!!!" : "lose..."}
+${monster.name} ${
+    battle.winnerId !== monster.resurrectionPrompt ? "win!!!" : "lose..."
+  }
 
 Check out more stories here!
 https://prompt-monsters.com/

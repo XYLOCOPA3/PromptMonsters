@@ -1,22 +1,20 @@
 import { useState } from "react";
-import { ListBox } from "@/components/elements/ListBox";
 import { Warning } from "@/components/elements/Warning";
+import { ERROR_MAINTENANCE } from "@/const/error";
 import { FeatureInput, GenerateButton } from "@/features/monster";
 import { useBattleController } from "@/hooks/useBattle";
-import { useLanguageState } from "@/hooks/useLanguage";
+import { useLanguageValue } from "@/hooks/useLanguage";
 import { useMonsterController } from "@/hooks/useMonster";
 import { useOwnedMonstersState } from "@/hooks/useOwnedMonsters";
+import { useSetSelectedMonsterIdNameState } from "@/hooks/useSelectedMonsterIdName";
 import { disableState } from "@/stores/disableState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
-import { selectedMonsterIdNameState } from "@/stores/selectedMonsterIdNameState";
 import { BaseProps } from "@/types/BaseProps";
-import { countCharactersForGenerator } from "@/utils/charUtils";
 import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 import { useSetRecoilState } from "recoil";
 
 let feature = "";
-const languages = ["English", "Japanese"];
-const maxLength = 45;
 
 export type MonsterGeneratorProps = BaseProps;
 
@@ -26,36 +24,21 @@ export type MonsterGeneratorProps = BaseProps;
  * @param className Style from parent element
  */
 export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
-  const [loading, setLoading] = useState(false);
-  const [maxLengthOver, setMaxLengthOver] = useState(false);
-  const [language, setLanguage] = useLanguageState();
-  const [ownedMonsters, ownedMonstersController] = useOwnedMonstersState();
+  const language = useLanguageValue();
   const monsterController = useMonsterController();
   const battleController = useBattleController();
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
   const setDisable = useSetRecoilState(disableState);
-  const setSelectedMonsterIdName = useSetRecoilState(
-    selectedMonsterIdNameState,
-  );
+  const setSelectedMonsterIdName = useSetSelectedMonsterIdNameState();
+  const [loading, setLoading] = useState(false);
+  const [ownedMonsters, ownedMonstersController] = useOwnedMonstersState();
+  const { t: tCommon } = useTranslation("common");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (countCharactersForGenerator(e.target.value) <= maxLength) {
-      feature = e.target.value;
-      if (maxLengthOver) setMaxLengthOver(false);
-      return;
-    }
-    setMaxLengthOver(true);
+    feature = e.target.value;
   };
 
   const handleClick = async () => {
-    if (maxLengthOver) {
-      alert(
-        `Too many characters.\n\nPlease limit the number of characters to ${maxLength} for single-byte characters and ${
-          maxLength / 3
-        } for double-byte characters.`,
-      );
-      return;
-    }
     let hasNotMintedMonster = false;
     for (let i = 0; i < ownedMonsters.length; i++) {
       if (ownedMonsters[i].id !== "") continue;
@@ -83,11 +66,12 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
       setLoading(false);
       setDisable(false);
       if (error instanceof Error) {
-        alert("Invalid monster name.\n\nReason: " + error.message);
+        if (error.message !== ERROR_MAINTENANCE)
+          alert("Invalid feature.\n\nReason: " + error.message);
         console.error(error);
         return;
       }
-      alert("Invalid monster name.");
+      alert("Invalid feature.");
       console.error(error);
       return;
     }
@@ -98,37 +82,12 @@ export const MonsterGenerator = ({ className }: MonsterGeneratorProps) => {
   return (
     <div className={clsx(className, "flex", "flex-col", "items-center")}>
       <div
-        className={clsx(
-          "flex",
-          "justify-center",
-          "items-center",
-          "mb-[20px]",
-          "w-[100%]",
-        )}
+        className={clsx("flex", "justify-center", "items-center", "w-[100%]")}
       >
-        <Warning
-          className={clsx("mr-[5px]")}
-          hintText={`Warning: The creation of monsters with features that manipulate stats illegitimately or violate public decency and order, as well as the creation of monsters that infringe upon third-party copyrights, is strictly prohibited in this game. If you generate and use such monsters, you may face penalties such as account suspension, permanent ban, and other measures deemed necessary by our company. We appreciate your understanding and cooperation.\n\n警告：当ゲームでは、ステータスを不正に操作する特徴や公俗良序に反する特徴を持つモンスターの生成および、第三者の著作権を侵害するモンスターの生成は固く禁止されています。このようなモンスターを生成し使用した場合、アカウント停止や永久追放の処分、その他当社が必要と判断する措置を取る可能性があります。お客様のご理解とご協力をお願い致します。`}
-        />
+        <Warning className={clsx("mr-[5px]")} hintText={tCommon("warning")} />
         <FeatureInput
           className={clsx("w-[100%]", "h-[40px]")}
           onChange={handleChange}
-        />
-      </div>
-      <div
-        className={clsx(
-          "flex",
-          "flex",
-          "justify-center",
-          "items-center",
-          "w-[100%]",
-        )}
-      >
-        <ListBox
-          className={clsx("w-[80%]", "z-[1]")}
-          selected={language}
-          setSelected={setLanguage}
-          list={languages}
         />
         <GenerateButton
           className={clsx("ml-[10px]", "w-[20%]")}

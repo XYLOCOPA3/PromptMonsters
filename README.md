@@ -2,9 +2,10 @@
 
 Fully decentralized generative blockchain game using AI as the game engine.
 
-- [demo](https://prompt-monsters-demo-jp.azurewebsites.net/)
-- [Showcase](https://ethglobal.com/showcase/prompt-monsters-7f13y)
 - [production](https://prompt-monsters.com/)
+- [demo](https://prompt-monsters-demo-jp.azurewebsites.net/)
+- [develop](https://prompt-monsters-develop.azurewebsites.net/)
+- [Showcase](https://ethglobal.com/showcase/prompt-monsters-7f13y)
 
 ## About
 
@@ -35,6 +36,11 @@ As a particularly hacky point worth mentioning, using GPT-3.5 to generate monste
 First, run the development server:
 
 ```bash
+cp .env.local.example .env.local
+# edit .env.local
+
+npm i
+npm run typechain
 npm run dev
 ```
 

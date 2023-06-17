@@ -1,10 +1,8 @@
 import { ListBox } from "@/components/elements/ListBox";
+import { LANGUAGES } from "@/const/language";
 import { useLanguageState } from "@/hooks/useLanguage";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
-
-let feature = "";
-const languages = ["English", "Japanese"];
 
 export type FightLanguageProps = BaseProps;
 
@@ -21,7 +19,7 @@ export const FightLanguage = ({ className }: FightLanguageProps) => {
       className={clsx(className)}
       selected={language}
       setSelected={setLanguage}
-      list={languages}
+      list={LANGUAGES}
     />
   );
 };

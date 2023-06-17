@@ -1,9 +1,11 @@
+import { GetStaticProps } from "next";
 import Head from "next/head";
 import { Footer } from "@/components/layouts/Footer";
 import { Header } from "@/components/layouts/Header";
 import { Main } from "@/components/layouts/Main";
 import { MainLP } from "@/components/layouts/Main/MainLP/MainLP";
 import { HOST_NAME } from "@/const/hostname";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 /**
  * Home
@@ -34,3 +36,11 @@ export default function Home() {
     </>
   );
 }
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? "en", ["common", "lp"])),
+    },
+  };
+};

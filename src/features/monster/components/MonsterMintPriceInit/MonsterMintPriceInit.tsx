@@ -15,7 +15,11 @@ export const MonsterMintPriceInit = ({
   const mintPriceController = useMintPriceController();
 
   const init = async () => {
-    await mintPriceController.init();
+    try {
+      await mintPriceController.init();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useLayoutEffectOfSSR(() => {

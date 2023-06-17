@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from "react";
+import { LANGUAGES } from "@/const/language";
 import { LanguageState, languageState } from "@/stores/languageState";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
@@ -10,9 +11,9 @@ export const useLanguageValue = (): LanguageState => {
 
   // クライアントでの初期レンダリング直後にローカルストレージの設定を反映
   useEffect(() => {
-    const prevLanguage =
-      localStorage.getItem(STORAGE_KEY_LANGUAGE) ?? "English";
-    setLanguageInternal(prevLanguage);
+    let prevLocale = localStorage.getItem(STORAGE_KEY_LANGUAGE) ?? "English";
+    if (!LANGUAGES.includes(prevLocale)) prevLocale = "English";
+    setLanguageInternal(prevLocale);
   }, [setLanguageInternal]);
 
   return language;
@@ -23,9 +24,9 @@ export const useSetLanguageState = (): ((language: string) => void) => {
 
   // 外部からのセッター呼び出し時にローカルストレージに値を保存する
   const setLanguage = useCallback(
-    (language: string) => {
-      localStorage.setItem(STORAGE_KEY_LANGUAGE, language);
-      setLanguageInternal(language);
+    (locale: string) => {
+      localStorage.setItem(STORAGE_KEY_LANGUAGE, locale);
+      setLanguageInternal(locale);
     },
     [setLanguageInternal],
   );

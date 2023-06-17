@@ -2,12 +2,6 @@ import { Spinner } from "@/components/elements/Spinner";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 
-const variants = {
-  primary: clsx("bg-[#EA4E1F]", "hover:bg-[#C53D14]", "hover:shadow-lg"),
-  secondary: clsx("bg-gray-700", "hover:bg-gray-800", "hover:shadow-lg"),
-  twitter: clsx("bg-[#F1F6F9]", "hover:bg-[#D3DCE3]", "hover:shadow-lg"),
-};
-
 const shapes = {
   rounded: clsx("rounded-md"),
   circle: clsx("rounded-full"),
@@ -16,7 +10,8 @@ const shapes = {
 export type ButtonProps = {
   disabled?: boolean;
   loading?: boolean;
-  variant?: "primary" | "secondary" | "twitter";
+  holdDown?: boolean;
+  variant?: "primary" | "secondary" | "twitter" | "bossBattle";
   shape?: "rounded" | "circle";
   onClick?: () => void;
 } & BaseProps;
@@ -39,6 +34,7 @@ export const Button = ({
   shape = "rounded",
   disabled,
   loading,
+  holdDown = false,
   onClick,
 }: ButtonProps) => {
   return (
@@ -46,10 +42,8 @@ export const Button = ({
       disabled={disabled || loading}
       className={clsx(
         className,
-        variants[variant],
-        "text-white",
+        _getVariant(variant, holdDown),
         shapes[shape],
-        "shadow-md",
         "select-none",
         "disabled:cursor-default",
         "disabled:opacity-50",
@@ -67,4 +61,34 @@ export const Button = ({
       )}
     </button>
   );
+};
+
+const _getVariant = (
+  variant: "primary" | "secondary" | "twitter" | "bossBattle",
+  holdDown: boolean,
+): string => {
+  switch (variant) {
+    case "primary":
+      return clsx(
+        holdDown ? "bg-[#C53D14]" : "bg-[#EA4E1F]",
+        "hover:bg-[#C53D14]",
+        "hover:shadow-lg",
+      );
+    case "secondary":
+      return clsx(
+        holdDown ? "bg-gray-800" : "bg-gray-700",
+        "hover:bg-gray-800",
+        "hover:shadow-lg",
+      );
+    case "twitter":
+      return clsx(
+        holdDown ? "bg-[#D3DCE3]" : "bg-[#F1F6F9]",
+        "hover:bg-[#D3DCE3]",
+        "hover:shadow-lg",
+      );
+    case "bossBattle":
+      return clsx(holdDown ? "bg-[#4E4E4E]" : "", "hover:bg-[#4E4E4E]");
+    default:
+      return "";
+  }
 };
