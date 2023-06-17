@@ -108,7 +108,7 @@ export const startBossBattle = async (
 
 // TODO: Enumにしてどの値が不正かを判断できるようにする
 export const isInvalidMonsterAdj = (monsterAdj: MonsterAdj): boolean => {
-  if (monsterAdj.weaknessFeatureAdj <= 0) return true;
+  if (monsterAdj.weaknessFeatureAdj > 0) return true;
   return false;
 };
 

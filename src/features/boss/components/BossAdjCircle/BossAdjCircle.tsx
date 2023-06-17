@@ -34,7 +34,7 @@ export const BossAdjCircle = ({ className }: BossAdjCircleProps) => {
         "items-center",
         "z-[1]",
         "top-[10px]",
-        "right-0",
+        "left-0",
         "bg-[#272727]/80",
         "rounded-full",
         "border-[1px]",
@@ -43,7 +43,7 @@ export const BossAdjCircle = ({ className }: BossAdjCircleProps) => {
         "text-[14px]",
         bossBattle.lp < MAX_LIFE_POINT / 4 ? "text-[#FCA7A4]" : "",
         bossBattle.lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
-        "md:h-[50px]",
+        "md:h-[35px]",
         "md:text-[16px]",
       )}
     >
