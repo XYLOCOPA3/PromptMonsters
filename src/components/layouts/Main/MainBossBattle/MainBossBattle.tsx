@@ -1,8 +1,11 @@
 import { useRouter } from "next/router";
 import { Background } from "@/components/elements/Background";
 import { Spinner } from "@/components/elements/Spinner";
-import { BossAdjCircle, BossImage } from "@/features/boss";
-import { BossBattleMenu } from "@/features/boss";
+import {
+  BossAdjCircle,
+  BossAnimation,
+  BossBattleMenuAnimation,
+} from "@/features/boss";
 import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleValue } from "@/hooks/useBossBattle";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
@@ -65,9 +68,9 @@ export const MainBossBattle = () => {
             )}
           >
             <BossAdjCircle />
-            <BossImage />
+            <BossAnimation />
           </div>
-          <BossBattleMenu />
+          <BossBattleMenuAnimation />
         </div>
       </div>
     </>
