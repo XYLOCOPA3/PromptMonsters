@@ -35,11 +35,11 @@ export async function setAdminRole() {
   // await (await stamina.grantRole(role, deployer.address)).wait();
   // console.log(`DONE!!!`);
 
-  // console.log("Before: ");
-  // const oldRoleMemberCount = await battle.getRoleMemberCount(role);
-  // for (let i = 0; i < Number(oldRoleMemberCount); i++) {
-  //   console.log(await battle.getRoleMember(role, i));
-  // }
+  console.log("Before: ");
+  const oldRoleMemberCount = await battle.getRoleMemberCount(role);
+  for (let i = 0; i < Number(oldRoleMemberCount); i++) {
+    console.log(await battle.getRoleMember(role, i));
+  }
 
   // const cnt = 100;
   // const wallets = await getWallets(cnt);
