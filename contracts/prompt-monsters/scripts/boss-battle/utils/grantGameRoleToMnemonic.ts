@@ -25,8 +25,15 @@ export async function grantGameRoleToMnemonic() {
     );
     console.log(`address: ${wallets[i].address}`);
     await (await bossBattle.grantRole(role, wallets[i].address)).wait();
+    // await (await bossBattle.revokeRole(role, wallets[i].address)).wait();
     console.log(`DONE!!!`);
   }
+  // await (
+  //   await bossBattle.grantRole(
+  //     role,
+  //     "0x2B7c474E24bbE5Ac5695b0bD5dF2615eB007D2b1",
+  //   )
+  // ).wait();
 
   console.log("After : ");
   const newRoleMemberCount = await bossBattle.getRoleMemberCount(role);
@@ -35,7 +42,7 @@ export async function grantGameRoleToMnemonic() {
   }
 }
 
-grantGameRoleToMnemonic().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+// grantGameRoleToMnemonic().catch((error) => {
+//   console.error(error);
+//   process.exitCode = 1;
+// });

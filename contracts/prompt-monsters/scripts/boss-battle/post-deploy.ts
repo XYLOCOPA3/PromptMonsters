@@ -19,17 +19,17 @@ async function main() {
   const BossBattle = await ethers.getContractFactory("BossBattle");
   const bossBattleProxy = BossBattle.attach(addr);
 
-  console.log("addEventKey -----------------------------");
-  console.log(`Before: ${await bossBattleProxy.getEventKeys()}`);
-  await (await bossBattleProxy.addEventKey(eventKey)).wait();
-  console.log(`After : ${await bossBattleProxy.getEventKeys()}`);
+  // console.log("addEventKey -----------------------------");
+  // console.log(`Before: ${await bossBattleProxy.getEventKeys()}`);
+  // await (await bossBattleProxy.addEventKey(eventKey)).wait();
+  // console.log(`After : ${await bossBattleProxy.getEventKeys()}`);
 
-  console.log("addBossBattleEvent -----------------------------");
-  console.log(`Before: ${await bossBattleProxy.getBossBattleEvents()}`);
-  await (
-    await bossBattleProxy.addBossBattleEvent(eventKey, eventAddress)
-  ).wait();
-  console.log(`After : ${await bossBattleProxy.getBossBattleEvents()}`);
+  // console.log("addBossBattleEvent -----------------------------");
+  // console.log(`Before: ${await bossBattleProxy.getBossBattleEvents()}`);
+  // await (
+  //   await bossBattleProxy.addBossBattleEvent(eventKey, eventAddress)
+  // ).wait();
+  // console.log(`After : ${await bossBattleProxy.getBossBattleEvents()}`);
 
   console.log("grantGameRoleToMnemonic -----------------------------");
   await grantGameRoleToMnemonic();
