@@ -536,6 +536,16 @@ contract PromptMonsters is
     );
   }
 
+  /// @dev Set _mintedMap
+  /// @param resurrectionPrompt resurrection prompt
+  /// @param minted minted
+  function setMintMap(
+    address resurrectionPrompt,
+    bool minted
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _mintedMap[resurrectionPrompt] = minted;
+  }
+
   /// @dev Get monsters
   /// @param tokenIds token IDs
   /// @return monsters monsters
