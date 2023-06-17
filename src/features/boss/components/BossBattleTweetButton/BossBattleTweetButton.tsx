@@ -85,8 +85,10 @@ ${
     ? `Score : ${bossBattle.score}🎉`
     : `Score : ${bossBattle.score}\nYou lose...`
 }${
-    bossBattle.score > bossBattle.highScore
-      ? "Congratulation!!!\nThis score is a high score!"
+    bossBattle.lp !== 0
+      ? bossBattle.score > bossBattle.highScore
+        ? "Congratulation!!!\nThis score is a high score!"
+        : ""
       : ""
   }
 
