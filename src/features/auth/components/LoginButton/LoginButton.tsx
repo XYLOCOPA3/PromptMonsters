@@ -1,18 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
-import {
-  mchVerse,
-  mchVerseMainnet,
-  mchVerseTestnet,
-} from "@/const/chainParams";
+import { mchVerse } from "@/const/chainParams";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
-import { useMonsterState } from "@/hooks/useMonster";
 import { useUserController } from "@/hooks/useUser";
-import { monsterMintedState } from "@/stores/monsterMintedState";
 import { BaseProps } from "@/types/BaseProps";
 import { useWeb3Modal } from "@web3modal/react";
 import clsx from "clsx";
-import { useSetRecoilState } from "recoil";
+// import { isSet } from "util/types";
 import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 
 export type LoginButtonProps = BaseProps;
@@ -23,13 +17,12 @@ export type LoginButtonProps = BaseProps;
  * @param className Style from parent element
  */
 export const LoginButton = ({ className }: LoginButtonProps) => {
-  const { chain } = useNetwork();
-  const { address, isConnected, connector: activeConnector } = useAccount();
-  const { open, setDefaultChain } = useWeb3Modal();
-  const [monster, monsterController] = useMonsterState();
-  const [loading, setLoading] = useState(false);
-  const setMonsterMinted = useSetRecoilState(monsterMintedState);
   const userController = useUserController();
+  const [loading, setLoading] = useState(false);
+
+  const { chain } = useNetwork();
+  const { address, isConnected } = useAccount();
+  const { open, setDefaultChain } = useWeb3Modal();
   const { switchNetwork } = useSwitchNetwork();
 
   /**
@@ -48,18 +41,11 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
     if (!isConnected) return;
     try {
       setDefaultChain(mchVerse);
-      if (
-        chain!.id !==
-        (process.env.NEXT_PUBLIC_IS_PRODUCTION
-          ? mchVerseMainnet.id
-          : mchVerseTestnet.id)
-      ) {
+      if (chain!.id !== mchVerse.id) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         if (switchNetwork !== undefined) switchNetwork!(mchVerse.id);
       }
       userController.set(address!, false);
-      const isSet = await monsterController.init(address!, monster);
-      setMonsterMinted(isSet);
     } catch (e) {
       console.error(e);
       alert("Failed to login.\n\n" + e);
@@ -84,6 +70,7 @@ export const LoginButton = ({ className }: LoginButtonProps) => {
         "md:h-[35px]",
         "md:text-[15px]",
       )}
+      variant="secondary"
       loading={loading}
       onClick={handleClick}
     >

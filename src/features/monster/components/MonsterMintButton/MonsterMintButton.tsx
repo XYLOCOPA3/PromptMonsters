@@ -4,12 +4,14 @@ import { mchVerse } from "@/const/chainParams";
 import { useMintPriceValue } from "@/hooks/useMintPrice";
 import { useMonsterState } from "@/hooks/useMonster";
 import { useOwnedMonstersController } from "@/hooks/useOwnedMonsters";
+import { useSetSelectedMonsterIdNameState } from "@/hooks/useSelectedMonsterIdName";
 import { useUserValue } from "@/hooks/useUser";
 import { disableState } from "@/stores/disableState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
-import { selectedMonsterIdNameState } from "@/stores/selectedMonsterIdNameState";
 import { BaseProps } from "@/types/BaseProps";
+import { useWeb3Modal } from "@web3modal/react";
 import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { useNetwork } from "wagmi";
 
@@ -23,22 +25,24 @@ export type MonsterMintButtonProps = BaseProps;
 export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
   const user = useUserValue();
   const mintPrice = useMintPriceValue();
-  const [monster, monsterController] = useMonsterState();
-  const [loading, setLoading] = useState(false);
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
   const ownedMonstersController = useOwnedMonstersController();
-  const setSelectedMonsterIdName = useSetRecoilState(
-    selectedMonsterIdNameState,
-  );
+  const setSelectedMonsterIdName = useSetSelectedMonsterIdNameState();
+  const [monster, monsterController] = useMonsterState();
+  const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
+
   const { chain } = useNetwork();
+  const { open } = useWeb3Modal();
+  const { t: tCommon } = useTranslation("common");
 
   /**
    * Click event
    */
   const handleClick = async () => {
     if (user.id === "") {
-      alert("Please log in if you would like to mint a monster.");
+      alert(tCommon("mintIfNotLogin"));
+      await open();
       return;
     }
     if (chain!.id !== mchVerse.id) {
@@ -52,8 +56,8 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
         user.id,
         monster.resurrectionPrompt,
       );
-      ownedMonstersController.updateAfterMinted(newMonster);
       setSelectedMonsterIdName(`${newMonster.name} | id: ${newMonster.id}`);
+      ownedMonstersController.updateAfterMinted(newMonster);
       setMonsterMinted(true);
     } catch (e) {
       console.error(e);
@@ -63,6 +67,7 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
     setLoading(false);
   };
 
+  if (monster === undefined) return <></>;
   if (monster.name === "") return <></>;
   return (
     <Button
@@ -71,14 +76,15 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
         className,
         "px-[10px]",
         "w-[100%]",
-        "h-[40px]",
+        className === undefined ? "h-[50px]" : "",
         "max-w-[150px]",
       )}
       variant="secondary"
       loading={loading}
       onClick={handleClick}
     >
-      MINT: {mintPrice} MCHC
+      $ <span className={clsx("text-[20px]", "font-bold")}>{mintPrice}</span>{" "}
+      MCHC
     </Button>
   );
 };

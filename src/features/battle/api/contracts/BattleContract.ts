@@ -1,4 +1,4 @@
-import { ServerWallet } from "@/lib/wallet";
+import { ServerWallet } from "@/lib/wallet/ServerWallet";
 import { Battle, Battle__factory } from "@/typechain";
 import { ethers } from "ethers";
 
@@ -14,10 +14,10 @@ export class BattleContract {
    */
   public static instance(rpcURL: string): BattleContract {
     if (!this._instance) {
-      const wallet = ServerWallet.instance(rpcURL);
+      const wallet = ServerWallet.getWallet(rpcURL);
       const battle = Battle__factory.connect(
         process.env.NEXT_PUBLIC_BATTLE_CONTRACT!,
-        wallet.signer,
+        wallet,
       );
       this._instance = new BattleContract(battle);
     }

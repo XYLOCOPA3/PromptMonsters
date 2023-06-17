@@ -1,4 +1,4 @@
-import { RPC_URL } from "@/lib/wallet";
+import { RPC_URL } from "@/const/chainParams";
 import { restorePriceState } from "@/stores/restorePriceState";
 import { Stamina__factory } from "@/typechain";
 import { ethers } from "ethers";

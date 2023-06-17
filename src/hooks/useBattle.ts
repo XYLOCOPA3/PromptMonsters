@@ -23,7 +23,6 @@ export const useBattleController = (): BattleController => {
       BattleModel.create({
         battleAnalysis: json.battleAnalysis,
         battleDescription: json.battleDescription,
-        monsterBId: json.monsterBId,
         winnerId: json.winnerId,
       }),
     );
