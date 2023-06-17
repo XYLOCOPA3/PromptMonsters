@@ -53,7 +53,7 @@ export default async function handler(
   const monsterExtension = results[1][0];
 
   // 補正値計算
-  if (isInvalidMonsterAdj(monsterAdj))
+  if (!isInvalidMonsterAdj(monsterAdj))
     return res.status(200).json({ monsterAdj });
   let newMonsterAdj: MonsterAdj = { weaknessFeatureAdj: 100 };
   if (
