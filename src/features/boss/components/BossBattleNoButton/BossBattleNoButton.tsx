@@ -3,10 +3,11 @@ import { Button } from "@/components/elements/Button";
 import { useBossBattleController } from "@/hooks/useBossBattle";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { disableState } from "@/stores/disableState";
+import { scoreOpenedState } from "@/stores/scoreOpenedState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 export type BossBattleNoButtonProps = BaseProps;
 
@@ -18,6 +19,7 @@ export type BossBattleNoButtonProps = BaseProps;
 export const BossBattleNoButton = ({ className }: BossBattleNoButtonProps) => {
   const monster = useMonsterValue();
   const bossBattleController = useBossBattleController();
+  const setScoreOpened = useSetRecoilState(scoreOpenedState);
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
   const { t: tBossBattle } = useTranslation("boss-battle");
@@ -28,6 +30,7 @@ export const BossBattleNoButton = ({ className }: BossBattleNoButtonProps) => {
     setLoading(true);
     try {
       await bossBattleController.end(monster.resurrectionPrompt);
+      setScoreOpened(true);
     } catch (error) {
       console.error(error);
       if (error instanceof Error)

@@ -1,4 +1,5 @@
 export const MAX_LIFE_POINT = 400;
+export const MIN_LIFE_POINT = 0;
 export const MAX_MONSTER_DAMAGE = 350;
 
 export const MAX_MONSTER_ADJ = 400;

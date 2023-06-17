@@ -1,4 +1,4 @@
-import { MAX_LIFE_POINT } from "@/const/bossBattle";
+import { MAX_LIFE_POINT, MIN_LIFE_POINT } from "@/const/bossBattle";
 import { devBBkParamState } from "@/dev/stores/devBBkParamState";
 import { ClientBossBattle } from "@/features/boss/api/contracts/ClientBossBattle";
 import { BossBattleModel } from "@/models/BossBattleModel";
@@ -110,6 +110,7 @@ export const useBossBattleController = (): BossBattleController => {
           ? EnumBossBattlePhase.start
           : EnumBossBattlePhase.continue,
         highScore: highScore,
+        defeated: bbState.lp <= MIN_LIFE_POINT,
       }),
     );
     return skillTypes;
@@ -414,12 +415,6 @@ export const useBossBattleController = (): BossBattleController => {
     setBossBattle((prevState) => {
       const lastIndex = prevState.resultMsgIds.length - 1;
       const prevResultMsgId = prevState.resultMsgIds[lastIndex];
-      if (prevResultMsgId === EnumBossBattleMsg.defeated)
-        return prevState.copyWith({
-          phase: EnumBossBattlePhase.end,
-          resultMsgIds: [],
-          defeated: true,
-        });
 
       let newResultMsgIds = prevState.resultMsgIds.filter(
         (_, index) => index !== lastIndex,
@@ -451,6 +446,7 @@ export const useBossBattleController = (): BossBattleController => {
         lp: newLp,
         monsterAdj: newMonsterAdj,
         bossAdj: newBossAdj,
+        defeated: newLp <= MIN_LIFE_POINT,
       });
       // TODO: 脱出アイテムの仕様次第でこっち使う
       // return prevState.copyWith({
@@ -528,12 +524,6 @@ export const useBossBattleController = (): BossBattleController => {
       throw new Error("Unknown Error");
     }
     _initGlobalParam();
-    setBossBattle((prevState) => {
-      return prevState.copyWith({
-        phase: EnumBossBattlePhase.end,
-        defeated: prevState.lp === 0,
-      });
-    });
     return;
   };
 

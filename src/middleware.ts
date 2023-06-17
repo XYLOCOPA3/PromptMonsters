@@ -2,8 +2,6 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
   const maintenance = process.env.MAINTENANCE === "true";
-  console.log(process.env.MAINTENANCE);
-  console.log(`request.nextUrl.pathname: ${request.nextUrl.pathname}`);
   if (maintenance) {
     if (request.nextUrl.pathname === "/maintenance") return;
     // if (isApiPath(request.nextUrl.pathname))
