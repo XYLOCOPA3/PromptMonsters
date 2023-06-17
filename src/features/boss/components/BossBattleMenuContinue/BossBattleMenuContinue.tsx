@@ -1,11 +1,14 @@
-import { MAX_LIFE_POINT } from "@/const/bossBattle";
+import { MAX_LIFE_POINT, MIN_LIFE_POINT } from "@/const/bossBattle";
 import { BossBattleNoButton, BossBattleYesButton } from "@/features/boss";
 import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleValue } from "@/hooks/useBossBattle";
+import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
+import { scoreOpenedState } from "@/stores/scoreOpenedState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
+import { useSetRecoilState } from "recoil";
 
 export type BossBattleMenuContinueProps = BaseProps;
 
@@ -20,7 +23,12 @@ export const BossBattleMenuContinue = ({
   const monster = useMonsterValue();
   const boss = useBossValue();
   const bossBattle = useBossBattleValue();
+  const setScoreOpened = useSetRecoilState(scoreOpenedState);
   const { t: tBossBattle } = useTranslation("boss-battle");
+
+  useLayoutEffectOfSSR(() => {
+    if (bossBattle.lp <= MIN_LIFE_POINT) setScoreOpened(true);
+  }, [bossBattle.lp]);
 
   if (monster.name === "" || boss.name === "") return <></>;
   return (

@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
@@ -6,6 +6,7 @@ import {
   K_TURN,
   MAX_LIFE_POINT,
   MAX_TURN_ADJ,
+  MIN_LIFE_POINT,
 } from "@/const/bossBattle";
 import {
   BossBattleMenuContinue,
@@ -23,12 +24,13 @@ import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { disableState } from "@/stores/disableState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
+import { scoreOpenedState } from "@/stores/scoreOpenedState";
 import { BaseProps } from "@/types/BaseProps";
 import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
 import { Dialog, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 export type BossBattleMenuProps = BaseProps;
 
@@ -43,13 +45,13 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
   const monsterMinted = useRecoilValue(monsterMintedState);
   const setDisable = useSetRecoilState(disableState);
   const [bossBattle, bossBattleController] = useBossBattleState();
-  const [isOpen, setIsOpen] = useState(false);
+  const [scoreOpened, setScoreOpened] = useRecoilState(scoreOpenedState);
   const { push, locale } = useRouter();
   const { t: tBossBattle } = useTranslation("boss-battle");
   const { t: tCommon } = useTranslation("common");
 
   const closeModal = () => {
-    setIsOpen(false);
+    setScoreOpened(false);
     bossBattleController.reset();
     push("/boss");
   };
@@ -68,11 +70,8 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
   };
 
   useLayoutEffectOfSSR(() => {
-    if (bossBattle.phase === EnumBossBattlePhase.end) {
-      end();
-      setIsOpen(true);
-    }
-  }, [bossBattle.phase]);
+    if (bossBattle.lp <= MIN_LIFE_POINT) end();
+  }, [bossBattle.lp]);
 
   if (boss.name === "" || boss.flavor === "") return <></>;
   return (
@@ -104,7 +103,7 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
         />
         <Menu phase={bossBattle.phase} />
       </div>
-      <Transition appear show={isOpen} as={Fragment}>
+      <Transition appear show={scoreOpened} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
           <Transition.Child
             as={Fragment}
