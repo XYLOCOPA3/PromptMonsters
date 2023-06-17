@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ITEMS, MAX_LIFE_POINT } from "@/const/bossBattle";
+import { ITEMS, MAX_LIFE_POINT, MIN_LIFE_POINT } from "@/const/bossBattle";
 import { BossBattleNextButton } from "@/features/boss";
 import {
   getBossBuffMsg,
@@ -28,6 +28,7 @@ import { useBossBattleState, useBossBattleValue } from "@/hooks/useBossBattle";
 import { useLanguageValue } from "@/hooks/useLanguage";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { disableState } from "@/stores/disableState";
+import { scoreOpenedState } from "@/stores/scoreOpenedState";
 import { BaseProps } from "@/types/BaseProps";
 import { EnumBossBattleMsg } from "@/types/EnumBossBattleMsg";
 import clsx from "clsx";
@@ -45,6 +46,7 @@ export const BossBattleMenuResult = ({
   className,
 }: BossBattleMenuResultProps) => {
   const boss = useBossValue();
+  const setScoreOpened = useSetRecoilState(scoreOpenedState);
   const [bossBattle, bossBattleController] = useBossBattleState();
   const [loading, setLoading] = useState(false);
   const setDisable = useSetRecoilState(disableState);
@@ -53,7 +55,8 @@ export const BossBattleMenuResult = ({
     setDisable(true);
     setLoading(true);
     try {
-      await bossBattleController.nextResultMsg();
+      if (bossBattle.lp <= MIN_LIFE_POINT) setScoreOpened(true);
+      else await bossBattleController.nextResultMsg();
     } catch (error) {
       console.error(error);
       // TODO: エラー文考える
