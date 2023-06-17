@@ -16,6 +16,7 @@
     "test-prompt-monsters-image": "REPORT_GAS=true npx hardhat test test/prompt-monsters-image/PromptMonstersImage.ts",
     "test-stamina": "REPORT_GAS=true npx hardhat test test/stamina/Stamina.ts",
     "test-integration": "REPORT_GAS=true npx hardhat test test/integration/contracts_integration_test.ts",
+    "test-integration-boss-battle": "REPORT_GAS=true npx hardhat test test/boss-battle/integration.ts",
     "predeploy": "npm run test-$npm_config_name",
     "deploy": "npx hardhat run scripts/$npm_config_name/deploy.ts --network $npm_config_network",
     "post-deploy": "npx hardhat run scripts/$npm_config_name/post-deploy.ts --network $npm_config_network",

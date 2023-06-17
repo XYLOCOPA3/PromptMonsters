@@ -43,7 +43,7 @@ export async function grantGameRoleToMnemonic() {
   }
 }
 
-grantGameRoleToMnemonic().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+// grantGameRoleToMnemonic().catch((error) => {
+//   console.error(error);
+//   process.exitCode = 1;
+// });
