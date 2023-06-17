@@ -1,3 +1,4 @@
+import { ERROR_MAINTENANCE } from "@/const/error";
 import { useBossController } from "@/hooks/useBoss";
 import { useLanguageValue } from "@/hooks/useLanguage";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
@@ -16,7 +17,15 @@ export const BossInit = ({ children }: BossInitProps) => {
 
   const init = async () => {
     if (language === "") return;
-    await bossController.init(language);
+    try {
+      await bossController.init(language);
+    } catch (error) {
+      console.error(error);
+      if (error instanceof Error) {
+        if (error.message !== ERROR_MAINTENANCE)
+          alert("\n\nReason: " + error.message);
+      } else alert("Boss Init Error");
+    }
   };
 
   useLayoutEffectOfSSR(() => {

@@ -1,7 +1,7 @@
 import { MAX_LIFE_POINT, MIN_LIFE_POINT } from "@/const/bossBattle";
 import { BossBattleNoButton, BossBattleYesButton } from "@/features/boss";
 import { useBossValue } from "@/hooks/useBoss";
-import { useBossBattleValue } from "@/hooks/useBossBattle";
+import { useBossBattleState } from "@/hooks/useBossBattle";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { scoreOpenedState } from "@/stores/scoreOpenedState";
@@ -22,14 +22,18 @@ export const BossBattleMenuContinue = ({
 }: BossBattleMenuContinueProps) => {
   const monster = useMonsterValue();
   const boss = useBossValue();
-  const bossBattle = useBossBattleValue();
+  const [bossBattle, bossBattleController] = useBossBattleState();
   const setScoreOpened = useSetRecoilState(scoreOpenedState);
   const { t: tBossBattle } = useTranslation("boss-battle");
 
   useLayoutEffectOfSSR(() => {
-    if (bossBattle.lp <= MIN_LIFE_POINT) setScoreOpened(true);
+    if (bossBattle.lp <= MIN_LIFE_POINT) {
+      bossBattleController.moveEnd();
+      setScoreOpened(true);
+    }
   }, [bossBattle.lp]);
 
+  if (monster === undefined) return <></>;
   if (monster.name === "" || boss.name === "") return <></>;
   return (
     <>

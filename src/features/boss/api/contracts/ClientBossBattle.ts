@@ -30,7 +30,14 @@ export class ClientBossBattle {
         process.env.NEXT_PUBLIC_BOSS_BATTLE_CONTRACT!,
         wallet.provider,
       );
-      const res = await axios.post("/api/boss/get-event");
+      let res: any;
+      try {
+        res = await axios.post("/api/boss/get-event");
+      } catch (e) {
+        if (axios.isAxiosError(e)) throw new Error(e.response!.data.message);
+        console.error(e);
+        throw new Error("Unknown Error");
+      }
       const eventKey = res.data.eventKey;
       const bbeId = res.data.bbeId;
       this._instance = new ClientBossBattle(wallet, reader, eventKey, bbeId);

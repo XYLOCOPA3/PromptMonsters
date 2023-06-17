@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/elements/Button";
+import { SKILL_TYPE_NAME_SIMPLE } from "@/const/monster";
 import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleValue } from "@/hooks/useBossBattle";
 import { useMonsterValue } from "@/hooks/useMonster";
@@ -10,7 +11,6 @@ import { MonsterModel } from "@/models/MonsterModel";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
-import { SKILL_TYPE_NAME_SIMPLE } from "@/const/monster";
 
 export type BossBattleTweetButtonProps = BaseProps;
 
@@ -28,6 +28,7 @@ export const BossBattleTweetButton = ({
   const monster = useMonsterValue();
   const { t: tCommon } = useTranslation("common");
 
+  if (monster === undefined) return <></>;
   if (monster.name === "") return <></>;
   return (
     <Link
@@ -72,21 +73,26 @@ const _getBossBattleTweet = (
   boss: BossModel,
 ): string => {
   const skillsAndTypes = monster.skills.map((skill, index) => {
-    return `- ${skill}: ${SKILL_TYPE_NAME_SIMPLE.get(monster.skillTypes[index]) ??
-      "???"}\n`;
+    return `- ${skill}: ${
+      SKILL_TYPE_NAME_SIMPLE.get(monster.skillTypes[index]) ?? "???"
+    }\n`;
   });
 
   return `vs Boss ${boss.name}!
 
-${bossBattle.lp !== 0
-      ? `Score : ${bossBattle.score}🎉`
-      : `Score : ${bossBattle.score}\nYou lose...`}
+${
+  bossBattle.lp !== 0
+    ? `Score : ${bossBattle.score}🎉`
+    : `Score : ${bossBattle.score}\nYou lose...`
+}
 
 With
 ${monster.name}
 
 HP:${monster.status.HP} / ATK:${monster.status.ATK} / DEF:${monster.status.DEF}
-INT:${monster.status.INT} / MGR:${monster.status.MGR} / AGL:${monster.status.AGL}
+INT:${monster.status.INT} / MGR:${monster.status.MGR} / AGL:${
+    monster.status.AGL
+  }
 
 ${skillsAndTypes.join("")}
 Let's battle!

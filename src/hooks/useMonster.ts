@@ -81,9 +81,7 @@ export const useMonsterController = (): MonsterController => {
         },
       });
     } catch (e) {
-      if (axios.isAxiosError(e)) {
-        throw new Error(e.response!.data.message);
-      }
+      if (axios.isAxiosError(e)) throw new Error(e.response!.data.message);
       console.error(e);
       throw new Error("Unknown Error");
     }
@@ -206,6 +204,10 @@ export const useMonsterController = (): MonsterController => {
   ): Promise<MonsterModel> => {
     const promptMonsters = ClientPromptMonsters.instance();
     const stamina = ClientStamina.instance();
+    const monsterId = (
+      await promptMonsters.getTokenIds([resurrectionPrompt])
+    )[0];
+    if (monsterId !== "0") throw new Error("This monster has already minted.");
     const results = await Promise.all([
       promptMonsters.getMonsterExtensions([resurrectionPrompt]),
       stamina.getStaminaLimit(),

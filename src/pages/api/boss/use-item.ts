@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { RPC_URL } from "@/const/chainParams";
 import { ERROR_WAIT_TIME, MAX_ERROR_CNT } from "@/const/error";
+import { DevBBkParamModel } from "@/dev/models/DevBBkParamModel";
 import { ServerBossBattle } from "@/features/boss/api/contracts/ServerBossBattle";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { BBState } from "@/types/BBState";
@@ -54,7 +55,10 @@ export default async function handler(
   const prefixLog = `/boss/use-item: ${resurrectionPrompt}:`;
 
   // TODO: 後で消す
-  const devBBkParam = req.body.devBBkParam;
+  const devBBkParam =
+    process.env.STAGE === "develop"
+      ? req.body.devBBkParam
+      : DevBBkParamModel.create({});
 
   const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
   const bossBattle = ServerBossBattle.instance(RPC_URL.mchVerse);

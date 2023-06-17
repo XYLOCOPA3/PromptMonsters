@@ -9,7 +9,9 @@ import { useUserValue } from "@/hooks/useUser";
 import { disableState } from "@/stores/disableState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { BaseProps } from "@/types/BaseProps";
+import { useWeb3Modal } from "@web3modal/react";
 import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { useNetwork } from "wagmi";
 
@@ -23,20 +25,24 @@ export type MonsterMintButtonProps = BaseProps;
 export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
   const user = useUserValue();
   const mintPrice = useMintPriceValue();
-  const [monster, monsterController] = useMonsterState();
-  const [loading, setLoading] = useState(false);
   const setMonsterMinted = useSetRecoilState(monsterMintedState);
   const ownedMonstersController = useOwnedMonstersController();
   const setSelectedMonsterIdName = useSetSelectedMonsterIdNameState();
+  const [monster, monsterController] = useMonsterState();
+  const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
+
   const { chain } = useNetwork();
+  const { open } = useWeb3Modal();
+  const { t: tCommon } = useTranslation("common");
 
   /**
    * Click event
    */
   const handleClick = async () => {
     if (user.id === "") {
-      alert("Please log in if you would like to mint a monster.");
+      alert(tCommon("mintIfNotLogin"));
+      await open();
       return;
     }
     if (chain!.id !== mchVerse.id) {
@@ -61,6 +67,7 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
     setLoading(false);
   };
 
+  if (monster === undefined) return <></>;
   if (monster.name === "") return <></>;
   return (
     <Button

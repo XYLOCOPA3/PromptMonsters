@@ -24,6 +24,7 @@ export const GenerateTweetButton = ({
   const monster = useMonsterValue();
   const { t: tCommon } = useTranslation("monsters");
 
+  if (monster === undefined) return <></>;
   if (monster.name === "") return <></>;
   return (
     <Link

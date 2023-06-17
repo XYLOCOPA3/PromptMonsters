@@ -38,8 +38,8 @@ export const BossAdjCircle = ({ className }: BossAdjCircleProps) => {
         "bg-[#272727]/80",
         "rounded-full",
         "border-[1px]",
-        "w-[40px]",
         "h-[40px]",
+        "p-[5px]",
         "text-[14px]",
         bossBattle.lp < MAX_LIFE_POINT / 4 ? "text-[#FCA7A4]" : "",
         bossBattle.lp < MAX_LIFE_POINT / 4 ? "border-[#FCA7A4]" : "",
@@ -49,7 +49,7 @@ export const BossAdjCircle = ({ className }: BossAdjCircleProps) => {
       )}
     >
       <span className={clsx(bossAdj > BOSS_ADJ_STD ? "text-[#f86868]" : "")}>
-        {bossAdj}
+        ⚔️{bossAdj}%
       </span>
     </div>
   );

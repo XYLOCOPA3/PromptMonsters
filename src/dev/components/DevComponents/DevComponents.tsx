@@ -6,6 +6,7 @@ import { DevOnOffButton } from "@/dev/components/DevOnOffButton";
 import { devOnOffState } from "@/dev/stores/devOnOffState";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { BaseProps } from "@/types/BaseProps";
+import axios from "axios";
 import clsx from "clsx";
 import { useRecoilValue } from "recoil";
 
@@ -17,11 +18,22 @@ export type DevComponentsProps = BaseProps;
  * @param className Style from parent element
  */
 export const DevComponents = ({ className }: DevComponentsProps) => {
-  const [isDev, setIsDev] = useState(false);
   const devOnOff = useRecoilValue(devOnOffState);
+  const [isDev, setIsDev] = useState(false);
+
+  const checkDev = async () => {
+    let res: any;
+    try {
+      res = await axios.post("/api/get-stage");
+    } catch (e) {
+      console.error(e);
+    }
+    const stage = res.data.stage;
+    setIsDev(stage === "develop");
+  };
 
   useLayoutEffectOfSSR(() => {
-    setIsDev(process.env.NEXT_PUBLIC_IS_PRODUCTION === "false");
+    checkDev();
   }, []);
 
   if (!isDev) return <></>;

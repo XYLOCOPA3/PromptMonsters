@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
 import { MAX_LIFE_POINT } from "@/const/bossBattle";
+import { ERROR_MAINTENANCE } from "@/const/error";
 import { SKILL_TYPE_NAME } from "@/const/monster";
 import { BossBattlePrevButton } from "@/features/boss/components/BossBattlePrevButton";
 import { useBossValue } from "@/hooks/useBoss";
@@ -47,9 +48,10 @@ export const BossBattleMenuFight = ({
       );
     } catch (error) {
       console.error(error);
-      if (error instanceof Error)
-        alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
-      else alert(tCommon("failedTx"));
+      if (error instanceof Error) {
+        if (error.message !== ERROR_MAINTENANCE)
+          alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
+      } else alert(tCommon("failedTx"));
     }
     setDisable(false);
     setLoading(false);
@@ -66,9 +68,10 @@ export const BossBattleMenuFight = ({
       );
     } catch (error) {
       console.error(error);
-      if (error instanceof Error)
-        alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
-      else alert(tCommon("failedTx"));
+      if (error instanceof Error) {
+        if (error.message !== ERROR_MAINTENANCE)
+          alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
+      } else alert(tCommon("failedTx"));
     }
     setDisable(false);
     setLoading(false);
@@ -85,9 +88,10 @@ export const BossBattleMenuFight = ({
       );
     } catch (error) {
       console.error(error);
-      if (error instanceof Error)
-        alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
-      else alert(tCommon("failedTx"));
+      if (error instanceof Error) {
+        if (error.message !== ERROR_MAINTENANCE)
+          alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
+      } else alert(tCommon("failedTx"));
     }
     setDisable(false);
     setLoading(false);
@@ -104,9 +108,10 @@ export const BossBattleMenuFight = ({
       );
     } catch (error) {
       console.error(error);
-      if (error instanceof Error)
-        alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
-      else alert(tCommon("failedTx"));
+      if (error instanceof Error) {
+        if (error.message !== ERROR_MAINTENANCE)
+          alert(`${tCommon("failedTx")}` + "\n\nReason: " + error.message);
+      } else alert(tCommon("failedTx"));
     }
     setDisable(false);
     setLoading(false);

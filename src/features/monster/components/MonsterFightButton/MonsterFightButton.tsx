@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
+import { ERROR_MAINTENANCE } from "@/const/error";
 import { useBattleController } from "@/hooks/useBattle";
 import { useLanguageValue } from "@/hooks/useLanguage";
 import { useMonsterState } from "@/hooks/useMonster";
@@ -41,6 +42,10 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
       );
       battleController.set(battleResult);
     } catch (e) {
+      if (e instanceof Error) {
+        if (e.message !== ERROR_MAINTENANCE)
+          alert(`Failed to fight.\n\nReason: ${e.message}`);
+      }
       console.error(e);
       alert(`Failed to fight.\n\nReason: ${e}`);
     }
@@ -48,6 +53,7 @@ export const MonsterFightButton = ({ className }: MonsterFightButtonProps) => {
     setLoading(false);
   };
 
+  if (monster === undefined) return <></>;
   if (monster.name === "") return <></>;
   return (
     <Button

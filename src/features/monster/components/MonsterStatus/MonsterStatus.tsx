@@ -13,6 +13,7 @@ export type MonsterStatusProps = BaseProps;
 export const MonsterStatus = ({ className }: MonsterStatusProps) => {
   const monster = useMonsterValue();
 
+  if (monster === undefined) return <></>;
   if (monster.name === "") return <></>;
   return (
     <div

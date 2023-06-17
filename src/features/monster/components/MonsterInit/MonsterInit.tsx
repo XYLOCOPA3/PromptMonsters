@@ -23,9 +23,8 @@ export const MonsterInit = ({ children }: MonsterInitProps) => {
       await monsterController.init();
     } catch (error) {
       console.error(error);
-      // TODO: エラー文考える
-      if (error instanceof Error) alert("Error\n\nReason: " + error.message);
-      else alert("Error");
+      // if (error instanceof Error) alert("Error\n\nReason: " + error.message);
+      // else alert("Error");
       return;
     }
     // TODO: ログインしてない状態だと一生初期化終わらないことになっちゃう

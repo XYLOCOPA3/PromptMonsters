@@ -58,6 +58,7 @@ export const MonsterSelector = ({ className }: MonsterSelectorProps) => {
     )[0];
     monsterController.set(selectedMonster);
     battleController.reset();
+    if (monster === undefined) return;
     if (monster.id === "") {
       setMonsterMinted(false);
       return;
@@ -66,6 +67,7 @@ export const MonsterSelector = ({ className }: MonsterSelectorProps) => {
   }, [selectedMonsterIdName]);
 
   useLayoutEffectOfSSR(() => {
+    if (monster === undefined) return;
     if (monster.id === "") {
       setMonsterMinted(false);
       return;

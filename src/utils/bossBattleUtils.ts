@@ -45,10 +45,7 @@ export const generateSkillTypesIfNotSet = async (
       resurrectionPrompt: monster.resurrectionPrompt,
     });
   } catch (e) {
-    if (axios.isAxiosError(e)) {
-      if (e.response!.status === 500) return e.response!.data.battleResult;
-      throw new Error(e.response!.data.message);
-    }
+    if (axios.isAxiosError(e)) throw new Error(e.response!.data.message);
     console.error(e);
     throw new Error("Unknown Error");
   }
@@ -67,10 +64,7 @@ export const generateMonsterAdjIfNotSet = async (
       resurrectionPrompt,
     });
   } catch (e) {
-    if (axios.isAxiosError(e)) {
-      if (e.response!.status === 500) return e.response!.data.battleResult;
-      throw new Error(e.response!.data.message);
-    }
+    if (axios.isAxiosError(e)) throw new Error(e.response!.data.message);
     console.error(e);
     throw new Error("Unknown Error");
   }
@@ -105,10 +99,7 @@ export const startBossBattle = async (
       devBBkParam,
     });
   } catch (e) {
-    if (axios.isAxiosError(e)) {
-      if (e.response!.status === 500) return e.response!.data.battleResult;
-      throw new Error(e.response!.data.message);
-    }
+    if (axios.isAxiosError(e)) throw new Error(e.response!.data.message);
     console.error(e);
     throw new Error("Unknown Error");
   }
