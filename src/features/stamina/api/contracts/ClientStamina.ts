@@ -36,6 +36,44 @@ export class ClientStamina {
   };
 
   /**
+   * getStaminaRecoveryTime
+   * @return {Promise<ethers.BigNumber>} stamina recovery time
+   */
+  getStaminaRecoveryTime = async (): Promise<ethers.BigNumber> => {
+    return await this._reader.staminaRecoveryTime();
+  };
+
+  /**
+   * getTimeStd
+   * @param monsterId monster id
+   * @return {Promise<ethers.BigNumber>} time std
+   */
+  getTimeStd = async (monsterId: string): Promise<ethers.BigNumber> => {
+    return await this._reader.timeStd(ethers.BigNumber.from(monsterId));
+  };
+
+  /**
+   * getTimeStds
+   * @param monsterIds monster ids
+   * @return {Promise<ethers.BigNumber>} time stds
+   */
+  getTimeStds = async (monsterIds: string[]): Promise<ethers.BigNumber[]> => {
+    const monsterIdsNum: ethers.BigNumber[] = [];
+    for (let i = 0; i < monsterIds.length; i++) {
+      monsterIdsNum.push(ethers.BigNumber.from(monsterIds[i]));
+    }
+    return await this._reader.getTimeStds(monsterIdsNum);
+  };
+
+  /**
+   * getRestorePrice
+   * @return {Promise<ethers.BigNumber>} restore price
+   */
+  getRestorePrice = async (): Promise<ethers.BigNumber> => {
+    return await this._reader.restorePrice();
+  };
+
+  /**
    * restoreStamina
    * @param monsterId monster id
    * @return {Promise<ethers.ContractReceipt>} contract receipt
