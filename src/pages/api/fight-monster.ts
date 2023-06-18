@@ -53,6 +53,8 @@ export default async function handler(
     ]);
     monsterId = results[0][0];
     const totalSupply = Number(results[1]);
+    console.log(prefixLog, `monsterId = ${monsterId}`);
+    console.log(prefixLog, `totalSupply = ${totalSupply}`);
     if (monsterId === "0") monsterId = "";
     results = await Promise.all([
       calcStaminaFromMonsterId(monsterId),
@@ -68,6 +70,8 @@ export default async function handler(
   }
   const stamina = results[0];
   const enemyId = results[1];
+  console.log(prefixLog, `stamina = ${stamina}`);
+  console.log(prefixLog, `enemyId = ${enemyId}`);
 
   // スタミナチェック
   if (stamina < 1) {
@@ -140,7 +144,7 @@ export default async function handler(
   ) {
     battleResult.winnerId = "draw";
     console.log("The battle ended in a stalemate. -----------------");
-    console.log(prefixLog, `battleResult = ${battleResult}`);
+    console.log(prefixLog, "battleResult =", battleResult);
     return res.status(500).json({ battleResult });
   }
 
@@ -173,7 +177,7 @@ export default async function handler(
       await new Promise((resolve) => setTimeout(resolve, ERROR_WAIT_TIME));
     }
   }
-  console.log(prefixLog, `battleResult = ${battleResult}`);
+  console.log(prefixLog, "battleResult =", battleResult);
   return res.status(200).json({ battleResult });
 }
 
