@@ -24,7 +24,7 @@ export const getGeneratingPrompt = (
 """
 Output example:
 feature="A yellow bear that loves honey"
-Output in JSON->{"name":"Winnie the Pooh","flavor":"A bear with a relaxed personality who loves honey. He has a kind heart and is considerate of his friends.","status":{"HP":22,"ATK":8,"DEF":12,"INT":14,"MGR":12,"AGL":6},"skills":["Honey Licker","Hug","Laid-back"]}
+Output in JSON->{"name":"Winnie the Pooh","flavor":"A bear who loves honey. He is laid-back, has a kind heart, and is considerate of his friends. In fact, he dislikes Piglet.","status":{"HP":22,"ATK":8,"DEF":12,"INT":14,"MGR":12,"AGL":6},"skills":["Honey Licker","Hug","Laid-back"]}
 """
 
 feature="${feature}"
@@ -32,7 +32,7 @@ Output in JSON->`;
     case LANGUAGES[1]:
       return `架空のモンスターを1体生成。
 - 著作権は絶対に侵害しない
-- モンスター名は唯一無二の名前にする
+- モンスター名はユニークな名前にする
 - "flavor"には固有名詞を使用しない
 - "feature"の単語を再利用しない
 - ステータス上限: HP<=40,ATK<=20,DEF<=20,INT<=20,MGR<=20,AGL<=20
@@ -40,8 +40,8 @@ Output in JSON->`;
 
 """
 出力例:
-feature="黄色い熊, 蜂蜜大好き"
-JSON出力->{"name":"くまのプーさん","flavor":"ハチミツが大好きなクマ。のんびり屋で、優しい心を持ち、友達思いの性格をしている。","status":{"HP":22,"ATK":8,"DEF":12,"INT":14,"MGR":12,"AGL":6},"skills":["蜂蜜舐め","ハグ","のんびり"]}
+feature="武将, 無慈悲, 猿"
+JSON出力->{"name":"織田ノブーン","flavor":"知略と勇気をもって天下を目指す武将。野望と情熱で混沌とした時代を切り開く、野心のある性格。実は未来からきた宇宙人である。","status":{"HP":22,"ATK":8,"DEF":12,"INT":14,"MGR":12,"AGL":6},"skills":["天下布武","鬼道","マインドコントロール"]}
 """
 
 feature="${feature}"

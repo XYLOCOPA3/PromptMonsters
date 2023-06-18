@@ -84,7 +84,13 @@ ${
   bossBattle.lp !== 0
     ? `Score : ${bossBattle.score}🎉`
     : `Score : ${bossBattle.score}\nYou lose...`
-}
+}${
+    bossBattle.lp !== 0
+      ? bossBattle.score > bossBattle.highScore
+        ? "Congratulation!!!\nThis score is a high score!"
+        : ""
+      : ""
+  }
 
 With
 ${monster.name}

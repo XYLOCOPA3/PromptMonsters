@@ -14,7 +14,7 @@ async function main() {
   }
   // console.log("tokenIds: ", tokenIds);
   const monsters = await promptMonsters.getMonsters(tokenIds);
-  // console.log("monsters: ", monsters);
+  console.log("monsters: ", monsters);
 
   for (let i = 0; i < monsters.length; i++) {
     const resurrectionPrompt = ethers.Wallet.createRandom().address;
