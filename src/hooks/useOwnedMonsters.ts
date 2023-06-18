@@ -1,14 +1,12 @@
-import { RPC_URL } from "@/const/chainParams";
 import { ClientPromptMonsters } from "@/features/monster/api/contracts/ClientPromptMonsters";
+import { ClientStamina } from "@/features/stamina/api/contracts/ClientStamina";
 import { calcStamina } from "@/features/stamina/utils/calcStamina";
 import { MonsterModel } from "@/models/MonsterModel";
 import {
   OwnedMonstersState,
   ownedMonstersState,
 } from "@/stores/ownedMonstersState";
-import { Stamina__factory } from "@/typechain";
 import { UserId } from "@/types/UserId";
-import { ethers } from "ethers";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export interface OwnedMonsterIdsController {
@@ -36,23 +34,19 @@ export const useOwnedMonstersController = (): OwnedMonsterIdsController => {
     userId: UserId,
     ownedMonsters: MonsterModel[],
   ): Promise<void> => {
-    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
     const promptMonsters = ClientPromptMonsters.instance();
-    const stamina = Stamina__factory.connect(
-      process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
-      provider,
-    );
     const monsterIdsNum = await promptMonsters.getOwnerToTokenIds(userId);
     if (monsterIdsNum.length === 0) return;
     const monsterIds = monsterIdsNum.map((monsterId) => monsterId.toString());
     const resurrectionPrompts = await promptMonsters.getResurrectionPrompts(
       monsterIds,
     );
+    const stamina = ClientStamina.instance();
     const results = await Promise.all([
       promptMonsters.getMonsterExtensions(resurrectionPrompts),
-      stamina.getTimeStds(monsterIdsNum),
-      stamina.staminaLimit(),
-      stamina.staminaRecoveryTime(),
+      stamina.getTimeStds(monsterIds),
+      stamina.getStaminaLimit(),
+      stamina.getStaminaRecoveryTime(),
     ]);
     const monsterExtensionStructs = results[0];
     const timeStds = results[1];
