@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { RPC_URL } from "@/const/chainParams";
 import { ERROR_WAIT_TIME, MAX_ERROR_CNT } from "@/const/error";
 import { LANGUAGES } from "@/const/language";
-import { BattleContract } from "@/features/battle/api/contracts/BattleContract";
+import { ServerBattleContract } from "@/features/battle/api/contracts/ServerBattleContract";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { calcStaminaFromMonsterId } from "@/features/stamina/utils/calcStamina";
 import { getFightPrompt } from "@/lib/prompt";
@@ -34,17 +34,15 @@ export default async function handler(
   const language = req.body.language || "";
   if (!LANGUAGES.includes(language))
     return res.status(400).json({ message: "Invalid language." });
-  console.log("language: ", language);
 
   const resurrectionPrompt = req.body.resurrectionPrompt || "";
   if (resurrectionPrompt === "")
     return res.status(400).json({ message: "Invalid resurrectionPrompt." });
-  console.log("resurrectionPrompt: ", resurrectionPrompt);
 
   const prefixLog = `/fight-monster: ${resurrectionPrompt}:`;
 
   const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
-  const battle = BattleContract.instance(RPC_URL.mchVerse);
+  const battle = ServerBattleContract.instance(RPC_URL.mchVerse);
 
   let monsterId: string;
   let results: any;
@@ -58,8 +56,10 @@ export default async function handler(
     console.log(prefixLog, `monsterId = ${monsterId}`);
     console.log(prefixLog, `totalSupply = ${totalSupply}`);
 
-    if (monsterId === "0") monsterId = "";
-    console.log(prefixLog, `monsterId = ${monsterId}`);
+    if (monsterId === "0") {
+      monsterId = "";
+      console.log(prefixLog, `new monsterId = ""`);
+    }
 
     results = await Promise.all([
       calcStaminaFromMonsterId(monsterId),

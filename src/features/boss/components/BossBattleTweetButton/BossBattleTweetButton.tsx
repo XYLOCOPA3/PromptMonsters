@@ -82,15 +82,11 @@ const _getBossBattleTweet = (
 
 ${
   bossBattle.lp !== 0
-    ? `Score : ${bossBattle.score}🎉`
-    : `Score : ${bossBattle.score}\nYou lose...`
-}${
-    bossBattle.lp !== 0
-      ? bossBattle.score > bossBattle.highScore
-        ? "Congratulation!!!\nThis score is a high score!"
-        : ""
-      : ""
-  }
+    ? bossBattle.score > bossBattle.highScore
+      ? `High Score: ${bossBattle.score}🎉`
+      : `Score: ${bossBattle.score}🎉`
+    : `Score: ${bossBattle.score}\nYou lose...`
+}
 
 With
 ${monster.name}
@@ -102,6 +98,6 @@ INT:${monster.status.INT} / MGR:${monster.status.MGR} / AGL:${
 
 ${skillsAndTypes.join("")}
 Let's battle!
-https://prompt-monsters.com/
+https://prompt-monsters.com/boss
 #PromptMonsters #Alert #BCG`;
 };
