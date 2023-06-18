@@ -34,10 +34,12 @@ export default async function handler(
   const language = req.body.language || "";
   if (!LANGUAGES.includes(language))
     return res.status(400).json({ message: "Invalid language." });
+  console.log("language: ", language);
 
   const resurrectionPrompt = req.body.resurrectionPrompt || "";
   if (resurrectionPrompt === "")
     return res.status(400).json({ message: "Invalid resurrectionPrompt." });
+  console.log("resurrectionPrompt: ", resurrectionPrompt);
 
   const prefixLog = `/fight-monster: ${resurrectionPrompt}:`;
 
@@ -55,7 +57,10 @@ export default async function handler(
     const totalSupply = Number(results[1]);
     console.log(prefixLog, `monsterId = ${monsterId}`);
     console.log(prefixLog, `totalSupply = ${totalSupply}`);
+
     if (monsterId === "0") monsterId = "";
+    console.log(prefixLog, `monsterId = ${monsterId}`);
+
     results = await Promise.all([
       calcStaminaFromMonsterId(monsterId),
       _getRandomEnemyId(monsterId, totalSupply),
@@ -86,6 +91,11 @@ export default async function handler(
     enemyResurrectionPrompt = (
       await promptMonsters.getResurrectionPrompts([enemyId])
     )[0];
+    console.log(
+      prefixLog,
+      `enemyResurrectionPrompt = ${enemyResurrectionPrompt}`,
+    );
+
     monsterExtensions = await promptMonsters.getMonsterExtensions([
       resurrectionPrompt,
       enemyResurrectionPrompt,
@@ -100,6 +110,9 @@ export default async function handler(
   }
   const monsterExtension = monsterExtensions[0];
   const enemyExtension = monsterExtensions[1];
+  console.log(prefixLog, "monsterExtension = ", monsterExtension);
+  console.log(prefixLog, "enemyExtension = ", enemyExtension);
+
   const fightPrompt = getFightPrompt(
     monsterExtension,
     enemyExtension,
@@ -110,7 +123,7 @@ export default async function handler(
   let battleResult: any;
   while (true) {
     try {
-      console.log(prefixLog, errorCnt);
+      console.log(prefixLog, "errorCnt = ", errorCnt);
       const completion = await openai.createChatCompletion({
         model: "gpt-3.5-turbo-0613",
         messages: [
@@ -121,8 +134,9 @@ export default async function handler(
         ],
         temperature: 1.0,
       });
-      console.log(completion.data.choices);
-      console.log(completion.data.usage);
+      console.log(prefixLog, "choices = ", completion.data.choices);
+      console.log(prefixLog, "usage = ", completion.data.usage);
+
       battleResult = JSON.parse(completion.data.choices[0].message!.content);
       errorCnt = 0;
       break;
@@ -150,7 +164,7 @@ export default async function handler(
 
   while (true) {
     try {
-      console.log(prefixLog, errorCnt);
+      console.log(prefixLog, "errorCnt = ", errorCnt);
       await battle.addSeasonBattleData(
         monsterId,
         battleResult.winnerId === enemyExtension.resurrectionPrompt
