@@ -1,6 +1,5 @@
-import { RPC_URL } from "@/const/chainParams";
+import { ClientStamina } from "@/features/stamina/api/contracts/ClientStamina";
 import { restorePriceState } from "@/stores/restorePriceState";
-import { Stamina__factory } from "@/typechain";
 import { ethers } from "ethers";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
@@ -19,14 +18,10 @@ export const useRestorePriceController = (): RestorePriceController => {
    * init
    */
   const init = async (): Promise<void> => {
-    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
-    const stamina = Stamina__factory.connect(
-      process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
-      provider,
-    );
+    const stamina = ClientStamina.instance();
 
     setRestorePrice(
-      Number(ethers.utils.formatEther(await stamina.restorePrice())),
+      Number(ethers.utils.formatEther(await stamina.getRestorePrice())),
     );
   };
 

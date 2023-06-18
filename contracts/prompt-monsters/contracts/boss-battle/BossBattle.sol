@@ -235,8 +235,8 @@ contract BossBattle is
     address resurrectionPrompt
   ) public view returns (IBossBattleEvent.BBState memory bbState) {
     bbState = IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId]).getBBState(
-        resurrectionPrompt
-      );
+      resurrectionPrompt
+    );
   }
 
   /// @dev get boss battle data to calculate battle result

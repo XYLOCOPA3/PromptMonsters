@@ -33,7 +33,9 @@ export const getMonsterOtherHealMsg = (
   skillName: string,
   msg: string,
 ): string => {
-  return msg.replace("monsterName", monsterName).replace("skillName", skillName);
+  return msg
+    .replace("monsterName", monsterName)
+    .replace("skillName", skillName);
 };
 
 export const getMonsterOtherPhysicalAttack = (
@@ -42,7 +44,10 @@ export const getMonsterOtherPhysicalAttack = (
   skillName: string,
   msg: string,
 ): string => {
-  return msg.replace("monsterName", monsterName).replace("bossName", bossName).replace("skillName", skillName);
+  return msg
+    .replace("monsterName", monsterName)
+    .replace("bossName", bossName)
+    .replace("skillName", skillName);
 };
 
 export const getMonsterOtherPowerPhysicalAttack = (
@@ -50,7 +55,9 @@ export const getMonsterOtherPowerPhysicalAttack = (
   skillName: string,
   msg: string,
 ): string => {
-  return msg.replace("monsterName", monsterName).replace("skillName", skillName);
+  return msg
+    .replace("monsterName", monsterName)
+    .replace("skillName", skillName);
 };
 
 export const getBossDamageMsg = (

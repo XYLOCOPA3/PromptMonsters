@@ -23,8 +23,8 @@ export const getGeneratingPrompt = (
 
 """
 Output example:
-feature="A yellow bear that loves honey"
-Output in JSON->{"name":"Winnie the Pooh","flavor":"A bear who loves honey. He is laid-back, has a kind heart, and is considerate of his friends. In fact, he dislikes Piglet.","status":{"HP":22,"ATK":8,"DEF":12,"INT":14,"MGR":12,"AGL":6},"skills":["Honey Licker","Hug","Laid-back"]}
+feature="warlord, merciless, monkey"
+Output in JSON->{"name":"Oda noboon","flavor":"A warlord aiming for world domination with wisdom and courage. A character with ambition who carves out a chaotic era with ambition and passion. In fact, he is an alien from the future.","status":{"HP":22,"ATK":8,"DEF":12,"INT":14,"MGR":12,"AGL":6},"skills":["World Conquest","Demon Path","Mind Control"}
 """
 
 feature="${feature}"
@@ -67,71 +67,71 @@ export const getFightPrompt = (
 ): string => {
   switch (language) {
     case LANGUAGES[0]:
-      return `Output the battle result.
+      return `Output the results of the battle between monsters.
 
 """
-Monster details:
+monsterDetails:
   ${monster.name}:
     id:${monster.resurrectionPrompt}
     flavor:${monster.flavor}
     status:
-    HP:${monster.hp}
-    ATK:${monster.atk}
-    DEF:${monster.def}
-    INT:${monster.inte}
-    MGR:${monster.mgr}
-    AGL:${monster.agl}
+      HP:${monster.hp}
+      ATK:${monster.atk}
+      DEF:${monster.def}
+      INT:${monster.inte}
+      MGR:${monster.mgr}
+      AGL:${monster.agl}
     skills:[${monster.skills}]
   ${enemy.name}:
     id:${enemy.resurrectionPrompt}
     flavor:${enemy.flavor}
     status:
-    HP:${enemy.hp}
-    ATK:${enemy.atk}
-    DEF:${enemy.def}
-    INT:${enemy.inte}
-    MGR:${enemy.mgr}
-    AGL:${enemy.agl}
+      HP:${enemy.hp}
+      ATK:${enemy.atk}
+      DEF:${enemy.def}
+      INT:${enemy.inte}
+      MGR:${enemy.mgr}
+      AGL:${enemy.agl}
     skills:[${enemy.skills}]
 
 Output example:
 ${monster.name} vs ${enemy.name}
-Output in JSON->{"battleAnalysis": "[Summarize the advantageous aspect of the battle based on monster details in 50 characters or less.]", "battleDescription":"[Write the battle result in a novel-like manner in 200 characters or less.],"winnerId":"0x0000000000000000000000000000000000000000"}
+Output in JSON->{"battleDescription":"[Write a battle result in a novelistic style, under 300 characters, drawing from the 'flavor', 'status', 'skills' of 'monsterDetails'. Be sure to determine a winner. Include a quote from the monster.],"winnerId":"0x0000000000000000000000000000000000000000"}
 """
 
 ${monster.name} vs ${enemy.name}:
 Output in JSON->`;
     case LANGUAGES[1]:
-      return `戦闘結果を出力。
+      return `モンスター同士の戦闘結果を出力。
 
-"""
-モンスター詳細:
+monsterDetails:
   ${monster.name}:
     id:${monster.resurrectionPrompt}
     flavor:${monster.flavor}
     status:
-    HP:${monster.hp}
-    ATK:${monster.atk}
-    DEF:${monster.def}
-    INT:${monster.inte}
-    MGR:${monster.mgr}
-    AGL:${monster.agl}
+      HP:${monster.hp}
+      ATK:${monster.atk}
+      DEF:${monster.def}
+      INT:${monster.inte}
+      MGR:${monster.mgr}
+      AGL:${monster.agl}
     skills:[${monster.skills}]
   ${enemy.name}:
     id:${enemy.resurrectionPrompt}
     flavor:${enemy.flavor}
     status:
-    HP:${enemy.hp}
-    ATK:${enemy.atk}
-    DEF:${enemy.def}
-    INT:${enemy.inte}
-    MGR:${enemy.mgr}
-    AGL:${enemy.agl}
+      HP:${enemy.hp}
+      ATK:${enemy.atk}
+      DEF:${enemy.def}
+      INT:${enemy.inte}
+      MGR:${enemy.mgr}
+      AGL:${enemy.agl}
     skills:[${enemy.skills}]
 
+"""
 出力例:
 ${monster.name} vs ${enemy.name}
-JSON出力->{"battleAnalysis": "[モンスター詳細から戦闘に有利な方を50文字以下で端的にまとめる。]", "battleDescription":"[戦闘結果を200文字以下で小説風に書く。],"winnerId":"0x0000000000000000000000000000000000000000"}
+JSON出力->{"battleDescription":"['monsterDetails' の 'flavor', 'status', 'skills'から300文字以下で戦闘結果を小説風に書く。必ず勝者を決める。必ずモンスターのセリフを入れる。],"winnerId":"0x0000000000000000000000000000000000000000"}
 """
 
 ${monster.name} vs ${enemy.name}:

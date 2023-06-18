@@ -93,6 +93,13 @@ interface IPromptMonsters is IERC721Upgradeable {
   );
 
   // 既に使用していないイベントだが、残しておかないとTxから取得できなくなる
+  event SetResurrectionPromptToTokenIdMap(
+    address indexed publisher,
+    uint256 oldValue,
+    uint256 newValue
+  );
+
+  // 既に使用していないイベントだが、残しておかないとTxから取得できなくなる
   event GenerateMonster(Monster monster);
 
   // 既に使用していないイベントだが、残しておかないとTxから取得できなくなる
@@ -260,21 +267,4 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @dev Get contract URI
   /// @return uri contract URI
   function contractURI() external view returns (string memory uri);
-
-  // TODO: 後で消す -------------------
-
-  /// @dev Set _monsterHistoryMap
-  /// @param resurrectionPrompt resurrection prompt
-  /// @param newState_ _monsterHistory
-  function setMonsterHistory(
-    address resurrectionPrompt,
-    Monster memory newState_
-  ) external;
-
-  /// @dev Get monsters
-  /// @param tokenIds token IDs
-  /// @return monsters monsters
-  function getMonsters(
-    uint256[] memory tokenIds
-  ) external view returns (IPromptMonsters.Monster[] memory monsters);
 }

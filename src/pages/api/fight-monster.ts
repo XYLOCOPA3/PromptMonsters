@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { RPC_URL } from "@/const/chainParams";
 import { ERROR_WAIT_TIME, MAX_ERROR_CNT } from "@/const/error";
 import { LANGUAGES } from "@/const/language";
-import { BattleContract } from "@/features/battle/api/contracts/BattleContract";
+import { ServerBattleContract } from "@/features/battle/api/contracts/ServerBattleContract";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
 import { calcStaminaFromMonsterId } from "@/features/stamina/utils/calcStamina";
 import { getFightPrompt } from "@/lib/prompt";
@@ -42,7 +42,7 @@ export default async function handler(
   const prefixLog = `/fight-monster: ${resurrectionPrompt}:`;
 
   const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
-  const battle = BattleContract.instance(RPC_URL.mchVerse);
+  const battle = ServerBattleContract.instance(RPC_URL.mchVerse);
 
   let monsterId: string;
   let results: any;
@@ -53,7 +53,14 @@ export default async function handler(
     ]);
     monsterId = results[0][0];
     const totalSupply = Number(results[1]);
-    if (monsterId === "0") monsterId = "";
+    console.log(prefixLog, `monsterId = ${monsterId}`);
+    console.log(prefixLog, `totalSupply = ${totalSupply}`);
+
+    if (monsterId === "0") {
+      monsterId = "";
+      console.log(prefixLog, `new monsterId = ""`);
+    }
+
     results = await Promise.all([
       calcStaminaFromMonsterId(monsterId),
       _getRandomEnemyId(monsterId, totalSupply),
@@ -68,6 +75,8 @@ export default async function handler(
   }
   const stamina = results[0];
   const enemyId = results[1];
+  console.log(prefixLog, `stamina = ${stamina}`);
+  console.log(prefixLog, `enemyId = ${enemyId}`);
 
   // スタミナチェック
   if (stamina < 1) {
@@ -82,6 +91,11 @@ export default async function handler(
     enemyResurrectionPrompt = (
       await promptMonsters.getResurrectionPrompts([enemyId])
     )[0];
+    console.log(
+      prefixLog,
+      `enemyResurrectionPrompt = ${enemyResurrectionPrompt}`,
+    );
+
     monsterExtensions = await promptMonsters.getMonsterExtensions([
       resurrectionPrompt,
       enemyResurrectionPrompt,
@@ -96,6 +110,9 @@ export default async function handler(
   }
   const monsterExtension = monsterExtensions[0];
   const enemyExtension = monsterExtensions[1];
+  console.log(prefixLog, "monsterExtension = ", monsterExtension);
+  console.log(prefixLog, "enemyExtension = ", enemyExtension);
+
   const fightPrompt = getFightPrompt(
     monsterExtension,
     enemyExtension,
@@ -106,7 +123,7 @@ export default async function handler(
   let battleResult: any;
   while (true) {
     try {
-      console.log(prefixLog, errorCnt);
+      console.log(prefixLog, "errorCnt = ", errorCnt);
       const completion = await openai.createChatCompletion({
         model: "gpt-3.5-turbo-0613",
         messages: [
@@ -117,8 +134,9 @@ export default async function handler(
         ],
         temperature: 1.0,
       });
-      console.log(completion.data.choices);
-      console.log(completion.data.usage);
+      console.log(prefixLog, "choices = ", completion.data.choices);
+      console.log(prefixLog, "usage = ", completion.data.usage);
+
       battleResult = JSON.parse(completion.data.choices[0].message!.content);
       errorCnt = 0;
       break;
@@ -140,13 +158,13 @@ export default async function handler(
   ) {
     battleResult.winnerId = "draw";
     console.log("The battle ended in a stalemate. -----------------");
-    console.log(prefixLog, `battleResult = ${battleResult}`);
+    console.log(prefixLog, "battleResult =", battleResult);
     return res.status(500).json({ battleResult });
   }
 
   while (true) {
     try {
-      console.log(prefixLog, errorCnt);
+      console.log(prefixLog, "errorCnt = ", errorCnt);
       await battle.addSeasonBattleData(
         monsterId,
         battleResult.winnerId === enemyExtension.resurrectionPrompt
@@ -173,7 +191,7 @@ export default async function handler(
       await new Promise((resolve) => setTimeout(resolve, ERROR_WAIT_TIME));
     }
   }
-  console.log(prefixLog, `battleResult = ${battleResult}`);
+  console.log(prefixLog, "battleResult =", battleResult);
   return res.status(200).json({ battleResult });
 }
 

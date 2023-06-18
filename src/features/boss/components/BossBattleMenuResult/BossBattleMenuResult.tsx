@@ -180,11 +180,11 @@ const MonsterFightAttackMsg = () => {
       <br />
       {bossBattle.currentMonsterHit
         ? getBossDamageMsg(
-          monster.name,
-          bossBattle.currentBossDamage,
-          boss.name,
-          tBossBattle("bossDamage"),
-        )
+            monster.name,
+            bossBattle.currentBossDamage,
+            boss.name,
+            tBossBattle("bossDamage"),
+          )
         : tBossBattle("monsterMiss")}
     </>
   );
@@ -232,15 +232,16 @@ const MonsterFightOtherPhysicalAttackMsg = () => {
           boss.name,
           bossBattle.usedMonsterSkill,
           tBossBattle("monsterOtherPhysicalAttack"),
-        )}</div>
+        )}
+      </div>
       <br />
       {bossBattle.currentMonsterHit
         ? getBossDamageMsg(
-          monster.name,
-          bossBattle.currentBossDamage,
-          boss.name,
-          tBossBattle("bossDamage"),
-        )
+            monster.name,
+            bossBattle.currentBossDamage,
+            boss.name,
+            tBossBattle("bossDamage"),
+          )
         : tBossBattle("monsterMiss")}
     </>
   );
@@ -261,16 +262,19 @@ const MonsterFightOtherSpecialAttackMsg = () => {
       )}
       <br />
       <div className={clsx("whitespace-pre-wrap")}>
-        {tBossBattle("monsterOtherSpecialAttack").replace("skillName", bossBattle.usedMonsterSkill)}
+        {tBossBattle("monsterOtherSpecialAttack").replace(
+          "skillName",
+          bossBattle.usedMonsterSkill,
+        )}
       </div>
       <br />
       {bossBattle.currentMonsterHit
         ? getBossDamageMsg(
-          monster.name,
-          bossBattle.currentBossDamage,
-          boss.name,
-          tBossBattle("bossDamage"),
-        )
+            monster.name,
+            bossBattle.currentBossDamage,
+            boss.name,
+            tBossBattle("bossDamage"),
+          )
         : tBossBattle("monsterMiss")}
     </>
   );
@@ -300,11 +304,11 @@ const MonsterFightOtherPowerPhysicalAttackMsg = () => {
       <br />
       {bossBattle.currentMonsterHit
         ? getBossDamageMsg(
-          monster.name,
-          bossBattle.currentBossDamage,
-          boss.name,
-          tBossBattle("bossDamage"),
-        )
+            monster.name,
+            bossBattle.currentBossDamage,
+            boss.name,
+            tBossBattle("bossDamage"),
+          )
         : tBossBattle("monsterMiss")}
     </>
   );
@@ -325,16 +329,19 @@ const MonsterFightOtherPowerSpecialAttackMsg = () => {
       )}
       <br />
       <div className={clsx("whitespace-pre-wrap")}>
-        {tBossBattle("monsterOtherPowerSpecialAttack").replace("skillName", bossBattle.usedMonsterSkill)}
+        {tBossBattle("monsterOtherPowerSpecialAttack").replace(
+          "skillName",
+          bossBattle.usedMonsterSkill,
+        )}
       </div>
       <br />
       {bossBattle.currentMonsterHit
         ? getBossDamageMsg(
-          monster.name,
-          bossBattle.currentBossDamage,
-          boss.name,
-          tBossBattle("bossDamage"),
-        )
+            monster.name,
+            bossBattle.currentBossDamage,
+            boss.name,
+            tBossBattle("bossDamage"),
+          )
         : tBossBattle("monsterMiss")}
     </>
   );
@@ -354,7 +361,10 @@ const MonsterFightOtherDefenseMsg = () => {
       )}
       <br />
       <div className={clsx("whitespace-pre-wrap")}>
-        {tBossBattle("monsterOtherDefense").replace("skillName", bossBattle.usedMonsterSkill)}
+        {tBossBattle("monsterOtherDefense").replace(
+          "skillName",
+          bossBattle.usedMonsterSkill,
+        )}
       </div>
     </>
   );
@@ -374,7 +384,11 @@ const MonsterFightOtherHealMsg = () => {
       )}
       <br />
       <div className={clsx("whitespace-pre-wrap")}>
-        {getMonsterOtherHealMsg(monster.name, bossBattle.usedMonsterSkill, tBossBattle("monsterOtherHeal"))}
+        {getMonsterOtherHealMsg(
+          monster.name,
+          bossBattle.usedMonsterSkill,
+          tBossBattle("monsterOtherHeal"),
+        )}
       </div>
     </>
   );
@@ -425,11 +439,11 @@ const BossOneHitKillMsg = () => {
       <br />
       {bossBattle.currentBossHit
         ? getBossDamagedMsg(
-          boss.name,
-          bossBattle.currentMonsterDamage,
-          monster.name,
-          tBossBattle("monsterDamage"),
-        )
+            boss.name,
+            bossBattle.currentMonsterDamage,
+            monster.name,
+            tBossBattle("monsterDamage"),
+          )
         : tBossBattle("bossMiss")}
     </>
   );
@@ -451,11 +465,11 @@ const BossAttackMsg = () => {
       <br />
       {bossBattle.currentBossHit
         ? getBossDamagedMsg(
-          boss.name,
-          bossBattle.currentMonsterDamage,
-          monster.name,
-          tBossBattle("monsterDamage"),
-        )
+            boss.name,
+            bossBattle.currentMonsterDamage,
+            monster.name,
+            tBossBattle("monsterDamage"),
+          )
         : tBossBattle("bossMiss")}
     </>
   );
@@ -477,11 +491,11 @@ const BossPowerAttackMsg = () => {
       <br />
       {bossBattle.currentBossHit
         ? getBossDamagedMsg(
-          boss.name,
-          bossBattle.currentMonsterDamage,
-          monster.name,
-          tBossBattle("monsterDamage"),
-        )
+            boss.name,
+            bossBattle.currentMonsterDamage,
+            monster.name,
+            tBossBattle("monsterDamage"),
+          )
         : tBossBattle("bossMiss")}
     </>
   );
@@ -517,11 +531,11 @@ const BossCounterAttackMsg = () => {
       <br />
       {bossBattle.currentBossHit
         ? getBossDamagedMsg(
-          boss.name,
-          bossBattle.currentMonsterDamage,
-          monster.name,
-          tBossBattle("monsterDamage"),
-        )
+            boss.name,
+            bossBattle.currentMonsterDamage,
+            monster.name,
+            tBossBattle("monsterDamage"),
+          )
         : tBossBattle("bossMiss")}
     </>
   );

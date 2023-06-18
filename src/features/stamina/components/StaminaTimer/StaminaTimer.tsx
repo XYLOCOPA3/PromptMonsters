@@ -1,13 +1,11 @@
-import { RPC_URL } from "@/const/chainParams";
+import { ClientStamina } from "@/features/stamina/api/contracts/ClientStamina";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { staminaTimeStdState } from "@/stores/staminaTimeStdState";
-import { Stamina__factory } from "@/typechain";
 import { BaseProps } from "@/types/BaseProps";
 import { StaminaTime } from "@/types/StaminaTime";
 import clsx from "clsx";
-import { ethers } from "ethers";
 import { useRecoilState, useRecoilValue } from "recoil";
 
 export type StaminaTimerProps = BaseProps;
@@ -29,16 +27,11 @@ export const StaminaTimer = ({ className }: StaminaTimerProps) => {
       setStaminaTimeStd({ hours: 0, minutes: 0, seconds: 0 });
       return false;
     }
-    const provider = new ethers.providers.JsonRpcProvider(RPC_URL.mchVerse);
-    const stamina = Stamina__factory.connect(
-      process.env.NEXT_PUBLIC_STAMINA_CONTRACT!,
-      provider,
-    );
-
+    const stamina = ClientStamina.instance();
     const results = await Promise.all([
-      stamina.timeStd(ethers.BigNumber.from(monster.id)),
-      stamina.staminaRecoveryTime(),
-      stamina.staminaLimit(),
+      stamina.getTimeStd(monster.id),
+      stamina.getStaminaRecoveryTime(),
+      stamina.getStaminaLimit(),
     ]);
     const timeStd = Number(results[0]);
     const staminaRecoveryTime = Number(results[1]);

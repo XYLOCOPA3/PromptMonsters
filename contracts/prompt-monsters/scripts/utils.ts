@@ -15,3 +15,20 @@ export const getWallets = async (cntWallet: number) => {
   }
   return wallets;
 };
+
+export const getNowDate = () => {
+  // 現在時刻（日本標準時刻）
+  // フォーマットは YYYYMMDD-HHMMSS とする
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, "0");
+  const day = now.getDate().toString().padStart(2, "0");
+  const hour = now.getHours().toString().padStart(2, "0");
+  const minute = now.getMinutes().toString().padStart(2, "0");
+  const second = now.getSeconds().toString().padStart(2, "0");
+  const formattedDate = `${year}${month}${day}-${hour}${minute}${second}`;
+  const nowJST = now.toLocaleString("ja-JP", {
+    timeZone: "Asia/Tokyo",
+  });
+  return [nowJST, formattedDate];
+};
