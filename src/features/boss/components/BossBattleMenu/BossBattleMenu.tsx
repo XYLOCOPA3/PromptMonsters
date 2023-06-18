@@ -158,7 +158,7 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                         )}
                       >
                         {bossBattle.score > bossBattle.highScore &&
-                          !bossBattle.defeated
+                        !bossBattle.defeated
                           ? `${tBossBattle("highScore")}!!!`
                           : tBossBattle("score")}
                       </div>
@@ -171,8 +171,8 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                         bossBattle.defeated
                           ? ["text-[#f86868]", "line-through"]
                           : bossBattle.score > bossBattle.highScore
-                            ? "text-[#79FF63]"
-                            : "",
+                          ? "text-[#79FF63]"
+                          : "",
                         "text-center",
                         "md:text-[96px]",
                       )}
@@ -395,8 +395,8 @@ const MonsterStatus = ({ status, lifePoint, monsterAdj, turn }: any) => {
           atk > status.ATK
             ? "text-[#79FF63]"
             : atk < status.ATK
-              ? "text-[#f86868]"
-              : "",
+            ? "text-[#f86868]"
+            : "",
         )}
       >
         {atk}
@@ -407,8 +407,8 @@ const MonsterStatus = ({ status, lifePoint, monsterAdj, turn }: any) => {
           def > status.DEF
             ? "text-[#79FF63]"
             : def < status.DEF
-              ? "text-[#f86868]"
-              : "",
+            ? "text-[#f86868]"
+            : "",
         )}
       >
         {def}
@@ -419,8 +419,8 @@ const MonsterStatus = ({ status, lifePoint, monsterAdj, turn }: any) => {
           int > status.INT
             ? "text-[#79FF63]"
             : int < status.INT
-              ? "text-[#f86868]"
-              : "",
+            ? "text-[#f86868]"
+            : "",
         )}
       >
         {int}
@@ -431,8 +431,8 @@ const MonsterStatus = ({ status, lifePoint, monsterAdj, turn }: any) => {
           mgr > status.MGR
             ? "text-[#79FF63]"
             : mgr < status.MGR
-              ? "text-[#f86868]"
-              : "",
+            ? "text-[#f86868]"
+            : "",
         )}
       >
         {mgr}

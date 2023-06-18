@@ -2,24 +2,24 @@ import { ServerWallet } from "@/lib/wallet/ServerWallet";
 import { Battle, Battle__factory } from "@/typechain";
 import { ethers } from "ethers";
 
-export class BattleContract {
-  private static _instance: BattleContract;
+export class ServerBattleContract {
+  private static _instance: ServerBattleContract;
 
   private constructor(private readonly _battle: Battle) {}
 
   /**
    * Get instance
    * @param rpcURL RPC URL
-   * @return {BattleContract} instance
+   * @return {ServerBattleContract} instance
    */
-  public static instance(rpcURL: string): BattleContract {
+  public static instance(rpcURL: string): ServerBattleContract {
     if (!this._instance) {
       const wallet = ServerWallet.getWallet(rpcURL);
       const battle = Battle__factory.connect(
         process.env.NEXT_PUBLIC_BATTLE_CONTRACT!,
         wallet,
       );
-      this._instance = new BattleContract(battle);
+      this._instance = new ServerBattleContract(battle);
     }
     return this._instance;
   }
