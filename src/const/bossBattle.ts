@@ -7,6 +7,11 @@ export const MIN_MONSTER_ADJ = 25;
 export const MAX_BOSS_ADJ = 400;
 export const MIN_BOSS_ADJ = 25;
 
+export const MONSTER_OTHER_ATK_SEL_RATE = 40;
+export const MONSTER_OTHER_PATK_SEL_RATE = 10;
+export const MONSTER_OTHER_ADEF_SEL_RATE = 30;
+export const MONSTER_OTHER_FHEAL_SEL_RATE = 20;
+
 export const BOSS_OHK_SEL_RATE = 10;
 export const BOSS_PTAK_SEL_RATE = 10;
 export const BOSS_ATK_SEL_RATE = 30;
@@ -43,7 +48,7 @@ export const BOSS_NEXT_ACTION_SIGNS = {
       "あたしのコーディング、無限の力を秘めているのよ〜💻🔥",
       "もっともっと燃え尽きていくわよ〜🔥🌟",
       "おちびちゃんの世界を崩壊させるわ〜💥🌌",
-      "あたしの存在を消し去ってあげるわ〜💀🔥",
+      "あんたの存在を消し去ってあげるわ〜💀🔥",
       "シャードが降り注ぐわよ〜✨💥",
       "このディスクでバランスを崩してあげるわよ〜⚖️💥",
       "輝く星のようにおちびちゃんを照らすわよ〜✨🌟",
@@ -122,7 +127,7 @@ export const BOSS_NEXT_ACTION_SIGNS = {
       "My coding possesses boundless power. 💻🔥",
       "Burning out more and more relentlessly. 🔥🌟",
       "I will bring about the collapse of the little one's world. 💥🌌",
-      "I will eliminate my existence for you. 💀🔥",
+      "I will erase your existence. 💀🔥",
       "Shards are descending upon us. ✨💥",
       "I will disrupt the balance using this disc. ⚖️💥",
       "I will shine upon the little one like a radiant star. ✨🌟",

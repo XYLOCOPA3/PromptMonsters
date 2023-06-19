@@ -3,6 +3,7 @@ import {
   BOSS_BUFF_SEL_RATE,
   BOSS_CATK_SEL_RATE,
   BOSS_DEBUFF_SEL_RATE,
+  BOSS_DEF_SEL_RATE,
   BOSS_ITEM_BUFF_DROPPED_RATE,
   BOSS_ITEM_DEBUFF_DROPPED_RATE,
   BOSS_ITEM_ESCAPE_DROPPED_RATE,
@@ -19,6 +20,10 @@ import {
   MAX_TURN_ADJ,
   MIN_BOSS_ADJ,
   MIN_MONSTER_ADJ,
+  MONSTER_OTHER_ADEF_SEL_RATE,
+  MONSTER_OTHER_ATK_SEL_RATE,
+  MONSTER_OTHER_FHEAL_SEL_RATE,
+  MONSTER_OTHER_PATK_SEL_RATE,
 } from "@/const/bossBattle";
 import { DevBBKState } from "@/dev/stores/devBBkParamState";
 import { ClientBossBattle } from "@/features/boss/api/contracts/ClientBossBattle";
@@ -123,27 +128,37 @@ export const getBossSign = (): number => {
   // 一撃必殺
   if (random < selRate) return random;
   selRate += BOSS_PTAK_SEL_RATE;
+
   // 強攻撃
   if (random < selRate)
     return Math.floor(Math.random() * 10) + EnumBossSign.signOneHitKill;
   selRate += BOSS_ATK_SEL_RATE;
+
   // 攻撃
   if (random < selRate)
     return Math.floor(Math.random() * 10) + EnumBossSign.signPowerAttack;
   selRate += BOSS_CATK_SEL_RATE;
+
   // カウンター
   if (random < selRate)
     return Math.floor(Math.random() * 10) + EnumBossSign.signAttack;
   selRate += BOSS_BUFF_SEL_RATE;
+
   // バフ
   if (random < selRate)
     return Math.floor(Math.random() * 10) + EnumBossSign.signCounterAttack;
   selRate += BOSS_DEBUFF_SEL_RATE;
+
   // デバフ
   if (random < selRate)
     return Math.floor(Math.random() * 10) + EnumBossSign.signBuff;
+  selRate += BOSS_DEF_SEL_RATE;
+
   // 防御
-  return Math.floor(Math.random() * 10) + EnumBossSign.signDebuff;
+  if (random < selRate)
+    return Math.floor(Math.random() * 10) + EnumBossSign.signDebuff;
+
+  return Math.floor(Math.random() * 10) + EnumBossSign.none;
 };
 
 export const decideBossAction = (bossSign: number): EnumBossAction => {
@@ -241,20 +256,30 @@ export const decideOtherSkillType = (
   int: number,
 ): EnumOtherSkillAction => {
   const random = Math.floor(Math.random() * 100);
+  let selRate = MONSTER_OTHER_ATK_SEL_RATE;
+
   // 攻撃
-  if (random < 40) {
+  if (random < selRate) {
     if (atk >= int) return EnumOtherSkillAction.physicalAttack;
     return EnumOtherSkillAction.specialAttack;
   }
+
+  selRate += MONSTER_OTHER_PATK_SEL_RATE;
   // 強攻撃
-  if (40 <= random && random < 50) {
+  if (random < selRate) {
     if (atk >= int) return EnumOtherSkillAction.powerPhysicalAttack;
     return EnumOtherSkillAction.powerSpecialAttack;
   }
+
+  selRate += MONSTER_OTHER_ADEF_SEL_RATE;
   // 絶対防御
-  if (50 <= random && random < 80) return EnumOtherSkillAction.absoluteDefense;
+  if (random < selRate) return EnumOtherSkillAction.absoluteDefense;
+
+  selRate += MONSTER_OTHER_FHEAL_SEL_RATE;
   // 全回復
-  return EnumOtherSkillAction.fullHealing;
+  if (random < selRate) return EnumOtherSkillAction.fullHealing;
+
+  return EnumOtherSkillAction.none;
 };
 
 export const calcBossDamage = (
