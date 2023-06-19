@@ -24,6 +24,7 @@ export const BossBattleMenuAnimation = ({
         _isBossAttack(
           bossBattle.resultMsgIds[lastIndex],
           bossBattle.currentBossHit,
+          bossBattle.currentMonsterDamage,
         )
           ? "animate-shake-horizontal"
           : "",
@@ -37,7 +38,9 @@ export const BossBattleMenuAnimation = ({
 const _isBossAttack = (
   resultMsgId: EnumBossBattleMsg,
   bossHit: boolean,
+  monsterDamage: number,
 ): boolean => {
+  if (monsterDamage === 0) return false;
   if (resultMsgId === EnumBossBattleMsg.bossOneHitKill) return bossHit;
   if (resultMsgId === EnumBossBattleMsg.bossAttack) return bossHit;
   if (resultMsgId === EnumBossBattleMsg.bossPowerAttack) return bossHit;

@@ -7,6 +7,11 @@ export const MIN_MONSTER_ADJ = 25;
 export const MAX_BOSS_ADJ = 400;
 export const MIN_BOSS_ADJ = 25;
 
+export const MONSTER_OTHER_ATK_SEL_RATE = 40;
+export const MONSTER_OTHER_PATK_SEL_RATE = 10;
+export const MONSTER_OTHER_ADEF_SEL_RATE = 30;
+export const MONSTER_OTHER_FHEAL_SEL_RATE = 20;
+
 export const BOSS_OHK_SEL_RATE = 10;
 export const BOSS_PTAK_SEL_RATE = 10;
 export const BOSS_ATK_SEL_RATE = 30;
