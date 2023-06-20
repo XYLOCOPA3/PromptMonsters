@@ -13,12 +13,16 @@ export const MONSTER_OTHER_ADEF_SEL_RATE = 30;
 export const MONSTER_OTHER_FHEAL_SEL_RATE = 20;
 
 export const BOSS_OHK_SEL_RATE = 10;
-export const BOSS_PTAK_SEL_RATE = 10;
+export const BOSS_PATK_SEL_RATE = 10;
 export const BOSS_ATK_SEL_RATE = 30;
 export const BOSS_CATK_SEL_RATE = 20;
 export const BOSS_BUFF_SEL_RATE = 10;
 export const BOSS_DEBUFF_SEL_RATE = 10;
 export const BOSS_DEF_SEL_RATE = 10;
+
+export const BOSS_OHK_HIT_RATE = 30;
+export const BOSS_PATK_HIT_RATE = 85;
+export const BOSS_ATK_HIT_RATE = 95;
 
 export const BOSS_ITEM_BUFF_DROPPED_RATE = 12;
 export const BOSS_ITEM_DEBUFF_DROPPED_RATE = 12;

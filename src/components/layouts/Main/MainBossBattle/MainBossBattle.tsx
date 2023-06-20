@@ -5,6 +5,7 @@ import {
   BossAdjCircle,
   BossAnimation,
   BossBattleMenuAnimation,
+  BossHelp,
 } from "@/features/boss";
 import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleValue } from "@/hooks/useBossBattle";
@@ -68,6 +69,7 @@ export const MainBossBattle = () => {
             )}
           >
             <BossAdjCircle />
+            <BossHelp />
             <BossAnimation />
           </div>
           <BossBattleMenuAnimation />
