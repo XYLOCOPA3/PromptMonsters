@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { DevBBKParamAdj } from "@/dev/components/DevBBKParamAdj";
 import { DevBBMonsterButton } from "@/dev/components/DevBBMonsterButton";
-import { DevBBParamAdj } from "@/dev/components/DevBBParamAdj";
 import { DevBBResetButton } from "@/dev/components/DevBBResetButton";
 import { DevOnOffButton } from "@/dev/components/DevOnOffButton";
 import { devOnOffState } from "@/dev/stores/devOnOffState";
@@ -75,7 +75,7 @@ export const DevComponents = ({ className }: DevComponentsProps) => {
         <DevBBResetButton />
         <DevBBMonsterButton />
       </div>
-      <DevBBParamAdj />
+      <DevBBKParamAdj />
     </div>
   );
 };

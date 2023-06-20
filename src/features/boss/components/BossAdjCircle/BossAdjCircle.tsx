@@ -1,13 +1,14 @@
 import {
   BOSS_ADJ_STD,
   FIRST_TURN,
-  K_TURN,
   MAX_LIFE_POINT,
   MAX_TURN_ADJ,
 } from "@/const/bossBattle";
 import { useBossBattleValue } from "@/hooks/useBossBattle";
+import { bbKParamState } from "@/stores/bbKParamState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
+import { useRecoilValue } from "recoil";
 
 export type BossAdjCircleProps = BaseProps;
 
@@ -18,8 +19,9 @@ export type BossAdjCircleProps = BaseProps;
  */
 export const BossAdjCircle = ({ className }: BossAdjCircleProps) => {
   const bossBattle = useBossBattleValue();
+  const bbKParam = useRecoilValue(bbKParamState);
 
-  let turnAdj = K_TURN * (bossBattle.turn - 1);
+  let turnAdj = Number(bbKParam.kTurn) * (bossBattle.turn - 1);
   if (bossBattle.turn === FIRST_TURN) turnAdj = 1;
   if (turnAdj > MAX_TURN_ADJ) turnAdj = MAX_TURN_ADJ;
   const bossAdj = Math.floor(bossBattle.bossAdj * turnAdj);
