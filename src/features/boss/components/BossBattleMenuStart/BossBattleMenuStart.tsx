@@ -51,8 +51,34 @@ export const BossBattleMenuStart = ({
     monster.flavor,
   );
 
-  const handleFightClick = async () => {
-    await bossBattleController.moveFightSelector();
+  const pushHistory = () => {
+    if (bossBattle.turn === FIRST_TURN)
+      bossBattleController.pushHistory(
+        getBossAppearedMsg(boss.name, tBossBattle("bossAppeared")),
+      );
+    if (bossBattle.turn === FIRST_TURN && weakFeatures !== null)
+      bossBattleController.pushHistory(
+        getHavingWeakFeatureMsg(
+          monster.name,
+          boss.name,
+          weakFeatures[0],
+          tBossBattle("havingWeakFeature"),
+        ),
+      );
+    bossBattleController.pushHistory(
+      getBossSignMsg(
+        boss.name,
+        BOSS_NEXT_ACTION_SIGNS[bossEvent.eventKey as EventKey][
+          language as "日本語" | "English"
+        ][bossBattle.bossSign],
+        tBossBattle("bossSign"),
+      ),
+    );
+  };
+
+  const handleFightClick = () => {
+    bossBattleController.moveFightSelector();
+    pushHistory();
   };
 
   const handleDefenseClick = async () => {
@@ -63,6 +89,7 @@ export const BossBattleMenuStart = ({
         monster.resurrectionPrompt,
         boss.skills,
       );
+      pushHistory();
     } catch (error) {
       console.error(error);
       if (error instanceof Error) {
@@ -74,8 +101,9 @@ export const BossBattleMenuStart = ({
     setLoading(false);
   };
 
-  const handleItemClick = async () => {
-    await bossBattleController.moveItemSelector();
+  const handleItemClick = () => {
+    bossBattleController.moveItemSelector();
+    pushHistory();
   };
 
   if (boss.name === "" || language === "" || bossEvent.eventKey === "")

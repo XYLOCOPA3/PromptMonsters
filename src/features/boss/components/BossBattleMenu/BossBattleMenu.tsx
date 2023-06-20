@@ -33,6 +33,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { useWeb3Modal } from "@web3modal/react";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
+import uuid from "react-uuid";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 export type BossBattleMenuProps = BaseProps;
@@ -178,6 +179,28 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                       )}
                     >
                       {bossBattle.score}
+                    </div>
+                    <div
+                      className={clsx(
+                        "my-[10px]",
+                        "border-[1px]",
+                        "rounded-lg",
+                        "p-[10px]",
+                        "h-[200px]",
+                        "overflow-y-scroll",
+                        "md:h-[250px]",
+                      )}
+                    >
+                      {bossBattle.histories.map((history) => {
+                        return (
+                          <div
+                            key={uuid()}
+                            className={clsx("whitespace-pre-wrap")}
+                          >
+                            {history}
+                          </div>
+                        );
+                      })}
                     </div>
                     <div
                       className={clsx(
