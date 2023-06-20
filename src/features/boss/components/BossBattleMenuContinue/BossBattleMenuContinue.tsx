@@ -63,7 +63,6 @@ export const BossBattleMenuContinue = ({
             {tBossBattle("continue")}
           </div>
           <br />
-          <br />
           <div className={clsx("whitespace-pre-wrap")}>
             {tBossBattle("continueNote")}
           </div>

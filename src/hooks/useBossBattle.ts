@@ -33,8 +33,8 @@ let gBossAdj = 0;
 export interface BossBattleController {
   init: (monster: MonsterModel) => Promise<number[]>;
   moveStart: () => Promise<void>;
-  moveFightSelector: () => Promise<void>;
-  moveItemSelector: () => Promise<void>;
+  moveFightSelector: () => void;
+  moveItemSelector: () => void;
   useSkill: (
     resurrectionPrompt: string,
     skill: string,
@@ -52,6 +52,8 @@ export interface BossBattleController {
   end: (resurrectionPrompt: string) => Promise<void>;
   moveEnd: () => void;
   reset: () => void;
+  pushHistory: (history: string) => void;
+  popHistory: () => void;
 }
 
 export const useBossBattleValue = (): BossBattleState => {
@@ -132,7 +134,7 @@ export const useBossBattleController = (): BossBattleController => {
   /**
    * moveFightSelector
    */
-  const moveFightSelector = async (): Promise<void> => {
+  const moveFightSelector = (): void => {
     setBossBattle((prevState) => {
       return prevState.copyWith({ phase: EnumBossBattlePhase.fightSelect });
     });
@@ -141,7 +143,7 @@ export const useBossBattleController = (): BossBattleController => {
   /**
    * moveItemSelector
    */
-  const moveItemSelector = async (): Promise<void> => {
+  const moveItemSelector = (): void => {
     setBossBattle((prevState) => {
       return prevState.copyWith({ phase: EnumBossBattlePhase.itemSelect });
     });
@@ -533,6 +535,34 @@ export const useBossBattleController = (): BossBattleController => {
     setBossBattle(BossBattleModel.create({}));
   };
 
+  /**
+   * pushHistory
+   */
+  const pushHistory = (history: string): void => {
+    setBossBattle((prevState) => {
+      return prevState.copyWith({
+        histories: [...prevState.histories, history],
+      });
+    });
+    return;
+  };
+
+  /**
+   * popHistory
+   */
+  const popHistory = (): void => {
+    setBossBattle((prevState) => {
+      const lastIndex = prevState.histories.length - 1;
+      const newHistories = prevState.histories.filter(
+        (_, index) => index !== lastIndex,
+      );
+      return prevState.copyWith({
+        histories: newHistories,
+      });
+    });
+    return;
+  };
+
   const controller: BossBattleController = {
     init,
     moveStart,
@@ -547,6 +577,8 @@ export const useBossBattleController = (): BossBattleController => {
     end,
     moveEnd,
     reset,
+    pushHistory,
+    popHistory,
   };
   return controller;
 };
