@@ -214,7 +214,7 @@ export const useBossBattleController = (): BossBattleController => {
         newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
       }
 
-      if (isBossSubAction(bossSign, bossAction))
+      if (isBossSubAction(bossSign, bossAction, EnumItem.none))
         newResultMsgIds = [...newResultMsgIds, EnumBossBattleMsg.bossSubAction];
 
       return prevState.copyWith({
@@ -287,7 +287,7 @@ export const useBossBattleController = (): BossBattleController => {
         newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
       }
 
-      if (isBossSubAction(bossSign, bossAction)) {
+      if (isBossSubAction(bossSign, bossAction, EnumItem.none)) {
         newResultMsgIds = [...newResultMsgIds, EnumBossBattleMsg.bossSubAction];
       }
 
@@ -366,7 +366,7 @@ export const useBossBattleController = (): BossBattleController => {
         newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
       }
 
-      if (isBossSubAction(bossSign, bossAction)) {
+      if (isBossSubAction(bossSign, bossAction, usedItemId)) {
         newResultMsgIds = [...newResultMsgIds, EnumBossBattleMsg.bossSubAction];
       }
 
@@ -415,8 +415,8 @@ export const useBossBattleController = (): BossBattleController => {
       let newLp = prevState.lp;
       if (isHealMonster(prevResultMsgId)) newLp += gCurrentHealing;
       if (isDamageMonster(prevResultMsgId)) newLp -= gCurrentMonsterDamage;
-      if (newLp < 0) {
-        newLp = 0;
+      if (newLp <= MIN_LIFE_POINT) {
+        newLp = MIN_LIFE_POINT;
         newResultMsgIds = [EnumBossBattleMsg.defeated];
       }
       if (newLp > MAX_LIFE_POINT) newLp = MAX_LIFE_POINT;

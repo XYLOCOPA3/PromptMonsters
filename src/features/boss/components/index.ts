@@ -16,6 +16,7 @@ export * from "./BossBattleTweetButton";
 export * from "./BossBattleUseButton";
 export * from "./BossBattleYesButton";
 export * from "./BossEventInit";
+export * from "./BossHelp";
 export * from "./BossImage";
 export * from "./BossInit";
 export * from "./BossStatus";

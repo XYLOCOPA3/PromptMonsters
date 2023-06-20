@@ -1,4 +1,5 @@
 import {
+  BOSS_ATK_HIT_RATE,
   BOSS_ATK_SEL_RATE,
   BOSS_BUFF_SEL_RATE,
   BOSS_CATK_SEL_RATE,
@@ -9,8 +10,10 @@ import {
   BOSS_ITEM_ESCAPE_DROPPED_RATE,
   BOSS_ITEM_HEALING_DROPPED_RATE,
   BOSS_MAIN_SEL_RATE,
+  BOSS_OHK_HIT_RATE,
   BOSS_OHK_SEL_RATE,
-  BOSS_PTAK_SEL_RATE,
+  BOSS_PATK_HIT_RATE,
+  BOSS_PATK_SEL_RATE,
   BOSS_WEAKNESS_FEATURES,
   FIRST_TURN,
   MAX_BOSS_ADJ,
@@ -127,7 +130,7 @@ export const getBossSign = (): number => {
 
   // 一撃必殺
   if (random < selRate) return random;
-  selRate += BOSS_PTAK_SEL_RATE;
+  selRate += BOSS_PATK_SEL_RATE;
 
   // 強攻撃
   if (random < selRate)
@@ -228,9 +231,11 @@ export const judgeBossSkillHit = (
   itemUsed: boolean,
 ): boolean => {
   const random = Math.floor(Math.random() * 100);
-  if (bossAction === EnumBossAction.oneHitKill) return random < 30;
-  if (bossAction === EnumBossAction.powerAttack) return random < 85;
-  if (bossAction === EnumBossAction.attack) return random < 95;
+  if (bossAction === EnumBossAction.oneHitKill)
+    return random < BOSS_OHK_HIT_RATE;
+  if (bossAction === EnumBossAction.powerAttack)
+    return random < BOSS_PATK_HIT_RATE;
+  if (bossAction === EnumBossAction.attack) return random < BOSS_ATK_HIT_RATE;
   if (bossAction === EnumBossAction.counterAttack) {
     if (defensed || itemUsed) return false;
     if (skillType === EnumSkillType.healing) return false;
@@ -513,7 +518,10 @@ export const getBossSkill = (
 export const isBossSubAction = (
   bossSign: number,
   bossAction: number,
+  usedItemId: number,
 ): boolean => {
+  // 封印プロンプト使用時はサブアクションを行わない
+  if (usedItemId === EnumItem.escape) return false;
   return Math.floor(bossSign / 10) % 10 !== bossAction;
 };
 
