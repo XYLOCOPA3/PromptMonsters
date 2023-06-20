@@ -415,8 +415,8 @@ export const useBossBattleController = (): BossBattleController => {
       let newLp = prevState.lp;
       if (isHealMonster(prevResultMsgId)) newLp += gCurrentHealing;
       if (isDamageMonster(prevResultMsgId)) newLp -= gCurrentMonsterDamage;
-      if (newLp < 0) {
-        newLp = 0;
+      if (newLp <= MIN_LIFE_POINT) {
+        newLp = MIN_LIFE_POINT;
         newResultMsgIds = [EnumBossBattleMsg.defeated];
       }
       if (newLp > MAX_LIFE_POINT) newLp = MAX_LIFE_POINT;

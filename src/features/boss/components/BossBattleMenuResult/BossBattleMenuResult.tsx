@@ -47,9 +47,9 @@ export const BossBattleMenuResult = ({
 }: BossBattleMenuResultProps) => {
   const boss = useBossValue();
   const setScoreOpened = useSetRecoilState(scoreOpenedState);
+  const setDisable = useSetRecoilState(disableState);
   const [bossBattle, bossBattleController] = useBossBattleState();
   const [loading, setLoading] = useState(false);
-  const setDisable = useSetRecoilState(disableState);
 
   const handleNextClick = async () => {
     setDisable(true);
