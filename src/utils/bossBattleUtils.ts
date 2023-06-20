@@ -513,7 +513,10 @@ export const getBossSkill = (
 export const isBossSubAction = (
   bossSign: number,
   bossAction: number,
+  usedItemId: number,
 ): boolean => {
+  // 封印プロンプト使用時はサブアクションを行わない
+  if (usedItemId === EnumItem.escape) return false;
   return Math.floor(bossSign / 10) % 10 !== bossAction;
 };
 

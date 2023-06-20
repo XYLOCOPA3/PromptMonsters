@@ -214,7 +214,7 @@ export const useBossBattleController = (): BossBattleController => {
         newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
       }
 
-      if (isBossSubAction(bossSign, bossAction))
+      if (isBossSubAction(bossSign, bossAction, EnumItem.none))
         newResultMsgIds = [...newResultMsgIds, EnumBossBattleMsg.bossSubAction];
 
       return prevState.copyWith({
@@ -287,7 +287,7 @@ export const useBossBattleController = (): BossBattleController => {
         newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
       }
 
-      if (isBossSubAction(bossSign, bossAction)) {
+      if (isBossSubAction(bossSign, bossAction, EnumItem.none)) {
         newResultMsgIds = [...newResultMsgIds, EnumBossBattleMsg.bossSubAction];
       }
 
@@ -366,7 +366,7 @@ export const useBossBattleController = (): BossBattleController => {
         newResultMsgIds = [EnumBossBattleMsg.droppedItem, ...newResultMsgIds];
       }
 
-      if (isBossSubAction(bossSign, bossAction)) {
+      if (isBossSubAction(bossSign, bossAction, usedItemId)) {
         newResultMsgIds = [...newResultMsgIds, EnumBossBattleMsg.bossSubAction];
       }
 
