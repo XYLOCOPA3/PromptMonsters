@@ -2,6 +2,8 @@ import { Spinner } from "@/components/elements/Spinner";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 
+type VariantType = "primary" | "secondary" | "twitter" | "bossBattle" | "none";
+
 const shapes = {
   rounded: clsx("rounded-md"),
   circle: clsx("rounded-full"),
@@ -11,7 +13,7 @@ export type ButtonProps = {
   disabled?: boolean;
   loading?: boolean;
   holdDown?: boolean;
-  variant?: "primary" | "secondary" | "twitter" | "bossBattle";
+  variant?: VariantType;
   shape?: "rounded" | "circle";
   onClick?: () => void;
 } & BaseProps;
@@ -63,10 +65,7 @@ export const Button = ({
   );
 };
 
-const _getVariant = (
-  variant: "primary" | "secondary" | "twitter" | "bossBattle",
-  holdDown: boolean,
-): string => {
+const _getVariant = (variant: VariantType, holdDown: boolean): string => {
   switch (variant) {
     case "primary":
       return clsx(
@@ -88,6 +87,8 @@ const _getVariant = (
       );
     case "bossBattle":
       return clsx(holdDown ? "bg-[#4E4E4E]" : "", "hover:bg-[#4E4E4E]");
+    case "none":
+      return clsx(holdDown ? "" : "", "");
     default:
       return "";
   }
