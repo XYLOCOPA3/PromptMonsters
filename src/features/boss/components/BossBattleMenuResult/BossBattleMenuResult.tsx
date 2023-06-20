@@ -46,10 +46,14 @@ export const BossBattleMenuResult = ({
   className,
 }: BossBattleMenuResultProps) => {
   const boss = useBossValue();
+  const monster = useMonsterValue();
+  const language = useLanguageValue();
   const setScoreOpened = useSetRecoilState(scoreOpenedState);
   const setDisable = useSetRecoilState(disableState);
   const [bossBattle, bossBattleController] = useBossBattleState();
   const [loading, setLoading] = useState(false);
+
+  const { t: tBossBattle } = useTranslation("boss-battle");
 
   const handleNextClick = async () => {
     setDisable(true);
@@ -59,6 +63,7 @@ export const BossBattleMenuResult = ({
         bossBattleController.moveEnd();
         setScoreOpened(true);
       } else await bossBattleController.nextResultMsg();
+      pushHistory();
     } catch (error) {
       console.error(error);
       // TODO: エラー文考える
@@ -67,6 +72,346 @@ export const BossBattleMenuResult = ({
     }
     setDisable(false);
     setLoading(false);
+  };
+
+  const pushHistory = () => {
+    switch (bossBattle.resultMsgIds[bossBattle.resultMsgIds.length - 1]) {
+      case EnumBossBattleMsg.monsterFightPhysicalAttack:
+      case EnumBossBattleMsg.monsterFightSpecialAttack:
+        bossBattleController.pushHistory(
+          getMonsterUsedSkillMsg(
+            monster.name,
+            bossBattle.usedMonsterSkill,
+            tBossBattle("monsterUsedSkill"),
+          ),
+        );
+        if (bossBattle.currentMonsterHit)
+          bossBattleController.pushHistory(
+            getBossDamageMsg(
+              monster.name,
+              bossBattle.currentBossDamage,
+              boss.name,
+              tBossBattle("bossDamage"),
+            ),
+          );
+        else bossBattleController.pushHistory(tBossBattle("monsterMiss"));
+        return;
+      case EnumBossBattleMsg.monsterFightHeal:
+        bossBattleController.pushHistory(
+          getMonsterUsedSkillMsg(
+            monster.name,
+            bossBattle.usedMonsterSkill,
+            tBossBattle("monsterUsedSkill"),
+          ),
+        );
+        bossBattleController.pushHistory(
+          getMonsterHealMsg(
+            monster.name,
+            bossBattle.currentHealing,
+            tBossBattle("monsterHeal"),
+          ),
+        );
+        return;
+      case EnumBossBattleMsg.monsterFightOtherPhysicalAttack:
+        bossBattleController.pushHistory(
+          getMonsterUsedSkillMsg(
+            monster.name,
+            bossBattle.usedMonsterSkill,
+            tBossBattle("monsterUsedSkill"),
+          ),
+        );
+        bossBattleController.pushHistory(
+          getMonsterOtherPhysicalAttack(
+            monster.name,
+            boss.name,
+            bossBattle.usedMonsterSkill,
+            tBossBattle("monsterOtherPhysicalAttack"),
+          ),
+        );
+        if (bossBattle.currentMonsterHit)
+          bossBattleController.pushHistory(
+            getBossDamageMsg(
+              monster.name,
+              bossBattle.currentBossDamage,
+              boss.name,
+              tBossBattle("bossDamage"),
+            ),
+          );
+        else bossBattleController.pushHistory(tBossBattle("monsterMiss"));
+        return;
+      case EnumBossBattleMsg.monsterFightOtherSpecialAttack:
+        bossBattleController.pushHistory(
+          getMonsterUsedSkillMsg(
+            monster.name,
+            bossBattle.usedMonsterSkill,
+            tBossBattle("monsterUsedSkill"),
+          ),
+        );
+        bossBattleController.pushHistory(
+          tBossBattle("monsterOtherSpecialAttack").replace(
+            "skillName",
+            bossBattle.usedMonsterSkill,
+          ),
+        );
+        if (bossBattle.currentMonsterHit)
+          bossBattleController.pushHistory(
+            getBossDamageMsg(
+              monster.name,
+              bossBattle.currentBossDamage,
+              boss.name,
+              tBossBattle("bossDamage"),
+            ),
+          );
+        else bossBattleController.pushHistory(tBossBattle("monsterMiss"));
+        return;
+      case EnumBossBattleMsg.monsterFightOtherPowerPhysicalAttack:
+        bossBattleController.pushHistory(
+          getMonsterUsedSkillMsg(
+            monster.name,
+            bossBattle.usedMonsterSkill,
+            tBossBattle("monsterUsedSkill"),
+          ),
+        );
+        bossBattleController.pushHistory(
+          getMonsterOtherPowerPhysicalAttack(
+            monster.name,
+            bossBattle.usedMonsterSkill,
+            tBossBattle("monsterOtherPowerPhysicalAttack"),
+          ),
+        );
+        if (bossBattle.currentMonsterHit)
+          bossBattleController.pushHistory(
+            getBossDamageMsg(
+              monster.name,
+              bossBattle.currentBossDamage,
+              boss.name,
+              tBossBattle("bossDamage"),
+            ),
+          );
+        else bossBattleController.pushHistory(tBossBattle("monsterMiss"));
+        return;
+      case EnumBossBattleMsg.monsterFightOtherPowerSpecialAttack:
+        bossBattleController.pushHistory(
+          getMonsterUsedSkillMsg(
+            monster.name,
+            bossBattle.usedMonsterSkill,
+            tBossBattle("monsterUsedSkill"),
+          ),
+        );
+        bossBattleController.pushHistory(
+          tBossBattle("monsterOtherPowerSpecialAttack").replace(
+            "skillName",
+            bossBattle.usedMonsterSkill,
+          ),
+        );
+        if (bossBattle.currentMonsterHit)
+          bossBattleController.pushHistory(
+            getBossDamageMsg(
+              monster.name,
+              bossBattle.currentBossDamage,
+              boss.name,
+              tBossBattle("bossDamage"),
+            ),
+          );
+        else bossBattleController.pushHistory(tBossBattle("monsterMiss"));
+        return;
+      case EnumBossBattleMsg.monsterFightOtherDefense:
+        bossBattleController.pushHistory(
+          getMonsterUsedSkillMsg(
+            monster.name,
+            bossBattle.usedMonsterSkill,
+            tBossBattle("monsterUsedSkill"),
+          ),
+        );
+        bossBattleController.pushHistory(
+          tBossBattle("monsterOtherDefense").replace(
+            "skillName",
+            bossBattle.usedMonsterSkill,
+          ),
+        );
+        return;
+      case EnumBossBattleMsg.monsterFightOtherHeal:
+        bossBattleController.pushHistory(
+          getMonsterUsedSkillMsg(
+            monster.name,
+            bossBattle.usedMonsterSkill,
+            tBossBattle("monsterUsedSkill"),
+          ),
+        );
+        bossBattleController.pushHistory(
+          getMonsterOtherHealMsg(
+            monster.name,
+            bossBattle.usedMonsterSkill,
+            tBossBattle("monsterOtherHeal"),
+          ),
+        );
+        return;
+      case EnumBossBattleMsg.monsterDefense:
+        bossBattleController.pushHistory(
+          getDefensedMsg(monster.name, tBossBattle("defensed")),
+        );
+        return;
+      case EnumBossBattleMsg.monsterItemBuff:
+      case EnumBossBattleMsg.monsterItemDebuff:
+      case EnumBossBattleMsg.monsterItemHeal:
+      case EnumBossBattleMsg.monsterItemEscape:
+        bossBattleController.pushHistory(
+          getUsedItemMsg(
+            monster.name,
+            ITEMS[language as "日本語" | "English"][bossBattle.usedItemId].name,
+            tBossBattle("usedItem"),
+          ),
+        );
+        bossBattleController.pushHistory(
+          getItemUseResultMsg(
+            monster.name,
+            boss.name,
+            ITEMS[language as "日本語" | "English"][bossBattle.usedItemId]
+              .result,
+          ),
+        );
+        return;
+      case EnumBossBattleMsg.monsterItemEscapeNext:
+        bossBattleController.pushHistory(
+          getEscapeNextMsg(boss.name, tBossBattle("escapeNext")),
+        );
+        return;
+      case EnumBossBattleMsg.bossOneHitKill:
+        bossBattleController.pushHistory(
+          getBossUsedSkillMsg(
+            boss.name,
+            bossBattle.usedBossSkill,
+            tBossBattle("bossUsedOneHitKillSkill"),
+          ),
+        );
+        if (bossBattle.currentBossHit)
+          bossBattleController.pushHistory(
+            getBossDamagedMsg(
+              boss.name,
+              bossBattle.currentMonsterDamage,
+              monster.name,
+              tBossBattle("monsterDamage"),
+            ),
+          );
+        else bossBattleController.pushHistory(tBossBattle("bossMiss"));
+        return;
+      case EnumBossBattleMsg.bossAttack:
+        bossBattleController.pushHistory(
+          getBossUsedSkillMsg(
+            boss.name,
+            bossBattle.usedBossSkill,
+            tBossBattle("bossUsedAttackSkill"),
+          ),
+        );
+        if (bossBattle.currentBossHit)
+          bossBattleController.pushHistory(
+            getBossDamagedMsg(
+              boss.name,
+              bossBattle.currentMonsterDamage,
+              monster.name,
+              tBossBattle("monsterDamage"),
+            ),
+          );
+        else bossBattleController.pushHistory(tBossBattle("bossMiss"));
+        return;
+      case EnumBossBattleMsg.bossPowerAttack:
+        bossBattleController.pushHistory(
+          getBossUsedSkillMsg(
+            boss.name,
+            bossBattle.usedBossSkill,
+            tBossBattle("bossUsedPowerAttackSkill"),
+          ),
+        );
+        if (bossBattle.currentBossHit)
+          bossBattleController.pushHistory(
+            getBossDamagedMsg(
+              boss.name,
+              bossBattle.currentMonsterDamage,
+              monster.name,
+              tBossBattle("monsterDamage"),
+            ),
+          );
+        else bossBattleController.pushHistory(tBossBattle("bossMiss"));
+        return;
+      case EnumBossBattleMsg.bossPreCounterAttack:
+        bossBattleController.pushHistory(
+          getBossPreCounterAttackMsg(
+            boss.name,
+            tBossBattle("bossPreCounterAttack"),
+          ),
+        );
+        return;
+      case EnumBossBattleMsg.bossCounterAttack:
+        bossBattleController.pushHistory(
+          getBossUsedSkillMsg(
+            boss.name,
+            bossBattle.usedBossSkill,
+            tBossBattle("bossUsedCounterAttackSkill"),
+          ),
+        );
+        if (bossBattle.currentBossHit)
+          bossBattleController.pushHistory(
+            getBossDamagedMsg(
+              boss.name,
+              bossBattle.currentMonsterDamage,
+              monster.name,
+              tBossBattle("monsterDamage"),
+            ),
+          );
+        else bossBattleController.pushHistory(tBossBattle("bossMiss"));
+        return;
+      case EnumBossBattleMsg.bossBuff:
+        bossBattleController.pushHistory(
+          getBossUsedSkillMsg(
+            boss.name,
+            bossBattle.usedBossSkill,
+            tBossBattle("bossUsedBuffSkill"),
+          ),
+        );
+        bossBattleController.pushHistory(
+          getBossBuffMsg(boss.name, tBossBattle("bossBuff")),
+        );
+        return;
+      case EnumBossBattleMsg.bossDebuff:
+        bossBattleController.pushHistory(
+          getBossUsedSkillMsg(
+            boss.name,
+            bossBattle.usedBossSkill,
+            tBossBattle("bossUsedDebuffSkill"),
+          ),
+        );
+        bossBattleController.pushHistory(
+          getBossDebuffMsg(monster.name, tBossBattle("bossDebuff")),
+        );
+        return;
+      case EnumBossBattleMsg.bossDefense:
+        bossBattleController.pushHistory(
+          getBossDefensedMsg(boss.name, tBossBattle("bossDefensed")),
+        );
+        return;
+      case EnumBossBattleMsg.droppedItem:
+        bossBattleController.pushHistory(
+          getDroppedItemMsg(
+            boss.name,
+            ITEMS[language as "日本語" | "English"][bossBattle.droppedItemId]
+              .name,
+            tBossBattle("droppedItem"),
+          ),
+        );
+        return;
+      case EnumBossBattleMsg.defeated:
+        bossBattleController.pushHistory(
+          getDefeatedMsg(monster.name, tBossBattle("defeated")),
+        );
+        return;
+      case EnumBossBattleMsg.bossSubAction:
+        bossBattleController.pushHistory(
+          getUsedBossSubActionMsg(boss.name, tBossBattle("usedBossSubAction")),
+        );
+        return;
+      default:
+        return;
+    }
   };
 
   if (boss.name === "") return <></>;
@@ -406,6 +751,7 @@ const MonsterItemMsg = () => {
   const bossBattle = useBossBattleValue();
   const language = useLanguageValue();
   const { t: tBossBattle } = useTranslation("boss-battle");
+
   return (
     <>
       {getUsedItemMsg(
@@ -420,6 +766,17 @@ const MonsterItemMsg = () => {
         ITEMS[language as "日本語" | "English"][bossBattle.usedItemId].result,
       )}
     </>
+  );
+};
+
+const MonsterItemEscapeNextMsg = () => {
+  const boss = useBossValue();
+  const { t: tBossBattle } = useTranslation("boss-battle");
+
+  return (
+    <div className={clsx("whitespace-pre-wrap")}>
+      {getEscapeNextMsg(boss.name, tBossBattle("escapeNext"))}
+    </div>
   );
 };
 
@@ -631,17 +988,6 @@ const DefeatedMsg = () => {
   return (
     <div className={clsx("whitespace-pre-wrap")}>
       {getDefeatedMsg(monster.name, tBossBattle("defeated"))}
-    </div>
-  );
-};
-
-const MonsterItemEscapeNextMsg = () => {
-  const boss = useBossValue();
-  const { t: tBossBattle } = useTranslation("boss-battle");
-
-  return (
-    <div className={clsx("whitespace-pre-wrap")}>
-      {getEscapeNextMsg(boss.name, tBossBattle("escapeNext"))}
     </div>
   );
 };

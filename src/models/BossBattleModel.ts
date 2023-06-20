@@ -45,6 +45,7 @@ export class BossBattleModel extends BaseModel<string> {
     public readonly usedItemId: number = -1,
     public readonly defeated: boolean = false,
     public readonly highScore: number = 0,
+    public readonly histories: string[] = [],
   ) {
     super("");
   }
