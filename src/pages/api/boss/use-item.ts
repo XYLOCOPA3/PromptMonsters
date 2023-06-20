@@ -2,9 +2,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { RPC_URL } from "@/const/chainParams";
 import { ERROR_WAIT_TIME, MAX_ERROR_CNT } from "@/const/error";
-import { DevBBkParamModel } from "@/dev/models/DevBBkParamModel";
 import { ServerBossBattle } from "@/features/boss/api/contracts/ServerBossBattle";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
+import { BBkParamModel } from "@/models/BBkParamModel";
 import { BBState } from "@/types/BBState";
 import { EnumBossAction } from "@/types/EnumBossAction";
 import { EnumItem } from "@/types/EnumItem";
@@ -55,10 +55,10 @@ export default async function handler(
   const prefixLog = `/boss/use-item: ${resurrectionPrompt}:`;
 
   // TODO: 後で消す
-  const devBBkParam =
+  const bbKParam =
     process.env.STAGE === "develop"
-      ? req.body.devBBkParam
-      : DevBBkParamModel.create({});
+      ? req.body.bbKParam
+      : BBkParamModel.create({});
 
   const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
   const bossBattle = ServerBossBattle.instance(RPC_URL.mchVerse);
@@ -196,9 +196,9 @@ export default async function handler(
 
   // バフ・デバフ計算（アイテム）
   if (usedItemId === EnumItem.buff)
-    newMonsterAdj = buffMonster(newMonsterAdj, devBBkParam);
+    newMonsterAdj = buffMonster(newMonsterAdj, bbKParam);
   if (usedItemId === EnumItem.debuff)
-    newBossAdj = debuffBoss(newMonsterAdj, devBBkParam);
+    newBossAdj = debuffBoss(newBossAdj, bbKParam);
   console.log(prefixLog, "newMonsterAdj = ", newMonsterAdj);
   console.log(prefixLog, "newBossAdj = ", newBossAdj);
 
@@ -215,7 +215,7 @@ export default async function handler(
     bbState.monsterAdj,
     bbState.bossAdj,
     bbState.turn,
-    devBBkParam,
+    bbKParam,
   );
   console.log(prefixLog, "bossDamage = ", bossDamage);
 
@@ -232,7 +232,7 @@ export default async function handler(
     bbState.bossAdj,
     bbState.turn,
     defensed,
-    devBBkParam,
+    bbKParam,
   );
   console.log(prefixLog, "monsterDamage = ", monsterDamage);
 
@@ -243,7 +243,7 @@ export default async function handler(
     usedItemId,
     monsterExtension.inte,
     bbState.monsterAdj,
-    devBBkParam,
+    bbKParam,
   );
   console.log(prefixLog, "healing = ", healing);
 
@@ -253,9 +253,9 @@ export default async function handler(
 
   // バフ・デバフ計算（ボス行動）
   if (bossAction === EnumBossAction.debuff && bossHit)
-    newMonsterAdj = debuffMonster(newMonsterAdj, devBBkParam);
+    newMonsterAdj = debuffMonster(newMonsterAdj, bbKParam);
   if (bossAction === EnumBossAction.buff && bossHit)
-    newBossAdj = buffBoss(newBossAdj, devBBkParam);
+    newBossAdj = buffBoss(newBossAdj, bbKParam);
   console.log(prefixLog, "newMonsterAdj = ", newMonsterAdj);
   console.log(prefixLog, "newBossAdj = ", newBossAdj);
 

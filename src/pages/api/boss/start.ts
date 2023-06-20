@@ -2,9 +2,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { RPC_URL } from "@/const/chainParams";
 import { ERROR_WAIT_TIME, MAX_ERROR_CNT } from "@/const/error";
-import { DevBBkParamModel } from "@/dev/models/DevBBkParamModel";
 import { ServerBossBattle } from "@/features/boss/api/contracts/ServerBossBattle";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
+import { BBkParamModel } from "@/models/BBkParamModel";
 import { EventKey } from "@/types/EventKey";
 import {
   getBossSign,
@@ -35,10 +35,10 @@ export default async function handler(
   const prefixLog = `/boss/start: ${resurrectionPrompt}:`;
 
   // TODO: 後で消す
-  const devBBkParam =
+  const bbKParam =
     process.env.STAGE === "develop"
-      ? req.body.devBBkParam
-      : DevBBkParamModel.create({});
+      ? req.body.bbKParam
+      : BBkParamModel.create({});
 
   const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
   const bossBattle = ServerBossBattle.instance(RPC_URL.mchVerse);
@@ -85,7 +85,7 @@ export default async function handler(
   const initialMonsterAdj = initMonsterAdj(monsterAdj);
   // TODO: 後で消す
   // const initialMonsterAdj = Math.floor(
-  //   Number(devBBkParam.kMonsterWeakness) * 100,
+  //   Number(bbKParam.kMonsterWeakness) * 100,
   // );
 
   // ボス前兆確定
