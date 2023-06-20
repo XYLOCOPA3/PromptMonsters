@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import {
   FIRST_TURN,
-  K_TURN,
   MAX_LIFE_POINT,
   MAX_TURN_ADJ,
   MIN_LIFE_POINT,
@@ -24,6 +23,7 @@ import { useBossBattleState } from "@/hooks/useBossBattle";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { useUserValue } from "@/hooks/useUser";
+import { bbKParamState } from "@/stores/bbKParamState";
 import { disableState } from "@/stores/disableState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import { scoreOpenedState } from "@/stores/scoreOpenedState";
@@ -365,7 +365,9 @@ const MonsterNameAndUserLifePoint = ({ name, lifePoint }: any) => {
  * @param turn turn
  */
 const MonsterStatus = ({ status, lifePoint, monsterAdj, turn }: any) => {
-  let turnAdj = K_TURN * (turn - 1);
+  const bbKParam = useRecoilValue(bbKParamState);
+
+  let turnAdj = Number(bbKParam.kTurn) * (turn - 1);
   if (turn === FIRST_TURN) turnAdj = 1;
   if (turnAdj > MAX_TURN_ADJ) turnAdj = MAX_TURN_ADJ;
   const atk = Math.floor((status.ATK * monsterAdj * turnAdj) / 100);

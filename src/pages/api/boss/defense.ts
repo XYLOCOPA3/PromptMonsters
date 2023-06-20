@@ -2,9 +2,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { RPC_URL } from "@/const/chainParams";
 import { ERROR_WAIT_TIME, MAX_ERROR_CNT } from "@/const/error";
-import { DevBBkParamModel } from "@/dev/models/DevBBkParamModel";
 import { ServerBossBattle } from "@/features/boss/api/contracts/ServerBossBattle";
 import { ServerPromptMonsters } from "@/features/monster/api/contracts/ServerPromptMonsters";
+import { BBkParamModel } from "@/models/BBkParamModel";
 import { BBState } from "@/types/BBState";
 import { EnumBossAction } from "@/types/EnumBossAction";
 import { EnumItem } from "@/types/EnumItem";
@@ -41,10 +41,10 @@ export default async function handler(
   const prefixLog = `/boss/defense: ${resurrectionPrompt}:`;
 
   // TODO: 後で消す
-  const devBBkParam =
+  const bbKParam =
     process.env.STAGE === "develop"
-      ? req.body.devBBkParam
-      : DevBBkParamModel.create({});
+      ? req.body.bbKParam
+      : BBkParamModel.create({});
 
   const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
   const bossBattle = ServerBossBattle.instance(RPC_URL.mchVerse);
@@ -120,7 +120,7 @@ export default async function handler(
     bbState.bossAdj,
     bbState.turn,
     true,
-    devBBkParam,
+    bbKParam,
   );
 
   // 回復計算
@@ -132,10 +132,10 @@ export default async function handler(
   // バフ・デバフ計算
   let newMonsterAdj = bbState.monsterAdj;
   if (bossAction === EnumBossAction.debuff && bossHit)
-    newMonsterAdj = debuffMonster(newMonsterAdj, devBBkParam);
+    newMonsterAdj = debuffMonster(newMonsterAdj, bbKParam);
   let newBossAdj = bbState.bossAdj;
   if (bossAction === EnumBossAction.buff && bossHit)
-    newBossAdj = buffBoss(newBossAdj, devBBkParam);
+    newBossAdj = buffBoss(newBossAdj, bbKParam);
 
   // アイテムドロップ判定
   let newHasBuffItem = bbState.hasBuffItem;
