@@ -1,8 +1,8 @@
 import { MAX_LIFE_POINT, MIN_LIFE_POINT } from "@/const/bossBattle";
-import { devBBkParamState } from "@/dev/stores/devBBkParamState";
 import { ClientBossBattle } from "@/features/boss/api/contracts/ClientBossBattle";
 import { BossBattleModel } from "@/models/BossBattleModel";
 import { MonsterModel } from "@/models/MonsterModel";
+import { bbKParamState } from "@/stores/bbKParamState";
 import { BossBattleState, bossBattleState } from "@/stores/bossBattleState";
 import { BBState } from "@/types/BBState";
 import { EnumBossBattleMsg } from "@/types/EnumBossBattleMsg";
@@ -60,7 +60,7 @@ export const useBossBattleValue = (): BossBattleState => {
 
 export const useBossBattleController = (): BossBattleController => {
   // TODO: 後で消す
-  const devBBkParam = useRecoilValue(devBBkParamState);
+  const bbKParam = useRecoilValue(bbKParamState);
 
   const setBossBattle = useSetRecoilState(bossBattleState);
 
@@ -82,7 +82,7 @@ export const useBossBattleController = (): BossBattleController => {
         generateMonsterAdjIfNotSet(monster.resurrectionPrompt),
       ]);
       skillTypes = results[0];
-      bbState = await startBossBattle(monster.resurrectionPrompt, devBBkParam);
+      bbState = await startBossBattle(monster.resurrectionPrompt, bbKParam);
     }
 
     _initGlobalParam();
@@ -162,7 +162,7 @@ export const useBossBattleController = (): BossBattleController => {
       res = await axios.post("/api/boss/use-skill", {
         resurrectionPrompt,
         skill,
-        devBBkParam,
+        bbKParam,
       });
     } catch (e) {
       if (axios.isAxiosError(e)) throw new Error(e.response!.data.message);
@@ -244,7 +244,7 @@ export const useBossBattleController = (): BossBattleController => {
     try {
       res = await axios.post("/api/boss/defense", {
         resurrectionPrompt,
-        devBBkParam,
+        bbKParam,
       });
     } catch (e) {
       if (axios.isAxiosError(e)) throw new Error(e.response!.data.message);
@@ -322,7 +322,7 @@ export const useBossBattleController = (): BossBattleController => {
       res = await axios.post("/api/boss/use-item", {
         resurrectionPrompt,
         usedItemId,
-        devBBkParam,
+        bbKParam,
       });
     } catch (e) {
       if (axios.isAxiosError(e)) throw new Error(e.response!.data.message);

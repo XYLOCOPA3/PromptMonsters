@@ -1,55 +1,55 @@
 import { DevBBParamInput } from "@/dev/components/DevBBParamInput";
-import { devBBkParamState } from "@/dev/stores/devBBkParamState";
 import { useLayoutEffectOfSSR } from "@/hooks/useLayoutEffectOfSSR";
+import { bbKParamState } from "@/stores/bbKParamState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
 import { useRecoilState } from "recoil";
 
-export type DevBBParamAdjProps = BaseProps;
+export type DevBBKParamAdjProps = BaseProps;
 
 /**
- * DevBBParamAdj
+ * DevBBKParamAdj
  * @keit0728
  * @param className Style from parent element
  */
-export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
-  const [devBBkParam, setDevBBkParam] = useRecoilState(devBBkParamState);
+export const DevBBKParamAdj = ({ className }: DevBBKParamAdjProps) => {
+  const [bbKParam, setBBKParam] = useRecoilState(bbKParamState);
 
   // 共通 ここから ------------------------
   const handleKCommonTurnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDevBBkParam((prevState) => {
-      return prevState.copyWith({ kCommonTurn: e.target.value });
+    setBBKParam((prevState) => {
+      return prevState.copyWith({ kTurn: e.target.value });
     });
   };
   // 共通 ここから ------------------------
 
   // モンスター ここから ------------------------
   const handleKMonsterAtkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kMonsterAtk: e.target.value });
     });
   };
 
   const handleKMonsterDefChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kMonsterDef: e.target.value });
     });
   };
 
   const handleKMonsterIntChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kMonsterInt: e.target.value });
     });
   };
 
   const handleKMonsterMgrChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kMonsterMgr: e.target.value });
     });
   };
 
   const handleKMonsterBuffChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kMonsterBuff: e.target.value });
     });
   };
@@ -57,7 +57,7 @@ export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
   const handleKMonsterDebuffChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kMonsterDebuff: e.target.value });
     });
   };
@@ -65,7 +65,7 @@ export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
   const handleKMonsterPowerChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kMonsterPower: e.target.value });
     });
   };
@@ -73,7 +73,7 @@ export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
   const handleKMonsterHealingChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kMonsterHealing: e.target.value });
     });
   };
@@ -81,7 +81,7 @@ export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
   const handleKMonsterWeaknessChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kMonsterWeakness: e.target.value });
     });
   };
@@ -89,43 +89,43 @@ export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
 
   // ボス ここから ------------------------
   const handleKBossAtkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kBossAtk: e.target.value });
     });
   };
 
   const handleKBossDefChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kBossDef: e.target.value });
     });
   };
 
   const handleKBossIntChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kBossInt: e.target.value });
     });
   };
 
   const handleKBossMgrChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kBossMgr: e.target.value });
     });
   };
 
   const handleKBossPowerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kBossPower: e.target.value });
     });
   };
 
   const handleKBossBuffChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kBossBuff: e.target.value });
     });
   };
 
   const handleKBossDebuffChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDevBBkParam((prevState) => {
+    setBBKParam((prevState) => {
       return prevState.copyWith({ kBossDebuff: e.target.value });
     });
   };
@@ -144,7 +144,7 @@ export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
         <div className={clsx("flex")}>
           <DevBBParamInput
             title="ターン数被ダメ:"
-            kParam={devBBkParam.kCommonTurn}
+            kParam={bbKParam.kTurn}
             onChange={handleKCommonTurnChange}
           />
         </div>
@@ -156,55 +156,55 @@ export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
         <div className={clsx("flex", "justify-between")}>
           <DevBBParamInput
             title="ATK:"
-            kParam={devBBkParam.kMonsterAtk}
+            kParam={bbKParam.kMonsterAtk}
             onChange={handleKMonsterAtkChange}
           />
           <DevBBParamInput
             title="DEF:"
-            kParam={devBBkParam.kMonsterDef}
+            kParam={bbKParam.kMonsterDef}
             onChange={handleKMonsterDefChange}
           />
         </div>
         <div className={clsx("flex", "justify-between")}>
           <DevBBParamInput
             title="INT:"
-            kParam={devBBkParam.kMonsterInt}
+            kParam={bbKParam.kMonsterInt}
             onChange={handleKMonsterIntChange}
           />
           <DevBBParamInput
             title="MGR:"
-            kParam={devBBkParam.kMonsterMgr}
+            kParam={bbKParam.kMonsterMgr}
             onChange={handleKMonsterMgrChange}
           />
         </div>
         <div className={clsx("flex", "justify-between")}>
           <DevBBParamInput
             title="バフ:"
-            kParam={devBBkParam.kMonsterBuff}
+            kParam={bbKParam.kMonsterBuff}
             onChange={handleKMonsterBuffChange}
           />
           <DevBBParamInput
             title="デバフ:"
-            kParam={devBBkParam.kMonsterDebuff}
+            kParam={bbKParam.kMonsterDebuff}
             onChange={handleKMonsterDebuffChange}
           />
         </div>
         <div className={clsx("flex", "justify-between")}>
           <DevBBParamInput
             title="強攻撃:"
-            kParam={devBBkParam.kMonsterPower}
+            kParam={bbKParam.kMonsterPower}
             onChange={handleKMonsterPowerChange}
           />
           <DevBBParamInput
             title="回復:"
-            kParam={devBBkParam.kMonsterHealing}
+            kParam={bbKParam.kMonsterHealing}
             onChange={handleKMonsterHealingChange}
           />
         </div>
         <div className={clsx("flex", "justify-between")}>
           <DevBBParamInput
             title="弱点特徴補正:"
-            kParam={devBBkParam.kMonsterWeakness}
+            kParam={bbKParam.kMonsterWeakness}
             onChange={handleKMonsterWeaknessChange}
           />
         </div>
@@ -216,43 +216,43 @@ export const DevBBParamAdj = ({ className }: DevBBParamAdjProps) => {
         <div className={clsx("flex", "justify-between")}>
           <DevBBParamInput
             title="ATK:"
-            kParam={devBBkParam.kBossAtk}
+            kParam={bbKParam.kBossAtk}
             onChange={handleKBossAtkChange}
           />
           <DevBBParamInput
             title="DEF:"
-            kParam={devBBkParam.kBossDef}
+            kParam={bbKParam.kBossDef}
             onChange={handleKBossDefChange}
           />
         </div>
         <div className={clsx("flex", "justify-between")}>
           <DevBBParamInput
             title="INT:"
-            kParam={devBBkParam.kBossInt}
+            kParam={bbKParam.kBossInt}
             onChange={handleKBossIntChange}
           />
           <DevBBParamInput
             title="MGR:"
-            kParam={devBBkParam.kBossMgr}
+            kParam={bbKParam.kBossMgr}
             onChange={handleKBossMgrChange}
           />
         </div>
         <div className={clsx("flex", "justify-between")}>
           <DevBBParamInput
             title="バフ:"
-            kParam={devBBkParam.kBossBuff}
+            kParam={bbKParam.kBossBuff}
             onChange={handleKBossBuffChange}
           />
           <DevBBParamInput
             title="デバフ:"
-            kParam={devBBkParam.kBossDebuff}
+            kParam={bbKParam.kBossDebuff}
             onChange={handleKBossDebuffChange}
           />
         </div>
         <div className={clsx("flex", "justify-between")}>
           <DevBBParamInput
             title="強攻撃:"
-            kParam={devBBkParam.kBossPower}
+            kParam={bbKParam.kBossPower}
             onChange={handleKBossPowerChange}
           />
         </div>

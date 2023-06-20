@@ -3,6 +3,7 @@ import {
   BOSS_BUFF_SEL_RATE,
   BOSS_CATK_SEL_RATE,
   BOSS_DEBUFF_SEL_RATE,
+  BOSS_DEF_SEL_RATE,
   BOSS_ITEM_BUFF_DROPPED_RATE,
   BOSS_ITEM_DEBUFF_DROPPED_RATE,
   BOSS_ITEM_ESCAPE_DROPPED_RATE,
@@ -19,10 +20,14 @@ import {
   MAX_TURN_ADJ,
   MIN_BOSS_ADJ,
   MIN_MONSTER_ADJ,
+  MONSTER_OTHER_ADEF_SEL_RATE,
+  MONSTER_OTHER_ATK_SEL_RATE,
+  MONSTER_OTHER_FHEAL_SEL_RATE,
+  MONSTER_OTHER_PATK_SEL_RATE,
 } from "@/const/bossBattle";
-import { DevBBKState } from "@/dev/stores/devBBkParamState";
 import { ClientBossBattle } from "@/features/boss/api/contracts/ClientBossBattle";
 import { MonsterModel } from "@/models/MonsterModel";
+import { BBKState } from "@/stores/bbKParamState";
 import { BBState } from "@/types/BBState";
 import { EnumBossAction } from "@/types/EnumBossAction";
 import { EnumBossBattleMsg } from "@/types/EnumBossBattleMsg";
@@ -90,13 +95,13 @@ export const hasBossWeaknessFeatures = (
 
 export const startBossBattle = async (
   resurrectionPrompt: string,
-  devBBkParam: DevBBKState, // TODO: 後で消す
+  bbKParam: BBKState, // TODO: 後で消す
 ): Promise<BBState> => {
   let res: any;
   try {
     res = await axios.post("/api/boss/start", {
       resurrectionPrompt,
-      devBBkParam,
+      bbKParam,
     });
   } catch (e) {
     if (axios.isAxiosError(e)) throw new Error(e.response!.data.message);
@@ -123,27 +128,37 @@ export const getBossSign = (): number => {
   // 一撃必殺
   if (random < selRate) return random;
   selRate += BOSS_PTAK_SEL_RATE;
+
   // 強攻撃
   if (random < selRate)
     return Math.floor(Math.random() * 10) + EnumBossSign.signOneHitKill;
   selRate += BOSS_ATK_SEL_RATE;
+
   // 攻撃
   if (random < selRate)
     return Math.floor(Math.random() * 10) + EnumBossSign.signPowerAttack;
   selRate += BOSS_CATK_SEL_RATE;
+
   // カウンター
   if (random < selRate)
     return Math.floor(Math.random() * 10) + EnumBossSign.signAttack;
   selRate += BOSS_BUFF_SEL_RATE;
+
   // バフ
   if (random < selRate)
     return Math.floor(Math.random() * 10) + EnumBossSign.signCounterAttack;
   selRate += BOSS_DEBUFF_SEL_RATE;
+
   // デバフ
   if (random < selRate)
     return Math.floor(Math.random() * 10) + EnumBossSign.signBuff;
+  selRate += BOSS_DEF_SEL_RATE;
+
   // 防御
-  return Math.floor(Math.random() * 10) + EnumBossSign.signDebuff;
+  if (random < selRate)
+    return Math.floor(Math.random() * 10) + EnumBossSign.signDebuff;
+
+  return Math.floor(Math.random() * 10) + EnumBossSign.none;
 };
 
 export const decideBossAction = (bossSign: number): EnumBossAction => {
@@ -241,20 +256,30 @@ export const decideOtherSkillType = (
   int: number,
 ): EnumOtherSkillAction => {
   const random = Math.floor(Math.random() * 100);
+  let selRate = MONSTER_OTHER_ATK_SEL_RATE;
+
   // 攻撃
-  if (random < 40) {
+  if (random < selRate) {
     if (atk >= int) return EnumOtherSkillAction.physicalAttack;
     return EnumOtherSkillAction.specialAttack;
   }
+
+  selRate += MONSTER_OTHER_PATK_SEL_RATE;
   // 強攻撃
-  if (40 <= random && random < 50) {
+  if (random < selRate) {
     if (atk >= int) return EnumOtherSkillAction.powerPhysicalAttack;
     return EnumOtherSkillAction.powerSpecialAttack;
   }
+
+  selRate += MONSTER_OTHER_ADEF_SEL_RATE;
   // 絶対防御
-  if (50 <= random && random < 80) return EnumOtherSkillAction.absoluteDefense;
+  if (random < selRate) return EnumOtherSkillAction.absoluteDefense;
+
+  selRate += MONSTER_OTHER_FHEAL_SEL_RATE;
   // 全回復
-  return EnumOtherSkillAction.fullHealing;
+  if (random < selRate) return EnumOtherSkillAction.fullHealing;
+
+  return EnumOtherSkillAction.none;
 };
 
 export const calcBossDamage = (
@@ -269,7 +294,7 @@ export const calcBossDamage = (
   monsterAdj: number,
   bossAdj: number,
   turn: number,
-  devBBkParam: DevBBKState,
+  bbKParam: BBKState,
 ): number => {
   if (!monsterHit) return 0;
   if (
@@ -282,14 +307,14 @@ export const calcBossDamage = (
   if (otherSkillAction === EnumOtherSkillAction.fullHealing) return 0;
 
   // TODO: kは要調整!!!
-  const kMonsterAtk = Number(devBBkParam.kMonsterAtk);
-  const kMonsterInt = Number(devBBkParam.kMonsterInt);
-  const kBossDef = Number(devBBkParam.kBossDef);
-  const kBossMgr = Number(devBBkParam.kBossMgr);
-  const kMonsterPower = Number(devBBkParam.kMonsterPower);
-  let kCommonTurn = Number(devBBkParam.kCommonTurn) * (turn - 1);
-  if (turn === FIRST_TURN) kCommonTurn = 1;
-  if (kCommonTurn > MAX_TURN_ADJ) kCommonTurn = MAX_TURN_ADJ;
+  const kMonsterAtk = Number(bbKParam.kMonsterAtk);
+  const kMonsterInt = Number(bbKParam.kMonsterInt);
+  const kBossDef = Number(bbKParam.kBossDef);
+  const kBossMgr = Number(bbKParam.kBossMgr);
+  const kMonsterPower = Number(bbKParam.kMonsterPower);
+  let kTurn = Number(bbKParam.kTurn) * (turn - 1);
+  if (turn === FIRST_TURN) kTurn = 1;
+  if (kTurn > MAX_TURN_ADJ) kTurn = MAX_TURN_ADJ;
 
   const adjMonsterAtk = (monsterAtk * monsterAdj) / 100;
   const adjMonsterInt = (monsterInt * monsterAdj) / 100;
@@ -301,21 +326,19 @@ export const calcBossDamage = (
     usedSkillType === EnumSkillType.physicalAttack ||
     otherSkillAction === EnumOtherSkillAction.physicalAttack
   ) {
-    bossDamage =
-      kCommonTurn * kMonsterAtk * adjMonsterAtk - kBossDef * adjBossDef;
+    bossDamage = kTurn * kMonsterAtk * adjMonsterAtk - kBossDef * adjBossDef;
   } else if (
     usedSkillType === EnumSkillType.specialAttack ||
     otherSkillAction === EnumOtherSkillAction.specialAttack
   ) {
-    bossDamage =
-      kCommonTurn * kMonsterInt * adjMonsterInt - kBossMgr * adjBossMgr;
+    bossDamage = kTurn * kMonsterInt * adjMonsterInt - kBossMgr * adjBossMgr;
   } else if (otherSkillAction === EnumOtherSkillAction.powerPhysicalAttack) {
     bossDamage =
-      kCommonTurn * kMonsterPower * kMonsterAtk * adjMonsterAtk -
+      kTurn * kMonsterPower * kMonsterAtk * adjMonsterAtk -
       kBossDef * adjBossDef;
   } else if (otherSkillAction === EnumOtherSkillAction.powerSpecialAttack) {
     bossDamage =
-      kCommonTurn * kMonsterPower * kMonsterInt * adjMonsterInt -
+      kTurn * kMonsterPower * kMonsterInt * adjMonsterInt -
       kBossMgr * adjBossMgr;
   }
   if (bossAction === EnumBossAction.defense) bossDamage *= 0.1;
@@ -336,7 +359,7 @@ export const calcMonsterDamage = (
   bossAdj: number,
   turn: number,
   defensed: boolean,
-  devBBkParam: DevBBKState,
+  bbKParam: BBKState,
 ): number => {
   if (!bossHit) return 0;
   if (bossAction === EnumBossAction.none) return 0;
@@ -359,14 +382,14 @@ export const calcMonsterDamage = (
   }
 
   // TODO: kは要調整!!!
-  const kBossAtk = Number(devBBkParam.kBossAtk);
-  const kBossInt = Number(devBBkParam.kBossInt);
-  const kMonsterDef = Number(devBBkParam.kMonsterDef);
-  const kMonsterMgr = Number(devBBkParam.kMonsterMgr);
-  const kBossPower = Number(devBBkParam.kBossPower);
-  let kCommonTurn = Number(devBBkParam.kCommonTurn) * (turn - 1);
-  if (turn === FIRST_TURN) kCommonTurn = 1;
-  if (kCommonTurn > MAX_TURN_ADJ) kCommonTurn = MAX_TURN_ADJ;
+  const kBossAtk = Number(bbKParam.kBossAtk);
+  const kBossInt = Number(bbKParam.kBossInt);
+  const kMonsterDef = Number(bbKParam.kMonsterDef);
+  const kMonsterMgr = Number(bbKParam.kMonsterMgr);
+  const kBossPower = Number(bbKParam.kBossPower);
+  let kTurn = Number(bbKParam.kTurn) * (turn - 1);
+  if (turn === FIRST_TURN) kTurn = 1;
+  if (kTurn > MAX_TURN_ADJ) kTurn = MAX_TURN_ADJ;
 
   const adjBossAtk = (bossAtk * bossAdj) / 100;
   const adjBossInt = (bossInt * bossAdj) / 100;
@@ -377,29 +400,29 @@ export const calcMonsterDamage = (
   if (bossAction === EnumBossAction.powerAttack) {
     if (isPhysicalAttack) {
       monsterDamage =
-        kCommonTurn * kBossPower * kBossAtk * adjBossAtk -
+        kTurn * kBossPower * kBossAtk * adjBossAtk -
         kMonsterDef * adjMonsterDef;
     } else {
       monsterDamage =
-        kCommonTurn * kBossPower * kBossInt * adjBossInt -
+        kTurn * kBossPower * kBossInt * adjBossInt -
         kMonsterMgr * adjMonsterMgr;
     }
   } else if (bossAction === EnumBossAction.attack) {
     if (isPhysicalAttack) {
       monsterDamage =
-        kCommonTurn * kBossAtk * adjBossAtk - kMonsterDef * adjMonsterDef;
+        kTurn * kBossAtk * adjBossAtk - kMonsterDef * adjMonsterDef;
     } else {
       monsterDamage =
-        kCommonTurn * kBossInt * adjBossInt - kMonsterMgr * adjMonsterMgr;
+        kTurn * kBossInt * adjBossInt - kMonsterMgr * adjMonsterMgr;
     }
   } else if (bossAction === EnumBossAction.counterAttack) {
     if (isPhysicalAttack) {
       monsterDamage =
-        kCommonTurn * kBossPower * kBossAtk * adjBossAtk -
+        kTurn * kBossPower * kBossAtk * adjBossAtk -
         kMonsterDef * adjMonsterDef;
     } else {
       monsterDamage =
-        kCommonTurn * kBossPower * kBossInt * adjBossInt -
+        kTurn * kBossPower * kBossInt * adjBossInt -
         kMonsterMgr * adjMonsterMgr;
     }
   }
@@ -416,7 +439,7 @@ export const calcHealing = (
   usedItemId: number,
   monsterInt: number,
   monsterAdj: number,
-  devBBkParam: DevBBKState,
+  bbKParam: BBKState,
 ): number => {
   if (otherSkillAction === EnumOtherSkillAction.fullHealing)
     return MAX_LIFE_POINT;
@@ -424,7 +447,7 @@ export const calcHealing = (
   if (usedSkillType !== EnumSkillType.healing) return 0;
 
   // TODO: kは要調整!!!
-  const kMonsterHealing = Number(devBBkParam.kMonsterHealing);
+  const kMonsterHealing = Number(bbKParam.kMonsterHealing);
 
   const adjMonsterInt = (monsterInt * monsterAdj) / 100;
 
@@ -442,12 +465,9 @@ export const calcLifePoint = (
   return lp;
 };
 
-export const buffMonster = (
-  monsterAdj: number,
-  devBBkParam: DevBBKState,
-): number => {
+export const buffMonster = (monsterAdj: number, bbKParam: BBKState): number => {
   // TODO: kは要調整!!!
-  const kMonsterBuff = Number(devBBkParam.kMonsterBuff);
+  const kMonsterBuff = Number(bbKParam.kMonsterBuff);
 
   let newMonsterAdj = Math.floor(kMonsterBuff * monsterAdj);
   return newMonsterAdj > MAX_MONSTER_ADJ ? MAX_MONSTER_ADJ : newMonsterAdj;
@@ -455,29 +475,26 @@ export const buffMonster = (
 
 export const debuffMonster = (
   monsterAdj: number,
-  devBBkParam: DevBBKState,
+  bbKParam: BBKState,
 ): number => {
   // TODO: kは要調整!!!
-  const kMonsterDebuff = Number(devBBkParam.kMonsterDebuff);
+  const kMonsterDebuff = Number(bbKParam.kMonsterDebuff);
 
   let newMonsterAdj = Math.floor(kMonsterDebuff * monsterAdj);
   return newMonsterAdj < MIN_MONSTER_ADJ ? MIN_MONSTER_ADJ : newMonsterAdj;
 };
 
-export const buffBoss = (bossAdj: number, devBBkParam: DevBBKState): number => {
+export const buffBoss = (bossAdj: number, bbKParam: BBKState): number => {
   // TODO: kは要調整!!!
-  const kBossBuff = Number(devBBkParam.kBossBuff);
+  const kBossBuff = Number(bbKParam.kBossBuff);
 
   let newBossAdj = Math.floor(kBossBuff * bossAdj);
   return newBossAdj > MAX_BOSS_ADJ ? MAX_BOSS_ADJ : newBossAdj;
 };
 
-export const debuffBoss = (
-  bossAdj: number,
-  devBBkParam: DevBBKState,
-): number => {
+export const debuffBoss = (bossAdj: number, bbKParam: BBKState): number => {
   // TODO: kは要調整!!!
-  const kBossDebuff = Number(devBBkParam.kBossDebuff);
+  const kBossDebuff = Number(bbKParam.kBossDebuff);
 
   let newBossAdj = Math.floor(kBossDebuff * bossAdj);
   return newBossAdj < MIN_BOSS_ADJ ? MIN_BOSS_ADJ : newBossAdj;

@@ -42,6 +42,14 @@ export async function main() {
       score: highScore,
       id: i,
       name: monsters[i].name,
+      hp: monsters[i].hp,
+      atk: monsters[i].atk,
+      def: monsters[i].def,
+      int: monsters[i].inte,
+      mgr: monsters[i].mgr,
+      agl: monsters[i].agl,
+      skillTypes: monsters[i].skillTypes,
+      feature: monsters[i].feature,
       flavor: monsters[i].flavor,
     };
   });
@@ -62,11 +70,15 @@ export async function main() {
   });
 
   // csvとして保存
-  let csv = `Ranking,Score,ID,Name,Flavor\n`;
+  let csv = `Ranking,Score,ID,Name,HP,ATK,DEF,INT,MGR,AGL,Skill1,Skill2,Skill3,Skill4,Feature,Flavor\n`;
   rankings.forEach((ranking, i) => {
     csv += `"${i + 1}","${ranking.score}","${ranking.id}","${ranking.name}","${
+      ranking.hp
+    }","${ranking.atk}","${ranking.def}","${ranking.int}","${ranking.mgr}","${
+      ranking.agl
+    }",${_getSkillTypesStr(ranking.skillTypes)},"${ranking.feature}","${
       ranking.flavor
-    }\n`;
+    }"\n`;
   });
 
   // "total" ディレクトリがなければ作成する
@@ -89,3 +101,21 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
+
+const _getSkillTypesStr = (skillTypes: number[]) => {
+  if (skillTypes.length === 0) return `"","","",""`;
+  const skillTypeStrs = [];
+  for (let i = 0; i < skillTypes.length; i++) {
+    if (skillTypes[i] === 1) skillTypeStrs.push(`"???"`);
+    else if (skillTypes[i] === 100) skillTypeStrs.push(`"物理攻撃"`);
+    else if (skillTypes[i] === 101) skillTypeStrs.push(`"特殊攻撃"`);
+    else if (skillTypes[i] === 200) skillTypeStrs.push(`"回復"`);
+    else skillTypeStrs.push(`"Unknown"`);
+    if (i === 3) break;
+  }
+  let skillTypesStr = skillTypeStrs.join(",");
+  if (skillTypes.length === 1) skillTypesStr += `,"","",""`;
+  else if (skillTypes.length === 2) skillTypesStr += `,"",""`;
+  else if (skillTypes.length === 3) skillTypesStr += `,""`;
+  return skillTypesStr;
+};

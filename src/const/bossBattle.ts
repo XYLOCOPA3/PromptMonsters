@@ -5,7 +5,12 @@ export const MAX_MONSTER_DAMAGE = 350;
 export const MAX_MONSTER_ADJ = 400;
 export const MIN_MONSTER_ADJ = 25;
 export const MAX_BOSS_ADJ = 400;
-export const MIN_BOSS_ADJ = 25;
+export const MIN_BOSS_ADJ = 80;
+
+export const MONSTER_OTHER_ATK_SEL_RATE = 40;
+export const MONSTER_OTHER_PATK_SEL_RATE = 10;
+export const MONSTER_OTHER_ADEF_SEL_RATE = 30;
+export const MONSTER_OTHER_FHEAL_SEL_RATE = 20;
 
 export const BOSS_OHK_SEL_RATE = 10;
 export const BOSS_PTAK_SEL_RATE = 10;
@@ -27,7 +32,25 @@ export const MAX_TURN_ADJ = 30;
 
 export const BOSS_ADJ_STD = 1000;
 
-export const K_TURN = 1.1;
+export const K_TURN = "1.1";
+
+export const K_MONSTER_ATK = "1.0";
+export const K_MONSTER_DEF = "1.0";
+export const K_MONSTER_INT = "1.0";
+export const K_MONSTER_MGR = "1.0";
+export const K_MONSTER_BUFF = "1.2";
+export const K_MONSTER_DEBUFF = "0.75";
+export const K_MONSTER_POWER = "1.5";
+export const K_MONSTER_HEALING = "10.0";
+export const K_MONSTER_WEAKNESS = "1.2";
+
+export const K_BOSS_ATK = "1.0";
+export const K_BOSS_DEF = "1.0";
+export const K_BOSS_INT = "1.0";
+export const K_BOSS_MGR = "1.0";
+export const K_BOSS_BUFF = "1.5";
+export const K_BOSS_DEBUFF = "0.95";
+export const K_BOSS_POWER = "1.5";
 
 export const BOSS_WEAKNESS_FEATURES = {
   mch: "MCH|MyCryptoHeroes|マイクリプトヒーローズ|マイクリ|ゲーム専務|みかん|Orange",
@@ -43,7 +66,7 @@ export const BOSS_NEXT_ACTION_SIGNS = {
       "あたしのコーディング、無限の力を秘めているのよ〜💻🔥",
       "もっともっと燃え尽きていくわよ〜🔥🌟",
       "おちびちゃんの世界を崩壊させるわ〜💥🌌",
-      "あたしの存在を消し去ってあげるわ〜💀🔥",
+      "あんたの存在を消し去ってあげるわ〜💀🔥",
       "シャードが降り注ぐわよ〜✨💥",
       "このディスクでバランスを崩してあげるわよ〜⚖️💥",
       "輝く星のようにおちびちゃんを照らすわよ〜✨🌟",
@@ -122,7 +145,7 @@ export const BOSS_NEXT_ACTION_SIGNS = {
       "My coding possesses boundless power. 💻🔥",
       "Burning out more and more relentlessly. 🔥🌟",
       "I will bring about the collapse of the little one's world. 💥🌌",
-      "I will eliminate my existence for you. 💀🔥",
+      "I will erase your existence. 💀🔥",
       "Shards are descending upon us. ✨💥",
       "I will disrupt the balance using this disc. ⚖️💥",
       "I will shine upon the little one like a radiant star. ✨🌟",
