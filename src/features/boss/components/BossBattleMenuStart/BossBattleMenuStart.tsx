@@ -10,6 +10,7 @@ import {
   getBossAppearedMsg,
   getBossSignMsg,
   getHavingWeakFeatureMsg,
+  getTurnMsg,
 } from "@/features/boss/utils/utils";
 import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleState } from "@/hooks/useBossBattle";
@@ -52,19 +53,24 @@ export const BossBattleMenuStart = ({
   );
 
   const pushHistory = () => {
-    if (bossBattle.turn === FIRST_TURN)
+    if (bossBattle.turn === FIRST_TURN) {
       bossBattleController.pushHistory(
         getBossAppearedMsg(boss.name, tBossBattle("bossAppeared")),
       );
-    if (bossBattle.turn === FIRST_TURN && weakFeatures !== null)
+      if (weakFeatures !== null)
+        bossBattleController.pushHistory(
+          getHavingWeakFeatureMsg(
+            monster.name,
+            boss.name,
+            weakFeatures[0],
+            tBossBattle("havingWeakFeature"),
+          ),
+        );
+      bossBattleController.pushHistory("");
       bossBattleController.pushHistory(
-        getHavingWeakFeatureMsg(
-          monster.name,
-          boss.name,
-          weakFeatures[0],
-          tBossBattle("havingWeakFeature"),
-        ),
+        getTurnMsg(bossBattle.turn, tBossBattle("turn")),
       );
+    }
     bossBattleController.pushHistory(
       getBossSignMsg(
         boss.name,

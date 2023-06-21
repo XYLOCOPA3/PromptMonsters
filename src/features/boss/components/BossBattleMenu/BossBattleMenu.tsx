@@ -188,10 +188,13 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                         "p-[10px]",
                         "h-[200px]",
                         "overflow-y-scroll",
+                        "text-[14px]",
                         "md:h-[250px]",
+                        "md:text-[16px]",
                       )}
                     >
                       {bossBattle.histories.map((history) => {
+                        if (history === "") return <br key={uuid()} />;
                         return (
                           <div
                             key={uuid()}
