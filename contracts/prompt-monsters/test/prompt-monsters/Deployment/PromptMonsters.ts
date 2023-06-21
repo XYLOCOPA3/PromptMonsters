@@ -1,5 +1,5 @@
 import { PromptMonsters } from "../../../typechain-types";
-import { deployErc20 } from "../../helpers/Deployment/Erc20";
+import { deployErc20 } from "../../helpers/deploy/deployErc20";
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { BigNumber } from "ethers";
 import { ethers, upgrades } from "hardhat";
