@@ -85,6 +85,37 @@ export const BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS =
     : "0x0000000000000000000000000000000000000000"; // unknown
 
 // --------------------------------------------------
+// Distributor
+// --------------------------------------------------
+
+export const DISTRIBUTOR_PROXY_ADDRESS =
+  process.env.STAGE === STAGE.PRODUCTION
+    ? "0x923e436feE3e17999C3B5bC4D3F3BD0468932c10" // mchMainnet
+    : process.env.STAGE === STAGE.DEMO
+    ? "0xF37916933241c997Fe08E4e205DFa9A5536aD2B7" // mchTestnet-demo
+    : process.env.STAGE === STAGE.DEVELOP
+    ? "0x4f3C95cfB16a9E614fAE778C3271E33C86b50c0C" // mchTestnet-develop
+    : "0x0000000000000000000000000000000000000000"; // unknown
+
+export const DISTRIBUTOR_ERC20_ADDRESS =
+  process.env.STAGE === STAGE.PRODUCTION
+    ? "0x9e5aac1ba1a2e6aed6b32689dfcf62a509ca96f3" // mchMainnet (MCHC)
+    : process.env.STAGE === STAGE.DEMO
+    ? "0x4963d076a99b55ACe34B754D400dcDb99AA5990f" // mchTestnet-demo
+    : process.env.STAGE === STAGE.DEVELOP
+    ? "0x4963d076a99b55ACe34B754D400dcDb99AA5990f" // mchTestnet-develop
+    : "0x0000000000000000000000000000000000000000"; // unknown
+
+export const DISTRIBUTOR_WALLET =
+  process.env.STAGE === STAGE.PRODUCTION
+    ? "0xb506264B57B1e8371f94f06292eD5b670d25eaB1" // mchMainnet
+    : process.env.STAGE === STAGE.DEMO
+    ? "0x24a3A61ce4d7a52aE0F589f44CE0e61aE3a433b2" // mchTestnet-demo
+    : process.env.STAGE === STAGE.DEVELOP
+    ? "0x24a3A61ce4d7a52aE0F589f44CE0e61aE3a433b2" // mchTestnet-develop
+    : "0x0000000000000000000000000000000000000000"; // unknown
+
+// --------------------------------------------------
 // Erc20
 // --------------------------------------------------
 
@@ -96,7 +127,6 @@ export const ERC20_ADDRESS =
     : process.env.STAGE === STAGE.DEVELOP
     ? "0x4963d076a99b55ACe34B754D400dcDb99AA5990f" // mchTestnet-develop
     : "0x0000000000000000000000000000000000000000"; // unknown
-// : "0x4d7761FdCD3cC12cBb4100A2F8CE97e9D51430aa"; // mchTestnet-demo
 
 // --------------------------------------------------
 // PromptMonsters
