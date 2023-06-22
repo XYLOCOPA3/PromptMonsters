@@ -195,9 +195,18 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                         "md:text-[16px]",
                       )}
                     >
-                      {bossBattle.logs.map((log) => {
+                      {bossBattle.logs.map((log, i) => {
                         if (log.value === "") return <br key={uuid()} />;
                         const quoteType = getQuoteType(log.type);
+                        let prefix = "";
+                        if (i > 0) {
+                          if (
+                            bossBattle.logs[i - 1].type === log.type &&
+                            quoteType !== EnumBossBattleQuote.system
+                          ) {
+                            prefix = "▶︎ ";
+                          }
+                        }
                         return (
                           <div
                             key={uuid()}
@@ -210,7 +219,7 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                                 : "",
                             )}
                           >
-                            {log.value}
+                            {`${prefix}${log.value}`}
                           </div>
                         );
                       })}
