@@ -34,6 +34,7 @@ import { BBKState } from "@/stores/bbKParamState";
 import { BBState } from "@/types/BBState";
 import { EnumBossAction } from "@/types/EnumBossAction";
 import { EnumBossBattleMsg } from "@/types/EnumBossBattleMsg";
+import { EnumBossBattleQuote } from "@/types/EnumBossBattleQuote";
 import { EnumBossSign } from "@/types/EnumBossSign";
 import { EnumItem } from "@/types/EnumItem";
 import { EnumOtherSkillAction } from "@/types/EnumOtherSkillAction";
@@ -1068,6 +1069,53 @@ export const getInitialBBState = (
     hasEscapeItem: false,
   };
   return newBBState;
+};
+
+export const getQuoteType = (
+  msgType: EnumBossBattleMsg,
+): EnumBossBattleQuote => {
+  if (msgType === EnumBossBattleMsg.monsterFightPhysicalAttack)
+    return EnumBossBattleQuote.monster;
+  if (msgType === EnumBossBattleMsg.monsterFightSpecialAttack)
+    return EnumBossBattleQuote.monster;
+  if (msgType === EnumBossBattleMsg.monsterFightHeal)
+    return EnumBossBattleQuote.monster;
+  if (msgType === EnumBossBattleMsg.monsterFightOtherPhysicalAttack)
+    return EnumBossBattleQuote.monster;
+  if (msgType === EnumBossBattleMsg.monsterFightOtherSpecialAttack)
+    return EnumBossBattleQuote.monster;
+  if (msgType === EnumBossBattleMsg.monsterFightOtherPowerPhysicalAttack)
+    return EnumBossBattleQuote.monster;
+  if (msgType === EnumBossBattleMsg.monsterFightOtherPowerSpecialAttack)
+    return EnumBossBattleQuote.monster;
+  if (msgType === EnumBossBattleMsg.monsterFightOtherDefense)
+    return EnumBossBattleQuote.monster;
+  if (msgType === EnumBossBattleMsg.monsterFightOtherHeal)
+    return EnumBossBattleQuote.monster;
+  if (msgType === EnumBossBattleMsg.monsterDefense)
+    return EnumBossBattleQuote.monster;
+  if (msgType === EnumBossBattleMsg.monsterItemBuff)
+    return EnumBossBattleQuote.monster;
+  if (msgType === EnumBossBattleMsg.monsterItemDebuff)
+    return EnumBossBattleQuote.monster;
+  if (msgType === EnumBossBattleMsg.monsterItemHeal)
+    return EnumBossBattleQuote.monster;
+  if (msgType === EnumBossBattleMsg.monsterItemEscape)
+    return EnumBossBattleQuote.monster;
+  if (msgType === EnumBossBattleMsg.monsterItemEscapeNext)
+    return EnumBossBattleQuote.boss;
+  if (msgType === EnumBossBattleMsg.bossOneHitKill)
+    return EnumBossBattleQuote.boss;
+  if (msgType === EnumBossBattleMsg.bossAttack) return EnumBossBattleQuote.boss;
+  if (msgType === EnumBossBattleMsg.bossPowerAttack)
+    return EnumBossBattleQuote.boss;
+  if (msgType === EnumBossBattleMsg.bossCounterAttack)
+    return EnumBossBattleQuote.boss;
+  if (msgType === EnumBossBattleMsg.bossBuff) return EnumBossBattleQuote.boss;
+  if (msgType === EnumBossBattleMsg.bossDebuff) return EnumBossBattleQuote.boss;
+  if (msgType === EnumBossBattleMsg.bossDefense)
+    return EnumBossBattleQuote.boss;
+  return EnumBossBattleQuote.system;
 };
 
 /*

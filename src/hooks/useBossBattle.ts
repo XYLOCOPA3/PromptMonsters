@@ -5,6 +5,7 @@ import { MonsterModel } from "@/models/MonsterModel";
 import { bbKParamState } from "@/stores/bbKParamState";
 import { BossBattleState, bossBattleState } from "@/stores/bossBattleState";
 import { BBState } from "@/types/BBState";
+import { BossBattleLog } from "@/types/BossBattleLog";
 import { EnumBossBattleMsg } from "@/types/EnumBossBattleMsg";
 import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
 import { EnumItem } from "@/types/EnumItem";
@@ -52,8 +53,8 @@ export interface BossBattleController {
   end: (resurrectionPrompt: string) => Promise<void>;
   moveEnd: () => void;
   reset: () => void;
-  pushHistory: (history: string) => void;
-  popHistory: () => void;
+  pushLog: (log: BossBattleLog) => void;
+  popLog: () => void;
 }
 
 export const useBossBattleValue = (): BossBattleState => {
@@ -536,28 +537,28 @@ export const useBossBattleController = (): BossBattleController => {
   };
 
   /**
-   * pushHistory
+   * pushLog
    */
-  const pushHistory = (history: string): void => {
+  const pushLog = (log: BossBattleLog): void => {
     setBossBattle((prevState) => {
       return prevState.copyWith({
-        histories: [...prevState.histories, history],
+        logs: [...prevState.logs, log],
       });
     });
     return;
   };
 
   /**
-   * popHistory
+   * popLog
    */
-  const popHistory = (): void => {
+  const popLog = (): void => {
     setBossBattle((prevState) => {
-      const lastIndex = prevState.histories.length - 1;
-      const newHistories = prevState.histories.filter(
+      const lastIndex = prevState.logs.length - 1;
+      const newHistories = prevState.logs.filter(
         (_, index) => index !== lastIndex,
       );
       return prevState.copyWith({
-        histories: newHistories,
+        logs: newHistories,
       });
     });
     return;
@@ -577,8 +578,8 @@ export const useBossBattleController = (): BossBattleController => {
     end,
     moveEnd,
     reset,
-    pushHistory,
-    popHistory,
+    pushLog,
+    popLog,
   };
   return controller;
 };

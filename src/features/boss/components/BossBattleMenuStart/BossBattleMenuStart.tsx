@@ -19,6 +19,7 @@ import { useLanguageValue } from "@/hooks/useLanguage";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { disableState } from "@/stores/disableState";
 import { BaseProps } from "@/types/BaseProps";
+import { EnumBossBattleMsg } from "@/types/EnumBossBattleMsg";
 import { EventKey } from "@/types/EventKey";
 import { hasBossWeaknessFeatures } from "@/utils/bossBattleUtils";
 import clsx from "clsx";
@@ -54,32 +55,36 @@ export const BossBattleMenuStart = ({
 
   const pushHistory = () => {
     if (bossBattle.turn === FIRST_TURN) {
-      bossBattleController.pushHistory(
-        getBossAppearedMsg(boss.name, tBossBattle("bossAppeared")),
-      );
+      bossBattleController.pushLog({
+        value: getBossAppearedMsg(boss.name, tBossBattle("bossAppeared")),
+        type: EnumBossBattleMsg.none,
+      });
       if (weakFeatures !== null)
-        bossBattleController.pushHistory(
-          getHavingWeakFeatureMsg(
+        bossBattleController.pushLog({
+          value: getHavingWeakFeatureMsg(
             monster.name,
             boss.name,
             weakFeatures[0],
             tBossBattle("havingWeakFeature"),
           ),
-        );
-      bossBattleController.pushHistory("");
-      bossBattleController.pushHistory(
-        getTurnMsg(bossBattle.turn, tBossBattle("turn")),
-      );
+          type: EnumBossBattleMsg.none,
+        });
+      bossBattleController.pushLog({ value: "", type: EnumBossBattleMsg.none });
+      bossBattleController.pushLog({
+        value: getTurnMsg(bossBattle.turn, tBossBattle("turn")),
+        type: EnumBossBattleMsg.none,
+      });
     }
-    bossBattleController.pushHistory(
-      getBossSignMsg(
+    bossBattleController.pushLog({
+      value: getBossSignMsg(
         boss.name,
         BOSS_NEXT_ACTION_SIGNS[bossEvent.eventKey as EventKey][
           language as "日本語" | "English"
         ][bossBattle.bossSign],
         tBossBattle("bossSign"),
       ),
-    );
+      type: EnumBossBattleMsg.none,
+    });
   };
 
   const handleFightClick = () => {

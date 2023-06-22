@@ -29,6 +29,8 @@ import { monsterMintedState } from "@/stores/monsterMintedState";
 import { scoreOpenedState } from "@/stores/scoreOpenedState";
 import { BaseProps } from "@/types/BaseProps";
 import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
+import { EnumBossBattleQuote } from "@/types/EnumBossBattleQuote";
+import { getQuoteType } from "@/utils/bossBattleUtils";
 import { Dialog, Transition } from "@headlessui/react";
 import { useWeb3Modal } from "@web3modal/react";
 import clsx from "clsx";
@@ -193,14 +195,22 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                         "md:text-[16px]",
                       )}
                     >
-                      {bossBattle.histories.map((history) => {
-                        if (history === "") return <br key={uuid()} />;
+                      {bossBattle.logs.map((log) => {
+                        if (log.value === "") return <br key={uuid()} />;
+                        const quoteType = getQuoteType(log.type);
                         return (
                           <div
                             key={uuid()}
-                            className={clsx("whitespace-pre-wrap")}
+                            className={clsx(
+                              "whitespace-pre-wrap",
+                              quoteType === EnumBossBattleQuote.monster
+                                ? "text-[#79FF63]"
+                                : quoteType === EnumBossBattleQuote.boss
+                                ? "text-[#f86868]"
+                                : "",
+                            )}
                           >
-                            {history}
+                            {log.value}
                           </div>
                         );
                       })}
