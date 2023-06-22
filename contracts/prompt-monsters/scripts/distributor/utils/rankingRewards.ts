@@ -116,7 +116,12 @@ export async function main() {
           reward = FROM_11TH_TO_50TH_PRIZE_REWARD;
         else if (FIFTY_FIRST_PRIZE <= i && i <= HUNDREDTH_PRIZE)
           reward = FROM_51TH_TO_100TH_PRIZE_REWARD;
-        console.log(i + 1, reward, owners[rankingMonsterIDs[i]].address);
+        console.log(
+          i + 1,
+          reward,
+          owners[rankingMonsterIDs[i]].tokenId,
+          owners[rankingMonsterIDs[i]].address,
+        );
         // const tx = await distributor
         //   .connect(from)
         //   .distributeNativeToken(owners[rankingMonsterIDs[i]].address, {

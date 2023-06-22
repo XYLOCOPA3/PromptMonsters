@@ -125,7 +125,7 @@ contract Distributor is
     require(msg.value == 0, "Distributor: msg.value has to be 0");
 
     uint beforeBalance = _erc20.balanceOf(to);
-    _erc20.safeTransfer(to, amount);
+    _erc20.safeTransferFrom(msg.sender, to, amount);
     uint afterBalance = _erc20.balanceOf(to);
 
     uint acutualAmount = afterBalance - beforeBalance;

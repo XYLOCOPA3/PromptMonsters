@@ -61,12 +61,12 @@ export async function main() {
       }
       for (var i = 0; i < owners.length; i++) {
         console.log(owners[i].tokenId, PRIZE, owners[i].address);
-        //   const tx = await distributor
-        //     .connect(from)
-        //     .distributeNativeToken(owners[i].address, {
-        //       value: ethers.utils.parseEther(PRIZE),
-        //     });
-        //   await tx.wait();
+        // const tx = await distributor
+        //   .connect(from)
+        //   .distributeNativeToken(owners[i].address, {
+        //     value: ethers.utils.parseEther(PRIZE),
+        //   });
+        // await tx.wait();
       }
       console.log("対象ユーザーへ報酬が配布されました。");
 
