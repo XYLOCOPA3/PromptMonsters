@@ -1,9 +1,9 @@
-import { deployBossBattle } from "../helpers/Deployment/BossBattle";
-import { deployBossBattleMch1 } from "../helpers/Deployment/BossBattleMch1";
-import { deployBossMonsterMchYoshka } from "../helpers/Deployment/BossMonsterMchYoshka";
-import { deployErc20 } from "../helpers/Deployment/Erc20";
-import { deployPromptMonsters } from "../helpers/Deployment/PromptMonsters";
-import { deployPromptMonstersImage } from "../helpers/Deployment/PromptMonstersImage";
+import { deployBossBattle } from "../helpers/deploy/BossBattle";
+import { deployBossBattleMch1 } from "../helpers/deploy/BossBattleMch1";
+import { deployBossMonsterMchYoshka } from "../helpers/deploy/BossMonsterMchYoshka";
+import { deployPromptMonsters } from "../helpers/deploy/PromptMonsters";
+import { deployPromptMonstersImage } from "../helpers/deploy/PromptMonstersImage";
+import { deployErc20 } from "../helpers/deploy/deployErc20";
 import { deployPromptMonstersExtension } from "../prompt-monsters-extension/utils/DeployPromptMonstersExtension";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "ethers";
