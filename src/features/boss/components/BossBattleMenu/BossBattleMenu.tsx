@@ -29,10 +29,13 @@ import { monsterMintedState } from "@/stores/monsterMintedState";
 import { scoreOpenedState } from "@/stores/scoreOpenedState";
 import { BaseProps } from "@/types/BaseProps";
 import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
+import { EnumBossBattleQuote } from "@/types/EnumBossBattleQuote";
+import { getQuoteType } from "@/utils/bossBattleUtils";
 import { Dialog, Transition } from "@headlessui/react";
 import { useWeb3Modal } from "@web3modal/react";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
+import uuid from "react-uuid";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 export type BossBattleMenuProps = BaseProps;
@@ -178,6 +181,48 @@ export const BossBattleMenu = ({ className }: BossBattleMenuProps) => {
                       )}
                     >
                       {bossBattle.score}
+                    </div>
+                    <div
+                      className={clsx(
+                        "my-[10px]",
+                        "border-[1px]",
+                        "rounded-lg",
+                        "p-[10px]",
+                        "h-[200px]",
+                        "overflow-y-scroll",
+                        "text-[14px]",
+                        "md:h-[250px]",
+                        "md:text-[16px]",
+                      )}
+                    >
+                      {bossBattle.logs.map((log, i) => {
+                        if (log.value === "") return <br key={uuid()} />;
+                        const quoteType = getQuoteType(log.type);
+                        let prefix = "";
+                        if (i > 0) {
+                          if (
+                            bossBattle.logs[i - 1].type === log.type &&
+                            quoteType !== EnumBossBattleQuote.system
+                          ) {
+                            prefix = "▶︎ ";
+                          }
+                        }
+                        return (
+                          <div
+                            key={uuid()}
+                            className={clsx(
+                              "whitespace-pre-wrap",
+                              quoteType === EnumBossBattleQuote.monster
+                                ? "text-[#79FF63]"
+                                : quoteType === EnumBossBattleQuote.boss
+                                ? "text-[#f86868]"
+                                : "",
+                            )}
+                          >
+                            {`${prefix}${log.value}`}
+                          </div>
+                        );
+                      })}
                     </div>
                     <div
                       className={clsx(

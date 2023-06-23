@@ -1,4 +1,5 @@
 import { BaseModel } from "@/models/BaseModel";
+import { BossBattleLog } from "@/types/BossBattleLog";
 import { EnumBossBattleMsg } from "@/types/EnumBossBattleMsg";
 import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
 
@@ -45,6 +46,7 @@ export class BossBattleModel extends BaseModel<string> {
     public readonly usedItemId: number = -1,
     public readonly defeated: boolean = false,
     public readonly highScore: number = 0,
+    public readonly logs: BossBattleLog[] = [],
   ) {
     super("");
   }

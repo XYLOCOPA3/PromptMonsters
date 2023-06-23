@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
-import { useBossBattleController } from "@/hooks/useBossBattle";
+import { FIRST_TURN } from "@/const/bossBattle";
+import { useBossBattleState } from "@/hooks/useBossBattle";
 import { disableState } from "@/stores/disableState";
 import { BaseProps } from "@/types/BaseProps";
 import clsx from "clsx";
@@ -17,16 +18,29 @@ export type BossBattlePrevButtonProps = BaseProps;
 export const BossBattlePrevButton = ({
   className,
 }: BossBattlePrevButtonProps) => {
-  const bossBattleController = useBossBattleController();
+  const [bossBattle, bossBattleController] = useBossBattleState();
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
+
   const { t: tBossBattle } = useTranslation("boss-battle");
+
+  const popHistory = () => {
+    if (bossBattle.turn === FIRST_TURN) {
+      const length = bossBattle.logs.length;
+      for (let i = 0; i < length; i++) {
+        bossBattleController.popLog();
+      }
+      return;
+    }
+    bossBattleController.popLog();
+  };
 
   const handleClick = async () => {
     setDisable(true);
     setLoading(true);
     try {
       await bossBattleController.moveStart();
+      popHistory();
     } catch (error) {
       console.error(error);
       // TODO: エラー文考える

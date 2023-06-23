@@ -5,6 +5,7 @@ import { MonsterModel } from "@/models/MonsterModel";
 import { bbKParamState } from "@/stores/bbKParamState";
 import { BossBattleState, bossBattleState } from "@/stores/bossBattleState";
 import { BBState } from "@/types/BBState";
+import { BossBattleLog } from "@/types/BossBattleLog";
 import { EnumBossBattleMsg } from "@/types/EnumBossBattleMsg";
 import { EnumBossBattlePhase } from "@/types/EnumBossBattlePhase";
 import { EnumItem } from "@/types/EnumItem";
@@ -33,8 +34,8 @@ let gBossAdj = 0;
 export interface BossBattleController {
   init: (monster: MonsterModel) => Promise<number[]>;
   moveStart: () => Promise<void>;
-  moveFightSelector: () => Promise<void>;
-  moveItemSelector: () => Promise<void>;
+  moveFightSelector: () => void;
+  moveItemSelector: () => void;
   useSkill: (
     resurrectionPrompt: string,
     skill: string,
@@ -52,6 +53,8 @@ export interface BossBattleController {
   end: (resurrectionPrompt: string) => Promise<void>;
   moveEnd: () => void;
   reset: () => void;
+  pushLog: (log: BossBattleLog) => void;
+  popLog: () => void;
 }
 
 export const useBossBattleValue = (): BossBattleState => {
@@ -132,7 +135,7 @@ export const useBossBattleController = (): BossBattleController => {
   /**
    * moveFightSelector
    */
-  const moveFightSelector = async (): Promise<void> => {
+  const moveFightSelector = (): void => {
     setBossBattle((prevState) => {
       return prevState.copyWith({ phase: EnumBossBattlePhase.fightSelect });
     });
@@ -141,7 +144,7 @@ export const useBossBattleController = (): BossBattleController => {
   /**
    * moveItemSelector
    */
-  const moveItemSelector = async (): Promise<void> => {
+  const moveItemSelector = (): void => {
     setBossBattle((prevState) => {
       return prevState.copyWith({ phase: EnumBossBattlePhase.itemSelect });
     });
@@ -533,6 +536,34 @@ export const useBossBattleController = (): BossBattleController => {
     setBossBattle(BossBattleModel.create({}));
   };
 
+  /**
+   * pushLog
+   */
+  const pushLog = (log: BossBattleLog): void => {
+    setBossBattle((prevState) => {
+      return prevState.copyWith({
+        logs: [...prevState.logs, log],
+      });
+    });
+    return;
+  };
+
+  /**
+   * popLog
+   */
+  const popLog = (): void => {
+    setBossBattle((prevState) => {
+      const lastIndex = prevState.logs.length - 1;
+      const newHistories = prevState.logs.filter(
+        (_, index) => index !== lastIndex,
+      );
+      return prevState.copyWith({
+        logs: newHistories,
+      });
+    });
+    return;
+  };
+
   const controller: BossBattleController = {
     init,
     moveStart,
@@ -547,6 +578,8 @@ export const useBossBattleController = (): BossBattleController => {
     end,
     moveEnd,
     reset,
+    pushLog,
+    popLog,
   };
   return controller;
 };
