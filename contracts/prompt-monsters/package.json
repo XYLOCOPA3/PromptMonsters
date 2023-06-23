@@ -15,6 +15,7 @@
     "test-prompt-monsters": "REPORT_GAS=true npx hardhat test test/prompt-monsters/PromptMonsters.ts",
     "test-prompt-monsters-extension": "REPORT_GAS=true npx hardhat test test/prompt-monsters-extension/PromptMonstersExtension.ts",
     "test-prompt-monsters-image": "REPORT_GAS=true npx hardhat test test/prompt-monsters-image/PromptMonstersImage.ts",
+    "test-prompt-monsters-item": "REPORT_GAS=true npx hardhat test test/prompt-monsters-item/PromptMonstersItem.ts",
     "test-stamina": "REPORT_GAS=true npx hardhat test test/stamina/Stamina.ts",
     "test-integration": "REPORT_GAS=true npx hardhat test test/integration/contracts_integration_test.ts",
     "test-integration-boss-battle": "REPORT_GAS=true npx hardhat test test/boss-battle/integration.ts",
