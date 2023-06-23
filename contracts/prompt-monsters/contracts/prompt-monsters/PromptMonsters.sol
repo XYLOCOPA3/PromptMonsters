@@ -348,6 +348,10 @@ contract PromptMonsters is
     address resurrectionPrompt_,
     IPromptMonsters.Monster memory monster_
   ) external onlyRole(GAME_ROLE) nonReentrant {
+    require(
+      _monsterHistoryMap[resurrectionPrompt_].lv == 0,
+      "PromptMonsters: This monster is already generated"
+    );
     _monsterHistoryMap[resurrectionPrompt_] = monster_;
     emit GeneratedMonsterV2(resurrectionPrompt_, monster_);
   }

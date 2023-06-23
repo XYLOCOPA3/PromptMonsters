@@ -46,7 +46,7 @@ const config: HardhatUserConfig = {
     },
     mumbai: {
       url: POLYGON_MUMBAI_ALCHEMY_KEY,
-      accounts: [PRIVATE_KEY as string, DISTRIBUTOR_PRIVATE_KEY as string],
+      accounts: [DEV_PRIVATE_KEY as string, DISTRIBUTOR_PRIVATE_KEY as string],
     },
   },
   etherscan: {
