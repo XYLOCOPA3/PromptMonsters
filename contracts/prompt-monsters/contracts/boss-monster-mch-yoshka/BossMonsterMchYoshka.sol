@@ -214,6 +214,23 @@ contract BossMonsterMchYoshka is
     emit SetMonsterAdj(_msgSender(), resurrectionPrompt, oldValue, monsterAdj);
   }
 
+  /// @dev Set skills
+  /// @param skills skills
+  function addSkills(
+    string memory language,
+    string[] memory skills
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    uint256 length = skills.length;
+    for (uint i; i < length; ) {
+      _bossMap[language].skills.push(skills[i]);
+      unchecked {
+        ++i;
+      }
+    }
+
+    emit AddedSkills(_msgSender(), language, skills);
+  }
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
