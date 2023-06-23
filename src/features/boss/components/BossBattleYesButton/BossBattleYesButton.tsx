@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/elements/Button";
 import { ERROR_MAINTENANCE } from "@/const/error";
-import { useBossBattleController } from "@/hooks/useBossBattle";
+import { getTurnMsg } from "@/features/boss/utils/utils";
+import { useBossBattleState } from "@/hooks/useBossBattle";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { disableState } from "@/stores/disableState";
 import { BaseProps } from "@/types/BaseProps";
+import { EnumBossBattleMsg } from "@/types/EnumBossBattleMsg";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { useRecoilState } from "recoil";
@@ -20,7 +22,7 @@ export const BossBattleYesButton = ({
   className,
 }: BossBattleYesButtonProps) => {
   const monster = useMonsterValue();
-  const bossBattleController = useBossBattleController();
+  const [bossBattle, bossBattleController] = useBossBattleState();
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
   const { t: tBossBattle } = useTranslation("boss-battle");
@@ -31,6 +33,11 @@ export const BossBattleYesButton = ({
     setLoading(true);
     try {
       await bossBattleController.continueBossBattle(monster.resurrectionPrompt);
+      bossBattleController.pushLog({ value: "", type: EnumBossBattleMsg.none });
+      bossBattleController.pushLog({
+        value: getTurnMsg(bossBattle.turn + 1, tBossBattle("turn")),
+        type: EnumBossBattleMsg.none,
+      });
     } catch (error) {
       console.error(error);
       if (error instanceof Error) {

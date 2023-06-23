@@ -26,13 +26,13 @@ export const BossBattlePrevButton = ({
 
   const popHistory = () => {
     if (bossBattle.turn === FIRST_TURN) {
-      const length = bossBattle.histories.length;
+      const length = bossBattle.logs.length;
       for (let i = 0; i < length; i++) {
-        bossBattleController.popHistory();
+        bossBattleController.popLog();
       }
       return;
     }
-    bossBattleController.popHistory();
+    bossBattleController.popLog();
   };
 
   const handleClick = async () => {

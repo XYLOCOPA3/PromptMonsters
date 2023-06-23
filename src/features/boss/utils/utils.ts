@@ -1,8 +1,9 @@
-export const getBossAppearedMsg = (
-  bossName: string,
-  bossAppearedMsg: string,
-): string => {
-  return bossAppearedMsg.replace("bossName", bossName);
+export const getBossAppearedMsg = (bossName: string, msg: string): string => {
+  return msg.replace("bossName", bossName);
+};
+
+export const getTurnMsg = (turn: number, msg: string): string => {
+  return `----- ${msg} ${turn} -----`;
 };
 
 export const getHavingWeakFeatureMsg = (
