@@ -51,6 +51,12 @@ interface IBossMonster {
     MonsterAdj newValue
   );
 
+  event AddedSkills(
+    address indexed publisher,
+    string indexed language,
+    string[] skills
+  );
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
@@ -119,6 +125,10 @@ interface IBossMonster {
     address resurrectionPrompt,
     MonsterAdj memory monsterAdj
   ) external;
+
+  /// @dev Set skills
+  /// @param skills skills
+  function addSkills(string memory language, string[] memory skills) external;
 
   // --------------------------------------------------------------------------------
   // Main Logic
