@@ -10,10 +10,12 @@
     "test-boss-battle": "REPORT_GAS=true npx hardhat test test/boss-battle/BossBattle.ts",
     "test-boss-battle-mch-1": "REPORT_GAS=true npx hardhat test test/boss-battle-mch-1/BossBattleMch1.ts",
     "test-boss-monster-mch-yoshka": "REPORT_GAS=true npx hardhat test test/boss-monster-mch-yoshka/BossMonsterMchYoshka.ts",
+    "test-distributor": "REPORT_GAS=true npx hardhat test test/distributor/Distributor.ts",
     "test-erc20": "REPORT_GAS=true npx hardhat test test/erc20/Erc20.ts",
     "test-prompt-monsters": "REPORT_GAS=true npx hardhat test test/prompt-monsters/PromptMonsters.ts",
     "test-prompt-monsters-extension": "REPORT_GAS=true npx hardhat test test/prompt-monsters-extension/PromptMonstersExtension.ts",
     "test-prompt-monsters-image": "REPORT_GAS=true npx hardhat test test/prompt-monsters-image/PromptMonstersImage.ts",
+    "test-prompt-monsters-item": "REPORT_GAS=true npx hardhat test test/prompt-monsters-item/PromptMonstersItem.ts",
     "test-stamina": "REPORT_GAS=true npx hardhat test test/stamina/Stamina.ts",
     "test-integration": "REPORT_GAS=true npx hardhat test test/integration/contracts_integration_test.ts",
     "test-integration-boss-battle": "REPORT_GAS=true npx hardhat test test/boss-battle/integration.ts",
@@ -38,6 +40,7 @@
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.3",
     "axios": "^1.3.5",
+    "comma-separated-values": "^3.6.4",
     "dotenv": "^16.0.3"
   }
 }

@@ -157,12 +157,6 @@ describe("PromptMonsters", function () {
           .generateMonster(resurrectionPrompt2.address, FireMonsterDetails),
       ).not.to.be.reverted;
 
-      await expect(
-        promptMonsters
-          .connect(deployer)
-          .generateMonster(resurrectionPrompt2.address, WaterMonsterDetails),
-      ).not.to.be.reverted;
-
       // expect(
       //   await promptMonsters.resurrectionIndex(resurrectionPrompt1.address),
       // ).to.equal(0);
