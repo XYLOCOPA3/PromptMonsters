@@ -307,7 +307,9 @@ contract PromptMonstersItem is
   function contractURI() external view returns (string memory cURI) {
     string memory name = name();
     string memory svg = string.concat(
-      "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 512 512'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='black' /><text x='50%' y='50%' class='base' dominant-baseline='middle' text-anchor='middle'>Prompt Monsters Item</text></svg>"
+      "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 350 350'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='black' /><text x='50%' y='50%' class='base' dominant-baseline='middle' text-anchor='middle'>",
+      name,
+      "</text></svg>"
     );
     string memory json = Base64Upgradeable.encode(
       bytes(

@@ -3,7 +3,7 @@ import { ethers } from "hardhat";
 
 export async function main() {
   // 適宜変更 ------------------------------
-  const to = "0x31F31693723c4397cb8A978A19A95B82c72f4212";
+  const to = "0xda8310818eaa6dcad0dec433d4A48Cc2586044A2";
   const itemId = 1;
   // 適宜変更 ------------------------------
 

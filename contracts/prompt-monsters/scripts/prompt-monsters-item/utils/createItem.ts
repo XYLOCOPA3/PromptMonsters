@@ -3,7 +3,7 @@ import { PROMPT_MONSTERS_ITEM_PROXY_ADDRESS } from "../../const";
 import { ethers } from "hardhat";
 
 export async function main() {
-  const itemId = 1;
+  const itemId = 1; // Mystery Chest
   // English
   const item: IPromptMonstersItem.ItemStruct = {
     name: "Mystery Chest",
