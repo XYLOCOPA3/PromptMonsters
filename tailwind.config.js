@@ -3,10 +3,11 @@ module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      rotate: {
+        10: "10deg",
+        15: "15deg",
+        20: "20deg",
+        30: "30deg",
       },
       animation: {
         "blink-1": "blink-1 0.6s ease   both",

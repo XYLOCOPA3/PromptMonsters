@@ -36,6 +36,14 @@ export default async function handler(
       message: "Only POST",
     });
 
+  const endTime = new Date(Number(process.env.BOSS_BATTLE_END_TIME));
+  const now = new Date();
+  if (now > endTime) {
+    return res.status(400).json({
+      message: "Boss battle has already ended",
+    });
+  }
+
   const resurrectionPrompt = req.body.resurrectionPrompt || "";
   if (resurrectionPrompt === "")
     return res.status(400).json({

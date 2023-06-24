@@ -1,6 +1,7 @@
 export * from "./BossAdjCircle";
 export * from "./BossAnimation";
 export * from "./BossBattleButton";
+export * from "./BossBattleEndedText";
 export * from "./BossBattleMenu";
 export * from "./BossBattleMenuAnimation";
 export * from "./BossBattleMenuContinue";
