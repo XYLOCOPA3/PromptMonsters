@@ -3,7 +3,8 @@ import { PROMPT_MONSTERS_ITEM_PROXY_ADDRESS } from "../../const";
 import { ethers } from "hardhat";
 
 export async function main() {
-  // itemId = 0
+  const itemId = 1; // Mystery Chest
+  // English
   const item: IPromptMonstersItem.ItemStruct = {
     name: "Mystery Chest",
     description:
@@ -27,11 +28,11 @@ export async function main() {
   const promptMonstersItem = PromptMonstersItem.attach(addr);
 
   console.log("createItem --------------------");
-  console.log(`Before: ${Number(await promptMonstersItem.getItemLength())}`);
-  await (await promptMonstersItem.createItem(item)).wait();
-  const itemLength = Number(await promptMonstersItem.getItemLength());
-  console.log(`After : ${itemLength}`);
-  console.log(await promptMonstersItem.getItem(itemLength - 1));
+  console.log(`Before: ${Number(await promptMonstersItem.getItemIds())}`);
+  await (await promptMonstersItem.createItem(itemId, item)).wait();
+  const itemIds = Number(await promptMonstersItem.getItemIds());
+  console.log(`After : ${itemIds}`);
+  console.log(await promptMonstersItem.getItem(itemId));
   console.log("DONE!!!");
 }
 
