@@ -27,6 +27,14 @@ export default async function handler(
       message: "Only POST",
     });
 
+  const endTime = new Date(Number(process.env.BOSS_BATTLE_END_TIME));
+  const now = new Date();
+  if (now > endTime) {
+    return res.status(400).json({
+      message: "Boss battle has already ended",
+    });
+  }
+
   if (!configuration.apiKey)
     return res.status(500).json({
       message: "OpenAI API key not configured",

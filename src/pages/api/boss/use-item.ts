@@ -35,7 +35,13 @@ export default async function handler(
       message: "Only POST",
     });
 
-  let errorCnt = 0;
+  const endTime = new Date(Number(process.env.BOSS_BATTLE_END_TIME));
+  const now = new Date();
+  if (now > endTime) {
+    return res.status(400).json({
+      message: "Boss battle has already ended",
+    });
+  }
 
   const resurrectionPrompt = req.body.resurrectionPrompt || "";
   if (resurrectionPrompt === "")
@@ -59,6 +65,8 @@ export default async function handler(
     process.env.STAGE === "develop"
       ? req.body.bbKParam
       : BBkParamModel.create({});
+
+  let errorCnt = 0;
 
   const promptMonsters = ServerPromptMonsters.instance(RPC_URL.mchVerse);
   const bossBattle = ServerBossBattle.instance(RPC_URL.mchVerse);
