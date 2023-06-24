@@ -1,24 +1,21 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.9;
 
 import {IERC165Upgradeable} from "@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable.sol";
-import {ERC1155Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
-import {ERC1155SupplyUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155SupplyUpgradeable.sol";
+import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {Base64Upgradeable} from "@openzeppelin/contracts-upgradeable/utils/Base64Upgradeable.sol";
+import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 
 import {IPromptMonstersItem} from "./IPromptMonstersItem.sol";
 
-/// @title PromptMonstersItem
-/// @author keit (@keitEngineer)
-/// @dev This is a contract of PromptMonstersItem.
 contract PromptMonstersItem is
   Initializable,
   IPromptMonstersItem,
-  ERC1155Upgradeable,
-  ERC1155SupplyUpgradeable,
+  PausableUpgradeable,
+  ERC721Upgradeable,
   AccessControlEnumerableUpgradeable,
   UUPSUpgradeable
 {
@@ -32,15 +29,34 @@ contract PromptMonstersItem is
   /// @custom:oz-renamed-from _externalLink
   string private _externalLink;
 
+  /// @custom:oz-renamed-from _totalTokenSupply
+  uint256 private _totalTokenSupply;
+
+  // key -> owner
+  /// @custom:oz-renamed-from _ownerToTokenIdsIndex
+  mapping(address => mapping(uint256 => uint256))
+    private _ownerToTokenIdsIndexMap;
+
+  // key -> owner
+  /// @custom:oz-renamed-from _ownerToTokenIds
+  mapping(address => uint256[]) private _ownerToTokenIdsMap;
+
   /// @custom:oz-renamed-from _itemIds
   uint256[] private _itemIds;
 
+  // key -> tokenId
+  /// @custom:oz-renamed-from _itemIdMap
+  mapping(uint256 => uint256) private _itemIdMap;
+
+  // key -> itemId
   /// @custom:oz-renamed-from _nameMap
   mapping(uint256 => string) private _nameMap;
 
+  // key -> itemId
   /// @custom:oz-renamed-from _descriptionMap
   mapping(uint256 => string) private _descriptionMap;
 
+  // key -> itemId
   /// @custom:oz-renamed-from _imageURLMap
   mapping(uint256 => string) private _imageURLMap;
 
@@ -56,8 +72,8 @@ contract PromptMonstersItem is
 
   /// @dev Initialize
   function initialize() public initializer {
-    __ERC1155_init("");
-    __ERC1155Supply_init();
+    __ERC721_init("Prompt Monsters Item", "PITEM");
+    __Pausable_init();
     __AccessControlEnumerable_init();
     __UUPSUpgradeable_init();
 
@@ -74,7 +90,7 @@ contract PromptMonstersItem is
     view
     override(
       IERC165Upgradeable,
-      ERC1155Upgradeable,
+      ERC721Upgradeable,
       AccessControlEnumerableUpgradeable
     )
     returns (bool)
@@ -86,14 +102,36 @@ contract PromptMonstersItem is
   // Modifier
   // --------------------------------------------------------------------------------
 
+  /// @dev Only exist token Id
+  modifier onlyExist(uint256 tokenId) {
+    require(_exists(tokenId), "This token does not exist.");
+    _;
+  }
+
   // --------------------------------------------------------------------------------
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @dev Get item length
-  /// @return length item length
-  function getItemLength() external view returns (uint256 length) {
+  /// @dev Get total token supply
+  /// @return totalTokenSupply total token supply
+  function getTotalTokenSupply()
+    external
+    view
+    returns (uint256 totalTokenSupply)
+  {
+    totalTokenSupply = _totalTokenSupply;
+  }
+
+  /// @dev Get item IDs length
+  /// @return length item IDs length
+  function getItemIdsLength() external view returns (uint256 length) {
     length = _itemIds.length;
+  }
+
+  /// @dev Get item IDs
+  /// @return itemIds items
+  function getItemIds() external view returns (uint256[] memory itemIds) {
+    itemIds = _itemIds;
   }
 
   /// @dev Get external link
@@ -107,26 +145,82 @@ contract PromptMonstersItem is
   }
 
   /// @dev Get item
-  /// @param tokenId token ID
+  /// @param itemId item ID
   /// @return item item
   function getItem(
-    uint256 tokenId
-  ) external view returns (IPromptMonstersItem.Item memory item) {
-    require(
-      keccak256(abi.encodePacked(_nameMap[tokenId])) !=
-        keccak256(abi.encodePacked("")),
-      "getItem: Invalid token ID"
-    );
+    uint256 itemId
+  ) public view returns (IPromptMonstersItem.Item memory item) {
     item = IPromptMonstersItem.Item({
-      name: _nameMap[tokenId],
-      description: _descriptionMap[tokenId],
-      imageURL: _imageURLMap[tokenId]
+      name: _nameMap[itemId],
+      description: _descriptionMap[itemId],
+      imageURL: _imageURLMap[itemId]
     });
+  }
+
+  /// @dev Get items
+  /// @param itemIds item IDs
+  /// @return items items
+  function getItems(
+    uint256[] memory itemIds
+  ) external view returns (IPromptMonstersItem.Item[] memory items) {
+    uint256 length = itemIds.length;
+    items = new IPromptMonstersItem.Item[](length);
+    for (uint i; i < length; ) {
+      items[i] = getItem(itemIds[i]);
+      unchecked {
+        ++i;
+      }
+    }
+  }
+
+  /// @dev Get item
+  /// @param tokenId token ID
+  /// @return item item
+  function getItemFromTokenId(
+    uint256 tokenId
+  )
+    public
+    view
+    onlyExist(tokenId)
+    returns (IPromptMonstersItem.Item memory item)
+  {
+    uint256 itemId = _itemIdMap[tokenId];
+    item = IPromptMonstersItem.Item({
+      name: _nameMap[itemId],
+      description: _descriptionMap[itemId],
+      imageURL: _imageURLMap[itemId]
+    });
+  }
+
+  /// @dev Get items
+  /// @param tokenIds token IDs
+  /// @return items items
+  function getItemsFromTokenIds(
+    uint256[] memory tokenIds
+  ) external view returns (IPromptMonstersItem.Item[] memory items) {
+    uint256 length = tokenIds.length;
+    items = new IPromptMonstersItem.Item[](length);
+    for (uint i; i < length; ) {
+      items[i] = getItem(tokenIds[i]);
+      unchecked {
+        ++i;
+      }
+    }
   }
 
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
+
+  /// @dev Triggers stopped state
+  function pause() external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _pause();
+  }
+
+  /// @dev Returns to normal state
+  function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _unpause();
+  }
 
   /// @dev Set external link
   /// @param newValue new value
@@ -139,41 +233,38 @@ contract PromptMonstersItem is
   }
 
   /// @dev Set name
-  /// @param tokenId token ID
+  /// @param itemId item ID
   /// @param newValue new value
   function setName(
-    uint256 tokenId,
+    uint256 itemId,
     string memory newValue
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    require(tokenId < _itemIds.length, "setName: Invalid token ID");
-    string memory oldValue = _nameMap[tokenId];
-    _nameMap[tokenId] = newValue;
+    string memory oldValue = _nameMap[itemId];
+    _nameMap[itemId] = newValue;
     emit SetNameURL(_msgSender(), oldValue, newValue);
   }
 
   /// @dev Set description
-  /// @param tokenId token ID
+  /// @param itemId item ID
   /// @param newValue new value
   function setDescriptionURL(
-    uint256 tokenId,
+    uint256 itemId,
     string memory newValue
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    require(tokenId < _itemIds.length, "setDescriptionURL: Invalid token ID");
-    string memory oldValue = _descriptionMap[tokenId];
-    _descriptionMap[tokenId] = newValue;
+    string memory oldValue = _descriptionMap[itemId];
+    _descriptionMap[itemId] = newValue;
     emit SetDescriptionURL(_msgSender(), oldValue, newValue);
   }
 
   /// @dev Set image URL
-  /// @param tokenId token ID
+  /// @param itemId item ID
   /// @param newValue new value
   function setImageURL(
-    uint256 tokenId,
+    uint256 itemId,
     string memory newValue
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    require(tokenId < _itemIds.length, "setImageURL: Invalid token ID");
-    string memory oldValue = _imageURLMap[tokenId];
-    _imageURLMap[tokenId] = newValue;
+    string memory oldValue = _imageURLMap[itemId];
+    _imageURLMap[itemId] = newValue;
     emit SetImageURL(_msgSender(), oldValue, newValue);
   }
 
@@ -183,21 +274,21 @@ contract PromptMonstersItem is
 
   /// @dev Get token URI
   /// @param tokenId token ID
-  /// @return tokenURI token URI
-  function uri(
+  /// @return uri token URI
+  function tokenURI(
     uint256 tokenId
-  ) public view override returns (string memory tokenURI) {
-    require(exists(tokenId), "uri: Invalid token ID");
+  ) public view override onlyExist(tokenId) returns (string memory uri) {
+    uint256 itemId = _itemIdMap[tokenId];
     string memory json = Base64Upgradeable.encode(
       bytes(
         string(
           abi.encodePacked(
             '{"name": "',
-            _nameMap[tokenId],
+            _nameMap[itemId],
             '", "description": "',
-            _descriptionMap[tokenId],
+            _descriptionMap[itemId],
             '", "image": "',
-            _imageURLMap[tokenId],
+            _imageURLMap[itemId],
             '", "external_link": "',
             _externalLink,
             '"}'
@@ -208,12 +299,13 @@ contract PromptMonstersItem is
     string memory finalTokenUri = string(
       abi.encodePacked("data:application/json;base64,", json)
     );
-    tokenURI = finalTokenUri;
+    uri = finalTokenUri;
   }
 
   /// @dev Get contract URI
   /// @return cURI contract URI
   function contractURI() external view returns (string memory cURI) {
+    string memory name = name();
     string memory svg = string.concat(
       "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 512 512'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='black' /><text x='50%' y='50%' class='base' dominant-baseline='middle' text-anchor='middle'>Prompt Monsters Item</text></svg>"
     );
@@ -221,7 +313,11 @@ contract PromptMonstersItem is
       bytes(
         string(
           abi.encodePacked(
-            '{"name": "Prompt Monsters Item", "description": "Prompt Monsters Item is an item used within the Generative AI Game.", "image": "data:image/svg+xml;base64,',
+            '{"name": "',
+            name,
+            '", "description": "',
+            name,
+            ' is an item used within the Generative AI Game.", "image": "data:image/svg+xml;base64,',
             Base64Upgradeable.encode(bytes(svg)),
             '", "external_link": "',
             _externalLink,
@@ -237,55 +333,65 @@ contract PromptMonstersItem is
   }
 
   /// @dev Create item
-  /// @param item item
+  /// @param newItemId new item ID
+  /// @param newItem new item
   function createItem(
-    IPromptMonstersItem.Item memory item
+    uint256 newItemId,
+    IPromptMonstersItem.Item memory newItem
   ) external onlyRole(GAME_ROLE) {
     require(
-      keccak256(abi.encodePacked(item.name)) != keccak256(abi.encodePacked("")),
+      keccak256(abi.encodePacked(newItem.name)) !=
+        keccak256(abi.encodePacked("")),
       "Invalid name"
     );
     require(
-      keccak256(abi.encodePacked(item.description)) !=
+      keccak256(abi.encodePacked(newItem.description)) !=
         keccak256(abi.encodePacked("")),
       "Invalid description"
     );
     require(
-      keccak256(abi.encodePacked(item.imageURL)) !=
+      keccak256(abi.encodePacked(newItem.imageURL)) !=
         keccak256(abi.encodePacked("")),
       "Invalid imageURL"
     );
-    uint256 newTokenId = _itemIds.length;
-    _itemIds.push(newTokenId);
-    _nameMap[newTokenId] = item.name;
-    _descriptionMap[newTokenId] = item.description;
-    _imageURLMap[newTokenId] = item.imageURL;
-    emit CreatedItem(_msgSender(), newTokenId, item);
+    require(
+      keccak256(abi.encodePacked(_nameMap[newItemId])) ==
+        keccak256(abi.encodePacked("")),
+      "This item ID already exists"
+    );
+    require(newItemId != 0, "Invalid item ID");
+    _itemIds.push(newItemId);
+    _nameMap[newItemId] = newItem.name;
+    _descriptionMap[newItemId] = newItem.description;
+    _imageURLMap[newItemId] = newItem.imageURL;
+    emit CreatedItem(_msgSender(), newItemId, newItem);
   }
 
   /// @dev Mint only GAME_ROLE
-  /// @param tokenId token ID
   /// @param to to address
+  /// @param itemId item ID
   function mintOnlyGameRole(
-    uint256 tokenId,
     address to,
-    uint256 amount
+    uint256 itemId
   ) external onlyRole(GAME_ROLE) {
-    require(tokenId < _itemIds.length, "setImageURL: Invalid token ID");
-    _mint(to, tokenId, amount, "0x00");
-    emit MintedItem(_msgSender(), tokenId, to, amount);
+    require(
+      keccak256(abi.encodePacked(_nameMap[itemId])) !=
+        keccak256(abi.encodePacked("")),
+      "This item does not exists"
+    );
+    require(itemId != 0, "Invalid item ID");
+    _itemIdMap[_totalTokenSupply] = itemId;
+    _safeMint(to, _totalTokenSupply);
+    _totalTokenSupply++;
+    emit MintedItem(_msgSender(), to, itemId, _totalTokenSupply);
   }
 
   /// @dev Burn only GAME_ROLE
   /// @param tokenId token ID
-  /// @param to to address
-  function burnOnlyGameRole(
-    uint256 tokenId,
-    address to,
-    uint256 amount
-  ) external onlyRole(GAME_ROLE) {
-    _burn(to, tokenId, amount);
-    emit BurnedItem(_msgSender(), tokenId, to, amount);
+  function burnOnlyGameRole(uint256 tokenId) external onlyRole(GAME_ROLE) {
+    delete _itemIdMap[tokenId];
+    _burn(tokenId);
+    emit BurnedItem(_msgSender(), tokenId);
   }
 
   // --------------------------------------------------------------------------------
@@ -296,23 +402,52 @@ contract PromptMonstersItem is
   /// @param newImplementation new implementation address
   function _authorizeUpgrade(
     address newImplementation
-  ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
+  ) internal override onlyRole(GAME_ROLE) {}
 
-  /// @dev Before token transfer hook
-  /// @param operator operator address
-  /// @param from from address
-  /// @param to to address
-  /// @param ids token IDs
-  /// @param amounts token amount
-  /// @param data data
+  /// @dev Add owner to token IDs
+  /// @param to_ recipient
+  /// @param tokenId_ token ID
+  function _addOwnerToTokenIds(address to_, uint256 tokenId_) private {
+    _ownerToTokenIdsIndexMap[to_][tokenId_] = _ownerToTokenIdsMap[to_].length;
+    _ownerToTokenIdsMap[to_].push(tokenId_);
+  }
+
+  /// @dev Remove owner to token IDs
+  /// @param from_ sender
+  /// @param tokenId_ token ID
+  function _removeOwnerToTokenIds(address from_, uint256 tokenId_) private {
+    uint256 lastTokenId = _ownerToTokenIdsMap[from_][
+      _ownerToTokenIdsMap[from_].length - 1
+    ];
+    uint256 tokenIdIndex = _ownerToTokenIdsIndexMap[from_][tokenId_];
+    if (tokenId_ != lastTokenId)
+      _ownerToTokenIdsMap[from_][tokenIdIndex] = lastTokenId;
+    _ownerToTokenIdsMap[from_].pop();
+    delete _ownerToTokenIdsIndexMap[from_][tokenId_];
+    if (tokenId_ != lastTokenId)
+      _ownerToTokenIdsIndexMap[from_][lastTokenId] = tokenIdIndex;
+  }
+
+  /// @dev Before token transfer
+  /// @param from sender
+  /// @param to recipient
+  /// @param tokenId token ID
+  /// @param batchSize batch size
   function _beforeTokenTransfer(
-    address operator,
     address from,
     address to,
-    uint256[] memory ids,
-    uint256[] memory amounts,
-    bytes memory data
-  ) internal override(ERC1155Upgradeable, ERC1155SupplyUpgradeable) {
-    super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
+    uint256 tokenId,
+    uint256 batchSize
+  ) internal override whenNotPaused {
+    if (from == address(0)) {
+      _addOwnerToTokenIds(to, tokenId);
+    } else if (to == address(0)) {
+      _removeOwnerToTokenIds(from, tokenId);
+    } else {
+      _removeOwnerToTokenIds(from, tokenId);
+      _addOwnerToTokenIds(to, tokenId);
+    }
+
+    super._beforeTokenTransfer(from, to, tokenId, batchSize);
   }
 }

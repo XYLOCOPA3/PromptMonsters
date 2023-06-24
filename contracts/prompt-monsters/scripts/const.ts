@@ -219,7 +219,7 @@ export const PROMPT_MONSTERS_ITEM_PROXY_ADDRESS =
     : process.env.STAGE === STAGE.DEMO
     ? "0x0000000000000000000000000000000000000000" // mchTestnet-demo
     : process.env.STAGE === STAGE.DEVELOP
-    ? "0xAA584a49adf57f5b081dA09A3020f82708481cD1" // mchTestnet-develop
+    ? "0x210A4Ca14cA638A1e4f4C012b81d1599d59A32F6" // mchTestnet-develop
     : process.env.STAGE === STAGE.MUMBAI
     ? "0x5eDf509FE16B6c4a486e1fcF595b526b2e146382" // polygon-mumbai
     : "0x0000000000000000000000000000000000000000"; // unknown
