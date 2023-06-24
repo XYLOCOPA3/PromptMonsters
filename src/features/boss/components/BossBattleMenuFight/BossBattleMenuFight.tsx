@@ -35,6 +35,7 @@ export const BossBattleMenuFight = ({
   const bossBattleController = useBossBattleController();
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useRecoilState(disableState);
+
   const { t: tCommon } = useTranslation("common");
 
   const handleSkill1Click = async () => {
