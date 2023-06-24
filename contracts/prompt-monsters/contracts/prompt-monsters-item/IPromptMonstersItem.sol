@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
-import {IERC1155Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC1155/IERC1155Upgradeable.sol";
+import {IERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
 
 /// @title IPromptMonstersItem
 /// @author keit (@keitEngineer)
 /// @dev This is an interface of PromptMonstersItem.
-interface IPromptMonstersItem is IERC1155Upgradeable {
+interface IPromptMonstersItem is IERC721Upgradeable {
   // --------------------------------------------------------------------------------
   // Struct
   // --------------------------------------------------------------------------------
@@ -44,23 +43,18 @@ interface IPromptMonstersItem is IERC1155Upgradeable {
 
   event CreatedItem(
     address indexed publisher,
-    uint256 indexed tokenId,
-    Item item
+    uint256 indexed newItemId,
+    Item newItem
   );
 
   event MintedItem(
     address indexed publisher,
-    uint256 indexed tokenId,
     address indexed to,
-    uint256 amount
+    uint256 indexed itemId,
+    uint256 tokenId
   );
 
-  event BurnedItem(
-    address indexed publisher,
-    uint256 indexed tokenId,
-    address indexed to,
-    uint256 amount
-  );
+  event BurnedItem(address indexed publisher, uint256 indexed tokenId);
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -73,37 +67,75 @@ interface IPromptMonstersItem is IERC1155Upgradeable {
   // Getter
   // --------------------------------------------------------------------------------
 
-  /// @dev Get item length
-  /// @return length item length
-  function getItemLength() external view returns (uint256 length);
+  /// @dev Get total token supply
+  /// @return totalTokenSupply total token supply
+  function getTotalTokenSupply()
+    external
+    view
+    returns (uint256 totalTokenSupply);
+
+  /// @dev Get item IDs length
+  /// @return length item IDs length
+  function getItemIdsLength() external view returns (uint256 length);
+
+  /// @dev Get item IDs
+  /// @return itemIds items
+  function getItemIds() external view returns (uint256[] memory itemIds);
 
   /// @dev Get external link
   /// @return externalLink external link
   function getExternalLink() external view returns (string memory externalLink);
 
   /// @dev Get item
+  /// @param itemId item ID
+  /// @return item item
+  function getItem(uint256 itemId) external view returns (Item memory item);
+
+  /// @dev Get items
+  /// @param itemIds item IDs
+  /// @return items items
+  function getItems(
+    uint256[] memory itemIds
+  ) external view returns (Item[] memory items);
+
+  /// @dev Get item
   /// @param tokenId token ID
   /// @return item item
-  function getItem(uint256 tokenId) external view returns (Item memory item);
+  function getItemFromTokenId(
+    uint256 tokenId
+  ) external view returns (Item memory item);
+
+  /// @dev Get items
+  /// @param tokenIds token IDs
+  /// @return items items
+  function getItemsFromTokenIds(
+    uint256[] memory tokenIds
+  ) external view returns (Item[] memory items);
 
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
 
+  /// @dev Triggers stopped state
+  function pause() external;
+
+  /// @dev Returns to normal state
+  function unpause() external;
+
   /// @dev Set name
-  /// @param tokenId token ID
+  /// @param itemId item ID
   /// @param newValue new value
-  function setName(uint256 tokenId, string memory newValue) external;
+  function setName(uint256 itemId, string memory newValue) external;
 
   /// @dev Set description
-  /// @param tokenId token ID
+  /// @param itemId item ID
   /// @param newValue new value
-  function setDescriptionURL(uint256 tokenId, string memory newValue) external;
+  function setDescriptionURL(uint256 itemId, string memory newValue) external;
 
   /// @dev Set image URL
-  /// @param tokenId token ID
+  /// @param itemId item ID
   /// @param newValue new value
-  function setImageURL(uint256 tokenId, string memory newValue) external;
+  function setImageURL(uint256 itemId, string memory newValue) external;
 
   // --------------------------------------------------------------------------------
   // Main Logic
@@ -114,24 +146,16 @@ interface IPromptMonstersItem is IERC1155Upgradeable {
   function contractURI() external view returns (string memory cURI);
 
   /// @dev Create item
+  /// @param newItemId new item ID
   /// @param item item
-  function createItem(Item memory item) external;
+  function createItem(uint256 newItemId, Item memory item) external;
 
   /// @dev Mint only GAME_ROLE
-  /// @param tokenId token ID
   /// @param to to address
-  function mintOnlyGameRole(
-    uint256 tokenId,
-    address to,
-    uint256 amount
-  ) external;
+  /// @param itemId item ID
+  function mintOnlyGameRole(address to, uint256 itemId) external;
 
   /// @dev Burn only GAME_ROLE
   /// @param tokenId token ID
-  /// @param to to address
-  function burnOnlyGameRole(
-    uint256 tokenId,
-    address to,
-    uint256 amount
-  ) external;
+  function burnOnlyGameRole(uint256 tokenId) external;
 }

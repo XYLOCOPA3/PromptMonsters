@@ -13,7 +13,7 @@ export async function main() {
   const promptMonstersItem = PromptMonstersItem.attach(addr);
 
   console.log("uri --------------------");
-  console.log(`${await promptMonstersItem.uri(tokenId)}`);
+  console.log(`${await promptMonstersItem.tokenURI(tokenId)}`);
 }
 
 main().catch((error) => {

@@ -3,9 +3,8 @@ import { ethers } from "hardhat";
 
 export async function main() {
   // 適宜変更 ------------------------------
-  const tokenId = 0;
-  const to = "0x31F31693723c4397cb8A978A19A95B82c72f4212";
-  const amount = 1;
+  const to = "0xda8310818eaa6dcad0dec433d4A48Cc2586044A2";
+  const itemId = 1;
   // 適宜変更 ------------------------------
 
   const addr = PROMPT_MONSTERS_ITEM_PROXY_ADDRESS;
@@ -15,13 +14,9 @@ export async function main() {
   const promptMonstersItem = PromptMonstersItem.attach(addr);
 
   console.log("mintOnlyGameRole --------------------");
-  console.log(
-    `Before: ${Number(await promptMonstersItem.balanceOf(to, tokenId))}`,
-  );
-  await (await promptMonstersItem.mintOnlyGameRole(tokenId, to, amount)).wait();
-  console.log(
-    `After : ${Number(await promptMonstersItem.balanceOf(to, tokenId))}`,
-  );
+  console.log(`Before: ${Number(await promptMonstersItem.balanceOf(to))}`);
+  await (await promptMonstersItem.mintOnlyGameRole(to, itemId)).wait();
+  console.log(`After : ${Number(await promptMonstersItem.balanceOf(to))}`);
   console.log("DONE!!!");
 }
 
