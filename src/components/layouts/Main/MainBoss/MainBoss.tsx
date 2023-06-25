@@ -2,7 +2,12 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Background } from "@/components/elements/Background";
 import { Spinner } from "@/components/elements/Spinner";
-import { BossBattleButton, BossImage, BossStatus } from "@/features/boss";
+import {
+  BossBattleButton,
+  BossBattleEndedText,
+  BossImage,
+  BossStatus,
+} from "@/features/boss";
 import {
   MonsterGenerator,
   MonsterMintButton,
@@ -11,6 +16,7 @@ import {
   ResurrectionPrompt,
 } from "@/features/monster";
 import { useBossValue } from "@/hooks/useBoss";
+import { bossBattleEndedState } from "@/stores/bossBattleEndedState";
 import { monsterMintedState } from "@/stores/monsterMintedState";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
@@ -23,6 +29,7 @@ import { useRecoilValue } from "recoil";
 export const MainBoss = () => {
   const boss = useBossValue();
   const monsterMinted = useRecoilValue(monsterMintedState);
+  const bossBattleEnded = useRecoilValue(bossBattleEndedState);
   const { locale } = useRouter();
   const { t: tCommon } = useTranslation("common");
   const { t: tBoss } = useTranslation("boss");
@@ -87,44 +94,68 @@ export const MainBoss = () => {
             "items-center",
           )}
         >
-          <BossImage />
-          <BossStatus />
-        </div>
-        <MonsterGenerator className={clsx("my-[20px]", "w-[300px]")} />
-        <div>or</div>
-        <ResurrectionPrompt className={clsx("my-[20px]", "w-[300px]")} />
-        <div
-          className={clsx(
-            "w-[90%]",
-            "mb-[20px]",
-            "max-w-[512px]",
-            "flex",
-            "flex-col",
-            "items-center",
-          )}
-        >
-          <div className={clsx("w-[100%]", "mb-[10px]", "flex", "justify-end")}>
-            <MonsterSelector className={clsx("w-[50%]")} />
-          </div>
-          <MonsterStatus className={clsx("w-[100%]", "mb-[10px]")} />
-          <div className={clsx("flex", "w-[100%]")}>
+          <div className={clsx("relative")}>
             <div
               className={clsx(
-                "w-[50%]",
+                "absolute",
+                "inset-0",
+                "text-center",
                 "flex",
-                "flex-col",
-                "items-start",
-                "justify-end",
-                "select-none",
+                "items-center",
+                "justify-center",
               )}
             >
-              {monsterMinted ? <></> : <MonsterMintButton />}
+              <BossBattleEndedText className={clsx("w-[100%]")} />
             </div>
-            <div className={clsx("w-[50%]", "flex", "items-end", "flex-col")}>
-              <BossBattleButton />
-            </div>
+            <BossImage />
           </div>
+          <BossStatus />
         </div>
+        {bossBattleEnded ? (
+          <></>
+        ) : (
+          <>
+            <MonsterGenerator className={clsx("my-[20px]", "w-[300px]")} />
+            <div>or</div>
+            <ResurrectionPrompt className={clsx("my-[20px]", "w-[300px]")} />
+            <div
+              className={clsx(
+                "w-[90%]",
+                "mb-[20px]",
+                "max-w-[512px]",
+                "flex",
+                "flex-col",
+                "items-center",
+              )}
+            >
+              <div
+                className={clsx("w-[100%]", "mb-[10px]", "flex", "justify-end")}
+              >
+                <MonsterSelector className={clsx("w-[50%]")} />
+              </div>
+              <MonsterStatus className={clsx("w-[100%]", "mb-[10px]")} />
+              <div className={clsx("flex", "w-[100%]")}>
+                <div
+                  className={clsx(
+                    "w-[50%]",
+                    "flex",
+                    "flex-col",
+                    "items-start",
+                    "justify-end",
+                    "select-none",
+                  )}
+                >
+                  {monsterMinted ? <></> : <MonsterMintButton />}
+                </div>
+                <div
+                  className={clsx("w-[50%]", "flex", "items-end", "flex-col")}
+                >
+                  <BossBattleButton />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
