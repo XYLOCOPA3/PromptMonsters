@@ -7,8 +7,7 @@ import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgrad
 import {StringsUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import {Base64Upgradeable} from "@openzeppelin/contracts-upgradeable/utils/Base64Upgradeable.sol";
 
-import {IPromptMonsters} from "../prompt-monsters/IPromptMonsters.sol";
-import {IPromptMonstersImage} from "./IPromptMonstersImage.sol";
+import {IPromptMonstersImage, IPromptMonsters} from "./IPromptMonstersImage.sol";
 
 /// @title PromptMonstersImage
 /// @author keit (@keitEngineer)
@@ -28,6 +27,9 @@ contract PromptMonstersImage is
 
   /// @custom:oz-renamed-from imageURL
   mapping(uint256 => string) private _imageURLMap;
+
+  /// @custom:oz-renamed-from GAME_ROLE
+  bytes32 public constant GAME_ROLE = keccak256("GAME_ROLE");
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -78,35 +80,6 @@ contract PromptMonstersImage is
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
-
-  /// @dev Set image URL
-  /// @param tokenId_ token ID
-  /// @param newState_ new state
-  function setImageURL(
-    uint256 tokenId_,
-    string memory newState_
-  ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-    _promptMonsters.checkMonsterId(tokenId_);
-    string memory oldState = _imageURLMap[tokenId_];
-    _imageURLMap[tokenId_] = newState_;
-    emit SetImageURL(_msgSender(), oldState, newState_);
-  }
-
-  /// @dev Set image URL
-  /// @param tokenIds_ token ID
-  /// @param newStates_ new state
-  function setBatchImageURL(
-    uint256[] memory tokenIds_,
-    string[] memory newStates_
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    require(tokenIds_.length == newStates_.length, "Invalid length");
-    for (uint256 i; i < tokenIds_.length; ) {
-      setImageURL(tokenIds_[i], newStates_[i]);
-      unchecked {
-        i++;
-      }
-    }
-  }
 
   /// @dev Set Prompt Monsters
   /// @param newState_ new state
@@ -229,6 +202,35 @@ contract PromptMonstersImage is
       abi.encodePacked("data:application/json;base64,", json)
     );
     uri = finalTokenUri;
+  }
+
+  /// @dev Set image URL
+  /// @param tokenId_ token ID
+  /// @param newState_ new state
+  function setImageURL(
+    uint256 tokenId_,
+    string memory newState_
+  ) public onlyRole(GAME_ROLE) {
+    _promptMonsters.checkMonsterId(tokenId_);
+    string memory oldState = _imageURLMap[tokenId_];
+    _imageURLMap[tokenId_] = newState_;
+    emit SetImageURL(_msgSender(), oldState, newState_);
+  }
+
+  /// @dev Set image URL
+  /// @param tokenIds_ token ID
+  /// @param newStates_ new state
+  function setBatchImageURL(
+    uint256[] memory tokenIds_,
+    string[] memory newStates_
+  ) external onlyRole(GAME_ROLE) {
+    require(tokenIds_.length == newStates_.length, "Invalid length");
+    for (uint256 i; i < tokenIds_.length; ) {
+      setImageURL(tokenIds_[i], newStates_[i]);
+      unchecked {
+        i++;
+      }
+    }
   }
 
   // --------------------------------------------------------------------------------

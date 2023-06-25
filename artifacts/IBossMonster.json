@@ -38,6 +38,154 @@
           "type": "address"
         },
         {
+          "indexed": true,
+          "internalType": "string",
+          "name": "language",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string[]",
+          "name": "skills",
+          "type": "string[]"
+        }
+      ],
+      "name": "AddedSkills",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "publisher",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "mintable",
+          "type": "bool"
+        }
+      ],
+      "name": "ChangedMintable",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "publisher",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "feature",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "flavor",
+              "type": "string"
+            },
+            {
+              "internalType": "string[]",
+              "name": "skills",
+              "type": "string[]"
+            },
+            {
+              "internalType": "uint32",
+              "name": "lv",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "hp",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "atk",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "def",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "inte",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "mgr",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "agl",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "skillTypes",
+              "type": "uint32[]"
+            },
+            {
+              "internalType": "address",
+              "name": "resurrectionPrompt",
+              "type": "address"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IPromptMonstersExtension.MonsterExtension",
+          "name": "monsterExtension",
+          "type": "tuple"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "imageURL",
+          "type": "string"
+        }
+      ],
+      "name": "MintedBoss",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "publisher",
+          "type": "address"
+        },
+        {
           "components": [
             {
               "internalType": "string",
@@ -177,6 +325,37 @@
           "type": "address"
         },
         {
+          "indexed": false,
+          "internalType": "string",
+          "name": "language",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "oldValue",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "newValue",
+          "type": "string"
+        }
+      ],
+      "name": "SetFeature",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "publisher",
+          "type": "address"
+        },
+        {
           "indexed": true,
           "internalType": "uint256",
           "name": "index",
@@ -254,6 +433,31 @@
         },
         {
           "indexed": false,
+          "internalType": "contract IPromptMonsters",
+          "name": "oldValue",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "contract IPromptMonsters",
+          "name": "newValue",
+          "type": "address"
+        }
+      ],
+      "name": "SetPromptMonsters",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "publisher",
+          "type": "address"
+        },
+        {
+          "indexed": false,
           "internalType": "uint32[]",
           "name": "oldValue",
           "type": "uint32[]"
@@ -277,6 +481,37 @@
         }
       ],
       "name": "addLanguage",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "language",
+          "type": "string"
+        },
+        {
+          "internalType": "string[]",
+          "name": "skills",
+          "type": "string[]"
+        }
+      ],
+      "name": "addSkills",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "changeMintable",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -384,6 +619,25 @@
       "inputs": [
         {
           "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "getMintable",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "returnValue",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
           "name": "resurrectionPrompt",
           "type": "address"
         }
@@ -408,7 +662,110 @@
     },
     {
       "inputs": [],
+      "name": "getPromptMonsters",
+      "outputs": [
+        {
+          "internalType": "contract IPromptMonsters",
+          "name": "returnValue",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
       "name": "initialize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "feature",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "flavor",
+              "type": "string"
+            },
+            {
+              "internalType": "string[]",
+              "name": "skills",
+              "type": "string[]"
+            },
+            {
+              "internalType": "uint32",
+              "name": "lv",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "hp",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "atk",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "def",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "inte",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "mgr",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "agl",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "skillTypes",
+              "type": "uint32[]"
+            },
+            {
+              "internalType": "address",
+              "name": "resurrectionPrompt",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct IPromptMonstersExtension.MonsterExtension",
+          "name": "monsterExtension",
+          "type": "tuple"
+        },
+        {
+          "internalType": "string",
+          "name": "imageURL",
+          "type": "string"
+        }
+      ],
+      "name": "mintBoss",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -491,6 +848,24 @@
     {
       "inputs": [
         {
+          "internalType": "string",
+          "name": "language",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "newValue",
+          "type": "string"
+        }
+      ],
+      "name": "setFeature",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "index",
           "type": "uint256"
@@ -527,6 +902,19 @@
         }
       ],
       "name": "setMonsterAdj",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newValue",
+          "type": "address"
+        }
+      ],
+      "name": "setPromptMonsters",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"

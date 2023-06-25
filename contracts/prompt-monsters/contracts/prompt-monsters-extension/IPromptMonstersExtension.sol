@@ -31,6 +31,14 @@ interface IPromptMonstersExtension {
   // Event
   // --------------------------------------------------------------------------------
 
+  event SetSkillTypes(
+    address indexed publisher,
+    address indexed resurrectionPrompt,
+    string[] indexed skills,
+    uint32[] oldState,
+    uint32[] newState
+  );
+
   event SetBatchSkillTypes(
     address indexed publisher,
     address[] indexed rps,
@@ -62,6 +70,16 @@ interface IPromptMonstersExtension {
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
+
+  /// @dev Set SkillTypes
+  /// @param resurrectionPrompt resurrection prompt
+  /// @param skills skills
+  /// @param skillTypes skillTypes
+  function setSkillTypes(
+    address resurrectionPrompt,
+    string[] memory skills,
+    uint32[] memory skillTypes
+  ) external;
 
   /// @dev Set batch batchSkillTypes
   /// @param rps_ resurrection prompts

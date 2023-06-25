@@ -10,6 +10,16 @@ const nextConfig = withInterceptStdout(
     reactStrictMode: false,
     swcMinify: true,
     i18n,
+    images: {
+      remotePatterns: [
+        {
+          protocol: "https",
+          hostname: "ipfs.io",
+          port: "",
+          pathname: "/**",
+        },
+      ],
+    },
   },
   (text) => (text.includes("Duplicate atom key") ? "" : text),
 );

@@ -7,6 +7,7 @@
   "warning": "⚠️Warning:\n\nThe creation of monsters with features that manipulate stats illegitimately or violate public decency and order, as well as the creation of monsters that infringe upon third-party copyrights, is strictly prohibited in this game. If you generate and use such monsters, you may face penalties such as account suspension, permanent ban, and other measures deemed necessary by our company. We appreciate your understanding and cooperation.",
   "tweet": "Tweet",
   "failedTx": "Transaction sending to the chain has failed. 😭\nI would appreciate it if you could try again. 🙇‍♂️",
-  "mintIfNotLogin": "Please log in if you would like to mint a monster.",
-  "loginNotification": "You have logged in. Please press the mint button again."
+  "notLogin": "Please log in if you would like to mint a monster.",
+  "loginNotification": "You have logged in. Please press the mint button again.",
+  "changeNetwork": "Please change network to MCH Verse Mainnet."
 }

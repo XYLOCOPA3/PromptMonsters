@@ -6,6 +6,8 @@ import {
   BossBattleButton,
   BossBattleEndedText,
   BossImage,
+  BossMintButton,
+  BossMintResult,
   BossStatus,
 } from "@/features/boss";
 import {
@@ -112,7 +114,10 @@ export const MainBoss = () => {
           <BossStatus />
         </div>
         {bossBattleEnded ? (
-          <></>
+          <>
+            <BossMintResult className={clsx("w-[90%]", "mb-[30px]")} />
+            <BossMintButton className={clsx("w-[90%]", "mb-[30px]")} />
+          </>
         ) : (
           <>
             <MonsterGenerator className={clsx("my-[20px]", "w-[300px]")} />

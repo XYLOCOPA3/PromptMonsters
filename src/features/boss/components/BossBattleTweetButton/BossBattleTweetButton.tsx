@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/elements/Button";
-import { SKILL_TYPE_NAME_SIMPLE } from "@/const/monster";
+import { MAX_SKILLS, SKILL_TYPE_NAME_SIMPLE } from "@/const/monster";
 import { useBossValue } from "@/hooks/useBoss";
 import { useBossBattleValue } from "@/hooks/useBossBattle";
 import { useMonsterValue } from "@/hooks/useMonster";
@@ -72,11 +72,13 @@ const _getBossBattleTweet = (
   bossBattle: BossBattleModel,
   boss: BossModel,
 ): string => {
-  const skillsAndTypes = monster.skills.map((skill, index) => {
+  let skillsAndTypes = monster.skills.map((skill, index) => {
     return `- ${skill}: ${
       SKILL_TYPE_NAME_SIMPLE.get(monster.skillTypes[index]) ?? "???"
     }\n`;
   });
+  if (skillsAndTypes.length > MAX_SKILLS)
+    skillsAndTypes = skillsAndTypes.slice(0, MAX_SKILLS);
 
   return `vs Boss ${boss.name}!
 

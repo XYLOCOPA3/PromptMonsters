@@ -93,7 +93,39 @@ contract PromptMonstersExtension is
   // Setter
   // --------------------------------------------------------------------------------
 
-  /// @dev Set batch batchSkillTypes
+  /// @dev Set SkillTypes
+  /// @param resurrectionPrompt resurrection prompt
+  /// @param skills skills
+  /// @param skillTypes skillTypes
+  function setSkillTypes(
+    address resurrectionPrompt,
+    string[] memory skills,
+    uint32[] memory skillTypes
+  ) external onlyRole(GAME_ROLE) {
+    uint256 skillsLength = skills.length;
+    require(
+      skillsLength == skillTypes.length,
+      "PromptMonstersExtension: mismatch skill length"
+    );
+    uint32[] memory oldState = new uint32[](skillsLength);
+    for (uint256 i; i < skillsLength; ) {
+      oldState[i] = _skillTypes[resurrectionPrompt][skills[i]];
+      _skillTypes[resurrectionPrompt][skills[i]] = skillTypes[i];
+      unchecked {
+        ++i;
+      }
+    }
+
+    emit SetSkillTypes(
+      _msgSender(),
+      resurrectionPrompt,
+      skills,
+      oldState,
+      skillTypes
+    );
+  }
+
+  /// @dev Set batch SkillTypes
   /// @param rps_ resurrection prompts
   /// @param skills_ skills
   /// @param skillTypes_ skillTypes

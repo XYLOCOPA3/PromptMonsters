@@ -57,6 +57,32 @@ interface IBossMonster {
     string[] skills
   );
 
+  event ChangedMintable(
+    address indexed publisher,
+    address indexed to,
+    bool mintable
+  );
+
+  event MintedBoss(
+    address indexed publisher,
+    address indexed to,
+    IPromptMonstersExtension.MonsterExtension monsterExtension,
+    string imageURL
+  );
+
+  event SetPromptMonsters(
+    address indexed publisher,
+    IPromptMonsters oldValue,
+    IPromptMonsters newValue
+  );
+
+  event SetFeature(
+    address indexed publisher,
+    string language,
+    string oldValue,
+    string newValue
+  );
+
   // --------------------------------------------------------------------------------
   // Initialize
   // --------------------------------------------------------------------------------
@@ -88,6 +114,18 @@ interface IBossMonster {
     external
     view
     returns (IPromptMonstersExtension.MonsterExtension memory bossExtension);
+
+  /// @dev Get _mintable
+  /// @param user user
+  /// @return returnValue _mintable
+  function getMintable(address user) external view returns (bool returnValue);
+
+  /// @dev Get _promptMonsters
+  /// @return returnValue _promptMonsters
+  function getPromptMonsters()
+    external
+    view
+    returns (IPromptMonsters returnValue);
 
   // --------------------------------------------------------------------------------
   // Setter
@@ -130,7 +168,30 @@ interface IBossMonster {
   /// @param skills skills
   function addSkills(string memory language, string[] memory skills) external;
 
+  /// @dev Set _promptMonsters
+  /// @param newValue _promptMonsters
+  function setPromptMonsters(address newValue) external;
+
+  /// @dev Set boss feature
+  /// @param language language
+  /// @param newValue new feature
+  function setFeature(string memory language, string memory newValue) external;
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
+
+  /// @dev changeMintable
+  /// @param user user
+  function changeMintable(address user) external;
+
+  /// @dev mintBoss
+  /// @param to to
+  /// @param monsterExtension monsterExtension
+  /// @param imageURL imageURL
+  function mintBoss(
+    address to,
+    IPromptMonstersExtension.MonsterExtension memory monsterExtension,
+    string memory imageURL
+  ) external;
 }

@@ -2,7 +2,9 @@ import { BOSS_BATTLE_PROXY_ADDRESS } from "../../const";
 import { getWallets } from "../../utils";
 import { ethers } from "hardhat";
 
-export async function grantGameRoleToMnemonic() {
+export async function main() {
+  console.log("grantGameRoleToMnemonic -----------------------------");
+
   const addr = BOSS_BATTLE_PROXY_ADDRESS;
   const BossBattle = await ethers.getContractFactory("BossBattle");
   const bossBattle = BossBattle.attach(addr);
@@ -35,7 +37,7 @@ export async function grantGameRoleToMnemonic() {
   }
 }
 
-// grantGameRoleToMnemonic().catch((error) => {
-//   console.error(error);
-//   process.exitCode = 1;
-// });
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

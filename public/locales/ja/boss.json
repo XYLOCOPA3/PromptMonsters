@@ -2,5 +2,12 @@
   "title": "BOSS BATTLE",
   "howToPlay": "遊び方",
   "fight": "たたかう",
-  "ended": "ボスバトル終了!!!"
+  "ended": "ボスバトル終了!!!",
+  "mint": "bossName を $ mintPrice MCHC でミント",
+  "notMintable": "スコア登録をしたモンスターが存在しないため、ミントできません。",
+  "remint": "$ mintPrice MCHC でもう一回ミント!",
+  "mintResult": "↓↓↓ ミント結果 ↓↓↓",
+  "warning": "- ボスバトルに参加（ミントしたモンスターでスコアを登録した）ユーザーがミントできます。\n- ヨシュカのステータスやスキルはランダムに決まります。\n- 言語設定に合わせた言語でミントされます。",
+  "mintConfirm": "usedLanguage で bossName をミントします。よろしいですか？",
+  "mintRare": "おめでとう🎉\nレア bossName をミントした！"
 }
