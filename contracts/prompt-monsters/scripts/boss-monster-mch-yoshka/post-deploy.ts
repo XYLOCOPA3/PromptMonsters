@@ -2,15 +2,11 @@ import { IPromptMonsters } from "../../typechain-types";
 import {
   BOSS_BATTLE_PROXY_ADDRESS,
   BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS,
+  PROMPT_MONSTERS_PROXY_ADDRESS,
 } from "../const";
 import { ethers } from "hardhat";
 
 async function main() {
-  console.log("---------------------------------------------");
-  console.log("--- Start BossMonsterMchYoshka Post Deploy --");
-  console.log("---------------------------------------------");
-  console.log("");
-
   const languageEn = "English";
   const languageJp = "日本語";
   const bossEn: IPromptMonsters.MonsterStruct = {
@@ -220,11 +216,30 @@ async function main() {
     agl: 10,
   };
   const _skillTypes = [
-    101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101, 101,
-    101, 101, 101, 101, 100, 100, 100, 100, 100, 100, 100, 100, 100, 101, 101,
-    101, 101, 100, 1, 101, 101, 100, 101, 101, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    101, 101, 1, 1, 1, 1, 1, 1, 1, 101, 200, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    // 一撃必殺 --------------------------------------------
+    101, 101, 101, 101, 101, 101, 101, 101, 101, 101,
+    // 強攻撃 --------------------------------------------
+    101, 101, 101, 101, 101, 101, 101, 101, 101, 100,
+    // 攻撃 --------------------------------------------
+    100, 100, 100, 100, 100, 100, 100, 100, 101, 101,
+    // カウンター --------------------------------------------
+    101, 101, 100, 1, 101, 101, 100, 101, 101, 1,
+    // バフ --------------------------------------------
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    // デバフ --------------------------------------------
+    101, 101, 1, 1, 1, 1, 1, 1, 1, 101,
+    // 防御 --------------------------------------------
+    200, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    // 回復 --------------------------------------------
+    200, 200, 200, 200, 200, 200, 200, 200, 200, 200,
   ];
+
+  const role = ethers.utils.id("GAME_ROLE");
+
+  console.log("---------------------------------------------");
+  console.log("--- Start BossMonsterMchYoshka Post Deploy --");
+  console.log("---------------------------------------------");
+  console.log("");
 
   const addr = BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS;
   const BossMonsterMchYoshka = await ethers.getContractFactory(
@@ -263,10 +278,16 @@ async function main() {
   );
 
   console.log("Set GAME_ROLE -----------------------------");
-  const role = ethers.utils.id("GAME_ROLE");
   await (
     await bossMonsterMchYoshka.grantRole(role, BOSS_BATTLE_PROXY_ADDRESS)
   ).wait();
+
+  console.log("setPromptMonsters -----------------------------");
+  console.log(`Before: ${await bossMonsterMchYoshka.getPromptMonsters()}`);
+  await (
+    await bossMonsterMchYoshka.setPromptMonsters(PROMPT_MONSTERS_PROXY_ADDRESS)
+  ).wait();
+  console.log(`After:  ${await bossMonsterMchYoshka.getPromptMonsters()}`);
 
   console.log("");
   console.log("---------------------------------------------");

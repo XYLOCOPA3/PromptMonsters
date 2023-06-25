@@ -93,7 +93,7 @@ export const useOwnedMonstersController = (): OwnedMonsterIdsController => {
   const updateAfterMinted = (newMonster: MonsterModel): void => {
     setOwnedMonsters((prevState) => {
       return prevState.map((monster) => {
-        if (monster.name === newMonster.name) {
+        if (monster.resurrectionPrompt === newMonster.resurrectionPrompt) {
           return monster.copyWith({ id: newMonster.id });
         }
         return monster;

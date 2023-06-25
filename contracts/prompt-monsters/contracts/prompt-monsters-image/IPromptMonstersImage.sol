@@ -56,19 +56,6 @@ interface IPromptMonstersImage {
   // Setter
   // --------------------------------------------------------------------------------
 
-  /// @dev Set image URL
-  /// @param tokenId_ token ID
-  /// @param newState_ new state
-  function setImageURL(uint256 tokenId_, string memory newState_) external;
-
-  /// @dev Set image URL
-  /// @param tokenIds_ token ID
-  /// @param newStates_ new state
-  function setBatchImageURL(
-    uint256[] memory tokenIds_,
-    string[] memory newStates_
-  ) external;
-
   /// @dev Set Prompt Monsters
   /// @param newState_ new state
   function setPromptMonsters(address newState_) external;
@@ -94,4 +81,17 @@ interface IPromptMonstersImage {
     string memory name_,
     string memory externalLink_
   ) external pure returns (string memory uri);
+
+  /// @dev Set image URL
+  /// @param tokenId_ token ID
+  /// @param newState_ new state
+  function setImageURL(uint256 tokenId_, string memory newState_) external;
+
+  /// @dev Set image URL
+  /// @param tokenIds_ token ID
+  /// @param newStates_ new state
+  function setBatchImageURL(
+    uint256[] memory tokenIds_,
+    string[] memory newStates_
+  ) external;
 }

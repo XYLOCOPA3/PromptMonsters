@@ -6,6 +6,7 @@ import {
 } from "@/typechain/BossBattle";
 import { BBState } from "@/types/BBState";
 import { MonsterAdj } from "@/types/MonsterAdj";
+import { UserId } from "@/types/UserId";
 import { ethers } from "ethers";
 
 export class ServerBossBattle {
@@ -25,6 +26,10 @@ export class ServerBossBattle {
     return new ServerBossBattle(contract);
   }
 
+  // ---------------------------------------------------------
+  // getter --------------------------------------------------
+  // ---------------------------------------------------------
+
   /**
    * getMonsterAdj
    * @return {Promise<MonsterAdj>} monsterAdj
@@ -40,6 +45,48 @@ export class ServerBossBattle {
       resurrectionPrompt,
     );
   };
+
+  /**
+   * getBossExtension
+   * @return {Promise<MonsterAdj>} monsterAdj
+   */
+  getBossExtension = async (
+    eventKey: string,
+    bbeId: number,
+    language: string,
+  ): Promise<IPromptMonstersExtension.MonsterExtensionStructOutput> => {
+    return await this._contract.getBossExtension(eventKey, bbeId, language);
+  };
+
+  /**
+   * getBBState
+   * @return {Promise<BBState>} bbState
+   */
+  getBBState = async (
+    eventKey: string,
+    bbeId: number,
+    resurrectionPrompt: string,
+  ): Promise<BBState> => {
+    return this.toBBState(
+      await this._contract.getBBState(eventKey, bbeId, resurrectionPrompt),
+    );
+  };
+
+  /**
+   * getMintable
+   * @return {Promise<boolean>} mintable
+   */
+  getMintable = async (
+    eventKey: string,
+    bbeId: number,
+    userId: UserId,
+  ): Promise<boolean> => {
+    return await this._contract.getMintable(eventKey, bbeId, userId);
+  };
+
+  // ---------------------------------------------------------
+  // setter --------------------------------------------------
+  // ---------------------------------------------------------
 
   /**
    * setMonsterAdj
@@ -61,6 +108,10 @@ export class ServerBossBattle {
       )
     ).wait();
   };
+
+  // ---------------------------------------------------------
+  // main logic ----------------------------------------------
+  // ---------------------------------------------------------
 
   /**
    * startBossBattle
@@ -143,29 +194,26 @@ export class ServerBossBattle {
   };
 
   /**
-   * getBossExtension
-   * @return {Promise<MonsterAdj>} monsterAdj
+   * mintBoss
+   * @param resurrectionPrompt resurrection prompt
+   * @return {Promise<ethers.ContractReceipt>} contract receipt
    */
-  getBossExtension = async (
+  mintBoss = async (
     eventKey: string,
     bbeId: number,
-    language: string,
-  ): Promise<IPromptMonstersExtension.MonsterExtensionStructOutput> => {
-    return await this._contract.getBossExtension(eventKey, bbeId, language);
-  };
-
-  /**
-   * getBBState
-   * @return {Promise<BBState>} bbState
-   */
-  getBBState = async (
-    eventKey: string,
-    bbeId: number,
-    resurrectionPrompt: string,
-  ): Promise<BBState> => {
-    return this.toBBState(
-      await this._contract.getBBState(eventKey, bbeId, resurrectionPrompt),
-    );
+    to: string,
+    monsterExtension: any,
+    imageURL: string,
+  ): Promise<ethers.ContractReceipt> => {
+    return await (
+      await this._contract.mintBoss(
+        eventKey,
+        bbeId,
+        to,
+        monsterExtension,
+        imageURL,
+      )
+    ).wait();
   };
 
   /**
@@ -188,6 +236,10 @@ export class ServerBossBattle {
       hasEscapeItem: data.hasEscapeItem,
     };
   };
+
+  // ---------------------------------------------------------
+  // dev -----------------------------------------------------
+  // ---------------------------------------------------------
 
   // TODO: 後で消す（開発用）
   /**

@@ -4,6 +4,7 @@ pragma solidity ^0.8.18;
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import {IBossMonster, IPromptMonsters, IPromptMonstersExtension} from "../interfaces/IBossMonster.sol";
 
@@ -29,11 +30,20 @@ contract BossMonsterMchYoshka is
   /// @custom:oz-renamed-from _bossMap
   mapping(string => IPromptMonsters.Monster) private _bossMap;
 
+  // key -> skill
   /// @custom:oz-renamed-from _skillTypes
   mapping(string => uint32) private _skillTypes;
 
+  // key -> resurrectionPrompt
   /// @custom:oz-renamed-from _weaknessFeatureAdjs
   mapping(address => uint32) private _weaknessFeatureAdjs;
+
+  // key -> user
+  /// @custom:oz-renamed-from _mintableMap
+  mapping(address => bool) private _mintableMap;
+
+  /// @custom:oz-renamed-from _promptMonsters
+  IPromptMonsters private _promptMonsters;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -117,6 +127,23 @@ contract BossMonsterMchYoshka is
       skillTypes,
       address(0)
     );
+  }
+
+  /// @dev Get _mintable
+  /// @param user user
+  /// @return returnValue _mintable
+  function getMintable(address user) external view returns (bool returnValue) {
+    returnValue = _mintableMap[user];
+  }
+
+  /// @dev Get _promptMonsters
+  /// @return returnValue _promptMonsters
+  function getPromptMonsters()
+    external
+    view
+    returns (IPromptMonsters returnValue)
+  {
+    returnValue = _promptMonsters;
   }
 
   // --------------------------------------------------------------------------------
@@ -231,9 +258,58 @@ contract BossMonsterMchYoshka is
     emit AddedSkills(_msgSender(), language, skills);
   }
 
+  /// @dev Set _promptMonsters
+  /// @param newValue _promptMonsters
+  function setPromptMonsters(
+    address newValue
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    IPromptMonsters oldValue = _promptMonsters;
+    _promptMonsters = IPromptMonsters(newValue);
+
+    emit SetPromptMonsters(_msgSender(), oldValue, _promptMonsters);
+  }
+
+  /// @dev Set boss feature
+  /// @param language language
+  /// @param newValue new feature
+  function setFeature(
+    string memory language,
+    string memory newValue
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    string memory oldValue = _bossMap[language].feature;
+    _bossMap[language].feature = newValue;
+
+    emit SetFeature(_msgSender(), language, oldValue, newValue);
+  }
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
+
+  /// @dev changeMintable
+  /// @param user user
+  function changeMintable(address user) external onlyRole(GAME_ROLE) {
+    require(!_mintableMap[user], "Already mintable");
+    _mintableMap[user] = true;
+
+    emit ChangedMintable(msg.sender, user, _mintableMap[user]);
+  }
+
+  /// @dev mintBoss
+  /// @param to to
+  /// @param monsterExtension monsterExtension
+  /// @param imageURL imageURL
+  function mintBoss(
+    address to,
+    IPromptMonstersExtension.MonsterExtension memory monsterExtension,
+    string memory imageURL
+  ) external onlyRole(GAME_ROLE) {
+    require(_mintableMap[to], "Not mintable");
+    _mintableMap[to] = false;
+    _promptMonsters.mintOnlyGameRole(to, monsterExtension, imageURL);
+
+    emit MintedBoss(_msgSender(), to, monsterExtension, imageURL);
+  }
 
   // --------------------------------------------------------------------------------
   // Internal

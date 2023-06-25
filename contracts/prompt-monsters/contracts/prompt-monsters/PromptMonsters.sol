@@ -446,6 +446,60 @@ contract PromptMonsters is
     uri = _promptMonstersImage.tokenURI(tokenId_, _monsters[tokenId_]);
   }
 
+  /// @dev mintOnlyGameRole
+  /// @param to to
+  /// @param monsterExtension monsterExtension
+  /// @param imageURL image URL
+  function mintOnlyGameRole(
+    address to,
+    IPromptMonstersExtension.MonsterExtension memory monsterExtension,
+    string memory imageURL
+  ) external onlyRole(GAME_ROLE) {
+    uint256 newTokenId = _monsters.length;
+    require(
+      newTokenId != type(uint256).max,
+      "PromptMonsters: token ID is too large"
+    );
+    address rp = monsterExtension.resurrectionPrompt;
+    require(!_mintedMap[rp], "PromptMonsters: This monster is already minted");
+    require(
+      _monsterHistoryMap[rp].lv == 0,
+      "PromptMonsters: This monster is already generated"
+    );
+
+    IPromptMonsters.Monster memory monster = IPromptMonsters.Monster(
+      monsterExtension.feature,
+      monsterExtension.name,
+      monsterExtension.flavor,
+      monsterExtension.skills,
+      monsterExtension.lv,
+      monsterExtension.hp,
+      monsterExtension.atk,
+      monsterExtension.def,
+      monsterExtension.inte,
+      monsterExtension.mgr,
+      monsterExtension.agl
+    );
+    require(monster.lv != 0, "PromptMonsters: Invalid monster");
+
+    _monsterHistoryMap[rp] = monster;
+    _monsters.push(monster);
+
+    _resurrectionPromptToTokenIdMap[rp] = newTokenId;
+    _tokenIdToResurrectionPromptMap[newTokenId] = rp;
+    _mintedMap[rp] = true;
+    _safeMint(to, newTokenId);
+
+    _promptMonstersExtension.setSkillTypes(
+      rp,
+      monsterExtension.skills,
+      monsterExtension.skillTypes
+    );
+    _promptMonstersImage.setImageURL(newTokenId, imageURL);
+
+    emit MintedOnlyGameRole(msg.sender, rp, newTokenId, monsterExtension);
+  }
+
   // --------------------------------------------------------------------------------
   // Internal
   // --------------------------------------------------------------------------------

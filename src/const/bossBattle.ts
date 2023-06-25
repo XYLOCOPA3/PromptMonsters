@@ -56,6 +56,12 @@ export const K_BOSS_BUFF = "1.5";
 export const K_BOSS_DEBUFF = "0.95";
 export const K_BOSS_POWER = "1.5";
 
+// TODO: ボスごとに切り替えられるようにする
+export const BOSS_IMAGE_URL_NORMAL =
+  "https://ipfs.io/ipfs/bafkreignl7t65mxbxzdvgjxvw3u3sopyrj7a56wt563dazzmkdfolb42su";
+export const BOSS_IMAGE_URL_RARE =
+  "https://ipfs.io/ipfs/bafkreidnbwg3mfqk6jqzxpknm6rm6vjhe43bl33xg5huudhzuiyje7v5aq";
+
 export const BOSS_WEAKNESS_FEATURES = {
   mch: "MCH|MyCryptoHeroes|マイクリプトヒーローズ|マイクリ|ゲーム専務|みかん|Orange",
 };

@@ -78,6 +78,13 @@ interface IPromptMonsters is IERC721Upgradeable {
     Monster monster
   );
 
+  event MintedOnlyGameRole(
+    address indexed publisher,
+    address indexed resurrectionPrompt,
+    uint256 indexed newTokenId,
+    IPromptMonstersExtension.MonsterExtension monsterExtension
+  );
+
   // 既に使用していないイベントだが、残しておかないとTxから取得できなくなる
   event SetMonsterHistory(
     address indexed publisher,
@@ -267,4 +274,14 @@ interface IPromptMonsters is IERC721Upgradeable {
   /// @dev Get contract URI
   /// @return uri contract URI
   function contractURI() external view returns (string memory uri);
+
+  /// @dev mintOnlyGameRole
+  /// @param to to
+  /// @param monsterExtension monsterExtension
+  /// @param imageURL image URL
+  function mintOnlyGameRole(
+    address to,
+    IPromptMonstersExtension.MonsterExtension memory monsterExtension,
+    string memory imageURL
+  ) external;
 }

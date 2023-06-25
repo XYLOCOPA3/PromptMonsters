@@ -6,6 +6,34 @@ export const getTurnMsg = (turn: number, msg: string): string => {
   return `----- ${msg} ${turn} -----`;
 };
 
+export const getMintRareMsg = (bossName: string, msg: string): string => {
+  return msg.replace("bossName", bossName);
+};
+
+export const getMintConfirmMsg = (
+  usedLanguage: string,
+  bossName: string,
+  msg: string,
+): string => {
+  return msg
+    .replace("usedLanguage", usedLanguage)
+    .replace("bossName", bossName);
+};
+
+export const getMintBossMsg = (
+  bossName: string,
+  mintPrice: number,
+  msg: string,
+): string => {
+  return msg
+    .replace("bossName", bossName)
+    .replace("mintPrice", mintPrice.toString());
+};
+
+export const getRemintBossMsg = (mintPrice: number, msg: string): string => {
+  return msg.replace("mintPrice", mintPrice.toString());
+};
+
 export const getHavingWeakFeatureMsg = (
   monsterName: string,
   bossName: string,

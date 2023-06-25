@@ -7,7 +7,9 @@ import { useRestorePriceState } from "@/hooks/useRestorePrice";
 import { useUserValue } from "@/hooks/useUser";
 import { disableState } from "@/stores/disableState";
 import { BaseProps } from "@/types/BaseProps";
+import { useWeb3Modal } from "@web3modal/react";
 import clsx from "clsx";
+import { useTranslation } from "react-i18next";
 import { useRecoilState } from "recoil";
 import { useNetwork } from "wagmi";
 
@@ -29,16 +31,20 @@ export const RestoreStaminaButton = ({
   const [disable, setDisable] = useRecoilState(disableState);
   const { chain } = useNetwork();
 
+  const { t: tCommon } = useTranslation("common");
+  const { open } = useWeb3Modal();
+
   /**
    * Click event
    */
   const handleClick = async () => {
     if (user.id === "") {
-      alert("Please log in if you would like to restore stamina.");
+      alert(tCommon("notLogin"));
+      await open();
       return;
     }
     if (chain!.id !== mchVerse.id) {
-      alert("Please change network to MCHVerse Mainnet.");
+      alert(tCommon("changeNetwork"));
       return;
     }
     setDisable(true);
