@@ -43,6 +43,7 @@ contracts/prompt-monsters/typechain
 contracts/prompt-monsters/typechain-types
 contracts/prompt-monsters/cache
 contracts/prompt-monsters/artifacts
+contracts/prompt-monsters/tmp
 
 # typechain
 src/typechain/
