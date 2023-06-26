@@ -65,7 +65,6 @@ export const useBossController = (): BossController => {
   ): Promise<MonsterModel> => {
     const bossBattle = await ClientBossBattle.instance();
     const mintable = await bossBattle.getMintable(userId);
-    console.log(mintable);
     if (!mintable) {
       // MCHC支払い処理
       const mchcoin = ClientMCHCoin.instance();
@@ -115,8 +114,6 @@ export const useBossController = (): BossController => {
     }
     const newMonster = res.data.monsterExtension;
     const imageURL = res.data.imageURL;
-    console.log(newMonster);
-    console.log(imageURL);
 
     const promptMonsters = ClientPromptMonsters.instance();
     const monsterId = (
