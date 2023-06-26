@@ -97,6 +97,19 @@ export const BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS =
     ? "0x1d0E2050E412734B2b4Bee781884598eFA3D5DBd" // polygon-mumbai
     : "0x0000000000000000000000000000000000000000"; // unknown
 
+export const BOSS_MONSTER_MCH_YOSHKA_WALLET =
+  process.env.STAGE === STAGE.PRODUCTION
+    ? "0x7789E4a1EB5700D6BfbF8A558eFa6aC66AE4d401" // mchMainnet
+    : process.env.STAGE === STAGE.DEMO
+    ? "0x24a3A61ce4d7a52aE0F589f44CE0e61aE3a433b2" // mchTestnet-demo
+    : process.env.STAGE === STAGE.DEVELOP
+    ? "0x24a3A61ce4d7a52aE0F589f44CE0e61aE3a433b2" // mchTestnet-develop
+    : process.env.STAGE === STAGE.MUMBAI
+    ? "0x24a3A61ce4d7a52aE0F589f44CE0e61aE3a433b2" // polygon-mumbai
+    : "0x0000000000000000000000000000000000000000"; // unknown
+
+export const BOSS_MINT_PRICE = ethers.utils.parseEther("50");
+
 // --------------------------------------------------
 // Distributor
 // --------------------------------------------------

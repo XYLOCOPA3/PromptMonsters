@@ -2,5 +2,12 @@
   "title": "BOSS BATTLE",
   "howToPlay": "How to play",
   "fight": "FIGHT",
-  "ended": "Boss battle is over!!!"
+  "ended": "Boss battle is over!!!",
+  "mint": "Mint bossName for $ mintPrice MCHC",
+  "notMintable": "Minting is not possible because there are no monsters with registered scores.",
+  "remint": "Mint again at $ mintPrice MCHC!",
+  "mintResult": "↓↓↓ Mint result ↓↓↓",
+  "warning": "- Only users who have participated in the boss battle (and registered a score with a minted monster) can mint. \n- The status and skills of Yoshka will be determined randomly. \n- Minting will be done in the language set according to your language settings.",
+  "mintConfirm": "You will mint the bossName in usedLanguage. Is it okay?",
+  "mintRare": "Congratulations🎉\nYou've minted a rare bossName!"
 }

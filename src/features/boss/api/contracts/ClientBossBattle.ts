@@ -7,6 +7,7 @@ import {
 import { BBState } from "@/types/BBState";
 import { MonsterAdj } from "@/types/MonsterAdj";
 import axios from "axios";
+import { ethers } from "ethers";
 
 export class ClientBossBattle {
   private static _instance: ClientBossBattle;
@@ -44,6 +45,10 @@ export class ClientBossBattle {
     }
     return this._instance;
   }
+
+  // ---------------------------------------------------------
+  // getter --------------------------------------------------
+  // ---------------------------------------------------------
 
   /**
    * getMonsterAdj
@@ -98,6 +103,41 @@ export class ClientBossBattle {
   };
 
   /**
+   * getMintable
+   * @return {Promise<boolean>} mintable
+   */
+  getMintable = async (userId: string): Promise<boolean> => {
+    return await this._reader.getMintable(this._eventKey, this._bbeId, userId);
+  };
+
+  /**
+   * getMintPrice
+   * @return {Promise<ethers.BigNumber>} mintable
+   */
+  getMintPrice = async (): Promise<ethers.BigNumber> => {
+    return await this._reader.getMintPrice();
+  };
+
+  // ---------------------------------------------------------
+  // setter --------------------------------------------------
+  // ---------------------------------------------------------
+
+  // ---------------------------------------------------------
+  // main logic ----------------------------------------------
+  // ---------------------------------------------------------
+
+  /**
+   * changeMintable
+   * @return {Promise<ethers.ContractReceipt>} contract receipt
+   */
+  changeMintable = async (): Promise<ethers.ContractReceipt> => {
+    await this._beforeWrite();
+    return await (
+      await this._writer!.changeMintable(this._eventKey, this._bbeId)
+    ).wait();
+  };
+
+  /**
    * toBBState
    * @return {BBState} bbState
    */
@@ -117,6 +157,10 @@ export class ClientBossBattle {
       hasEscapeItem: data.hasEscapeItem,
     };
   };
+
+  // ---------------------------------------------------------
+  // private -------------------------------------------------
+  // ---------------------------------------------------------
 
   /**
    * Before write

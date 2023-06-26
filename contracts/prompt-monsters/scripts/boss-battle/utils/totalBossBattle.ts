@@ -62,10 +62,10 @@ export async function main() {
   // 勝率の高い順に表示
   // 各項目の文字数を計算して、項目ごとの開始位置が揃うように表示する
   // No., 勝率, マッチ数, 勝利数, ID, 名前の順に表示
-  console.log(`Ranking\t| Score\t| ID\t| Name`);
+  console.log(`Ranking\t| Score\t\t| ID\t| Name`);
   rankings.forEach((ranking, i) => {
     console.log(
-      `${i + 1}\t| ${ranking.score}\t| ${ranking.id}\t| ${ranking.name}`,
+      `${i + 1}\t| ${ranking.score}\t\t| ${ranking.id}\t| ${ranking.name}`,
     );
   });
 

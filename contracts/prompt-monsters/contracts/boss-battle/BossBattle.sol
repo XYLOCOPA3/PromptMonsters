@@ -4,6 +4,7 @@ pragma solidity ^0.8.18;
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import {IBossBattle, IBossBattleEvent, IBossMonster, IPromptMonstersExtension} from "./IBossBattle.sol";
 
@@ -25,8 +26,20 @@ contract BossBattle is
   /// @custom:oz-renamed-from _eventKeys
   string[] private _eventKeys;
 
+  // key -> eventKey
   /// @custom:oz-renamed-from _bossBattleEventMap
   mapping(string => address[]) private _bossBattleEventMap;
+
+  using SafeERC20 for IERC20;
+  /// @custom:oz-renamed-from _erc20
+  IERC20 private _erc20;
+
+  // key -> eventKey
+  /// @custom:oz-renamed-from _bossMonsterWalletMap
+  mapping(string => address[]) private _bossMonsterWalletMap;
+
+  /// @custom:oz-renamed-from _mintPrice
+  uint256 private _mintPrice;
 
   // --------------------------------------------------------------------------------
   // Initialize
@@ -78,6 +91,43 @@ contract BossBattle is
         ++i;
       }
     }
+  }
+
+  /// @dev Get _erc20
+  /// @return returnValue _erc20
+  function getErc20() external view returns (IERC20 returnValue) {
+    returnValue = _erc20;
+  }
+
+  /// @dev Get _bossMonsterWalletMap
+  /// @param eventKey event key
+  /// @return returnValue _bossMonsterWalletMap
+  function getBossMonsterWallets(
+    string memory eventKey
+  ) external view returns (address[] memory returnValue) {
+    returnValue = _bossMonsterWalletMap[eventKey];
+  }
+
+  /// @dev Get _mintPrice
+  /// @return returnValue _mintPrice
+  function getMintPrice() external view returns (uint256 returnValue) {
+    returnValue = _mintPrice;
+  }
+
+  /// @dev Get _mintable
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param user user
+  /// @return returnValue _mintable
+  function getMintable(
+    string memory eventKey,
+    uint256 bbeId,
+    address user
+  ) external view returns (bool returnValue) {
+    IBossMonster bossMonster = IBossBattleEvent(
+      _bossBattleEventMap[eventKey][bbeId]
+    ).getBossMonster();
+    returnValue = bossMonster.getMintable(user);
   }
 
   // --------------------------------------------------------------------------------
@@ -136,6 +186,47 @@ contract BossBattle is
     );
   }
 
+  /// @dev Set _erc20
+  /// @param newValue _erc20
+  function setErc20(address newValue) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    IERC20 oldValue = _erc20;
+    _erc20 = IERC20(newValue);
+
+    emit SetErc20(_msgSender(), oldValue, _erc20);
+  }
+
+  /// @dev Set _bossMonsterWalletMap
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param newValue _bossMonsterWalletMap
+  function setBossMonsterWallet(
+    string memory eventKey,
+    uint256 bbeId,
+    address newValue
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    address oldValue = _bossMonsterWalletMap[eventKey][bbeId];
+    _bossMonsterWalletMap[eventKey][bbeId] = newValue;
+
+    emit SetBossMonsterWallet(
+      _msgSender(),
+      eventKey,
+      bbeId,
+      oldValue,
+      newValue
+    );
+  }
+
+  /// @dev Set _mintPrice
+  /// @param newValue _mintPrice
+  function setMintPrice(
+    uint256 newValue
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    uint256 oldValue = _mintPrice;
+    _mintPrice = newValue;
+
+    emit SetMintPrice(_msgSender(), oldValue, newValue);
+  }
+
   // --------------------------------------------------------------------------------
   // Main Logic
   // --------------------------------------------------------------------------------
@@ -175,6 +266,33 @@ contract BossBattle is
     _bossBattleEventMap[eventKey].push(bossBattleEvent);
 
     emit AddedBossBattleEvent(_msgSender(), eventKey, bossBattleEvent);
+  }
+
+  /// @dev Add _bossMonsterWallet
+  /// @param eventKey event key
+  /// @param bossMonsterWallet _bossMonsterWallet
+  function addBossMonsterWallet(
+    string memory eventKey,
+    address bossMonsterWallet
+  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    bool included;
+    for (uint i; i < _eventKeys.length; ) {
+      if (
+        keccak256(abi.encodePacked(_eventKeys[i])) ==
+        keccak256(abi.encodePacked(eventKey))
+      ) {
+        included = true;
+        break;
+      }
+      unchecked {
+        ++i;
+      }
+    }
+    require(included, "BossBattle: eventKey not included");
+
+    _bossMonsterWalletMap[eventKey].push(bossMonsterWallet);
+
+    emit AddedBossBattleEvent(_msgSender(), eventKey, bossMonsterWallet);
   }
 
   /// @dev get boss battle data to calculate battle result
@@ -323,6 +441,40 @@ contract BossBattle is
     IBossBattleEvent(_bossBattleEventMap[eventKey][bbeId]).endBossBattle(
       resurrectionPrompt
     );
+  }
+
+  /// @dev changeMintable
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  function changeMintable(string memory eventKey, uint256 bbeId) external {
+    IBossMonster bossMonster = IBossBattleEvent(
+      _bossBattleEventMap[eventKey][bbeId]
+    ).getBossMonster();
+    _erc20.safeTransferFrom(
+      msg.sender,
+      _bossMonsterWalletMap[eventKey][bbeId],
+      _mintPrice
+    );
+    bossMonster.changeMintable(msg.sender);
+  }
+
+  /// @dev mintBoss
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param to to
+  /// @param monsterExtension monsterExtension
+  /// @param imageURL imageURL
+  function mintBoss(
+    string memory eventKey,
+    uint256 bbeId,
+    address to,
+    IPromptMonstersExtension.MonsterExtension memory monsterExtension,
+    string memory imageURL
+  ) external onlyRole(GAME_ROLE) {
+    IBossMonster bossMonster = IBossBattleEvent(
+      _bossBattleEventMap[eventKey][bbeId]
+    ).getBossMonster();
+    bossMonster.mintBoss(to, monsterExtension, imageURL);
   }
 
   // --------------------------------------------------------------------------------
