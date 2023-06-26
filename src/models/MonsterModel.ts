@@ -64,6 +64,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
     monsterId: string,
     monsterExtensionStruct: IPromptMonstersExtension.MonsterExtensionStructOutput,
     stamina: number,
+    imageURL: string = "",
   ): MonsterModel {
     return MonsterModel.create({
       id: monsterId,
@@ -83,6 +84,7 @@ export class MonsterModel extends BaseModel<MonsterId> {
       stamina: stamina,
       resurrectionPrompt: monsterExtensionStruct.resurrectionPrompt,
       skillTypes: monsterExtensionStruct.skillTypes,
+      imageURL: imageURL,
     });
   }
 

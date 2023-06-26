@@ -4,6 +4,7 @@ pragma solidity ^0.8.18;
 import {IBossBattleEvent} from "../interfaces/IBossBattleEvent.sol";
 import {IBossMonster} from "../interfaces/IBossMonster.sol";
 import {IPromptMonstersExtension} from "../prompt-monsters-extension/IPromptMonstersExtension.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /// @title IBossBattle
 /// @dev This is an interface of BossBattle.
@@ -31,6 +32,22 @@ interface IBossBattle {
     address newValue
   );
 
+  event SetErc20(address indexed publisher, IERC20 oldValue, IERC20 newValue);
+
+  event SetBossMonsterWallet(
+    address indexed publisher,
+    string indexed eventKey,
+    uint256 indexed bbeId,
+    address oldValue,
+    address newValue
+  );
+
+  event SetMintPrice(
+    address indexed publisher,
+    uint256 oldValue,
+    uint256 newValue
+  );
+
   event AddedEventKey(
     address indexed publisher,
     uint256 indexed index,
@@ -41,6 +58,12 @@ interface IBossBattle {
     address indexed publisher,
     string indexed eventKey,
     address bossBattleEvent
+  );
+
+  event AddedBossMonsterWallet(
+    address indexed publisher,
+    string indexed eventKey,
+    address bossMonsterWallet
   );
 
   // --------------------------------------------------------------------------------
@@ -65,9 +88,40 @@ interface IBossBattle {
     view
     returns (address[][] memory returnValue);
 
+  /// @dev Get _erc20
+  /// @return returnValue _erc20
+  function getErc20() external view returns (IERC20 returnValue);
+
+  /// @dev Get _bossMonsterWalletMap
+  /// @param eventKey event key
+  /// @return returnValue _bossMonsterWalletMap
+  function getBossMonsterWallets(
+    string memory eventKey
+  ) external view returns (address[] memory returnValue);
+
+  /// @dev Get _mintPrice
+  /// @return returnValue _mintPrice
+  function getMintPrice() external view returns (uint256 returnValue);
+
+  /// @dev Get _mintable
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param user user
+  /// @return returnValue _mintable
+  function getMintable(
+    string memory eventKey,
+    uint256 bbeId,
+    address user
+  ) external view returns (bool returnValue);
+
   // --------------------------------------------------------------------------------
   // Setter
   // --------------------------------------------------------------------------------
+
+  /// @dev Set _eventKeys
+  /// @param index index
+  /// @param eventKey eventKey
+  function setEventKey(uint256 index, string memory eventKey) external;
 
   /// @dev Set bossBattleEvent
   /// @param eventKey ID of event
@@ -78,6 +132,24 @@ interface IBossBattle {
     uint256 bbeId,
     address bossBattleEvent
   ) external;
+
+  /// @dev Set _erc20
+  /// @param newValue _erc20
+  function setErc20(address newValue) external;
+
+  /// @dev Set _bossMonsterWalletMap
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param newValue _bossMonsterWalletMap
+  function setBossMonsterWallet(
+    string memory eventKey,
+    uint256 bbeId,
+    address newValue
+  ) external;
+
+  /// @dev Set _mintPrice
+  /// @param newValue _mintPrice
+  function setMintPrice(uint256 newValue) external;
 
   // --------------------------------------------------------------------------------
   // Main Logic
@@ -93,6 +165,14 @@ interface IBossBattle {
   function addBossBattleEvent(
     string memory eventKey,
     address bossBattleEvent
+  ) external;
+
+  /// @dev Add _bossMonsterWallet
+  /// @param eventKey event key
+  /// @param bossMonsterWallet _bossMonsterWallet
+  function addBossMonsterWallet(
+    string memory eventKey,
+    address bossMonsterWallet
   ) external;
 
   /// @dev get boss battle data to calculate battle result
@@ -200,5 +280,24 @@ interface IBossBattle {
     string memory eventKey,
     uint256 bbeId,
     address resurrectionPrompt
+  ) external;
+
+  /// @dev changeMintable
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  function changeMintable(string memory eventKey, uint256 bbeId) external;
+
+  /// @dev mintBoss
+  /// @param eventKey event key
+  /// @param bbeId ID of bossBattleEvent
+  /// @param to to
+  /// @param monsterExtension monsterExtension
+  /// @param imageURL imageURL
+  function mintBoss(
+    string memory eventKey,
+    uint256 bbeId,
+    address to,
+    IPromptMonstersExtension.MonsterExtension memory monsterExtension,
+    string memory imageURL
   ) external;
 }

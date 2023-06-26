@@ -41,6 +41,8 @@ import { EnumOtherSkillAction } from "@/types/EnumOtherSkillAction";
 import { EnumSkillType } from "@/types/EnumSkillType";
 import { EventKey } from "@/types/EventKey";
 import { MonsterAdj } from "@/types/MonsterAdj";
+import { Status } from "@/types/Status";
+import { StatusContract } from "@/types/StatusContract";
 import { hasUnknownSkill } from "@/utils/monsterUtils";
 import axios from "axios";
 
@@ -1116,6 +1118,38 @@ export const getQuoteType = (
   if (msgType === EnumBossBattleMsg.bossDefense)
     return EnumBossBattleQuote.boss;
   return EnumBossBattleQuote.system;
+};
+
+export const isRareStatusContract = (status: StatusContract): boolean => {
+  // TODO: ボスごとに切り替えられるようにする
+  /*
+   * ヨシュカ -> ステ合計115以上
+   */
+
+  let sumStatus = 0;
+  sumStatus += status.hp;
+  sumStatus += status.atk;
+  sumStatus += status.def;
+  sumStatus += status.inte;
+  sumStatus += status.mgr;
+  sumStatus += status.agl;
+  return sumStatus >= 115;
+};
+
+export const isRareStatus = (status: Status): boolean => {
+  // TODO: ボスごとに切り替えられるようにする
+  /*
+   * ヨシュカ -> ステ合計115以上
+   */
+  const statusContract: StatusContract = {
+    hp: status.HP,
+    atk: status.ATK,
+    def: status.DEF,
+    inte: status.INT,
+    mgr: status.MGR,
+    agl: status.AGL,
+  };
+  return isRareStatusContract(statusContract);
 };
 
 /*

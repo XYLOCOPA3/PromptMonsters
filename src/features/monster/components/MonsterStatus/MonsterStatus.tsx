@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useMonsterValue } from "@/hooks/useMonster";
 import { MonsterModel } from "@/models/MonsterModel";
 import { BaseProps } from "@/types/BaseProps";
@@ -60,7 +61,18 @@ export const _buildIDOrResurrectionPrompt = (monster: MonsterModel) => {
     return (
       <>
         <div className={clsx("text-sm", "text-gray-400")}># Id</div>
-        <div>{monster.id}</div>
+        <Link
+          className={clsx(
+            "mb-2",
+            "text-blue-500",
+            "hover:underline",
+            "font-bold",
+          )}
+          href={`https://tofunft.com/nft/mch-verse/0x12C7aA85c8BE2b32bdCfC013Da08347EeE95c238/${monster.id}`}
+          target="_blank"
+        >
+          <div>{monster.id}</div>
+        </Link>
         <br />
       </>
     );

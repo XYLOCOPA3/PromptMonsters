@@ -41,12 +41,12 @@ export const MonsterMintButton = ({ className }: MonsterMintButtonProps) => {
    */
   const handleClick = async () => {
     if (user.id === "") {
-      alert(tCommon("mintIfNotLogin"));
+      alert(tCommon("notLogin"));
       await open();
       return;
     }
     if (chain!.id !== mchVerse.id) {
-      alert("Please change network to MCHVerse Mainnet.");
+      alert(tCommon("changeNetwork"));
       return;
     }
     setDisable(true);
