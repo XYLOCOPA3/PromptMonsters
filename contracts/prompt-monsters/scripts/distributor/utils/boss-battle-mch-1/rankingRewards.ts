@@ -1,12 +1,13 @@
 import {
   PROMPT_MONSTERS_PROXY_ADDRESS,
   DISTRIBUTOR_PROXY_ADDRESS,
-} from "../../const";
+} from "../../../const";
+import console from "console";
 import { readFileSync } from "fs";
 import { ethers } from "hardhat";
 
 const PROMPT_MONSTERS_DEPLOY_BH = 21342235;
-const PROMPT_MONSTERS_LAST_MINTED_BH = 22519167;
+const PROMPT_MONSTERS_LAST_MINTED_BH = 24002182;
 const RANKING_STD = 100;
 
 const FIRST_PRIZE = 0;
@@ -23,8 +24,8 @@ const HUNDREDTH_PRIZE = 99;
 
 const FIRST_PRIZE_REWARD = "1000";
 const SECOND_PRIZE_REWARD = "500";
-const THIRD_PRIZE_REWARD = "500";
-const FROM_4TH_TO_6TH_PRIZE_REWARD = "200";
+const THIRD_PRIZE_REWARD = "300";
+const FROM_4TH_TO_6TH_PRIZE_REWARD = "100";
 const FROM_7TH_TO_10TH_PRIZE_REWARD = "100";
 const FROM_11TH_TO_50TH_PRIZE_REWARD = "50";
 const FROM_51TH_TO_100TH_PRIZE_REWARD = "10";
@@ -43,9 +44,12 @@ export async function main() {
     "-------------------- get monster ID per ranking position --------------------",
   );
 
-  const csv = readFileSync("scripts/battle/utils/total/20230601-003759.csv", {
-    encoding: "utf8",
-  });
+  const csv = readFileSync(
+    "scripts/boss-battle/utils/total/20230626-044931.csv",
+    {
+      encoding: "utf8",
+    },
+  );
   const CSV = require("comma-separated-values");
   const rowList = new CSV(csv, { header: true, cast: false }).parse();
   let rankingMonsterIDs: number[] = [];
@@ -122,12 +126,14 @@ export async function main() {
           owners[rankingMonsterIDs[i]].tokenId,
           owners[rankingMonsterIDs[i]].address,
         );
-        // const tx = await distributor
-        //   .connect(from)
-        //   .distributeNativeToken(owners[rankingMonsterIDs[i]].address, {
-        //     value: ethers.utils.parseEther(reward),
-        //   });
-        // await tx.wait();
+        // await (
+        //   await distributor
+        //     .connect(from)
+        //     .distributeERC20(
+        //       owners[rankingMonsterIDs[i]].address,
+        //       ethers.utils.parseEther(reward),
+        //     )
+        // ).wait();
       }
       console.log("対象ユーザーへ報酬が配布されました。");
 
@@ -139,18 +145,18 @@ export async function main() {
     process.exit();
   });
 
-  // console.log("----------------------------------------------------");
-  // const tmp: string[] = [];
-  // for (let i = 0; i < RANKING_STD; i++) {
-  //   const owner = owners[rankingMonsterIDs[i]].address;
-  //   if (tmp.includes(owner)) continue;
-  //   tmp.push(owner);
-  //   let cnt = 1;
-  //   for (let j = 0; j < rankingMonsterIDs.length; j++) {
-  //     if (owner === owners[rankingMonsterIDs[j]].address) cnt++;
-  //   }
-  //   console.log(cnt, owner);
-  // }
+  // // console.log("----------------------------------------------------");
+  // // const tmp: string[] = [];
+  // // for (let i = 0; i < RANKING_STD; i++) {
+  // //   const owner = owners[rankingMonsterIDs[i]].address;
+  // //   if (tmp.includes(owner)) continue;
+  // //   tmp.push(owner);
+  // //   let cnt = 1;
+  // //   for (let j = 0; j < rankingMonsterIDs.length; j++) {
+  // //     if (owner === owners[rankingMonsterIDs[j]].address) cnt++;
+  // //   }
+  // //   console.log(cnt, owner);
+  // // }
 }
 
 main().catch((error) => {

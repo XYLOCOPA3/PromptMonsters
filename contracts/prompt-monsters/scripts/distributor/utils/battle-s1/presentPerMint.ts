@@ -1,5 +1,5 @@
-import { PROMPT_MONSTERS_PROXY_ADDRESS } from "../../const";
-import { DISTRIBUTOR_PROXY_ADDRESS } from "../../const";
+import { PROMPT_MONSTERS_PROXY_ADDRESS } from "../../../const";
+import { DISTRIBUTOR_PROXY_ADDRESS } from "../../../const";
 import { ethers } from "hardhat";
 
 const PROMPT_MONSTERS_DEPLOY_BH = 21342235;
