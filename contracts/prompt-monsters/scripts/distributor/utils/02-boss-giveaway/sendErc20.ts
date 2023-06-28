@@ -1,4 +1,4 @@
-import { DISTRIBUTOR_PROXY_ADDRESS } from "../../const";
+import { DISTRIBUTOR_PROXY_ADDRESS } from "../../../const";
 import { ethers } from "hardhat";
 
 // ⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️
