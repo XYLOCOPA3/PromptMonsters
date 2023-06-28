@@ -1,13 +1,13 @@
-import {
-  BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS,
-  PROMPT_MONSTERS_PROXY_ADDRESS,
-} from "../../const";
+import { PROMPT_MONSTERS_PROXY_ADDRESS } from "../../const";
 import { ethers } from "hardhat";
 
 export async function main() {
+  const [_, from] = await ethers.getSigners();
+  console.log("from account: ", from.address);
   // 適宜変更 ------------------------------
   const role = ethers.utils.id("GAME_ROLE");
-  const addr = BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS;
+  // const addr = BOSS_MONSTER_MCH_YOSHKA_PROXY_ADDRESS;
+  const addr = from.address;
   // 適宜変更 ------------------------------
 
   const PromptMonsters = await ethers.getContractFactory("PromptMonsters");

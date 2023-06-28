@@ -96,7 +96,7 @@ monsterDetails:
 
 Output example:
 ${monster.name} vs ${enemy.name}
-Output in JSON->{"battleDescription":"[Write a battle result in a novelistic style, under 300 characters, drawing from the 'flavor', 'status', 'skills' of 'monsterDetails'. Be sure to determine a winner. Include a quote from the monster.],"winnerId":"0x0000000000000000000000000000000000000000"}
+Output in JSON->{"battleDescription":"[Write a novel-like depiction of a battle scene in less than 300 characters, based on the 'flavor', 'status', and 'skills' of 'monsterDetails'. Be sure to determine a winner. Include a quote from the monster.],"winnerId":"0x0000000000000000000000000000000000000000"}
 """
 
 ${monster.name} vs ${enemy.name}:
@@ -131,7 +131,7 @@ monsterDetails:
 """
 出力例:
 ${monster.name} vs ${enemy.name}
-JSON出力->{"battleDescription":"['monsterDetails' の 'flavor', 'status', 'skills'から300文字以下で戦闘結果を小説風に書く。必ず勝者を決める。必ずモンスターのセリフを入れる。],"winnerId":"0x0000000000000000000000000000000000000000"}
+JSON出力->{"battleDescription":"['monsterDetails' の 'flavor', 'status', 'skills'から300文字以下で戦闘の様子を小説風に書く。必ず勝者を決める。必ずモンスターのセリフを入れる。絶対にですます調を使わない。],"winnerId":"0x0000000000000000000000000000000000000000"}
 """
 
 ${monster.name} vs ${enemy.name}:

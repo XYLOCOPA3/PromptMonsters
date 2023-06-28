@@ -10,7 +10,7 @@ async function main() {
   const languageEn = "English";
   const languageJp = "日本語";
   const bossEn: IPromptMonsters.MonsterStruct = {
-    feature: "MCH, Raid, Enemy",
+    feature: "MCH,CryptoWorld,SuperPowerful,GaySlang",
     name: "Yoshka",
     flavor:
       "A super powerful enemy among those who gather data in the Cryptoworld. It speaks in gay slang.",
@@ -113,7 +113,7 @@ async function main() {
     agl: 10,
   };
   const bossJp: IPromptMonsters.MonsterStruct = {
-    feature: "MCH, Raid, Enemy",
+    feature: "MCH,CryptoWorld,SuperPowerful,GaySlang",
     name: "ヨシュカ",
     flavor:
       "クリプトワールドのデータを集めるエネミーの中でも破格の超弩級エネミー。オネエ言葉でしゃべる。",
