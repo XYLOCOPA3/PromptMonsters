@@ -318,6 +318,48 @@ export async function main() {
         rl.close();
         return;
       }
+      // owners.push(
+      //   {
+      //     address: "0x019281ce34F8b8739991713D5E09D0C290B53886",
+      //     tokenId: "0",
+      //   },
+      //   {
+      //     address: "0x159EeF981fDc77927a77A4e5769Ee7E6C03Fb6fC",
+      //     tokenId: "0",
+      //   },
+      //   {
+      //     address: "0x1C41af26CB37316530AAE9221DeB1840A09dB2F6",
+      //     tokenId: "0",
+      //   },
+      //   {
+      //     address: "0x31F31693723c4397cb8A978A19A95B82c72f4212",
+      //     tokenId: "0",
+      //   },
+      //   {
+      //     address: "0xF8d76f0157c2d1892a4C0308b9645adb7cC9DA8e",
+      //     tokenId: "0",
+      //   },
+      //   {
+      //     address: "0x0d7089b07b29FDF7BbF9E93BDE026B0Bca493d6e",
+      //     tokenId: "0",
+      //   },
+      //   {
+      //     address: "0xe0b49De3026666300bD52efB053b21466ab6FBe8",
+      //     tokenId: "0",
+      //   },
+      //   {
+      //     address: "0xF22BB86781Bb920e311329B605bcC66d529B324e",
+      //     tokenId: "0",
+      //   },
+      //   {
+      //     address: "0xf5E1F18aA99141491dBe001C28318a30840f507f",
+      //     tokenId: "0",
+      //   },
+      //   {
+      //     address: "0x1cAB1E2bA918c5F7f9cFF4323883Da4aDB44FD58",
+      //     tokenId: "0",
+      //   },
+      // );
       for (let i = 0; i < RANKING_STD; i++) {
         let rewardedMonster = REWARDED_MONSTERS[i];
         rewardedMonster.resurrectionPrompt =
@@ -326,16 +368,17 @@ export async function main() {
           i + 1,
           owners[rankingMonsterIDs[i]].tokenId,
           owners[rankingMonsterIDs[i]].address,
+          // owners[i].tokenId,
+          // owners[i].address,
           rewardedMonster,
         );
         // await (
-        //   await promptMonsters
-        //     .connect(from)
-        //     .mintOnlyGameRole(
-        //       owners[rankingMonsterIDs[i]].address,
-        //       rewardedMonster,
-        //       IMAGE_URLS[i],
-        //     )
+        //   await promptMonsters.connect(from).mintOnlyGameRole(
+        //     // owners[i].address,
+        //     owners[rankingMonsterIDs[i]].address,
+        //     rewardedMonster,
+        //     IMAGE_URLS[i],
+        //   )
         // ).wait();
       }
       console.log("対象ユーザーへ報酬が配布されました。");

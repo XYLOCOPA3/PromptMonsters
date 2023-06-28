@@ -11,6 +11,7 @@ const {
   DEV_PRIVATE_KEY,
   LOCAL_PRIVATE_KEY,
   DISTRIBUTOR_PRIVATE_KEY,
+  DEV_DISTRIBUTOR_PRIVATE_KEY,
   POLYGONSCAN_API,
 } = process.env;
 
@@ -34,19 +35,25 @@ const config: HardhatUserConfig = {
     mchTestnet: {
       url: "https://rpc.oasys.sand.mchdfgh.xyz/",
       chainId: 420,
-      accounts: [DEV_PRIVATE_KEY as string, DISTRIBUTOR_PRIVATE_KEY as string],
+      accounts: [
+        DEV_PRIVATE_KEY as string,
+        DEV_DISTRIBUTOR_PRIVATE_KEY as string,
+      ],
       gasPrice: 0,
     },
     local: {
       url: "http://localhost:8545",
       accounts: [
         LOCAL_PRIVATE_KEY as string,
-        DISTRIBUTOR_PRIVATE_KEY as string,
+        DEV_DISTRIBUTOR_PRIVATE_KEY as string,
       ],
     },
     mumbai: {
       url: POLYGON_MUMBAI_ALCHEMY_KEY,
-      accounts: [DEV_PRIVATE_KEY as string, DISTRIBUTOR_PRIVATE_KEY as string],
+      accounts: [
+        DEV_PRIVATE_KEY as string,
+        DEV_DISTRIBUTOR_PRIVATE_KEY as string,
+      ],
     },
   },
   etherscan: {
